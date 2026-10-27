@@ -50,6 +50,25 @@ insert into menu_items (tenant_id, name, normal_price, avg_weight_grams) values
 on conflict (tenant_id, name) do update
   set normal_price = excluded.normal_price, avg_weight_grams = excluded.avg_weight_grams;
 
+-- contoh bahan & alergen (4 menu; sisanya null = bukti empty state eksplisit).
+-- tenant-scoped: nama menu unik per tenant, bukan global.
+update menu_items set ingredients = 'Nasi, ayam geprek, sambal matah',
+  allergen_note = null
+where name = 'Nasi ayam geprek sambal matah'
+  and tenant_id = (select id from tenants where name = 'Ayam Geprek Mas Boy');
+update menu_items set ingredients = 'Nasi, rendang, sayur singkong',
+  allergen_note = 'Mengandung santan'
+where name = 'Nasi rendang + sayur'
+  and tenant_id = (select id from tenants where name = 'Masakan Padang Uni');
+update menu_items set ingredients = 'Nasi, pecel, rempeyek, telur',
+  allergen_note = 'Mengandung kacang, telur'
+where name = 'Nasi pecel lengkap'
+  and tenant_id = (select id from tenants where name = 'Pecel Madiun Mbak Sri');
+update menu_items set ingredients = 'Nasi, ayam suwir, kuah kuning, kol, telur rebus',
+  allergen_note = 'Mengandung telur'
+where name = 'Soto ayam + nasi'
+  and tenant_id = (select id from tenants where name = 'Soto Lamongan Cak No');
+
 -- katalog: campuran segar (sisa banyak), hampir habis, hampir kedaluwarsa,
 -- 1 sudah lewat jual (tak tampil, bukti filter BR-2).
 insert into portions (tenant_id, menu_item_id, quantity_posted, quantity_remaining,

@@ -49,13 +49,16 @@ select throws_ok(
   'quantity above 2 rejected'
 );
 
--- 6. RPCs exist with security definer
+-- 6. RPCs exist with security definer (6 lama + 6 baru: my_orders, own_tenant_id,
+-- upsert_menu_item, post_portion, update_portion, admin_report)
 select ok(
   (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public'
       and p.proname in ('place_order','cancel_order','confirm_pickup',
-                        'apply_as_tenant','approve_tenant','impact_summary')) = 6,
-  'all 6 RPCs present'
+                        'apply_as_tenant','approve_tenant','impact_summary',
+                        'my_orders','own_tenant_id','upsert_menu_item',
+                        'post_portion','update_portion','admin_report')) = 12,
+  'all 12 RPCs present'
 );
 
 -- 7. expires_at generated column matches cooked_at + window
@@ -81,8 +84,8 @@ select is(
 select is(
   (select count(*) from pg_policies
     where schemaname = 'public' and cmd = 'SELECT'),
-  5::bigint,
-  'exactly 5 read-only policies'
+  6::bigint,
+  'exactly 6 read-only policies'
 );
 select ok(
   (select count(*) from pg_trigger where tgname = 'profiles_role_guard') = 1,
