@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Porsi Terakhir - Katalog Mahasiswa</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            border: '#e2e8f0',
+            input: '#e2e8f0',
+            ring: '#2e7d4f',
+            background: '#FFFBF5',
+            foreground: '#0f172a',
+            primary: {
+              DEFAULT: '#2e7d4f',
+              foreground: '#ffffff',
+              hover: '#256640',
+              muted: '#EAF4EC',
+            },
+            accent: {
+              DEFAULT: '#F28C28',
+              foreground: '#ffffff',
+              subtle: '#FFF5EB',
+            },
+            muted: {
+              DEFAULT: '#f1f5f9',
+              foreground: '#64748b',
+            },
+            card: {
+              DEFAULT: '#ffffff',
+              foreground: '#0f172a',
+            },
+          },
+          borderRadius: {
+            lg: '0.5rem',
+            xl: '0.75rem',
+            '2xl': '1rem',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #FFFBF5;
+      color: #0f172a;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    /* Smooth transition */
+    * {
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row antialiased text-foreground">
+<!-- ========================================== -->
+<!-- DEMO CONTROLS BANNER (Top floating toggle) -->
+<!-- ========================================== -->
+<div class="fixed top-2 right-2 z-50 bg-slate-900/90 text-white backdrop-blur-md px-3 py-1.5 rounded-full text-xs flex items-center gap-2 shadow-lg border border-slate-700/60">
+<span class="text-slate-400 font-medium">State Demo:</span>
+<button class="demo-btn px-2 py-0.5 rounded-full bg-primary font-semibold text-white hover:opacity-90" onclick="setViewMode('normal')">Katalog</button>
+<button class="demo-btn px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 hover:text-white" onclick="setViewMode('loading')">Skeleton</button>
+<button class="demo-btn px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 hover:text-white" onclick="setViewMode('empty-today')">Kosong Hari Ini</button>
+<button class="demo-btn px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 hover:text-white" onclick="setViewMode('empty-filter')">Filter Nihil</button>
+<button class="demo-btn px-2 py-0.5 rounded-full bg-slate-800 text-red-300 hover:text-white" onclick="setViewMode('error')">Error Alert</button>
+<button class="px-2 py-0.5 rounded-full bg-emerald-800/80 text-emerald-200 hover:bg-emerald-700 text-[11px] flex items-center gap-1" onclick="triggerToast('Katalog berhasil diperbarui dengan 12 porsi aktif!')">
+<i class="w-3 h-3" data-lucide="bell"></i> Toast
+    </button>
+</div>
+<!-- ========================================== -->
+<!-- TOAST NOTIFICATION CONTAINER (Sonner-like) -->
+<!-- ========================================== -->
+<div class="fixed bottom-20 md:bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none" id="toast-container"></div>
+<!-- ========================================== -->
+<!-- DESKTOP SHADCN SIDEBAR (Desktop 1280px)     -->
+<!-- ========================================== -->
+<aside class="hidden md:flex flex-col w-64 border-r border-border bg-white sticky top-0 h-screen select-none shrink-0 z-40">
+<!-- Brand Logo -->
+<div class="p-6 pb-4 border-b border-border/70 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shadow-inner">
+<i class="w-5 h-5" data-lucide="utensils-crossed"></i>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-bold text-lg tracking-tight text-slate-900 leading-none">Porsi Terakhir</span>
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+</div>
+<span class="text-[11px] font-medium text-slate-400">Kampus Harvest &amp; Rescue</span>
+</div>
+</div>
+<!-- Navigation items (shadcn button-ghost style) -->
+<nav class="flex-1 px-3 py-6 space-y-1.5">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-primary/10 text-primary transition-all" href="#katalog">
+<i class="w-4 h-4 text-primary" data-lucide="layout-grid"></i>
+<span>Katalog</span>
+<span class="ml-auto bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">12</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all" href="#pesanan">
+<i class="w-4 h-4 text-slate-400" data-lucide="receipt"></i>
+<span>Pesanan</span>
+<span class="ml-auto bg-accent text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full animate-pulse">1 Aktif</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all" href="#profil">
+<i class="w-4 h-4 text-slate-400" data-lucide="award"></i>
+<span>Profil &amp; Badge</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-all" href="#carakerja">
+<i class="w-4 h-4 text-slate-400" data-lucide="help-circle"></i>
+<span>Cara Kerja</span>
+</a>
+</nav>
+<!-- Pilot Campus Badge & Impact mini -->
+<div class="px-4 py-3 mx-3 mb-4 rounded-xl bg-primary/5 border border-primary/15 text-xs">
+<div class="flex items-center gap-2 font-semibold text-primary mb-1">
+<i class="w-3.5 h-3.5" data-lucide="leaf"></i>
+<span>SDG 12 Pilot Kampus</span>
+</div>
+<p class="text-[11px] text-slate-500 leading-relaxed">
+        Porsi terverifikasi langsung dari kantin terakreditasi higienis.
+      </p>
+</div>
+<!-- Student Avatar Profile Footer -->
+<div class="p-4 border-t border-border bg-slate-50/50 flex items-center justify-between">
+<div class="flex items-center gap-3 overflow-hidden">
+<!-- shadcn Avatar -->
+<div class="relative w-9 h-9 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+<span>RA</span>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-white"></span>
+</div>
+<div class="truncate">
+<p class="text-sm font-semibold text-slate-800 leading-tight truncate">Rafi Anggara</p>
+<span class="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Mahasiswa
+          </span>
+</div>
+</div>
+<button class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-200/60" title="Pengaturan Akun">
+<i class="w-4 h-4" data-lucide="settings"></i>
+</button>
+</div>
+</aside>
+<!-- ========================================== -->
+<!-- MOBILE TOP BAR (390px Mobile First)        -->
+<!-- ========================================== -->
+<header class="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<i class="w-4 h-4" data-lucide="utensils-crossed"></i>
+</div>
+<div>
+<h1 class="text-base font-bold text-slate-900 tracking-tight leading-tight">Porsi Terakhir</h1>
+<p class="text-[10px] text-slate-500 font-medium">Katalog Mahasiswa</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<!-- Quick active order indicator -->
+<a class="flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 text-xs px-2.5 py-1 rounded-full font-medium" href="#active-order">
+<i class="w-3.5 h-3.5 text-accent" data-lucide="qr-code"></i>
+<span>1 Pesanan</span>
+</a>
+<!-- Mobile Avatar -->
+<div class="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-primary font-bold text-xs">
+        RA
+      </div>
+</div>
+</header>
+<!-- ========================================== -->
+<!-- MAIN CONTENT CONTAINER (Desktop max-w-6xl) -->
+<!-- ========================================== -->
+<main class="flex-1 px-4 sm:px-6 lg:px-8 py-6 md:py-8 max-w-6xl w-full mx-auto pb-24 md:pb-12">
+<!-- 1. HEADER BLOCK -->
+<div class="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<!-- Current Date & Portion count Badge -->
+<span class="inline-flex items-center gap-1.5 bg-primary/10 text-primary border border-primary/20 text-xs font-semibold px-3 py-1 rounded-full">
+<i class="w-3.5 h-3.5" data-lucide="calendar"></i>
+<span id="date-label">Selasa, 27 Okt — 12 porsi tersedia</span>
+</span>
+<span class="hidden sm:inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Kantin Buka
+          </span>
+</div>
+<h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Porsi Terakhir Hari Ini</h1>
+<p class="text-sm md:text-base text-muted-foreground mt-1">Makanan matang yang masih layak, dengan harga lebih hemat untuk mahasiswa.</p>
+</div>
+<!-- Live badge helper -->
+<div class="hidden lg:flex items-center gap-2 text-xs text-slate-500 bg-white border border-border px-3 py-2 rounded-xl shadow-xs">
+<i class="w-4 h-4 text-primary" data-lucide="clock-3"></i>
+<span>Jendela Rilis Sore: <strong>15.30 - 18.30 WIB</strong></span>
+</div>
+</div>
+<!-- 2. ACTIVE ORDER ALERT (Only when active order exists) -->
+<div class="mb-5 rounded-xl border border-amber-300 bg-amber-50/90 p-4 shadow-sm transition-all" id="active-order-alert">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-start sm:items-center gap-3">
+<div class="p-2 rounded-lg bg-amber-100 text-amber-700 shrink-0">
+<i class="w-5 h-5 text-accent" data-lucide="qr-code"></i>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-sm font-bold text-amber-950">Kamu punya 1 pesanan aktif siap ambil!</h2>
+<span class="bg-amber-200/80 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Kantin Teknik</span>
+</div>
+<p class="text-xs text-amber-800 mt-0.5">
+              1x Nasi Ayam Bakar Madu — Ambil sebelum <strong>18.00 WIB</strong> di Warung Bu Sari.
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<button class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg bg-accent text-white hover:bg-amber-600 transition-colors shadow-xs" onclick="openQrModal()">
+<i class="w-3.5 h-3.5" data-lucide="scan-line"></i>
+<span>Lihat QR Pickup</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 3. INFO ALERT (Dismissible, muted green) -->
+<div class="mb-6 rounded-xl border border-emerald-200 bg-[#EAF4EC] p-3.5 text-xs text-emerald-900 flex items-center justify-between shadow-xs" id="info-dismiss-alert">
+<div class="flex items-center gap-2.5">
+<i class="w-4 h-4 text-primary shrink-0" data-lucide="info"></i>
+<p class="font-medium leading-relaxed">
+<strong>Pembayaran di tempat:</strong> Bayar langsung saat pickup di tenant, tunai atau QRIS. Aplikasi tidak memproses pembayaran digital.
+        </p>
+</div>
+<button class="text-emerald-700 hover:text-emerald-950 p-1 rounded-md hover:bg-emerald-200/50 transition-colors ml-2" onclick="document.getElementById('info-dismiss-alert').remove()" title="Tutup pemberitahuan">
+<i class="w-3.5 h-3.5" data-lucide="x"></i>
+</button>
+</div>
+<!-- 4. SEARCH AND FILTER ROW -->
+<div class="mb-6 space-y-3">
+<div class="flex items-center gap-2 sm:gap-3">
+<!-- Input Search with icon -->
+<div class="relative flex-1">
+<i class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" data-lucide="search"></i>
+<input class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-border bg-white text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-2xs" id="searchInput" oninput="handleSearch(this.value)" placeholder="Cari menu (e.g. Ayam, Soto, Nasi Goreng)..." type="text"/>
+</div>
+<!-- Mobile Filter Button (Opens Bottom Sheet) -->
+<button class="md:hidden flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg border border-border bg-white text-slate-700 text-sm font-medium hover:bg-slate-50 shrink-0 shadow-2xs" onclick="toggleMobileFilter(true)">
+<i class="w-4 h-4 text-primary" data-lucide="sliders-horizontal"></i>
+<span>Filter</span>
+</button>
+<!-- Desktop Select Sortir -->
+<div class="hidden md:flex items-center gap-2 shrink-0">
+<span class="text-xs font-medium text-slate-500">Urutkan:</span>
+<div class="relative">
+<select class="appearance-none bg-white border border-border text-xs font-semibold text-slate-700 py-2.5 pl-3 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-2xs cursor-pointer" id="sortSelect" onchange="handleSort(this.value)">
+<option value="newest">Jam masak terbaru</option>
+<option value="cheapest">Harga termurah</option>
+<option value="quota">Sisa kuota terbanyak</option>
+<option value="expiring">Mendekati batas jual</option>
+</select>
+<i class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" data-lucide="chevron-down"></i>
+</div>
+</div>
+</div>
+<!-- Filter by Mitra (shadcn ToggleGroup inside ScrollArea) -->
+<div class="hidden md:flex items-center gap-2 overflow-x-auto py-1 custom-scrollbar" id="desktopMitraToggle">
+<span class="text-xs font-medium text-slate-400 mr-1 shrink-0">Mitra:</span>
+<button class="mitra-chip active px-3 py-1.5 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5 bg-primary text-white border-primary shadow-2xs" onclick="filterMitra('all', this)">
+<span>Semua Mitra</span>
+<span class="bg-white/20 text-white text-[10px] px-1 rounded-full">6</span>
+</button>
+<button class="mitra-chip px-3 py-1.5 rounded-full text-xs font-medium border border-border bg-white text-slate-700 hover:bg-slate-50 transition-all flex items-center gap-1.5 shadow-2xs" onclick="filterMitra('Warung Bu Sari', this)">
+<span class="w-4 h-4 rounded-full bg-orange-100 text-orange-700 text-[9px] font-bold flex items-center justify-center">BS</span>
+<span>Warung Bu Sari</span>
+</button>
+<button class="mitra-chip px-3 py-1.5 rounded-full text-xs font-medium border border-border bg-white text-slate-700 hover:bg-slate-50 transition-all flex items-center gap-1.5 shadow-2xs" onclick="filterMitra('Kantin Fakultas Teknik', this)">
+<span class="w-4 h-4 rounded-full bg-blue-100 text-blue-700 text-[9px] font-bold flex items-center justify-center">FT</span>
+<span>Kantin Fakultas Teknik</span>
+</button>
+<button class="mitra-chip px-3 py-1.5 rounded-full text-xs font-medium border border-border bg-white text-slate-700 hover:bg-slate-50 transition-all flex items-center gap-1.5 shadow-2xs" onclick="filterMitra('Dapur Pak Joko', this)">
+<span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 text-[9px] font-bold flex items-center justify-center">PJ</span>
+<span>Dapur Pak Joko</span>
+</button>
+<button class="mitra-chip px-3 py-1.5 rounded-full text-xs font-medium border border-border bg-white text-slate-700 hover:bg-slate-50 transition-all flex items-center gap-1.5 shadow-2xs" onclick="filterMitra('Kedai Soto Makmur', this)">
+<span class="w-4 h-4 rounded-full bg-amber-100 text-amber-700 text-[9px] font-bold flex items-center justify-center">SM</span>
+<span>Kedai Soto Makmur</span>
+</button>
+</div>
+</div>
+<!-- Contoh tampilan caption & count header -->
+<div class="flex items-center justify-between text-xs text-slate-500 mb-3 px-1">
+<div class="flex items-center gap-2">
+<span class="bg-slate-200/80 text-slate-700 font-semibold px-2 py-0.5 rounded text-[11px]">Contoh tampilan</span>
+<span id="activePortionCount">Menampilkan 6 porsi dari kantin mitra terdaftar</span>
+</div>
+<span class="text-[11px] text-slate-400">Pembaruan real-time</span>
+</div>
+<!-- ==================================================== -->
+<!-- 5. PORTION GRID (Mobile 1 col, Tablet 2, Desktop 3)   -->
+<!-- ==================================================== -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="catalogGrid">
+<!-- CARD 1: Normal available portion -->
+<div class="portion-card bg-card border border-border rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col cursor-pointer group" onclick="openDetailModal('Nasi Ayam Geprek Sambal Matah', 'Warung Bu Sari', '10.000', '18.000', 'Sisa 4 dari 10 porsi', 40, '15.30', '18.30', ['Ayam', 'Pedas', 'Halal'], 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&amp;fit=crop&amp;w=600&amp;q=80', false)">
+<!-- Image with 4:3 Aspect Ratio & Overlay Badges -->
+<div class="relative aspect-4/3 w-full bg-slate-100 overflow-hidden">
+<img alt="Nasi Ayam Geprek" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<!-- Top Left Discount Badge -->
+<div class="absolute top-2.5 left-2.5 bg-accent text-white text-xs font-extrabold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+<span>-45%</span>
+</div>
+<!-- Top Right Cook Time Badge -->
+<div class="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-xs text-white text-[11px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1">
+<i class="w-3 h-3 text-emerald-400" data-lucide="clock"></i>
+<span>Dimasak 15.30</span>
+</div>
+</div>
+<!-- Card Body -->
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<!-- Menu Name -->
+<h3 class="font-bold text-base text-slate-900 leading-snug group-hover:text-primary transition-colors">
+              Nasi Ayam Geprek Sambal Matah
+            </h3>
+<!-- Mitra Row -->
+<div class="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
+<span class="w-5 h-5 rounded-full bg-orange-100 text-orange-700 font-bold text-[10px] flex items-center justify-center shrink-0">BS</span>
+<span class="font-medium text-slate-600">Warung Bu Sari</span>
+<span class="text-slate-300">•</span>
+<span>Kantin Gedung B</span>
+</div>
+<!-- Price Row -->
+<div class="flex items-baseline gap-2 mt-3">
+<span class="text-xl font-extrabold text-accent">Rp 10.000</span>
+<span class="text-xs text-slate-400 line-through">Rp 18.000</span>
+</div>
+<!-- Quota with shadcn Progress bar -->
+<div class="mt-3">
+<div class="flex items-center justify-between text-xs mb-1.5">
+<span class="font-medium text-slate-600">Sisa 4 dari 10 porsi</span>
+<span class="text-[11px] font-semibold text-primary">Tersisa 40%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-primary h-2 rounded-full" style="width: 40%"></div>
+</div>
+</div>
+<!-- Time to sell with Tooltip helper -->
+<div class="mt-3 flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 p-2 rounded-lg">
+<i class="w-3.5 h-3.5 text-slate-400 shrink-0" data-lucide="timer"></i>
+<span>Layak jual sampai <strong>18.30 WIB</strong></span>
+<span class="ml-auto text-slate-400 hover:text-slate-700 cursor-help" title="Batas jual dihitung dari jam masak. Makanan yang melewati batas tidak bisa dipesan.">
+<i class="w-3.5 h-3.5" data-lucide="help-circle"></i>
+</span>
+</div>
+<!-- Allergen Badges -->
+<div class="flex flex-wrap gap-1.5 mt-2.5">
+<span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Ayam</span>
+<span class="text-[10px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">Pedas Level 2</span>
+<span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">100% Halal</span>
+</div>
+</div>
+<!-- Card Footer Button -->
+<div class="mt-4 pt-3 border-t border-slate-100">
+<button class="w-full py-2.5 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs group-hover:shadow transition-all">
+<span>Lihat Detail &amp; Kunci Porsi</span>
+<i class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" data-lucide="arrow-right"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 2: Low quota ("Tinggal 2 porsi!") with Orange Progress -->
+<div class="portion-card bg-card border border-amber-200/80 rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col cursor-pointer group" onclick="openDetailModal('Paket Nasi Sayur + Telur Balado', 'Kantin Fakultas Teknik', '7.000', '14.000', 'Tinggal 2 porsi!', 20, '15.45', '18.45', ['Telur', 'Sayur Lodeh'], 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&amp;fit=crop&amp;w=600&amp;q=80', false)">
+<div class="relative aspect-4/3 w-full bg-slate-100 overflow-hidden">
+<img alt="Nasi Telur Balado" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<div class="absolute top-2.5 left-2.5 bg-accent text-white text-xs font-extrabold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+<span>-50%</span>
+</div>
+<div class="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-xs text-white text-[11px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1">
+<i class="w-3 h-3 text-emerald-400" data-lucide="clock"></i>
+<span>Dimasak 15.45</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-base text-slate-900 leading-snug group-hover:text-primary transition-colors">
+              Paket Nasi Sayur + Telur Balado
+            </h3>
+<div class="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
+<span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px] flex items-center justify-center shrink-0">FT</span>
+<span class="font-medium text-slate-600">Kantin Fakultas Teknik</span>
+<span class="text-slate-300">•</span>
+<span>Lantai 1 Selasar</span>
+</div>
+<div class="flex items-baseline gap-2 mt-3">
+<span class="text-xl font-extrabold text-accent">Rp 7.000</span>
+<span class="text-xs text-slate-400 line-through">Rp 14.000</span>
+</div>
+<!-- Quota: LOW QUOTA ALERT (<= 3 porsi) -->
+<div class="mt-3">
+<div class="flex items-center justify-between text-xs mb-1.5">
+<span class="font-bold text-accent flex items-center gap-1">
+<i class="w-3.5 h-3.5 text-accent animate-bounce" data-lucide="flame"></i>
+                  Tinggal 2 porsi!
+                </span>
+<span class="text-[11px] font-semibold text-accent">Sisa 20%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-accent h-2 rounded-full" style="width: 20%"></div>
+</div>
+</div>
+<div class="mt-3 flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 p-2 rounded-lg">
+<i class="w-3.5 h-3.5 text-slate-400 shrink-0" data-lucide="timer"></i>
+<span>Layak jual sampai <strong>18.45 WIB</strong></span>
+<span class="ml-auto text-slate-400 hover:text-slate-700 cursor-help" title="Batas jual dihitung dari jam masak.">
+<i class="w-3.5 h-3.5" data-lucide="help-circle"></i>
+</span>
+</div>
+<div class="flex flex-wrap gap-1.5 mt-2.5">
+<span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Telur</span>
+<span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Sayur Lodeh Gurih</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100">
+<button class="w-full py-2.5 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-all">
+<span>Lihat Detail &amp; Kunci Porsi</span>
+<i class="w-3.5 h-3.5" data-lucide="arrow-right"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 3: Portion with Allergens list highlighted -->
+<div class="portion-card bg-card border border-border rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col cursor-pointer group" onclick="openDetailModal('Nasi Pecel Madiun Lengkap', 'Dapur Pak Joko', '8.000', '15.000', 'Sisa 5 dari 8 porsi', 62, '16.00', '19.00', ['Kacang Tanah', 'Kedelai (Tahu/Tempe)', 'Sayur Matang'], 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&amp;fit=crop&amp;w=600&amp;q=80', false)">
+<div class="relative aspect-4/3 w-full bg-slate-100 overflow-hidden">
+<img alt="Nasi Pecel Sayur" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<div class="absolute top-2.5 left-2.5 bg-accent text-white text-xs font-extrabold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+<span>-47%</span>
+</div>
+<div class="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-xs text-white text-[11px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1">
+<i class="w-3 h-3 text-emerald-400" data-lucide="clock"></i>
+<span>Dimasak 16.00</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-base text-slate-900 leading-snug group-hover:text-primary transition-colors">
+              Nasi Pecel Madiun Lengkap
+            </h3>
+<div class="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
+<span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px] flex items-center justify-center shrink-0">PJ</span>
+<span class="font-medium text-slate-600">Dapur Pak Joko</span>
+<span class="text-slate-300">•</span>
+<span>Kantin Vokasi</span>
+</div>
+<div class="flex items-baseline gap-2 mt-3">
+<span class="text-xl font-extrabold text-accent">Rp 8.000</span>
+<span class="text-xs text-slate-400 line-through">Rp 15.000</span>
+</div>
+<div class="mt-3">
+<div class="flex items-center justify-between text-xs mb-1.5">
+<span class="font-medium text-slate-600">Sisa 5 dari 8 porsi</span>
+<span class="text-[11px] font-semibold text-primary">Tersisa 62%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-primary h-2 rounded-full" style="width: 62%"></div>
+</div>
+</div>
+<div class="mt-3 flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 p-2 rounded-lg">
+<i class="w-3.5 h-3.5 text-slate-400 shrink-0" data-lucide="timer"></i>
+<span>Layak jual sampai <strong>19.00 WIB</strong></span>
+<span class="ml-auto text-slate-400 hover:text-slate-700 cursor-help" title="Batas jual dihitung dari jam masak.">
+<i class="w-3.5 h-3.5" data-lucide="help-circle"></i>
+</span>
+</div>
+<!-- Allergen & ingredients row -->
+<div class="flex flex-wrap gap-1.5 mt-2.5">
+<span class="text-[10px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200 flex items-center gap-1">
+<i class="w-2.5 h-2.5" data-lucide="alert-circle"></i> Mengandung kacang
+              </span>
+<span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Tahu &amp; Tempe</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100">
+<button class="w-full py-2.5 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-all">
+<span>Lihat Detail &amp; Kunci Porsi</span>
+<i class="w-3.5 h-3.5" data-lucide="arrow-right"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 4: Portion CLOSE TO SELL LIMIT (Timer Orange warning) -->
+<div class="portion-card bg-card border border-orange-300 rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col cursor-pointer group" onclick="openDetailModal('Soto Ayam Lamongan Kuah Segar', 'Kedai Soto Makmur', '9.000', '16.000', 'Tinggal 1 porsi!', 15, '15.00', '18.00', ['Ayam', 'Seledri', 'Koya'], 'https://images.unsplash.com/photo-1572449043416-55f4685c9bb7?auto=format&amp;fit=crop&amp;w=600&amp;q=80', false)">
+<div class="relative aspect-4/3 w-full bg-slate-100 overflow-hidden">
+<img alt="Soto Ayam" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<div class="absolute top-2.5 left-2.5 bg-accent text-white text-xs font-extrabold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+<span>-44%</span>
+</div>
+<!-- Orange urgency countdown badge -->
+<div class="absolute top-2.5 right-2.5 bg-accent/90 backdrop-blur-xs text-white text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
+<i class="w-3 h-3 text-white animate-spin" data-lucide="hourglass"></i>
+<span>Sisa 25 Menit!</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-base text-slate-900 leading-snug group-hover:text-primary transition-colors">
+              Soto Ayam Lamongan Kuah Segar
+            </h3>
+<div class="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
+<span class="w-5 h-5 rounded-full bg-amber-100 text-amber-700 font-bold text-[10px] flex items-center justify-center shrink-0">SM</span>
+<span class="font-medium text-slate-600">Kedai Soto Makmur</span>
+<span class="text-slate-300">•</span>
+<span>Kantin Gedung C</span>
+</div>
+<div class="flex items-baseline gap-2 mt-3">
+<span class="text-xl font-extrabold text-accent">Rp 9.000</span>
+<span class="text-xs text-slate-400 line-through">Rp 16.000</span>
+</div>
+<div class="mt-3">
+<div class="flex items-center justify-between text-xs mb-1.5">
+<span class="font-bold text-accent flex items-center gap-1">
+<i class="w-3 h-3 text-accent" data-lucide="zap"></i>
+                  Tinggal 1 porsi!
+                </span>
+<span class="text-[11px] font-semibold text-accent">Sisa 10%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-accent h-2 rounded-full" style="width: 10%"></div>
+</div>
+</div>
+<!-- Urgent limit timer in orange -->
+<div class="mt-3 flex items-center gap-1.5 text-xs font-semibold text-accent bg-orange-50 border border-orange-200/60 p-2 rounded-lg">
+<i class="w-3.5 h-3.5 text-accent shrink-0" data-lucide="alert-triangle"></i>
+<span>Sisa waktu jual 25 menit (sampai 18.00 WIB)</span>
+<span class="ml-auto text-accent/80 hover:text-accent cursor-help" title="Makanan akan ditarik otomatis dari sistem setelah batas jual.">
+<i class="w-3.5 h-3.5" data-lucide="help-circle"></i>
+</span>
+</div>
+<div class="flex flex-wrap gap-1.5 mt-2.5">
+<span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Ayam Suwir</span>
+<span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Kuah Hangat</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100">
+<button class="w-full py-2.5 px-3 rounded-lg bg-accent hover:bg-amber-600 text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-all">
+<span>Amankan Porsi Cepat</span>
+<i class="w-3.5 h-3.5" data-lucide="arrow-right"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 5: Normal available from different Mitra -->
+<div class="portion-card bg-card border border-border rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col cursor-pointer group" onclick="openDetailModal('Paket Nasi Padang Rendang Basah', 'Warung Bu Sari', '12.000', '22.000', 'Sisa 3 dari 6 porsi', 50, '15.30', '18.30', ['Daging Sapi', 'Santan', 'Pedas'], 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&amp;fit=crop&amp;w=600&amp;q=80', false)">
+<div class="relative aspect-4/3 w-full bg-slate-100 overflow-hidden">
+<img alt="Nasi Padang Rendang" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<div class="absolute top-2.5 left-2.5 bg-accent text-white text-xs font-extrabold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+<span>-45%</span>
+</div>
+<div class="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-xs text-white text-[11px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1">
+<i class="w-3 h-3 text-emerald-400" data-lucide="clock"></i>
+<span>Dimasak 15.30</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-base text-slate-900 leading-snug group-hover:text-primary transition-colors">
+              Paket Nasi Padang Rendang Basah
+            </h3>
+<div class="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
+<span class="w-5 h-5 rounded-full bg-orange-100 text-orange-700 font-bold text-[10px] flex items-center justify-center shrink-0">BS</span>
+<span class="font-medium text-slate-600">Warung Bu Sari</span>
+<span class="text-slate-300">•</span>
+<span>Kantin Gedung B</span>
+</div>
+<div class="flex items-baseline gap-2 mt-3">
+<span class="text-xl font-extrabold text-accent">Rp 12.000</span>
+<span class="text-xs text-slate-400 line-through">Rp 22.000</span>
+</div>
+<div class="mt-3">
+<div class="flex items-center justify-between text-xs mb-1.5">
+<span class="font-bold text-accent">Tinggal 3 porsi!</span>
+<span class="text-[11px] font-semibold text-accent">Sisa 50%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-accent h-2 rounded-full" style="width: 50%"></div>
+</div>
+</div>
+<div class="mt-3 flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 p-2 rounded-lg">
+<i class="w-3.5 h-3.5 text-slate-400 shrink-0" data-lucide="timer"></i>
+<span>Layak jual sampai <strong>18.30 WIB</strong></span>
+<span class="ml-auto text-slate-400 hover:text-slate-700 cursor-help" title="Batas jual dihitung dari jam masak.">
+<i class="w-3.5 h-3.5" data-lucide="help-circle"></i>
+</span>
+</div>
+<div class="flex flex-wrap gap-1.5 mt-2.5">
+<span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Sapi</span>
+<span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Daun Singkong</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100">
+<button class="w-full py-2.5 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-all">
+<span>Lihat Detail &amp; Kunci Porsi</span>
+<i class="w-3.5 h-3.5" data-lucide="arrow-right"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- CARD 6: SOLD OUT (Habis - sorted to bottom, dimmed, disabled) -->
+<div class="portion-card bg-slate-50/80 border border-slate-200 rounded-xl overflow-hidden shadow-none flex flex-col opacity-75 cursor-not-allowed">
+<div class="relative aspect-4/3 w-full bg-slate-200 overflow-hidden">
+<img alt="Nasi Goreng Spesial" class="w-full h-full object-cover grayscale opacity-50" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<!-- Sold out badge overlay -->
+<div class="absolute inset-0 bg-slate-900/40 backdrop-blur-[1px] flex items-center justify-center">
+<span class="bg-slate-900/90 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg flex items-center gap-1.5">
+<i class="w-3.5 h-3.5" data-lucide="slash"></i>
+              Porsi Habis
+            </span>
+</div>
+<div class="absolute top-2.5 left-2.5 bg-slate-600 text-white text-xs font-medium px-2 py-0.5 rounded-full">
+            -40%
+          </div>
+<div class="absolute top-2.5 right-2.5 bg-black/60 text-white text-[11px] font-medium px-2 py-0.5 rounded-full">
+            Dimasak 15.15
+          </div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-base text-slate-500 leading-snug line-through">
+              Nasi Goreng Babat + Telur Ceplok
+            </h3>
+<div class="flex items-center gap-1.5 mt-1.5 text-xs text-slate-400">
+<span class="w-5 h-5 rounded-full bg-slate-200 text-slate-500 font-bold text-[10px] flex items-center justify-center shrink-0">PJ</span>
+<span>Dapur Pak Joko</span>
+<span>•</span>
+<span>Kantin Vokasi</span>
+</div>
+<div class="flex items-baseline gap-2 mt-3">
+<span class="text-xl font-extrabold text-slate-400">Rp 9.000</span>
+<span class="text-xs text-slate-300 line-through">Rp 15.000</span>
+</div>
+<div class="mt-3">
+<div class="flex items-center justify-between text-xs mb-1.5 text-slate-400">
+<span>0 dari 6 porsi tersisa</span>
+<span class="text-[11px] font-semibold text-rose-500">Habis Terjual</span>
+</div>
+<div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+<div class="bg-slate-300 h-2 rounded-full" style="width: 0%"></div>
+</div>
+</div>
+<div class="mt-3 flex items-center gap-1.5 text-xs text-slate-400 bg-slate-100 p-2 rounded-lg">
+<i class="w-3.5 h-3.5 text-slate-400 shrink-0" data-lucide="timer-off"></i>
+<span>Porsi hari ini telah habis diselamatkan</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-200">
+<button class="w-full py-2.5 px-3 rounded-lg bg-slate-200 text-slate-400 text-xs font-semibold cursor-not-allowed flex items-center justify-center gap-1.5" disabled="">
+<i class="w-3.5 h-3.5" data-lucide="check-check"></i>
+<span>Habis Diselamatkan</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- ==================================================== -->
+<!-- SKELETON STATE (Toggled via State Demo)              -->
+<!-- ==================================================== -->
+<div class="hidden grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="skeletonGrid">
+<!-- 6 skeleton cards -->
+<div class="bg-white border border-border rounded-xl overflow-hidden p-0 shadow-xs animate-pulse">
+<div class="aspect-4/3 bg-slate-200 w-full"></div>
+<div class="p-4 space-y-3">
+<div class="h-4 bg-slate-200 rounded w-3/4"></div>
+<div class="h-3 bg-slate-100 rounded w-1/2"></div>
+<div class="h-6 bg-slate-200 rounded w-1/3 mt-2"></div>
+<div class="h-2 bg-slate-100 rounded w-full"></div>
+<div class="h-8 bg-slate-200 rounded-lg w-full mt-4"></div>
+</div>
+</div>
+<div class="bg-white border border-border rounded-xl overflow-hidden p-0 shadow-xs animate-pulse">
+<div class="aspect-4/3 bg-slate-200 w-full"></div>
+<div class="p-4 space-y-3">
+<div class="h-4 bg-slate-200 rounded w-2/3"></div>
+<div class="h-3 bg-slate-100 rounded w-1/2"></div>
+<div class="h-6 bg-slate-200 rounded w-1/3 mt-2"></div>
+<div class="h-2 bg-slate-100 rounded w-full"></div>
+<div class="h-8 bg-slate-200 rounded-lg w-full mt-4"></div>
+</div>
+</div>
+<div class="bg-white border border-border rounded-xl overflow-hidden p-0 shadow-xs animate-pulse">
+<div class="aspect-4/3 bg-slate-200 w-full"></div>
+<div class="p-4 space-y-3">
+<div class="h-4 bg-slate-200 rounded w-4/5"></div>
+<div class="h-3 bg-slate-100 rounded w-2/5"></div>
+<div class="h-6 bg-slate-200 rounded w-1/3 mt-2"></div>
+<div class="h-2 bg-slate-100 rounded w-full"></div>
+<div class="h-8 bg-slate-200 rounded-lg w-full mt-4"></div>
+</div>
+</div>
+</div>
+<!-- ==================================================== -->
+<!-- EMPTY STATE 1: Belum Ada Porsi Hari Ini             -->
+<!-- ==================================================== -->
+<div class="hidden text-center py-16 px-4 bg-white rounded-2xl border border-dashed border-slate-300 shadow-xs max-w-lg mx-auto" id="emptyTodayState">
+<div class="w-20 h-20 mx-auto rounded-full bg-emerald-50 text-primary flex items-center justify-center mb-4">
+<i class="w-10 h-10 stroke-1 text-primary" data-lucide="utensils"></i>
+</div>
+<h3 class="text-lg font-bold text-slate-900 mb-1">Belum ada porsi hari ini</h3>
+<p class="text-xs text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
+        Porsi baru muncul sesuai jadwal rilis dari Mitra (mulai pukul 15.30 WIB). Cek lagi nanti menjelang sore ya!
+      </p>
+<button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs" onclick="setViewMode('normal')">
+<i class="w-3.5 h-3.5 text-primary" data-lucide="refresh-cw"></i>
+<span>Muat Ulang Katalog</span>
+</button>
+</div>
+<!-- ==================================================== -->
+<!-- EMPTY STATE 2: Tidak Ada Hasil Filter / Cari        -->
+<!-- ==================================================== -->
+<div class="hidden text-center py-16 px-4 bg-white rounded-2xl border border-slate-200 shadow-xs max-w-lg mx-auto" id="emptyFilterState">
+<div class="w-16 h-16 mx-auto rounded-full bg-amber-50 text-accent flex items-center justify-center mb-4">
+<i class="w-8 h-8" data-lucide="search-x"></i>
+</div>
+<h3 class="text-lg font-bold text-slate-900 mb-1">Tidak ada porsi yang cocok</h3>
+<p class="text-xs text-muted-foreground max-w-xs mx-auto mb-6 leading-relaxed">
+        Coba ganti filter Mitra, kata kunci pencarian, atau reset filter untuk melihat semua sajian.
+      </p>
+<button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-colors shadow-2xs" onclick="resetAllFilters()">
+<i class="w-3.5 h-3.5" data-lucide="rotate-ccw"></i>
+<span>Reset Filter &amp; Pencarian</span>
+</button>
+</div>
+<!-- ==================================================== -->
+<!-- ERROR STATE ALERT                                    -->
+<!-- ==================================================== -->
+<div class="hidden mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-900 shadow-xs" id="errorStateAlert">
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-red-100 text-red-600 shrink-0">
+<i class="w-5 h-5" data-lucide="alert-octagon"></i>
+</div>
+<div>
+<h4 class="text-sm font-bold text-red-950">Katalog gagal dimuat</h4>
+<p class="text-xs text-red-800 mt-0.5">Periksa koneksimu lalu coba lagi untuk sinkronisasi porsi terbaru.</p>
+</div>
+</div>
+<button class="px-3.5 py-1.5 rounded-lg bg-red-600 text-white text-xs font-semibold hover:bg-red-700 transition-colors shrink-0" onclick="setViewMode('normal')">
+          Coba Lagi
+        </button>
+</div>
+</div>
+<!-- 6. FOOTER NOTE (Muted, below grid) -->
+<div class="mt-12 pt-6 border-t border-border/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+<p class="text-center sm:text-left leading-relaxed max-w-2xl">
+        Porsi muncul sesuai jadwal rilis dari tiap Mitra. Tanggung jawab kualitas makanan ada pada Mitra, <strong>Porsi Terakhir</strong> hanya perantara penyelamatan surplus pangan kampus.
+      </p>
+<a class="inline-flex items-center gap-1 font-semibold text-primary hover:underline shrink-0" href="#carakerja">
+<span>Lihat Cara Kerja Lengkap</span>
+<i class="w-3.5 h-3.5" data-lucide="chevron-right"></i>
+</a>
+</div>
+</main>
+<!-- ==================================================== -->
+<!-- MOBILE BOTTOM NAVIGATION (Fixed 390px Mobile Bar)    -->
+<!-- ==================================================== -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-border px-3 py-2 flex items-center justify-around shadow-lg">
+<!-- Active Katalog Button -->
+<a class="flex flex-col items-center justify-center py-1 px-3 rounded-lg text-primary bg-primary/10 transition-colors" href="#katalog">
+<i class="w-5 h-5" data-lucide="layout-grid"></i>
+<span class="text-[10px] font-bold mt-1">Katalog</span>
+</a>
+<!-- Pesanan with badge dot -->
+<a class="relative flex flex-col items-center justify-center py-1 px-3 rounded-lg text-slate-500 hover:text-slate-900 transition-colors" href="#active-order">
+<i class="w-5 h-5" data-lucide="receipt"></i>
+<span class="text-[10px] font-medium mt-1">Pesanan</span>
+<span class="absolute top-1 right-2.5 w-2 h-2 rounded-full bg-accent ring-2 ring-white"></span>
+</a>
+<!-- Profil -->
+<a class="flex flex-col items-center justify-center py-1 px-3 rounded-lg text-slate-500 hover:text-slate-900 transition-colors" href="#profil">
+<i class="w-5 h-5" data-lucide="award"></i>
+<span class="text-[10px] font-medium mt-1">Profil</span>
+</a>
+<!-- Cara Kerja -->
+<a class="flex flex-col items-center justify-center py-1 px-3 rounded-lg text-slate-500 hover:text-slate-900 transition-colors" href="#carakerja">
+<i class="w-5 h-5" data-lucide="help-circle"></i>
+<span class="text-[10px] font-medium mt-1">Cara Kerja</span>
+</a>
+</nav>
+<!-- ==================================================== -->
+<!-- MOBILE BOTTOM SHEET: FILTER & SORT MODAL            -->
+<!-- ==================================================== -->
+<div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs hidden flex items-end justify-center transition-opacity" id="mobileFilterSheet">
+<div class="bg-white w-full rounded-t-2xl max-w-lg p-5 shadow-2xl animate-in slide-in-from-bottom duration-200">
+<div class="flex items-center justify-between pb-3 border-b border-border">
+<h3 class="font-bold text-base text-slate-900">Filter &amp; Urutkan Porsi</h3>
+<button class="p-1 rounded-lg hover:bg-slate-100 text-slate-400" onclick="toggleMobileFilter(false)">
+<i class="w-5 h-5" data-lucide="x"></i>
+</button>
+</div>
+<div class="py-4 space-y-4">
+<div>
+<label class="text-xs font-semibold text-slate-700 block mb-2">Pilih Mitra Kantin</label>
+<div class="grid grid-cols-2 gap-2" id="mobileMitraOptions">
+<button class="mobile-chip active text-left px-3 py-2 rounded-lg border border-primary bg-primary/10 text-primary text-xs font-semibold" onclick="selectMobileMitra('all', this)">
+              Semua Mitra
+            </button>
+<button class="mobile-chip text-left px-3 py-2 rounded-lg border border-border text-slate-700 text-xs font-medium" onclick="selectMobileMitra('Warung Bu Sari', this)">
+              Warung Bu Sari
+            </button>
+<button class="mobile-chip text-left px-3 py-2 rounded-lg border border-border text-slate-700 text-xs font-medium" onclick="selectMobileMitra('Kantin Fakultas Teknik', this)">
+              Kantin FT
+            </button>
+<button class="mobile-chip text-left px-3 py-2 rounded-lg border border-border text-slate-700 text-xs font-medium" onclick="selectMobileMitra('Dapur Pak Joko', this)">
+              Dapur Pak Joko
+            </button>
+<button class="mobile-chip text-left px-3 py-2 rounded-lg border border-border text-slate-700 text-xs font-medium" onclick="selectMobileMitra('Kedai Soto Makmur', this)">
+              Kedai Soto Makmur
+            </button>
+</div>
+</div>
+<div>
+<label class="text-xs font-semibold text-slate-700 block mb-2">Urutan Tampilan</label>
+<select class="w-full bg-slate-50 border border-border text-xs rounded-lg p-2.5 font-medium" id="mobileSortSelect">
+<option value="newest">Jam masak terbaru</option>
+<option value="cheapest">Harga termurah</option>
+<option value="quota">Sisa kuota terbanyak</option>
+</select>
+</div>
+</div>
+<div class="pt-3 border-t border-border flex items-center gap-3">
+<button class="w-1/2 py-2.5 rounded-lg border border-border text-xs font-semibold text-slate-700 hover:bg-slate-50" onclick="resetAllFilters(); toggleMobileFilter(false);">
+          Reset Filter
+        </button>
+<button class="w-1/2 py-2.5 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-hover" onclick="applyMobileFilter(); toggleMobileFilter(false);">
+          Terapkan
+        </button>
+</div>
+</div>
+</div>
+<!-- ==================================================== -->
+<!-- DETAIL PORSI MODAL (Click on card)                  -->
+<!-- ==================================================== -->
+<div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4" id="detailModal">
+<div class="bg-white w-full max-w-md rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-150">
+<div class="relative aspect-16/9 bg-slate-100">
+<img alt="Menu" class="w-full h-full object-cover" id="modalImg" src=""/>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80" onclick="closeDetailModal()">
+<i class="w-4 h-4" data-lucide="x"></i>
+</button>
+<span class="absolute bottom-3 left-3 bg-accent text-white text-xs font-bold px-2.5 py-1 rounded-full" id="modalDiscountBadge">
+          -45%
+        </span>
+</div>
+<div class="p-5">
+<div class="flex items-start justify-between gap-3">
+<div>
+<h3 class="text-lg font-bold text-slate-900 leading-tight" id="modalTitle">Nama Menu</h3>
+<p class="text-xs text-muted-foreground mt-1" id="modalMitra">Nama Mitra • Lokasi</p>
+</div>
+<div class="text-right">
+<span class="text-xl font-extrabold text-accent block" id="modalDiscountPrice">Rp 10.000</span>
+<span class="text-xs text-slate-400 line-through" id="modalNormalPrice">Rp 18.000</span>
+</div>
+</div>
+<div class="my-4 p-3 bg-slate-50 rounded-xl space-y-2 text-xs">
+<div class="flex justify-between text-slate-600">
+<span>Status Kuota:</span>
+<strong class="text-primary font-semibold" id="modalQuotaText">Sisa 4 dari 10 porsi</strong>
+</div>
+<div class="flex justify-between text-slate-600">
+<span>Jam Masak:</span>
+<span class="font-medium" id="modalCookTime">15.30 WIB</span>
+</div>
+<div class="flex justify-between text-slate-600">
+<span>Batas Maksimal Pickup:</span>
+<span class="font-bold text-amber-700" id="modalLimitTime">18.30 WIB</span>
+</div>
+</div>
+<div class="mb-5">
+<span class="text-xs font-semibold text-slate-700 block mb-1.5">Informasi Komposisi &amp; Alergen:</span>
+<div class="flex flex-wrap gap-1.5" id="modalAllergenContainer"></div>
+</div>
+<div class="pt-3 border-t border-border flex items-center gap-3">
+<button class="w-1/3 py-2.5 rounded-lg border border-border text-xs font-semibold text-slate-700 hover:bg-slate-50" onclick="closeDetailModal()">
+            Tutup
+          </button>
+<button class="w-2/3 py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm" onclick="lockPortionOrder()">
+<i class="w-3.5 h-3.5" data-lucide="lock"></i>
+<span>Kunci &amp; Pesan Porsi</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- ==================================================== -->
+<!-- QR PICKUP PREVIEW MODAL                              -->
+<!-- ==================================================== -->
+<div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4" id="qrModal">
+<div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center">
+<div class="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mb-3">
+<i class="w-6 h-6 text-accent" data-lucide="qr-code"></i>
+</div>
+<h3 class="font-bold text-lg text-slate-900">QR Code Pickup</h3>
+<p class="text-xs text-muted-foreground mt-1 mb-4">Tunjukkan kode ini ke Warung Bu Sari saat mengambil pesanan.</p>
+<!-- Fictional QR Code Render -->
+<div class="w-48 h-48 mx-auto p-3 bg-white border-2 border-slate-900 rounded-xl flex items-center justify-center mb-4 shadow-sm">
+<div class="grid grid-cols-5 gap-1.5 w-full h-full p-2 bg-slate-900 rounded">
+<div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div>
+<div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div>
+<div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div>
+<div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div>
+<div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div>
+</div>
+</div>
+<div class="bg-amber-50 border border-amber-200 rounded-lg p-2.5 text-xs text-amber-900 text-left mb-4">
+<div class="flex justify-between">
+<span class="text-amber-700">Kode Pemesanan:</span>
+<strong>#PT-8291</strong>
+</div>
+<div class="flex justify-between mt-1">
+<span class="text-amber-700">Total Bayar Kasir:</span>
+<strong class="text-accent">Rp 10.000 (Tunai/QRIS)</strong>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800" onclick="closeQrModal()">
+        Tutup Tampilan QR
+      </button>
+</div>
+</div>
+<!-- ==================================================== -->
+<!-- JAVASCRIPT LOGIC & STATE HANDLING                    -->
+<!-- ==================================================== -->
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // State Demo switcher
+    function setViewMode(mode) {
+      const catalogGrid = document.getElementById('catalogGrid');
+      const skeletonGrid = document.getElementById('skeletonGrid');
+      const emptyTodayState = document.getElementById('emptyTodayState');
+      const emptyFilterState = document.getElementById('emptyFilterState');
+      const errorStateAlert = document.getElementById('errorStateAlert');
+
+      // Hide all states
+      catalogGrid.classList.add('hidden');
+      catalogGrid.classList.remove('grid');
+      skeletonGrid.classList.add('hidden');
+      skeletonGrid.classList.remove('grid');
+      emptyTodayState.classList.add('hidden');
+      emptyFilterState.classList.add('hidden');
+      errorStateAlert.classList.add('hidden');
+
+      // Update toggle buttons in top banner
+      document.querySelectorAll('.demo-btn').forEach(btn => {
+        btn.classList.remove('bg-primary', 'font-semibold', 'text-white');
+        btn.classList.add('bg-slate-800', 'text-slate-300');
+      });
+
+      if (mode === 'normal') {
+        catalogGrid.classList.remove('hidden');
+        catalogGrid.classList.add('grid');
+      } else if (mode === 'loading') {
+        skeletonGrid.classList.remove('hidden');
+        skeletonGrid.classList.add('grid');
+      } else if (mode === 'empty-today') {
+        emptyTodayState.classList.remove('hidden');
+      } else if (mode === 'empty-filter') {
+        emptyFilterState.classList.remove('hidden');
+      } else if (mode === 'error') {
+        catalogGrid.classList.remove('hidden');
+        catalogGrid.classList.add('grid');
+        errorStateAlert.classList.remove('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    // Toast generator (Sonner style)
+    function triggerToast(message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 text-xs flex items-center gap-2.5 animate-in slide-in-from-right duration-200';
+      toast.innerHTML = `
+        <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+        <span class="font-medium">${message}</span>
+        <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white ml-2">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+      setTimeout(() => {
+        if (toast.parentElement) toast.remove();
+      }, 4000);
+    }
+
+    // Filter Mitra Chips (Desktop)
+    let currentMitraFilter = 'all';
+    function filterMitra(mitra, buttonElement) {
+      currentMitraFilter = mitra;
+      document.querySelectorAll('.mitra-chip').forEach(btn => {
+        btn.classList.remove('active', 'bg-primary', 'text-white', 'border-primary');
+        btn.classList.add('bg-white', 'text-slate-700', 'border-border');
+      });
+      buttonElement.classList.add('active', 'bg-primary', 'text-white', 'border-primary');
+      buttonElement.classList.remove('bg-white', 'text-slate-700', 'border-border');
+
+      applyFiltering();
+    }
+
+    function handleSearch(query) {
+      applyFiltering();
+    }
+
+    function handleSort(sortType) {
+      triggerToast(`Katalog diurutkan berdasarkan: ${sortType}`);
+    }
+
+    function applyFiltering() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('#catalogGrid .portion-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        const matchesQuery = query === '' || text.includes(query);
+        const matchesMitra = currentMitraFilter === 'all' || text.includes(currentMitraFilter.toLowerCase());
+
+        if (matchesQuery && matchesMitra) {
+          card.classList.remove('hidden');
+          card.classList.add('flex');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+          card.classList.remove('flex');
+        }
+      });
+
+      const catalogGrid = document.getElementById('catalogGrid');
+      const emptyFilterState = document.getElementById('emptyFilterState');
+      const activeCountLabel = document.getElementById('activePortionCount');
+
+      if (visibleCount === 0) {
+        catalogGrid.classList.add('hidden');
+        emptyFilterState.classList.remove('hidden');
+      } else {
+        catalogGrid.classList.remove('hidden');
+        emptyFilterState.classList.add('hidden');
+        activeCountLabel.textContent = `Menampilkan ${visibleCount} porsi yang sesuai filter`;
+      }
+    }
+
+    function resetAllFilters() {
+      document.getElementById('searchInput').value = '';
+      currentMitraFilter = 'all';
+      document.querySelectorAll('.mitra-chip').forEach((btn, idx) => {
+        if (idx === 0) {
+          btn.classList.add('active', 'bg-primary', 'text-white', 'border-primary');
+          btn.classList.remove('bg-white', 'text-slate-700', 'border-border');
+        } else {
+          btn.classList.remove('active', 'bg-primary', 'text-white', 'border-primary');
+          btn.classList.add('bg-white', 'text-slate-700', 'border-border');
+        }
+      });
+      setViewMode('normal');
+      applyFiltering();
+      triggerToast("Filter dan kata kunci berhasil direset.");
+    }
+
+    // Mobile Sheet Filter
+    function toggleMobileFilter(show) {
+      const sheet = document.getElementById('mobileFilterSheet');
+      if (show) {
+        sheet.classList.remove('hidden');
+      } else {
+        sheet.classList.add('hidden');
+      }
+    }
+
+    function selectMobileMitra(mitra, el) {
+      document.querySelectorAll('.mobile-chip').forEach(btn => {
+        btn.classList.remove('active', 'border-primary', 'bg-primary/10', 'text-primary');
+        btn.classList.add('border-border', 'text-slate-700');
+      });
+      el.classList.add('active', 'border-primary', 'bg-primary/10', 'text-primary');
+      el.classList.remove('border-border', 'text-slate-700');
+      currentMitraFilter = mitra;
+    }
+
+    function applyMobileFilter() {
+      applyFiltering();
+      triggerToast("Filter mobile berhasil diterapkan.");
+    }
+
+    // Detail Modal Handlers
+    function openDetailModal(title, mitra, discPrice, normPrice, quotaText, quotaPct, cookTime, limitTime, allergens, imgUrl, isSoldOut) {
+      if (isSoldOut) return;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalMitra').textContent = `${mitra} • Kantin Kampus Terdaftar`;
+      document.getElementById('modalDiscountPrice').textContent = `Rp ${discPrice}`;
+      document.getElementById('modalNormalPrice').textContent = `Rp ${normPrice}`;
+      document.getElementById('modalQuotaText').textContent = quotaText;
+      document.getElementById('modalCookTime').textContent = `${cookTime} WIB`;
+      document.getElementById('modalLimitTime').textContent = `${limitTime} WIB`;
+      document.getElementById('modalImg').src = imgUrl;
+
+      const container = document.getElementById('modalAllergenContainer');
+      container.innerHTML = '';
+      allergens.forEach(item => {
+        const span = document.createElement('span');
+        span.className = 'text-[11px] font-medium bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full text-slate-700';
+        span.textContent = item;
+        container.appendChild(span);
+      });
+
+      document.getElementById('detailModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.add('hidden');
+    }
+
+    function lockPortionOrder() {
+      closeDetailModal();
+      triggerToast("Porsi berhasil dikunci! Kamu punya waktu 30 menit untuk pickup di tenant.");
+      document.getElementById('active-order-alert').classList.remove('hidden');
+    }
+
+    // QR Pickup Modal Handlers
+    function openQrModal() {
+      document.getElementById('qrModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+    function closeQrModal() {
+      document.getElementById('qrModal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

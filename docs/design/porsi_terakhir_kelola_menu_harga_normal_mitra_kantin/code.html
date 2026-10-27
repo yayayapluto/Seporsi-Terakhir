@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+
+<html lang="id"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface": "#effcf9", "on-secondary-fixed": "#2f1500", "canvas-background": "#FFFBF5", "on-error-container": "#93000a", "inverse-surface": "#273331", "secondary-container": "#fc9430", "on-surface": "#121e1c", "primary-hover": "#256640", "on-primary-container": "#ceffd9", "on-secondary-container": "#663500", "on-surface-variant": "#3f4941", "tertiary": "#4f5953", "on-tertiary": "#ffffff", "on-secondary": "#ffffff", "surface-card": "#FFFFFF", "surface-container-high": "#ddebe8", "primary-light": "#EAF4EC", "tertiary-fixed-dim": "#bfc9c1", "surface-container-lowest": "#ffffff", "on-tertiary-fixed": "#151d19", "surface-variant": "#d8e5e2", "primary-fixed-dim": "#88d7a1", "tertiary-container": "#67716b", "text-muted": "#64746B", "primary": "#0b6438", "surface-container-low": "#e9f7f3", "on-tertiary-container": "#ebf5ed", "border-subtle": "#E5E1D8", "surface-tint": "#196c40", "on-primary-fixed": "#00210f", "on-primary": "#ffffff", "on-tertiary-fixed-variant": "#404943", "on-background": "#121e1c", "secondary-fixed-dim": "#ffb77d", "secondary": "#914d00", "error-container": "#ffdad6", "inverse-primary": "#88d7a1", "background": "#effcf9", "on-primary-fixed-variant": "#00522c", "accent-hover": "#DE7819", "surface-dim": "#cfddd9", "accent-light": "#FEF3E7", "on-secondary-fixed-variant": "#6e3900", "surface-bright": "#effcf9", "outline-variant": "#bfc9be", "error": "#ba1a1a", "surface-container-highest": "#d8e5e2", "primary-container": "#2e7d4f", "tertiary-fixed": "#dbe5dd", "secondary-fixed": "#ffdcc3", "inverse-on-surface": "#e6f4f0", "surface-container": "#e3f1ed", "primary-fixed": "#a4f4bc", "on-error": "#ffffff", "outline": "#6f7a70" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-md": "1.5rem", "space-xl": "2rem", "margin-lg": "2rem", "margin": "1rem", "space-lg": "1.5rem", "gutter": "1rem", "space-xs": "0.25rem", "gutter-lg": "1.5rem", "space-md": "1rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-lg-mobile": [ "Plus Jakarta Sans" ], "label-sm": [ "Inter" ], "label-lg": [ "Inter" ], "display-mobile": [ "Plus Jakarta Sans" ], "body-lg": [ "Inter" ], "headline-lg": [ "Plus Jakarta Sans" ], "body-sm": [ "Inter" ], "label-md": [ "Inter" ], "headline-md": [ "Plus Jakarta Sans" ], "display": [ "Plus Jakarta Sans" ], "body-md": [ "Inter" ], "headline-sm": [ "Plus Jakarta Sans" ] }, "fontSize": { "headline-lg-mobile": [ "26px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.01em", "fontWeight": "600" } ], "label-lg": [ "14px", { "lineHeight": "20px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "display-mobile": [ "32px", { "lineHeight": "38px", "letterSpacing": "-0.025em", "fontWeight": "700" } ], "body-lg": [ "16px", { "lineHeight": "24px", "fontWeight": "400" } ], "headline-lg": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "600" } ], "body-sm": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "600" } ], "headline-md": [ "22px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "display": [ "40px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700" } ], "body-md": [ "14px", { "lineHeight": "20px", "fontWeight": "400" } ], "headline-sm": [ "18px", { "lineHeight": "24px", "letterSpacing": "-0.015em", "fontWeight": "600" } ] } } } };</script></head><body class="bg-canvas-background font-body-md text-body-md text-on-surface"><header class="fixed top-0 left-0 right-0 z-50 bg-canvas-background/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 max-w-7xl mx-auto px-margin-md lg:px-margin-lg flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><div class="flex flex-col"><div class="flex items-center gap-space-sm"><span class="font-headline-sm text-headline-sm text-primary">Porsi Terakhir</span><span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-primary-light text-primary font-semibold">Mitra Kantin</span></div><div class="flex items-center gap-space-xs mt-0.5"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-body-sm text-body-sm text-text-muted">Gerai Buka • Jam Operasional Sore</span></div></div><nav class="hidden md:flex items-center gap-space-xs bg-surface-container-low p-1 rounded-xl" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded-lg"><a class="px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors rounded-lg" data-path="ringkasan-hari-ini" href="#">Ringkasan Hari Ini</a><a class="px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors rounded-lg" data-path="menu-porsi" href="#">Menu Porsi</a><a class="px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors rounded-lg" data-path="daftar-pesanan" href="#">Daftar Pesanan</a><a class="px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors rounded-lg" data-path="riwayat-penyelamatan" href="#">Riwayat Penyelamatan</a></nav></div><div class="flex items-center gap-space-md"><a class="inline-flex items-center gap-space-xs h-10 px-space-md rounded-lg bg-secondary text-on-secondary hover:bg-accent-hover transition-colors font-label-lg text-label-lg shadow-[0_1px_3px_rgba(28,40,38,0.04)]" data-path="pindai-qr" href="#"><span class="material-symbols-outlined text-[18px]">qr_code_scanner</span><span>Pindai QR Mahasiswa</span></a><div class="hidden sm:flex items-center gap-space-sm pl-space-sm"><div class="text-right"><div class="font-label-md text-label-md text-on-surface">Warung Bu Sari</div><div class="font-body-sm text-body-sm text-text-muted flex items-center justify-end gap-1"><span>Kantin Gedung B</span><span class="inline-flex items-center text-primary"><span class="material-symbols-outlined text-[14px]">verified</span></span></div></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-20 bg-canvas-background min-h-[calc(100vh-140px)] max-w-7xl mx-auto px-margin-md lg:px-margin-lg"><div class="flex flex-col w-full">
+<!-- Interactive View State Controller Script embedded at end of document -->
+<!-- Top Context & Header Banner -->
+<section class="w-full pt-4 pb-6">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-space-xs text-text-muted font-label-md text-label-md mb-1">
+<span>Kantin Gedung B</span>
+<span>•</span>
+<span class="text-primary font-semibold">Mitra Warung Bu Sari</span>
+<span>•</span>
+<span class="bg-surface-container px-2 py-0.5 rounded text-on-surface-variant whitespace-nowrap">ID Gerai: WBS-204</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Menu Master &amp; Harga Normal</h1>
+<p class="font-body-md text-body-md text-text-muted mt-1 max-w-3xl">
+          Kelola daftar hidangan standar Warung Bu Sari. Harga normal ini menjadi basis perhitungan otomatis estimasi diskon porsi penyelamatan sore hari.
+        </p>
+</div>
+<!-- Actions & Interactive View Mode Toggles -->
+<div class="flex flex-wrap items-center gap-space-sm pt-2 lg:pt-0">
+<div class="inline-flex p-1 bg-surface-container rounded-xl text-on-surface-variant font-label-md text-label-md">
+<button class="px-3 py-1.5 rounded-lg bg-surface-card text-primary font-semibold shadow-sm transition-all whitespace-nowrap flex items-center gap-1.5" id="viewActiveBtn" onclick="switchCatalogView('active')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Daftar Menu (3)</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg text-text-muted hover:text-on-surface transition-all whitespace-nowrap flex items-center gap-1.5" id="viewEmptyBtn" onclick="switchCatalogView('empty')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M20 12H4M12 4v16" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Simulasi Kosong</span>
+</button>
+</div>
+<button class="inline-flex items-center gap-2 h-10 px-5 rounded-lg bg-primary-container text-on-primary hover:bg-primary-hover transition-colors font-label-lg text-label-lg shadow-sm whitespace-nowrap" onclick="toggleFormModal(true)">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>+ Tambah Menu Baru</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Quick Calculator Guide Banner -->
+<section class="w-full mb-6">
+<div class="bg-surface-card rounded-xl p-5 md:p-6 shadow-sm">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex items-start gap-4">
+<div class="w-11 h-11 rounded-lg bg-primary-light flex items-center justify-center shrink-0 text-primary">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2 mb-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Bagaimana Rekomendasi Harga Dihitung?</h2>
+<span class="bg-primary-light text-primary font-label-sm text-label-sm px-2.5 py-0.5 rounded-full whitespace-nowrap font-semibold">Otomatisasi Kampus SDG 12</span>
+</div>
+<p class="font-body-md text-body-md text-text-muted leading-relaxed max-w-2xl">
+              Harga normal acuan diinput satu kali. Sistem secara langsung menyimulasikan tarif penyelamatan porsi sore dengan diskon terstandar (~45%) untuk menarik mahasiswa tepat sebelum kantin tutup.
+            </p>
+</div>
+</div>
+<!-- Formula display box -->
+<div class="bg-surface-container-low rounded-lg p-3.5 px-4 lg:w-96 shrink-0">
+<div class="font-label-sm text-label-sm text-text-muted uppercase tracking-wider mb-1">Formula Perhitungan Otomatis</div>
+<div class="font-headline-sm text-headline-sm text-primary tracking-tight font-semibold">
+            [Harga Normal] × 55%
+          </div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1 flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-secondary shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Dibulatkan ke Rp500 terdekat untuk kepraktisan kembalian uang kasir.</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 flex flex-wrap items-center justify-between gap-2 text-text-muted font-body-sm text-body-sm bg-canvas-background rounded-lg px-3 py-2">
+<div class="flex items-center gap-2">
+<svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span><strong>Kendali Penuh Pemilik Warung:</strong> Anda tetap bebas mengubah harga akhir saat memposting porsi berlebih sore hari nanti.</span>
+</div>
+<span class="text-primary font-label-sm text-label-sm font-semibold whitespace-nowrap">Tidak Mengunci Harga Jual</span>
+</div>
+</div>
+</section>
+<!-- VIEW 1: Active Master Catalog Grid -->
+<div class="w-full space-y-6" id="catalogActiveView">
+<!-- Filter & Statistics Quick Strip -->
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-space-sm bg-surface-container-low p-3 rounded-xl">
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold px-2">Katalog Aktif</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-card text-primary font-label-sm text-label-sm font-bold shadow-sm whitespace-nowrap">3 Menu Siap Rilis</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-card text-text-muted font-label-sm text-label-sm whitespace-nowrap">0 Arsip / Nonaktif</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="relative flex-1 sm:w-64">
+<input class="w-full h-9 pl-8 pr-3 text-sm bg-surface-card rounded-lg text-on-surface placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm" placeholder="Cari nama menu..." type="text"/>
+<svg class="w-4 h-4 text-text-muted absolute left-2.5 top-2.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<select class="h-9 px-3 bg-surface-card text-sm text-on-surface rounded-lg shadow-sm focus:outline-none">
+<option>Semua Kategori</option>
+<option>Nasi &amp; Lauk Utama</option>
+<option>Menu Kuah &amp; Sup</option>
+</select>
+</div>
+</div>
+<!-- Menu Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- ITEM 1: Nasi Ayam Geprek Sambal Matah -->
+<article class="bg-surface-card rounded-xl overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<!-- Image with Live Status & Food Rescue Badge -->
+<div class="relative w-full aspect-[16/10] bg-surface-container overflow-hidden">
+<img alt="Nasi Ayam Geprek Sambal Matah" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1WEC4KRdJCYZwXB13_H3fejVzNVF8Ufm17j4Ia0W3stOJiGPcNpVcKUnJ8T-rGKaTIPNFRGDHhS4deNWGSq7szV2hwFLMDRo5oP_DEO5jV8YKywqNA8bDzFzaPFi9Fd8596M405Gadxn3DH73e-gKMciGPw0LW5o7g5y585eJBYdvJ3B-3K4m6bS0WKOtraFA1yEnLCkeWxsqO-8gxzTBCIQ1UIQuhVhbc_ktgoGeDmIWgWrNtIQNIS3g"/>
+<div class="absolute top-3 left-3 flex flex-col gap-1.5">
+<span class="px-2.5 py-1 rounded-full bg-primary-light text-primary font-label-sm text-label-sm font-semibold shadow-sm whitespace-nowrap">
+                Aktif di Etalase
+              </span>
+</div>
+<div class="absolute bottom-3 right-3">
+<span class="px-2.5 py-1 rounded bg-inverse-surface/85 text-on-primary font-label-sm text-label-sm backdrop-blur-sm whitespace-nowrap">
+                Kategori: Aneka Ayam
+              </span>
+</div>
+</div>
+<!-- Body Content -->
+<div class="p-5 space-y-4">
+<div>
+<div class="flex items-center justify-between gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Nasi Ayam Geprek Matah</h3>
+<span class="text-text-muted font-label-sm text-label-sm whitespace-nowrap">Kode: #WBS-01</span>
+</div>
+<p class="font-body-md text-body-md text-text-muted mt-1 line-clamp-2">
+                Ayam goreng krispi digeprek dengan sambal matah segar irisan serai &amp; daun jeruk, disajikan dengan nasi hangat dan lalapan ketimun.
+              </p>
+</div>
+<!-- Price & Simulation Block -->
+<div class="bg-surface-container-low rounded-lg p-3 space-y-2">
+<div class="flex items-baseline justify-between">
+<span class="font-label-md text-label-md text-text-muted">Harga Normal Acuan</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Rp 18.000</span>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-text-muted block">Simulasi Porsi Terakhir (~45%)</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">Rp 10.000</span>
+</div>
+<span class="bg-accent-light text-secondary font-label-sm text-label-sm px-2 py-0.5 rounded-full font-semibold whitespace-nowrap">
+                  Hemat Rp 8.000
+                </span>
+</div>
+<div class="text-[11px] text-text-muted leading-tight pt-1">
+                *Dibulatkan ke Rp500 terdekat. Harga rilis sesungguhnya ditentukan saat memposting kuota sore.
+              </div>
+</div>
+<!-- Sample Weight & Allergen Technical Info -->
+<div class="space-y-2 font-body-sm text-body-sm">
+<div class="flex items-start gap-2 text-on-surface-variant">
+<svg class="w-4 h-4 text-text-muted shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Berat Sampel Acuan (Opsional):</span>
+<span class="text-text-muted text-[11px] leading-snug">~380 gram / porsi (Perkiraan sampel rata-rata kantin, bukan timbangan lab presisi/garansi per porsi).</span>
+</div>
+</div>
+<div class="flex items-start gap-2 text-on-surface-variant">
+<svg class="w-4 h-4 text-secondary shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Bahan &amp; Catatan Alergen:</span>
+<span class="text-text-muted text-[11px] leading-snug">Daging ayam, cabai rawit, serai. Catatan Alergen: Belum ada uji lab bebas alergen resmi (potensi jejak gluten/terasi). Bukan sertifikasi bebas alergen.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card Footer Actions -->
+<div class="p-4 bg-surface-container-low/50 flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5">
+<button class="px-3 py-1.5 rounded-lg bg-surface-card text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm transition-colors whitespace-nowrap" onclick="editMenuItem('Nasi Ayam Geprek Matah', '18000', '380')">
+              Edit Menu
+            </button>
+<button class="px-2.5 py-1.5 rounded-lg text-text-muted hover:text-error transition-colors font-label-md text-label-md whitespace-nowrap">
+              Nonaktifkan
+            </button>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-primary-container text-on-primary hover:bg-primary-hover font-label-md text-label-md font-semibold transition-colors flex items-center gap-1 whitespace-nowrap shadow-sm" onclick="simulatePostBatch('Nasi Ayam Geprek Matah', '10000')">
+<span>Rilis Porsi Sore</span>
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+<!-- ITEM 2: Nasi Padang Rendang Daging -->
+<article class="bg-surface-card rounded-xl overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<!-- Image with Live Status & Food Rescue Badge -->
+<div class="relative w-full aspect-[16/10] bg-surface-container overflow-hidden">
+<img alt="Nasi Padang Rendang Daging" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1U7NdqL4cNVPmVqy34TU8-RRJtFjAO-XF5tUInPc2GApzxxydx4LaJY5hYzdiJmsb4gO2InrUTxP-AUYZh9ILvmBP3wqRcfehAcU08K_OCXG21xHxjGP3fTAbrfs25rUj_2cfkibTyErOXE48h_AL7Z48p4TT_kOK2JWG00iCZphwYoRicKfRXlrPMu7PcNIW3LmOvNaSQrXGKB7PCIcwFUDus31Ir04pbPHH-ZESMWdVwGGY5Ts04YHs8"/>
+<div class="absolute top-3 left-3 flex flex-col gap-1.5">
+<span class="px-2.5 py-1 rounded-full bg-primary-light text-primary font-label-sm text-label-sm font-semibold shadow-sm whitespace-nowrap">
+                Aktif di Etalase
+              </span>
+</div>
+<div class="absolute bottom-3 right-3">
+<span class="px-2.5 py-1 rounded bg-inverse-surface/85 text-on-primary font-label-sm text-label-sm backdrop-blur-sm whitespace-nowrap">
+                Kategori: Daging Sapi
+              </span>
+</div>
+</div>
+<!-- Body Content -->
+<div class="p-5 space-y-4">
+<div>
+<div class="flex items-center justify-between gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Nasi Rendang Daging Sapi</h3>
+<span class="text-text-muted font-label-sm text-label-sm whitespace-nowrap">Kode: #WBS-02</span>
+</div>
+<p class="font-body-md text-body-md text-text-muted mt-1 line-clamp-2">
+                Rendang sapi bumbu kelapa sangrai rempah autentik Minang, disajikan lengkap dengan sayur nangka muda dan daun singkong rebus.
+              </p>
+</div>
+<!-- Price & Simulation Block -->
+<div class="bg-surface-container-low rounded-lg p-3 space-y-2">
+<div class="flex items-baseline justify-between">
+<span class="font-label-md text-label-md text-text-muted">Harga Normal Acuan</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Rp 25.000</span>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-text-muted block">Simulasi Porsi Terakhir (~45%)</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">Rp 14.000</span>
+</div>
+<span class="bg-accent-light text-secondary font-label-sm text-label-sm px-2 py-0.5 rounded-full font-semibold whitespace-nowrap">
+                  Hemat Rp 11.000
+                </span>
+</div>
+<div class="text-[11px] text-text-muted leading-tight pt-1">
+                *Dibulatkan ke Rp500 terdekat. Tenant memegang kontrol nominal akhir sebelum rilis publik.
+              </div>
+</div>
+<!-- Sample Weight & Allergen Technical Info -->
+<div class="space-y-2 font-body-sm text-body-sm">
+<div class="flex items-start gap-2 text-on-surface-variant">
+<svg class="w-4 h-4 text-text-muted shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Berat Sampel Acuan (Opsional):</span>
+<span class="text-text-muted text-[11px] leading-snug">~420 gram / porsi (Perkiraan sampel rata-rata kantin, bukan timbangan lab presisi/garansi per porsi).</span>
+</div>
+</div>
+<div class="flex items-start gap-2 text-on-surface-variant">
+<svg class="w-4 h-4 text-secondary shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Bahan &amp; Catatan Alergen:</span>
+<span class="text-text-muted text-[11px] leading-snug">Daging sapi segar, santan kelapa, lengkuas. Catatan Alergen: Olahan santan kental, potensi jejak kacang/rempah curah. Bukan uji lab resmi.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card Footer Actions -->
+<div class="p-4 bg-surface-container-low/50 flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5">
+<button class="px-3 py-1.5 rounded-lg bg-surface-card text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm transition-colors whitespace-nowrap" onclick="editMenuItem('Nasi Rendang Daging Sapi', '25000', '420')">
+              Edit Menu
+            </button>
+<button class="px-2.5 py-1.5 rounded-lg text-text-muted hover:text-error transition-colors font-label-md text-label-md whitespace-nowrap">
+              Nonaktifkan
+            </button>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-primary-container text-on-primary hover:bg-primary-hover font-label-md text-label-md font-semibold transition-colors flex items-center gap-1 whitespace-nowrap shadow-sm" onclick="simulatePostBatch('Nasi Rendang Daging Sapi', '14000')">
+<span>Rilis Porsi Sore</span>
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+<!-- ITEM 3: Soto Ayam Lamongan -->
+<article class="bg-surface-card rounded-xl overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<!-- Image with Live Status & Food Rescue Badge -->
+<div class="relative w-full aspect-[16/10] bg-surface-container overflow-hidden">
+<img alt="Soto Ayam Lamongan Panci Bersih" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VKXb0qVjDi_Nv6LwrvfVINpyKJW8oG4urvROr77UMtZlhIOiREzOUjv8Jeix-K0AhfUwFyFBTas6Q7wvsvGmOc2VUmFUpCXss86SqKf3k7SEuruT5JfULUaTrajqX-YFlUn6_IHUm4myLeMLFpsvQzW2uCQXTpmW0vlEf-QzDXDiEDnSLNINtb19o-wY0mHnDWk2dvphTFQN_2RSzoODqaBSlju1_9RpIVD8T7Q4XBsbkkeZDVsSrKXSQ"/>
+<div class="absolute top-3 left-3 flex flex-col gap-1.5">
+<span class="px-2.5 py-1 rounded-full bg-primary-light text-primary font-label-sm text-label-sm font-semibold shadow-sm whitespace-nowrap">
+                Aktif di Etalase
+              </span>
+</div>
+<div class="absolute bottom-3 right-3">
+<span class="px-2.5 py-1 rounded bg-inverse-surface/85 text-on-primary font-label-sm text-label-sm backdrop-blur-sm whitespace-nowrap">
+                Kategori: Sup &amp; Soto
+              </span>
+</div>
+</div>
+<!-- Body Content -->
+<div class="p-5 space-y-4">
+<div>
+<div class="flex items-center justify-between gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Soto Ayam Lamongan Kuah Kuning</h3>
+<span class="text-text-muted font-label-sm text-label-sm whitespace-nowrap">Kode: #WBS-03</span>
+</div>
+<p class="font-body-md text-body-md text-text-muted mt-1 line-clamp-2">
+                Soto ayam kuah rempah kuning gurih dengan koya udang renyah, bihun, telur rebus, dan suwiran ayam kampung empuk.
+              </p>
+</div>
+<!-- Price & Simulation Block -->
+<div class="bg-surface-container-low rounded-lg p-3 space-y-2">
+<div class="flex items-baseline justify-between">
+<span class="font-label-md text-label-md text-text-muted">Harga Normal Acuan</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Rp 16.000</span>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-text-muted block">Simulasi Porsi Terakhir (~45%)</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">Rp 9.000</span>
+</div>
+<span class="bg-accent-light text-secondary font-label-sm text-label-sm px-2 py-0.5 rounded-full font-semibold whitespace-nowrap">
+                  Hemat Rp 7.000
+                </span>
+</div>
+<div class="text-[11px] text-text-muted leading-tight pt-1">
+                *Dibulatkan ke Rp500 terdekat. Diskon hemat mahasiswa tanpa mengurangi mutu higienis kuah.
+              </div>
+</div>
+<!-- Sample Weight & Allergen Technical Info -->
+<div class="space-y-2 font-body-sm text-body-sm">
+<div class="flex items-start gap-2 text-on-surface-variant">
+<svg class="w-4 h-4 text-text-muted shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Berat Sampel Acuan (Opsional):</span>
+<span class="text-text-muted text-[11px] leading-snug">~450 gram / porsi (Perkiraan sampel rata-rata kantin, bukan timbangan lab presisi/garansi per porsi).</span>
+</div>
+</div>
+<div class="flex items-start gap-2 text-on-surface-variant">
+<svg class="w-4 h-4 text-secondary shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<div>
+<span class="font-label-md text-label-md text-on-surface block">Bahan &amp; Catatan Alergen:</span>
+<span class="text-text-muted text-[11px] leading-snug">Kaldu ayam, telur ayam, koya kerupuk udang. Catatan Alergen: Mengandung telur &amp; krustasea (udang pada serbuk koya). Bukan sertifikasi resmi.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card Footer Actions -->
+<div class="p-4 bg-surface-container-low/50 flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5">
+<button class="px-3 py-1.5 rounded-lg bg-surface-card text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-sm transition-colors whitespace-nowrap" onclick="editMenuItem('Soto Ayam Lamongan Kuah Kuning', '16000', '450')">
+              Edit Menu
+            </button>
+<button class="px-2.5 py-1.5 rounded-lg text-text-muted hover:text-error transition-colors font-label-md text-label-md whitespace-nowrap">
+              Nonaktifkan
+            </button>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-primary-container text-on-primary hover:bg-primary-hover font-label-md text-label-md font-semibold transition-colors flex items-center gap-1 whitespace-nowrap shadow-sm" onclick="simulatePostBatch('Soto Ayam Lamongan Kuah Kuning', '9000')">
+<span>Rilis Porsi Sore</span>
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+</div>
+</div>
+<!-- VIEW 2: Empty State (Interactive toggleable) -->
+<div class="hidden w-full" id="catalogEmptyView">
+<div class="bg-surface-card rounded-2xl p-10 lg:p-16 text-center shadow-sm flex flex-col items-center justify-center max-w-2xl mx-auto">
+<!-- Clean plate / notebook SVG line icon -->
+<div class="w-20 h-20 rounded-full bg-surface-container flex items-center justify-center text-primary mb-6">
+<svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-3 py-1 rounded-full font-semibold uppercase tracking-wider mb-2 whitespace-nowrap">
+        Katalog Belum Terisi
+      </span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Belum ada menu standar terdaftar</h3>
+<p class="font-body-md text-body-md text-text-muted leading-relaxed mb-8 max-w-lg">
+        Daftarkan hidangan utama warung Anda sekali saja beserta harga normalnya. Nantinya, saat jam 15:30 WIB Anda tinggal memilih menu ini untuk rilis kilat porsi penyelamatan sore tanpa ketik ulang.
+      </p>
+<div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+<button class="w-full sm:w-auto px-6 h-11 rounded-lg bg-primary-container text-on-primary hover:bg-primary-hover font-label-lg text-label-lg font-semibold transition-colors shadow-sm flex items-center justify-center gap-2 whitespace-nowrap" onclick="toggleFormModal(true)">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>+ Tambah Menu Pertama Warung Bu Sari</span>
+</button>
+<button class="w-full sm:w-auto px-5 h-11 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-label-lg text-label-lg transition-colors whitespace-nowrap" onclick="switchCatalogView('active')">
+          Kembali ke Contoh Menu Aktif
+        </button>
+</div>
+</div>
+</div>
+<!-- Operational & Food Safety Standard Advisory Banner -->
+<section class="w-full mt-10 mb-8">
+<div class="bg-surface-card rounded-xl p-5 md:p-6 shadow-sm">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div class="flex items-start gap-3.5">
+<div class="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center shrink-0 text-secondary">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Protokol Higienitas Makanan "Porsi Terakhir"</h4>
+<p class="font-body-sm text-body-sm text-text-muted mt-1 leading-relaxed max-w-3xl">
+              Hanya makanan layak konsumsi yang disiapkan sesuai standar sanitasi dapur kampus yang diperkenankan untuk rilis porsi selamatkan. Makanan sisa konsumsi piring mahasiswa dilarang keras. Batas maksimal pajang makanan siap santap adalah 4 jam sesuai panduan inspektorat sanitasi universitas.
+            </p>
+</div>
+</div>
+<div class="shrink-0 flex items-center gap-2">
+<span class="bg-primary-light text-primary font-label-sm text-label-sm px-3 py-1 rounded-full font-semibold whitespace-nowrap">
+            Standar Akreditasi Kantin A
+          </span>
+</div>
+</div>
+</div>
+</section>
+<!-- MODAL / FORM SECTION: Add / Edit Master Menu Form -->
+<div class="hidden fixed inset-0 z-50 overflow-y-auto bg-inverse-surface/40 backdrop-blur-sm p-4 flex items-center justify-center" id="menuFormModal">
+<div class="bg-surface-card rounded-2xl max-w-2xl w-full p-6 md:p-8 shadow-xl relative animate-in fade-in zoom-in-95 duration-200">
+<!-- Modal Header -->
+<div class="flex items-center justify-between pb-4">
+<div>
+<span class="bg-primary-light text-primary font-label-sm text-label-sm px-2.5 py-0.5 rounded-full font-semibold uppercase tracking-wider whitespace-nowrap" id="formBadge">
+            Form Master Hidangan
+          </span>
+<h3 class="font-headline-md text-headline-md text-on-surface mt-1" id="formTitle">Tambah Menu Baru ke Katalog</h3>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-text-muted hover:text-on-surface transition-colors" onclick="toggleFormModal(false)">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+<!-- Form Body -->
+<form class="space-y-5 pt-4" id="menuInputForm" onsubmit="handleFormSubmit(event)">
+<!-- 1. Menu Name -->
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-on-surface flex items-center justify-between">
+<span>Nama Menu Standar <span class="text-error">*</span></span>
+<span class="text-text-muted font-body-sm text-[11px]">Contoh: Nasi Ayam Penyet Sambal Ijo</span>
+</label>
+<input class="w-full h-11 px-3.5 bg-surface-container-low rounded-lg text-body-md text-on-surface placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm" id="inputMenuName" placeholder="Ketik nama hidangan..." required="" type="text" value="Nasi Ayam Penyet Sambal Ijo"/>
+</div>
+<!-- 2. Dual Column: Normal Price + Real-time Calculation Preview -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-on-surface flex items-center justify-between">
+<span>Harga Normal Reguler (Rp) <span class="text-error">*</span></span>
+</label>
+<div class="relative">
+<span class="absolute left-3.5 top-2.5 text-text-muted font-label-md text-label-md">Rp</span>
+<input class="w-full h-11 pl-10 pr-3 bg-surface-container-low rounded-lg text-body-md text-on-surface placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm font-semibold" id="inputPriceNormal" min="1000" oninput="updateLiveCalculation()" required="" step="500" type="number" value="18000"/>
+</div>
+<p class="text-[11px] text-text-muted">Harga porsi penuh reguler saat jam makan siang.</p>
+</div>
+<!-- Dynamic Live Calculator Preview Box -->
+<div class="bg-primary-light/60 rounded-xl p-3.5 flex flex-col justify-between">
+<div class="flex items-center justify-between text-primary font-label-sm text-label-sm font-semibold">
+<span>Simulasi Porsi Terakhir</span>
+<span class="px-2 py-0.5 rounded bg-surface-card text-primary shadow-xs whitespace-nowrap">Diskon ~45%</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-md text-headline-md text-primary font-bold" id="previewCalculatedPrice">Rp 10.000</span>
+<span class="text-[11px] text-primary-hover font-medium whitespace-nowrap">(Hemat ~45%)</span>
+</div>
+<div class="text-[10px] text-text-muted mt-1 leading-tight">
+              Dibulatkan ke kelipatan Rp500. Harga riil dapat disesuaikan manual saat rilis batch sore.
+            </div>
+</div>
+</div>
+<!-- 3. Sample Weight (Optional & Strictly Disclaimed) -->
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-on-surface block">
+            Perkiraan Berat Sampel Porsi <span class="text-text-muted font-normal text-body-sm">(Opsional - untuk perkiraan kasar metrik dampak susut pangan kampus)</span>
+</label>
+<div class="relative">
+<input class="w-full h-11 px-3.5 pr-14 bg-surface-container-low rounded-lg text-body-md text-on-surface placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm" id="inputSampleWeight" placeholder="e.g. 360" type="number" value="360"/>
+<span class="absolute right-3.5 top-2.5 text-text-muted font-label-md text-label-md">gram</span>
+</div>
+<div class="text-[11px] text-text-muted bg-surface-container p-2 rounded leading-snug">
+<em>Catatan:</em> Angka ini adalah sampel taksiran rata-rata menu kantin, bukan timbangan lab presisi per individu porsi.
+          </div>
+</div>
+<!-- 4. Ingredients Composition -->
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-on-surface">Komposisi Bahan Utama</label>
+<input class="w-full h-11 px-3.5 bg-surface-container-low rounded-lg text-body-md text-on-surface placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm" id="inputIngredients" placeholder="Contoh: Daging ayam, cabai hijau, bawang merah, minyak kelapa" type="text" value="Daging ayam, cabai rawit hijau, tempe goreng, serai"/>
+</div>
+<!-- 5. Allergen Warning Note -->
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-on-surface flex items-center justify-between">
+<span>Catatan Potensi Alergen (Informasi Mandiri Warung)</span>
+<span class="text-secondary font-label-sm text-label-sm whitespace-nowrap">Bukan Sertifikasi Uji Lab</span>
+</label>
+<select class="w-full h-11 px-3.5 bg-surface-container-low rounded-lg text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm" id="inputAllergenNotes">
+<option>Potensi jejak terasi udang &amp; gluten gandum pada tepung krispi</option>
+<option>Mengandung santan olahan kelapa (tanpa kacang tanah)</option>
+<option>Mengandung telur ayam dan olahan kedelai (tahu/tempe)</option>
+<option>Tidak menggunakan kacang, namun dapur menggunakan peralatan masak bersama</option>
+</select>
+<p class="text-[11px] text-text-muted leading-tight">
+            Warung mitra bertanggung jawab memberikan informasi bahan transparan untuk keamanan bersama mahasiswa berisiko alergi.
+          </p>
+</div>
+<!-- Form Submit & Cancel Controls -->
+<div class="pt-4 flex items-center justify-end gap-3">
+<button class="px-5 h-11 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-label-lg text-label-lg transition-colors whitespace-nowrap" onclick="toggleFormModal(false)" type="button">
+            Batal
+          </button>
+<button class="px-6 h-11 rounded-lg bg-primary-container text-on-primary hover:bg-primary-hover font-label-lg text-label-lg font-semibold transition-colors shadow-sm whitespace-nowrap flex items-center gap-2" type="submit">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span id="btnSubmitText">Simpan ke Katalog Master</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Toast Notification Feedback -->
+<div class="fixed bottom-6 right-6 z-50 hidden bg-inverse-surface text-inverse-on-surface px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all transform translate-y-2" id="actionToast">
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<span class="font-body-md text-body-md font-medium" id="toastMessage">Menu berhasil disimpan.</span>
+</div>
+</div>
+<!-- Inline Javascript Controller for Micro-interactions -->
+<script>
+  function switchCatalogView(viewType) {
+    const activeView = document.getElementById('catalogActiveView');
+    const emptyView = document.getElementById('catalogEmptyView');
+    const activeBtn = document.getElementById('viewActiveBtn');
+    const emptyBtn = document.getElementById('viewEmptyBtn');
+
+    if (viewType === 'active') {
+      activeView.classList.remove('hidden');
+      emptyView.classList.add('hidden');
+      activeBtn.className = "px-3 py-1.5 rounded-lg bg-surface-card text-primary font-semibold shadow-sm transition-all whitespace-nowrap flex items-center gap-1.5";
+      emptyBtn.className = "px-3 py-1.5 rounded-lg text-text-muted hover:text-on-surface transition-all whitespace-nowrap flex items-center gap-1.5";
+    } else {
+      activeView.classList.add('hidden');
+      emptyView.classList.remove('hidden');
+      emptyBtn.className = "px-3 py-1.5 rounded-lg bg-surface-card text-primary font-semibold shadow-sm transition-all whitespace-nowrap flex items-center gap-1.5";
+      activeBtn.className = "px-3 py-1.5 rounded-lg text-text-muted hover:text-on-surface transition-all whitespace-nowrap flex items-center gap-1.5";
+    }
+  }
+
+  function toggleFormModal(show) {
+    const modal = document.getElementById('menuFormModal');
+    if (show) {
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      updateLiveCalculation();
+    } else {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+      resetFormToCreate();
+    }
+  }
+
+  function updateLiveCalculation() {
+    const normalPrice = parseFloat(document.getElementById('inputPriceNormal').value) || 0;
+    // Formula: Normal Price * 0.55 (~45% discount), rounded to nearest Rp 500
+    const rawDiscountPrice = normalPrice * 0.55;
+    const roundedPrice = Math.round(rawDiscountPrice / 500) * 500;
+    const displayElement = document.getElementById('previewCalculatedPrice');
+    displayElement.textContent = 'Rp ' + roundedPrice.toLocaleString('id-ID');
+  }
+
+  function editMenuItem(name, price, weight) {
+    document.getElementById('formTitle').textContent = 'Ubah Rincian: ' + name;
+    document.getElementById('formBadge').textContent = 'Mode Sunting Menu';
+    document.getElementById('btnSubmitText').textContent = 'Simpan Pembaruan';
+    document.getElementById('inputMenuName').value = name;
+    document.getElementById('inputPriceNormal').value = price;
+    document.getElementById('inputSampleWeight').value = weight;
+    toggleFormModal(true);
+  }
+
+  function resetFormToCreate() {
+    document.getElementById('formTitle').textContent = 'Tambah Menu Baru ke Katalog';
+    document.getElementById('formBadge').textContent = 'Form Master Hidangan';
+    document.getElementById('btnSubmitText').textContent = 'Simpan ke Katalog Master';
+  }
+
+  function handleFormSubmit(e) {
+    e.preventDefault();
+    toggleFormModal(false);
+    showToast('Menu "' + document.getElementById('inputMenuName').value + '" berhasil diperbarui!');
+  }
+
+  function simulatePostBatch(menuName, rescuePrice) {
+    showToast('Membuka sesi rilis porsi sore: ' + menuName + ' (' + rescuePrice + ')');
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('actionToast');
+    const toastMsg = document.getElementById('toastMessage');
+    toastMsg.textContent = message;
+    toast.classList.remove('hidden');
+    toast.classList.remove('translate-y-2');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+      toast.classList.add('translate-y-2');
+    }, 3800);
+  }
+</script></main><footer class="w-full bg-surface-container-low py-space-xl mt-space-xl"><div class="max-w-7xl mx-auto px-margin-md lg:px-margin-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg text-on-surface-variant"><div class="space-y-space-xs"><div class="flex items-center gap-space-sm"><span class="font-headline-sm text-headline-sm text-primary">Porsi Terakhir</span><span class="font-label-sm text-label-sm text-text-muted">SDG 12: Konsumsi &amp; Produksi Bertanggung Jawab</span></div><p class="font-body-sm text-body-sm text-text-muted max-w-md">Platform penyelamatan makanan berlebih kampus. Menghubungkan gerai kantin dengan mahasiswa untuk mengurangi susut pangan secara higienis dan terjangkau.</p></div><div class="flex flex-col sm:flex-row gap-space-lg font-body-sm text-body-sm"><div class="space-y-1"><div class="font-label-md text-label-md text-on-surface">Bantuan &amp; Darurat Mitra</div><div class="text-text-muted">Hotline Pengelola Kantin: <span class="font-label-sm text-label-sm text-primary">ext. 4412 / WhatsApp 0812-PORSI-ID</span></div><div class="text-text-muted">Inspektorat Sanitasi Kampus: Gd. PKM Lt. 2</div></div><div class="space-y-1"><div class="font-label-md text-label-md text-on-surface">Standar Keamanan Pangan</div><a class="block text-primary hover:text-primary-hover transition-colors" data-path="pedoman-mutu" href="#">Pedoman Pengemasan &amp; Suhu Makanan Siap Saji</a><a class="block text-primary hover:text-primary-hover transition-colors" data-path="kebijakan-mitra" href="#">Ketentuan Batas Maksimal Pajang 4 Jam</a></div></div></div><div class="max-w-7xl mx-auto px-margin-md lg:px-margin-lg pt-space-lg mt-space-lg flex flex-col sm:flex-row justify-between items-center gap-space-sm font-body-sm text-body-sm text-text-muted"><div>© 2025 Porsi Terakhir Universitas. Hak Cipta Dilindungi.</div><div>Portal Resmi Mitra Kantin Terakreditasi</div></div></footer></body></html>

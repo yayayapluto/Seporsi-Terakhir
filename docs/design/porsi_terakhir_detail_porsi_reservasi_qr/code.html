@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_standard" name="shell-type"/>
+<title>Porsi Terakhir - Detail Porsi &amp; Reservasi QR</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-bright": "#effcf9",
+            "inverse-on-surface": "#e6f4f0",
+            "accent-hover": "#DE7819",
+            "tertiary-fixed-dim": "#bfc9c1",
+            "on-primary-fixed-variant": "#00522c",
+            "background": "#fbf9f6",
+            "on-tertiary-fixed-variant": "#404943",
+            "surface-container-high": "#ede9e1",
+            "primary-fixed-dim": "#88d7a1",
+            "on-primary": "#ffffff",
+            "text-muted": "#64746B",
+            "surface-container": "#f4efe6",
+            "surface-tint": "#003738",
+            "on-error": "#ffffff",
+            "primary-fixed": "#a4f4bc",
+            "secondary-container": "#ea580c",
+            "surface": "#fbf9f6",
+            "inverse-surface": "#273331",
+            "on-secondary-container": "#fff7ed",
+            "accent-light": "#FEF3E7",
+            "secondary-fixed-dim": "#ffb77d",
+            "surface-container-highest": "#e5dfd5",
+            "error": "#ba1a1a",
+            "outline-variant": "#d3cbbf",
+            "on-secondary-fixed-variant": "#6e3900",
+            "on-error-container": "#93000a",
+            "canvas-background": "#FFFBF5",
+            "error-container": "#ffdad6",
+            "primary-light": "#EAF4EC",
+            "on-tertiary-container": "#ebf5ed",
+            "primary": "#003738",
+            "primary-container": "#2e7d4f",
+            "on-background": "#121e1c",
+            "outline": "#6f7a70",
+            "surface-card": "#FFFFFF",
+            "on-secondary-fixed": "#2f1500",
+            "tertiary": "#4f5953",
+            "on-surface-variant": "#3f4941",
+            "on-surface": "#142621",
+            "primary-hover": "#032829",
+            "surface-variant": "#d8e5e2",
+            "border-subtle": "#E5E1D8",
+            "on-tertiary": "#ffffff",
+            "inverse-primary": "#88d7a1",
+            "tertiary-container": "#67716b",
+            "tertiary-fixed": "#dbe5dd",
+            "on-tertiary-fixed": "#151d19"
+          },
+          fontFamily: {
+            display: ["Plus Jakarta Sans", "sans-serif"],
+            headline: ["Plus Jakarta Sans", "sans-serif"],
+            body: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #fbf9f6;
+        color: #142621;
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#fbf9f6] font-body text-[#142621] antialiased min-h-screen flex flex-col">
+<!-- TOP NAVIGATION BAR -->
+<header class="fixed top-0 left-0 w-full z-40 bg-[#003738] shadow-[0_2px_12px_rgba(0,0,0,0.12)]">
+<div class="h-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+<!-- Brand & Tagline -->
+<div class="flex items-center gap-6">
+<a class="flex items-center gap-3 group" href="#">
+<div class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-[#88d7a1] group-hover:scale-105 transition-transform">
+<!-- Lucide Sprout / Leaf icon -->
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M7 20h10"></path>
+<path d="M10 20c5.5-2.5.8-6.4 3-10"></path>
+<path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-1.5.4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4.1 5.5.8z"></path>
+<path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4.1.9-4.9 2z"></path>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-headline font-bold text-lg text-white tracking-tight leading-tight">Porsi Terakhir</span>
+<span class="text-xs text-[#88d7a1] font-medium leading-none whitespace-nowrap">Penyelamat Porsi Kampus</span>
+</div>
+</a>
+<!-- Desktop Navigation Links -->
+<nav class="hidden md:flex items-center gap-1 pl-4">
+<a class="px-3.5 py-1.5 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors" href="#">Katalog Sore</a>
+<a class="px-3.5 py-1.5 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors" href="#">Cara Kerja</a>
+<a class="px-3.5 py-1.5 rounded-lg text-sm font-medium text-white bg-white/15 flex items-center gap-1.5" href="#">
+<span>Pesanan Saya</span>
+<span class="px-1.5 py-0.2 bg-[#ea580c] text-white text-[10px] font-bold rounded-full">1 Aktif</span>
+</a>
+</nav>
+</div>
+<!-- Right Header Status & Profile Badge -->
+<div class="flex items-center gap-3">
+<div class="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white/90 text-xs font-medium border border-white/10">
+<svg class="w-3.5 h-3.5 text-[#ffb77d]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+<span>Sore Flash: 16.00 – 19.30 WIB</span>
+</div>
+<div class="flex items-center gap-2.5 pl-2 border-l border-white/15">
+<div class="hidden sm:flex flex-col text-right">
+<span class="text-sm font-semibold text-white leading-tight">Rafi Anggara</span>
+<span class="text-xs text-[#88d7a1] leading-tight">Mahasiswa Aktif</span>
+</div>
+<div class="w-9 h-9 rounded-full ring-2 ring-[#88d7a1]/70 overflow-hidden bg-white/20 flex items-center justify-center font-bold text-white text-xs">
+            RA
+          </div>
+</div>
+</div>
+</div>
+</header>
+<!-- SUBHEADER / BREADCRUMBS & SIMULATION RIBBON -->
+<div class="pt-16 w-full bg-[#f4efe6] border-b border-[#e5dfd5]">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
+<!-- Hierarchical Breadcrumb -->
+<nav class="flex items-center gap-2 text-xs sm:text-sm text-[#64746B] overflow-x-auto whitespace-nowrap">
+<a class="hover:text-[#003738] transition-colors flex items-center gap-1 font-medium" href="#">
+<svg class="w-4 h-4 text-[#2e7d4f]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+          Kantin Kampus
+        </a>
+<svg class="w-3 h-3 text-stone-400 shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+<span class="font-medium">Gedung B (Pujasera Utama)</span>
+<svg class="w-3 h-3 text-stone-400 shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+<span class="font-medium text-[#142621]">Warung Bu Sari</span>
+<svg class="w-3 h-3 text-stone-400 shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+<span class="font-semibold text-[#003738] truncate max-w-[200px] sm:max-w-none">Nasi Ayam Geprek Sambal Matah</span>
+</nav>
+<!-- SDG / Micro Trust Tag -->
+<div class="hidden sm:flex items-center gap-2 text-xs font-semibold text-[#003738] bg-white/70 px-3 py-1 rounded-full border border-[#e5dfd5] shrink-0 self-start md:self-auto">
+<svg class="w-3.5 h-3.5 text-[#2e7d4f]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+</svg>
+<span>Penyelamatan Porsi Resmi • SDG 12 Responsible Consumption</span>
+</div>
+</div>
+</div>
+<!-- MAIN EDITORIAL CONTENT -->
+<main class="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<!-- SIMULATION PREVIEW BAR -->
+<div class="w-full bg-white rounded-2xl p-4 mb-6 border border-[#e5dfd5] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-center gap-2 text-xs font-bold text-[#64746B] uppercase tracking-wider">
+<svg class="w-4 h-4 text-[#2e7d4f]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+</svg>
+<span>Mode Simulasi Status Porsi:</span>
+</div>
+<div class="flex flex-wrap items-center gap-2" id="state-toggle-group">
+<button class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-all bg-[#003738] text-white shadow-sm" id="btn-state-active" onclick="setAppState('active')" type="button">
+          Tersedia (Aktif)
+        </button>
+<button class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-all bg-[#f4efe6] text-[#142621] hover:bg-[#ede9e1]" id="btn-state-soldout" onclick="setAppState('soldout')" type="button">
+          Habis Terjual (Sold Out)
+        </button>
+<button class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-all bg-[#f4efe6] text-[#142621] hover:bg-[#ede9e1]" id="btn-state-expired" onclick="setAppState('expired')" type="button">
+          Kedaluwarsa (Expired)
+        </button>
+<button class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-all bg-[#f4efe6] text-[#142621] hover:bg-[#ede9e1]" id="btn-state-upcoming" onclick="setAppState('upcoming')" type="button">
+          Belum Rilis (15.30 WIB)
+        </button>
+</div>
+</div>
+<!-- TWO COLUMN HERO COMPOSITION -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT COLUMN: Visual Hero & Culinary Integrity Specs -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<!-- Hero Food Photo Container -->
+<div class="relative w-full rounded-2xl overflow-hidden bg-[#f4efe6] border border-[#e5dfd5] shadow-sm">
+<div class="aspect-[16/10] w-full overflow-hidden bg-stone-100">
+<img alt="Nasi Ayam Geprek Sambal Matah disajikan hangat di atas cobek kayu khas Warung Bu Sari" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1WEC4KRdJCYZwXB13_H3fejVzNVF8Ufm17j4Ia0W3stOJiGPcNpVcKUnJ8T-rGKaTIPNFRGDHhS4deNWGSq7szV2hwFLMDRo5oP_DEO5jV8YKywqNA8bDzFzaPFi9Fd8596M405Gadxn3DH73e-gKMciGPw0LW5o7g5y585eJBYdvJ3B-3K4m6bS0WKOtraFA1yEnLCkeWxsqO-8gxzTBCIQ1UIQuhVhbc_ktgoGeDmIWgWrNtIQNIS3g"/>
+</div>
+<!-- Quality & Freshness Badges Overlaid -->
+<div class="absolute top-4 left-4 right-4 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ea580c] text-white text-xs font-bold uppercase tracking-wider shadow-md whitespace-nowrap shrink-0">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 2c1 3 4 5 4 9a6 6 0 0 1-12 0c0-4 3-6 4-9z"></path></svg>
+<span>Hemat 45% Sore</span>
+</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur text-[#003738] text-xs font-semibold shadow-sm whitespace-nowrap shrink-0 border border-stone-200">
+<svg class="w-3.5 h-3.5 text-[#2e7d4f]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+<span>Batch Masak 15.30 WIB</span>
+</span>
+</div>
+<!-- Bottom Ribbon - 100% Higienis -->
+<div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent p-4 pt-8">
+<div class="flex flex-wrap items-center gap-2 text-white text-xs sm:text-sm">
+<span class="inline-flex items-center gap-1 font-semibold text-[#88d7a1] whitespace-nowrap shrink-0">
+<svg class="w-4 h-4 text-[#88d7a1]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                100% Higienis • Sisa Etalase Bersih
+              </span>
+<span class="text-white/60 hidden sm:inline">•</span>
+<span class="text-stone-200 whitespace-nowrap shrink-0">Batch Masak Akhir Siang</span>
+<span class="text-white/60 hidden sm:inline">•</span>
+<span class="text-stone-300 font-medium whitespace-nowrap shrink-0">Bukan Sisa Piring</span>
+</div>
+</div>
+</div>
+<!-- Heading, Tenant & Location Card -->
+<div class="bg-white rounded-2xl p-6 border border-[#e5dfd5] shadow-sm flex flex-col gap-4">
+<div class="flex flex-wrap items-start justify-between gap-3">
+<div>
+<span class="inline-block px-2.5 py-1 rounded-md bg-[#eaf4ec] text-[#003738] text-xs font-bold uppercase tracking-wider mb-2">
+                Porsi Solo Siap Santap
+              </span>
+<h1 class="font-headline font-bold text-2xl sm:text-3xl text-[#142621] tracking-tight">
+                Nasi Ayam Geprek Sambal Matah
+              </h1>
+</div>
+<div class="flex items-center gap-1 px-3 py-1 rounded-full bg-[#f4efe6] text-[#003738] text-xs font-semibold border border-[#e5dfd5] whitespace-nowrap shrink-0">
+<span class="w-2 h-2 rounded-full bg-[#2e7d4f]"></span>
+<span>Mitra Resmi Kantin</span>
+</div>
+</div>
+<p class="text-sm sm:text-base text-[#64746B] leading-relaxed">
+            Ayam goreng rempah berbalut tepung krispi gurih, digeprek bersama sambal matah cabai iris segar aromatik dan perasan jeruk limau. Disajikan lengkap dengan nasi putih pulen hangat dan lalapan segar.
+          </p>
+<!-- Tenant Meta Row -->
+<div class="pt-3 border-t border-[#e5dfd5] flex flex-wrap items-center gap-y-2 gap-x-4 text-xs sm:text-sm text-[#64746B]">
+<div class="flex items-center gap-1.5 text-[#142621] font-semibold whitespace-nowrap shrink-0">
+<svg class="w-4 h-4 text-[#2e7d4f]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+<span>Warung Bu Sari</span>
+</div>
+<span class="text-stone-300">•</span>
+<div class="flex items-center gap-1.5 whitespace-nowrap shrink-0">
+<svg class="w-4 h-4 text-[#64746B]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+<span>Kantin Gedung B (Pujasera Utama)</span>
+</div>
+<span class="text-stone-300">•</span>
+<div class="flex items-center gap-1.5 whitespace-nowrap shrink-0">
+<svg class="w-4 h-4 text-[#64746B]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+<span>Tutup Gerai: 18.45 WIB</span>
+</div>
+</div>
+</div>
+<!-- Food Handling & Freshness Grid (3 Cards) -->
+<div class="bg-white rounded-2xl p-6 border border-[#e5dfd5] shadow-sm flex flex-col gap-4">
+<div class="flex items-center justify-between pb-2 border-b border-[#e5dfd5]">
+<div class="flex items-center gap-2">
+<svg class="w-5 h-5 text-[#2e7d4f]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+</svg>
+<h2 class="font-headline font-bold text-base sm:text-lg text-[#142621]">Standar Penanganan &amp; Mutu Pangan</h2>
+</div>
+<span class="text-xs font-semibold text-[#003738] bg-[#eaf4ec] px-2.5 py-1 rounded-md whitespace-nowrap shrink-0">
+              Batas Santap: 3 Jam
+            </span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+<!-- Card 1 -->
+<div class="bg-[#fbf9f6] rounded-xl p-3.5 border border-[#e5dfd5] flex flex-col justify-between">
+<div class="flex items-center justify-between text-xs text-[#64746B] mb-2">
+<span>Waktu Selesai Masak</span>
+<svg class="w-4 h-4 text-[#2e7d4f]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+</div>
+<div class="font-headline font-bold text-lg text-[#142621]">15.30 WIB</div>
+<p class="text-xs text-[#64746B] mt-1">Tercatat di dapur warung sesi akhir siang</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-[#eaf4ec] rounded-xl p-3.5 border border-[#88d7a1] flex flex-col justify-between">
+<div class="flex items-center justify-between text-xs text-[#003738] font-semibold mb-2">
+<span>Metode Simpan</span>
+<svg class="w-4 h-4 text-[#2e7d4f]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></svg>
+</div>
+<div class="font-headline font-bold text-lg text-[#003738]">Etalase Hangat</div>
+<p class="text-xs text-[#2e7d4f] mt-1">Etalase pemanas kaca tertutup higienis</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-[#fff7ed] rounded-xl p-3.5 border border-[#fed7aa] flex flex-col justify-between">
+<div class="flex items-center justify-between text-xs text-[#ea580c] font-semibold mb-2">
+<span>Jendela Santap Maksimal</span>
+<svg class="w-4 h-4 text-[#ea580c]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+</div>
+<div class="font-headline font-bold text-lg text-[#ea580c]">18.30 WIB</div>
+<p class="text-xs text-[#c2410c] mt-1">3 Jam sejak dimasak demi cita rasa optimal</p>
+</div>
+</div>
+<!-- Flavor Notes -->
+<div class="pt-2">
+<h3 class="text-xs font-bold text-[#142621] uppercase tracking-wider mb-1">Karakter Rasa &amp; Olahan Bumbu</h3>
+<p class="text-sm text-[#64746B] leading-relaxed">
+              Daging ayam goreng bertekstur empuk bumbu kuning meresap dengan lapisan remah renyah. Racikan sambal matah menggunakan minyak kelapa hangat, rajangan bawang merah Brebes, cabai rawit pedas sedang, serai segar, dan daun jeruk wangi tanpa pengawet buatan.
+            </p>
+</div>
+<!-- Transparency Ingredients & Allergens Box -->
+<div class="p-4 rounded-xl bg-[#f4efe6] border border-[#e5dfd5] flex flex-col gap-2.5">
+<div class="flex items-start gap-2.5">
+<svg class="w-5 h-5 text-[#ea580c] shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line>
+</svg>
+<div class="flex flex-col gap-1.5 text-xs sm:text-sm">
+<p class="text-[#142621] leading-relaxed">
+<span class="font-bold">Komposisi Tertera:</span>
+<span class="text-[#64746B]">Daging Ayam Segar, Cabai Rawit Merah, Bawang Merah, Serai, Daun Jeruk, Minyak Kelapa Dingin, Garam, Nasi Putih Pulen.</span>
+</p>
+<p class="text-[#64746B] leading-relaxed border-t border-[#e5dfd5] pt-2">
+<span class="font-bold text-[#c2410c]">Catatan Alergen Penting:</span> Pihak warung tidak menyediakan pengujian lab alergen resmi; hidangan dimasak di dapur bersama yang berpotensi mengandung gluten &amp; terasi udang. Jangan konsumsi bila Anda memiliki riwayat alergi berat.
+                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Environmental Metric SDG 12 Card -->
+<div class="bg-white rounded-2xl p-6 border border-[#e5dfd5] shadow-sm flex items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-[#eaf4ec] text-[#2e7d4f] flex items-center justify-center shrink-0 border border-[#88d7a1]/40">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M7 20h10"></path><path d="M10 20c5.5-2.5.8-6.4 3-10"></path><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-1.5.4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4.1 5.5.8z"></path>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-headline font-bold text-sm sm:text-base text-[#142621]">Dampak Kolektif Mahasiswa</span>
+<p class="text-xs sm:text-sm text-[#64746B] mt-0.5 leading-snug">
+                Penyelamatan porsi ini mencegah ~350g emisi setara pangan terbuang dan menghemat pengeluaran makan sore.
+              </p>
+</div>
+</div>
+<div class="hidden sm:flex flex-col items-end shrink-0 pl-2">
+<span class="px-2.5 py-1 rounded-md bg-[#003738] text-white text-[11px] font-bold tracking-wider uppercase">SDG 12</span>
+<span class="text-xs text-[#64746B] mt-1 font-medium">Kampus Hijau</span>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Reservation & QR Ticket Widget (Sticky Desktop) -->
+<div class="lg:col-span-5 flex flex-col gap-6 lg:sticky lg:top-20">
+<!-- Primary Reservation Ticket Card -->
+<div class="bg-white rounded-2xl p-6 border border-[#e5dfd5] shadow-md flex flex-col gap-5">
+<!-- Expiry Countdown Banner -->
+<div class="flex flex-col gap-2 pb-4 border-b border-[#e5dfd5]">
+<div class="flex items-center justify-between">
+<span class="text-xs uppercase tracking-wider font-bold text-[#64746B] flex items-center gap-1.5">
+<svg class="w-4 h-4 text-[#ea580c]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Batas Waktu Reservasi
+              </span>
+<span class="px-3 py-1 rounded-full bg-[#fff7ed] text-[#ea580c] text-xs font-bold whitespace-nowrap shrink-0 border border-[#fed7aa]" id="countdown-badge">
+                Sisa 34m 12d
+              </span>
+</div>
+<!-- Live Progress Bar -->
+<div class="w-full bg-[#f4efe6] h-2 rounded-full overflow-hidden mt-1">
+<div class="bg-[#ea580c] h-full rounded-full transition-all duration-500" id="countdown-progress" style="width: 68%;"></div>
+</div>
+<p class="text-xs text-[#64746B] leading-relaxed">
+              Amankan porsi sebelum 18.30 WIB agar tidak terbuang sia-sia.
+            </p>
+</div>
+<!-- Price Highlight Block -->
+<div class="flex items-baseline justify-between pt-1">
+<div class="flex items-baseline gap-2.5">
+<span class="font-headline font-extrabold text-3xl sm:text-4xl text-[#003738] tracking-tight">
+                Rp 10.000
+              </span>
+<span class="text-sm sm:text-base text-stone-400 line-through">
+                Rp 18.000
+              </span>
+</div>
+<span class="px-3 py-1 rounded-full bg-[#eaf4ec] text-[#2e7d4f] text-xs font-bold whitespace-nowrap shrink-0 border border-[#88d7a1]/50">
+              Hemat 45% (Rp 8.000)
+            </span>
+</div>
+<!-- Stock Counter Card -->
+<div class="bg-[#fbf9f6] rounded-xl p-3.5 border border-[#e5dfd5] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2e7d4f] opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#2e7d4f]"></span>
+</span>
+<span class="text-xs sm:text-sm font-medium text-[#142621]">Stok Porsi Terkurasi</span>
+</div>
+<span class="text-xs sm:text-sm font-bold text-[#003738]" id="stock-text">
+              4 dari 10 porsi tersisa
+            </span>
+</div>
+<!-- Portion Stepper (Max 2 for Campus Equity) -->
+<div class="flex items-center justify-between py-1">
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-[#142621]">Jumlah Porsi</span>
+<span class="text-xs text-[#64746B]">Maks 2 porsi per mahasiswa</span>
+</div>
+<div class="flex items-center gap-2 bg-[#f4efe6] p-1 rounded-xl border border-[#e5dfd5]">
+<button class="w-8 h-8 rounded-lg bg-white text-[#142621] flex items-center justify-center font-bold hover:bg-stone-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-xs" disabled="" id="qty-minus" onclick="adjustQty(-1)" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><line x1="5" x2="19" y1="12" y2="12"></line></svg>
+</button>
+<span class="font-headline font-bold text-base text-[#142621] w-7 text-center" id="qty-val">1</span>
+<button class="w-8 h-8 rounded-lg bg-white text-[#142621] flex items-center justify-center font-bold hover:bg-stone-50 transition-colors shadow-xs" id="qty-plus" onclick="adjustQty(1)" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg>
+</button>
+</div>
+</div>
+<!-- Pickup Slot Selector -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-[#142621] uppercase tracking-wider">Pilih Slot Pengambilan Sore</span>
+<span class="text-xs text-[#64746B]">Di Kasir Bu Sari</span>
+</div>
+<div class="flex flex-col gap-2" id="slot-container">
+<!-- Slot A (Default Selected) -->
+<label class="slot-radio flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all bg-[#eaf4ec] border border-[#2e7d4f] text-[#003738]">
+<div class="flex items-center gap-3">
+<input checked="" class="w-4 h-4 text-[#003738] focus:ring-[#003738] accent-[#003738]" name="pickup_slot" onchange="updateSlotVisual()" type="radio" value="A"/>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-[#142621]">17.30 – 17.50 WIB</span>
+<span class="text-xs text-[#2e7d4f] font-medium whitespace-nowrap shrink-0">Slot Rekomendasi • Hangat Optimal</span>
+</div>
+</div>
+<svg class="slot-icon w-5 h-5 text-[#2e7d4f] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+</label>
+<!-- Slot B -->
+<label class="slot-radio flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all bg-[#fbf9f6] border border-[#e5dfd5] text-[#142621] hover:bg-[#f4efe6]">
+<div class="flex items-center gap-3">
+<input class="w-4 h-4 text-[#003738] focus:ring-[#003738] accent-[#003738]" name="pickup_slot" onchange="updateSlotVisual()" type="radio" value="B"/>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-[#142621]">17.50 – 18.15 WIB</span>
+<span class="text-xs text-[#64746B] whitespace-nowrap shrink-0">Setelah Selesai Kuliah Sore</span>
+</div>
+</div>
+<span class="slot-icon w-4 h-4 rounded-full border border-stone-300 shrink-0"></span>
+</label>
+<!-- Slot C -->
+<label class="slot-radio flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all bg-[#fbf9f6] border border-[#e5dfd5] text-[#142621] hover:bg-[#f4efe6]">
+<div class="flex items-center gap-3">
+<input class="w-4 h-4 text-[#003738] focus:ring-[#003738] accent-[#003738]" name="pickup_slot" onchange="updateSlotVisual()" type="radio" value="C"/>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-[#142621]">18.15 – 18.30 WIB</span>
+<span class="text-xs text-[#ea580c] font-medium whitespace-nowrap shrink-0">Batas Akhir Mutu Terjaga</span>
+</div>
+</div>
+<span class="slot-icon w-4 h-4 rounded-full border border-stone-300 shrink-0"></span>
+</label>
+</div>
+</div>
+<!-- Eco-Packaging Checkbox -->
+<label class="flex items-start gap-3 p-3 rounded-xl bg-[#f4efe6] border border-[#e5dfd5] cursor-pointer hover:bg-[#ede9e1] transition-colors">
+<input checked="" class="mt-0.5 w-4 h-4 rounded text-[#003738] focus:ring-[#003738] accent-[#003738]" id="eco-box" type="checkbox"/>
+<div class="flex flex-col">
+<span class="text-xs sm:text-sm font-semibold text-[#142621]">Bawa Wadah Makanan Sendiri (Tepak/Kotak Makan)</span>
+<span class="text-xs text-[#64746B] mt-0.5">Dukung kampus bebas sampah kemasan sekali pakai.</span>
+</div>
+</label>
+<!-- Zero Online Payment Notice -->
+<div class="p-3 rounded-xl bg-[#eaf4ec] border border-[#88d7a1]/60 flex items-start gap-2.5">
+<svg class="w-4 h-4 text-[#2e7d4f] shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+</svg>
+<p class="text-xs text-[#003738] leading-relaxed">
+              Tanpa bayar online di aplikasi. Pembayaran <strong class="font-bold text-[#142621]" id="total-price">Rp 10.000</strong> diserahkan langsung ke kasir Bu Sari saat ambil (Tunai atau QRIS toko).
+            </p>
+</div>
+<!-- Action Button (CTA) -->
+<button class="w-full h-13 py-3.5 px-6 rounded-xl bg-[#003738] text-white hover:bg-[#032829] font-headline font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer whitespace-nowrap shrink-0" id="cta-submit" onclick="handleReservationClick()" type="button">
+<svg class="w-5 h-5 text-[#88d7a1]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="18" rx="2" width="18" x="3" y="3"></rect>
+<path d="M7 7h.01M17 7h.01M7 17h.01M17 17h.01M12 12h.01"></path>
+</svg>
+<span id="cta-text">Pesan &amp; Dapatkan Tiket QR</span>
+</button>
+<!-- Inactive Reason Feedback Banner -->
+<div class="hidden p-3 rounded-xl bg-[#f4efe6] border border-[#e5dfd5] text-xs text-center text-[#64746B] leading-relaxed" id="cta-disabled-reason"></div>
+<!-- Security Footnote -->
+<div class="flex items-center justify-center gap-1.5 text-center text-xs text-[#64746B] pt-1">
+<svg class="w-3.5 h-3.5 text-[#2e7d4f]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+<span>Reservasi ditahan 15 menit. Tiket gugur jika tidak dikonfirmasi di kasir.</span>
+</div>
+</div>
+<!-- 3-Step Pickup Guide Card -->
+<div class="bg-white rounded-2xl p-6 border border-[#e5dfd5] shadow-sm flex flex-col gap-3">
+<div class="flex items-center gap-2 text-sm font-bold text-[#142621]">
+<svg class="w-4 h-4 text-[#2e7d4f]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" x2="12.01" y1="17" y2="17"></line>
+</svg>
+<span>Cara Ambil Porsi di Kantin</span>
+</div>
+<ol class="space-y-2 text-xs sm:text-sm text-[#64746B]">
+<li class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded-full bg-[#f4efe6] text-[#003738] font-bold text-xs flex items-center justify-center shrink-0 border border-[#e5dfd5]">1</span>
+<span>Tunjukkan tiket QR pada kasir Warung Bu Sari.</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded-full bg-[#f4efe6] text-[#003738] font-bold text-xs flex items-center justify-center shrink-0 border border-[#e5dfd5]">2</span>
+<span>Serahkan wadah makan Anda (atau wadah dari kantin).</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded-full bg-[#f4efe6] text-[#003738] font-bold text-xs flex items-center justify-center shrink-0 border border-[#e5dfd5]">3</span>
+<span>Bayar pas Rp 10.000 tunai / scan QRIS resmi warung.</span>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</main>
+<!-- QR CODE MODAL PREVIEW DIALOG -->
+<div class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs transition-opacity" id="qr-modal">
+<div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl flex flex-col items-center text-center gap-5 border border-[#e5dfd5]">
+<!-- Modal Header -->
+<div class="w-12 h-12 rounded-full bg-[#eaf4ec] text-[#2e7d4f] flex items-center justify-center">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+</div>
+<div>
+<span class="text-xs font-bold uppercase tracking-wider text-[#2e7d4f] bg-[#eaf4ec] px-2.5 py-0.5 rounded-full">Tiket Siap Diambil</span>
+<h3 class="font-headline font-bold text-xl text-[#142621] mt-1.5">Reservasi Berhasil Diamankan!</h3>
+<p class="text-xs text-[#64746B] mt-1">Tunjukkan tiket QR ini ke kasir Warung Bu Sari sebelum batas slot berakhir.</p>
+</div>
+<!-- Ticket QR Card Visual -->
+<div class="w-full bg-[#fbf9f6] p-4 rounded-2xl border border-[#e5dfd5] flex flex-col items-center shadow-inner">
+<!-- SVG Generated QR Pattern -->
+<div class="bg-white p-3 rounded-xl border border-stone-200">
+<svg class="w-40 h-40 text-[#003738]" fill="currentColor" viewbox="0 0 100 100">
+<path d="M0 0h30v30H0V0zm6 6v18h18V6H6zm70-6h30v30H76V0zm6 6v18h18V6H82zM0 76h30v30H0V76zm6 6v18h18V82H6zm34-76h6v6h-6V6zm14 0h6v12h-6V6zm-14 14h12v6H40v-6zm20 6h6v6h-6v-6zm-6 8h6v6h-6v-6zm12 0h12v6H66v-6zm-26 8h6v6h-6v-6zm14 0h6v12h-6V56zm14 6h6v6h-6v-6zm-28 6h6v6h-6v-6zm20 6h6v6h-6v-6zm-8 8h12v6H58v-6zm18 0h6v6h-6v-6zm-36 6h6v6h-6v-6zm12 0h6v12h-6V82zm24 0h6v6h-6v-6zm-18 8h6v6h-6v-6zm24 6h6v6h-6v-6z"></path>
+</svg>
+</div>
+<div class="mt-3 flex items-center justify-center gap-1.5 font-mono text-sm font-bold text-[#003738] tracking-widest">
+<span>#PT-8821</span>
+</div>
+</div>
+<!-- Order Ticket Summary Details -->
+<div class="w-full bg-[#f4efe6] rounded-xl p-3.5 text-left text-xs flex flex-col gap-2 border border-[#e5dfd5]">
+<div class="flex justify-between">
+<span class="text-[#64746B]">Pemesan:</span>
+<span class="font-semibold text-[#142621]">Rafi Anggara</span>
+</div>
+<div class="flex justify-between">
+<span class="text-[#64746B]">Menu:</span>
+<span class="font-semibold text-[#142621] text-right truncate max-w-[180px]">Nasi Ayam Geprek Sambal Matah</span>
+</div>
+<div class="flex justify-between">
+<span class="text-[#64746B]">Slot Ambil:</span>
+<span class="font-semibold text-[#003738]" id="modal-slot-text">17.30 – 17.50 WIB</span>
+</div>
+<div class="flex justify-between">
+<span class="text-[#64746B]">Batas Hangus:</span>
+<span class="font-bold text-[#ea580c]">15 Menit sejak reservasi</span>
+</div>
+<div class="flex justify-between pt-1 border-t border-[#e5dfd5]">
+<span class="text-[#64746B]">Bayar di Kasir:</span>
+<span class="font-extrabold text-[#003738] text-sm" id="modal-pay-amount">Rp 10.000</span>
+</div>
+</div>
+<!-- Dismiss Button -->
+<button class="w-full py-3 rounded-xl bg-[#003738] hover:bg-[#032829] text-white font-headline font-bold text-sm transition-colors shadow-sm cursor-pointer" onclick="closeModal()" type="button">
+        Tutup &amp; Simpan ke Pesanan Saya
+      </button>
+</div>
+</div>
+<!-- FOOTER -->
+<footer class="w-full bg-[#ede9e1] border-t border-[#e5dfd5] mt-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+<div class="md:col-span-2 space-y-3">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-[#003738] text-[#88d7a1] flex items-center justify-center">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M7 20h10"></path><path d="M10 20c5.5-2.5.8-6.4 3-10"></path>
+</svg>
+</div>
+<span class="font-headline font-bold text-lg text-[#142621]">Porsi Terakhir</span>
+</div>
+<p class="text-xs sm:text-sm text-[#64746B] max-w-md leading-relaxed">
+            Gerakan pangan bijak kampus penyelamat porsi lezat terkurasi. Menghubungkan kantin mitra dan mahasiswa untuk konsumsi berkelanjutan dan ramah kantong.
+          </p>
+</div>
+<div>
+<h4 class="font-headline font-bold text-xs uppercase tracking-wider text-[#142621] mb-3">Tautan Mahasiswa</h4>
+<ul class="space-y-2 text-xs sm:text-sm text-[#64746B]">
+<li><a class="hover:text-[#003738] transition-colors" href="#">Katalog Sore</a></li>
+<li><a class="hover:text-[#003738] transition-colors" href="#">Riwayat Pengambilan</a></li>
+<li><a class="hover:text-[#003738] transition-colors" href="#">Aturan Klaim &amp; Porsi</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline font-bold text-xs uppercase tracking-wider text-[#142621] mb-3">Bantuan &amp; Regulasi</h4>
+<ul class="space-y-2 text-xs sm:text-sm text-[#64746B]">
+<li><a class="hover:text-[#003738] transition-colors" href="#">Pusat Resolusi Kampus</a></li>
+<li><a class="hover:text-[#003738] transition-colors" href="#">Standar Higienitas</a></li>
+<li><a class="hover:text-[#003738] transition-colors" href="#">Dukungan Komunitas</a></li>
+</ul>
+</div>
+</div>
+<div class="pt-6 border-t border-[#e5dfd5] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#64746B]">
+<span>© 2025 Porsi Terakhir Kampus. Berkomitmen untuk SDG 12 Responsible Consumption.</span>
+<div class="flex items-center gap-4">
+<a class="hover:text-[#003738]" href="#">Kebijakan Privasi</a>
+<a class="hover:text-[#003738]" href="#">Syarat Penggunaan</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- SCRIPT FOR CLIENT INTERACTIVITY & SIMULATION STATES -->
+<script>
+    let currentQty = 1;
+    const unitPrice = 10000;
+    let currentState = 'active';
+
+    function adjustQty(delta) {
+      if (currentState !== 'active') return;
+      const next = currentQty + delta;
+      if (next >= 1 && next <= 2) {
+        currentQty = next;
+        document.getElementById('qty-val').innerText = currentQty;
+        document.getElementById('qty-minus').disabled = (currentQty === 1);
+        document.getElementById('qty-plus').disabled = (currentQty === 2);
+        
+        const total = (currentQty * unitPrice).toLocaleString('id-ID');
+        document.getElementById('total-price').innerText = 'Rp ' + total;
+        document.getElementById('modal-pay-amount').innerText = 'Rp ' + total;
+      }
+    }
+
+    function updateSlotVisual() {
+      const labels = document.querySelectorAll('.slot-radio');
+      labels.forEach(label => {
+        const input = label.querySelector('input');
+        const iconContainer = label.querySelector('.slot-icon');
+        const descSpan = label.querySelector('.text-xs');
+        if (input.checked) {
+          label.className = 'slot-radio flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all bg-[#eaf4ec] border border-[#2e7d4f] text-[#003738]';
+          iconContainer.outerHTML = '<svg class="slot-icon w-5 h-5 text-[#2e7d4f] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+          if (input.value === 'A') {
+            document.getElementById('modal-slot-text').innerText = '17.30 – 17.50 WIB';
+          } else if (input.value === 'B') {
+            document.getElementById('modal-slot-text').innerText = '17.50 – 18.15 WIB';
+          } else if (input.value === 'C') {
+            document.getElementById('modal-slot-text').innerText = '18.15 – 18.30 WIB';
+          }
+        } else {
+          label.className = 'slot-radio flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all bg-[#fbf9f6] border border-[#e5dfd5] text-[#142621] hover:bg-[#f4efe6]';
+          iconContainer.outerHTML = '<span class="slot-icon w-4 h-4 rounded-full border border-stone-300 shrink-0"></span>';
+        }
+      });
+    }
+
+    function setAppState(state) {
+      currentState = state;
+      const buttons = {
+        active: document.getElementById('btn-state-active'),
+        soldout: document.getElementById('btn-state-soldout'),
+        expired: document.getElementById('btn-state-expired'),
+        upcoming: document.getElementById('btn-state-upcoming'),
+      };
+
+      Object.keys(buttons).forEach(k => {
+        buttons[k].className = 'px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-all bg-[#f4efe6] text-[#142621] hover:bg-[#ede9e1]';
+      });
+      buttons[state].className = 'px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-all bg-[#003738] text-white shadow-sm';
+
+      const cta = document.getElementById('cta-submit');
+      const ctaText = document.getElementById('cta-text');
+      const ctaReason = document.getElementById('cta-disabled-reason');
+      const stockText = document.getElementById('stock-text');
+      const countdownBadge = document.getElementById('countdown-badge');
+      const countdownProgress = document.getElementById('countdown-progress');
+
+      if (state === 'active') {
+        cta.disabled = false;
+        cta.className = 'w-full h-13 py-3.5 px-6 rounded-xl bg-[#003738] text-white hover:bg-[#032829] font-headline font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer whitespace-nowrap shrink-0';
+        ctaText.innerText = 'Pesan & Dapatkan Tiket QR';
+        ctaReason.classList.add('hidden');
+        stockText.innerText = '4 dari 10 porsi tersisa';
+        stockText.className = 'text-xs sm:text-sm font-bold text-[#003738]';
+        countdownBadge.innerText = 'Sisa 34m 12d';
+        countdownProgress.style.width = '68%';
+      } else if (state === 'soldout') {
+        cta.disabled = true;
+        cta.className = 'w-full h-13 py-3.5 px-6 rounded-xl bg-stone-200 text-stone-500 font-headline font-semibold text-sm sm:text-base flex items-center justify-center gap-2.5 cursor-not-allowed whitespace-nowrap shrink-0';
+        ctaText.innerText = 'Porsi Telah Habis Terjual Hari Ini';
+        ctaReason.innerText = 'Kuota 10 porsi sudah direservasi oleh mahasiswa lain. Pantau kembali besok pukul 15.30 WIB!';
+        ctaReason.classList.remove('hidden');
+        stockText.innerText = '0 dari 10 porsi tersisa (Habis)';
+        stockText.className = 'text-xs sm:text-sm font-bold text-[#ea580c]';
+        countdownProgress.style.width = '0%';
+      } else if (state === 'expired') {
+        cta.disabled = true;
+        cta.className = 'w-full h-13 py-3.5 px-6 rounded-xl bg-stone-200 text-stone-500 font-headline font-semibold text-sm sm:text-base flex items-center justify-center gap-2.5 cursor-not-allowed whitespace-nowrap shrink-0';
+        ctaText.innerText = 'Waktu Reservasi Berakhir';
+        ctaReason.innerText = 'Batas konsumsi aman 18.30 WIB telah terlewati demi higienitas dan kesehatan Anda.';
+        ctaReason.classList.remove('hidden');
+        stockText.innerText = 'Sesi Porsi Sore Selesai';
+        stockText.className = 'text-xs sm:text-sm font-bold text-[#64746B]';
+        countdownBadge.innerText = 'Kedaluwarsa';
+        countdownProgress.style.width = '0%';
+      } else if (state === 'upcoming') {
+        cta.disabled = true;
+        cta.className = 'w-full h-13 py-3.5 px-6 rounded-xl bg-stone-200 text-stone-500 font-headline font-semibold text-sm sm:text-base flex items-center justify-center gap-2.5 cursor-not-allowed whitespace-nowrap shrink-0';
+        ctaText.innerText = 'Porsi Belum Dirilis';
+        ctaReason.innerText = 'Warung Bu Sari baru membuka porsi surplus sore mulai pukul 15.30 WIB setelah jam makan siang usai.';
+        ctaReason.classList.remove('hidden');
+        stockText.innerText = 'Verifikasi Dapur Berjalan';
+        stockText.className = 'text-xs sm:text-sm font-bold text-[#2e7d4f]';
+        countdownBadge.innerText = 'Rilis 15.30 WIB';
+        countdownProgress.style.width = '100%';
+      }
+    }
+
+    function handleReservationClick() {
+      if (currentState === 'active') {
+        document.getElementById('qr-modal').classList.remove('hidden');
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('qr-modal').classList.add('hidden');
+    }
+  </script>
+</body></html>

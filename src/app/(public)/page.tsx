@@ -275,7 +275,7 @@ export default function Home() {
             Masuk Sekarang
           </Link>
           <Link
-            href="/masuk"
+            href="/tenant/pendaftaran"
             className="inline-flex items-center justify-center rounded-md border px-6 py-3 font-semibold transition-colors hover:bg-muted"
           >
             Daftar sebagai Tenant

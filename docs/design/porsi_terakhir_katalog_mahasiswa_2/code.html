@@ -1,0 +1,866 @@
+<!DOCTYPE html><html lang="id" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Porsi Terakhir - Penyelamatan Surplus Pangan Kampus</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            border: '#E8E3D9',
+            ring: '#196c40',
+            background: '#FDFBF7',
+            foreground: '#1B2420',
+            primary: {
+              DEFAULT: '#196c40',
+              foreground: '#ffffff',
+              hover: '#135532',
+              light: '#EAF4EC',
+            },
+            accent: {
+              DEFAULT: '#D9651E',
+              foreground: '#ffffff',
+              hover: '#C25514',
+              subtle: '#FFF3E8',
+            },
+            tertiary: '#526058',
+            muted: {
+              DEFAULT: '#F4F0E8',
+              foreground: '#697870',
+            },
+            card: {
+              DEFAULT: '#ffffff',
+              foreground: '#1B2420',
+            },
+          },
+          borderRadius: {
+            xl: '0.875rem',
+            '2xl': '1.125rem',
+            '3xl': '1.5rem',
+          },
+          boxShadow: {
+            'warm-sm': '0 1px 3px rgba(32, 28, 20, 0.04), 0 1px 2px rgba(32, 28, 20, 0.06)',
+            'warm-md': '0 8px 20px -4px rgba(35, 29, 18, 0.08), 0 2px 6px -1px rgba(35, 29, 18, 0.04)',
+            'warm-lg': '0 16px 32px -8px rgba(35, 29, 18, 0.12), 0 4px 12px -2px rgba(35, 29, 18, 0.05)',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #FDFBF7;
+      color: #1B2420;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F4F0E8;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #D8D2C5;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row antialiased bg-[#FDFBF7] text-foreground">
+<!-- ========================================== -->
+<!-- DISCRETE DEV TOOLBAR (Bottom-Right Minimal) -->
+<!-- ========================================== -->
+<div class="fixed bottom-4 right-4 z-50 flex items-center gap-1.5 bg-slate-900/85 hover:bg-slate-900 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[11px] shadow-lg border border-slate-700/60 transition-all opacity-40 hover:opacity-100 group">
+<span class="text-slate-400 font-medium mr-1 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Preview:
+  </span>
+<button class="demo-btn px-2 py-0.5 rounded-full transition-colors bg-slate-800 text-slate-300" onclick="setViewMode('normal')">Katalog</button>
+<button class="demo-btn px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 hover:text-white" onclick="setViewMode('loading')">Skeleton</button>
+<button class="demo-btn px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 hover:text-white" onclick="setViewMode('empty-today')">Kosong</button>
+<button class="demo-btn px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 hover:text-white" onclick="setViewMode('error')">Error</button>
+</div>
+<!-- ========================================== -->
+<!-- TOAST NOTIFICATION CONTAINER (Sonner-like) -->
+<!-- ========================================== -->
+<div class="fixed bottom-16 md:bottom-6 left-6 z-50 flex flex-col gap-2 pointer-events-none" id="toast-container"></div>
+<!-- ========================================== -->
+<!-- DESKTOP SHADCN SIDEBAR (Desktop)           -->
+<!-- ========================================== -->
+<aside class="hidden md:flex flex-col w-64 border-r border-[#EBE6DC] bg-white sticky top-0 h-screen select-none shrink-0 z-40">
+<!-- Brand Logo -->
+<div class="p-6 pb-5 border-b border-[#EBE6DC] flex items-center gap-3">
+<div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shadow-inner">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="utensils-crossed" aria-hidden="true" class="lucide lucide-utensils-crossed w-5 h-5"><path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8"></path><path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7"></path><path d="m2.1 21.8 6.4-6.3"></path><path d="m19 5-7 7"></path></svg>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-extrabold text-lg tracking-tight text-slate-900 leading-none">Porsi Terakhir</span>
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+</div>
+<span class="text-[11px] font-medium text-tertiary">Kampus Harvest &amp; Rescue</span>
+</div>
+</div>
+<!-- Navigation items -->
+<nav class="flex-1 px-3.5 py-6 space-y-2">
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold bg-primary/10 text-primary transition-all" href="#katalog">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="layout-grid" aria-hidden="true" class="lucide lucide-layout-grid w-4 h-4 text-primary"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg>
+<span class="">Katalog Harian</span>
+<span class="ml-auto bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">6 Menu</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-[#F8F5EE] transition-all" href="#pesanan">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="receipt" aria-hidden="true" class="lucide lucide-receipt w-4 h-4 text-slate-400"><path d="M12 17V7"></path><path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8"></path><path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z"></path></svg>
+<span class="">Pesanan Saya</span>
+<span class="ml-auto bg-accent text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse whitespace-nowrap">1 Siap Ambil</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-[#F8F5EE] transition-all" href="#mitra">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="store" aria-hidden="true" class="lucide lucide-store w-4 h-4 text-slate-400"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"></path><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"></path><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"></path></svg>
+<span class="">Kantin &amp; Tenant</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-[#F8F5EE] transition-all" href="#impact">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="leaf" aria-hidden="true" class="lucide lucide-leaf w-4 h-4 text-slate-400"><path d="M11 20a10 10 0 0010-10 25.9 25.9 0 00-1.04-7.281 1 1 0 00-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0011 20"></path><path d="M2 21a5 5 0 012.911-4.544C7.613 15.212 8.351 15.24 11 13"></path></svg>
+<span class="">Dampak &amp; Badge</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-[#F8F5EE] transition-all" href="#carakerja">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="help-circle" aria-hidden="true" class="lucide lucide-help-circle w-4 h-4 text-slate-400"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+<span class="">Panduan Mahasiswa</span>
+</a>
+</nav>
+<!-- Pilot Campus Badge & Impact mini -->
+<div class="px-4 py-3.5 mx-3 mb-4 rounded-2xl bg-[#EAF4EC] border border-emerald-200/70 text-xs">
+<div class="flex items-center gap-2 font-bold text-primary mb-1">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="shield-check" aria-hidden="true" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
+<span class="">SDG 12 Pilot Kampus</span>
+</div>
+<p class="text-[11px] text-emerald-900/80 leading-relaxed font-normal">
+      Surplus makanan matang bermutu dari kantin terakreditasi higienis kampus.
+    </p>
+</div>
+<!-- Student Avatar Profile Footer -->
+<div class="p-4 border-t border-[#EBE6DC] bg-[#FAF8F4] flex items-center justify-between">
+<div class="flex items-center gap-3 overflow-hidden">
+<div class="relative w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+<span class="">RA</span>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-white"></span>
+</div>
+<div class="truncate">
+<p class="text-xs font-bold text-slate-900 leading-tight truncate">Rafi Anggara</p>
+<span class="inline-flex items-center gap-1 text-[11px] text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Teknik Elektro '22
+        </span>
+</div>
+</div>
+<button class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-200/60" title="Pengaturan Akun">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="settings" aria-hidden="true" class="lucide lucide-settings w-4 h-4"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"></path><circle cx="12" cy="12" r="3"></circle></svg>
+</button>
+</div>
+</aside>
+<!-- ========================================== -->
+<!-- MOBILE TOP BAR                             -->
+<!-- ========================================== -->
+<header class="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#EBE6DC] px-4 py-3 flex items-center justify-between shadow-warm-sm">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="utensils-crossed" aria-hidden="true" class="lucide lucide-utensils-crossed w-4 h-4"><path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8"></path><path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7"></path><path d="m2.1 21.8 6.4-6.3"></path><path d="m19 5-7 7"></path></svg>
+</div>
+<div>
+<h1 class="text-sm font-extrabold text-slate-900 tracking-tight leading-tight">Porsi Terakhir</h1>
+<p class="text-[10px] text-tertiary font-medium">Surplus Kampus Berkualitas</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<a class="flex items-center gap-1.5 bg-amber-50 text-amber-900 border border-amber-300 text-xs px-2.5 py-1 rounded-full font-semibold shadow-xs" href="#active-order-alert">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="qr-code" aria-hidden="true" class="lucide lucide-qr-code w-3.5 h-3.5 text-accent"><rect width="5" height="5" x="3" y="3" rx="1"></rect><rect width="5" height="5" x="16" y="3" rx="1"></rect><rect width="5" height="5" x="3" y="16" rx="1"></rect><path d="M21 16h-3a2 2 0 0 0-2 2v3"></path><path d="M21 21v.01"></path><path d="M12 7v3a2 2 0 0 1-2 2H7"></path><path d="M3 12h.01"></path><path d="M12 3h.01"></path><path d="M12 16v.01"></path><path d="M16 12h1"></path><path d="M21 12v.01"></path><path d="M12 21v-1"></path></svg>
+<span class="">1 Siap Ambil</span>
+</a>
+<div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs">
+      RA
+    </div>
+</div>
+</header>
+<!-- ========================================== -->
+<!-- MAIN CONTENT CONTAINER                     -->
+<!-- ========================================== -->
+<main class="flex-1 px-4 sm:px-6 lg:px-8 py-6 md:py-8 max-w-6xl w-full mx-auto pb-24 md:pb-12">
+<!-- 1. EDITORIAL HEADER BLOCK -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
+<div>
+<div class="flex items-center gap-2 mb-2"><span class="inline-flex items-center gap-1.5 bg-[#EAF4EC] text-primary border border-emerald-200/80 text-xs font-semibold px-3 py-1 rounded-full shadow-2xs whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="calendar" aria-hidden="true" class="lucide lucide-calendar w-3.5 h-3.5 shrink-0"><path d="M8 2v3"></path><path d="M16 2v3"></path><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path></svg><span id="date-label" class="">Selasa Sore — 12 Porsi Diselamatkan</span></span><span class="inline-flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200/80 text-[11px] font-semibold px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0"></span> Jendela Rilis 15.30 - 18.45 WIB</span></div>
+<h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Katalog Porsi Sore Hari Ini</h1>
+<p class="text-sm md:text-base text-tertiary mt-1 max-w-2xl font-normal leading-relaxed">
+        Makanan matang bersih dari mitra kantin kampus. Porsi terbatas, harga bersahabat, tanpa membuang makanan berharga.
+      </p>
+</div>
+<!-- Trust Indicator -->
+<div class="hidden lg:flex flex-col items-end text-right">
+<div class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-[#EAF4EC] border border-emerald-200 px-3 py-1.5 rounded-xl whitespace-nowrap">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check-circle-2" aria-hidden="true" class="lucide lucide-check-circle-2 w-3.5 h-3.5"><circle cx="12" cy="12" r="10"></circle><path d="m16 9-5.5 5.5L8 12"></path></svg>
+<span class="">100% Higienis &amp; Terverifikasi</span>
+</div>
+<span class="text-[11px] text-tertiary mt-1">Standar inspeksi satgas pangan kampus</span>
+</div>
+</div>
+<!-- 2. DELIGHTFUL ACTIVE ORDER UTILITY CARD -->
+<div class="rounded-2xl border border-amber-300/80 bg-gradient-to-r from-amber-50/90 via-orange-50/70 to-amber-50/90 p-4 sm:p-5 shadow-warm-sm transition-all my-4" id="active-order-alert">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="flex items-start sm:items-center gap-3.5">
+<div class="w-11 h-11 rounded-xl bg-accent text-white flex items-center justify-center shrink-0 shadow-md">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="ticket" aria-hidden="true" class="lucide lucide-ticket w-6 h-6"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path><path d="M13 5v2"></path><path d="M13 17v2"></path><path d="M13 11v2"></path></svg>
+</div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="bg-amber-200/90 text-amber-900 text-[11px] font-extrabold px-2.5 py-0.5 rounded-md uppercase tracking-wide whitespace-nowrap">Siap Diambil</span>
+<h2 class="text-sm sm:text-base font-extrabold text-amber-950">Pesanan Aktif: Nasi Ayam Bakar Madu</h2>
+</div>
+<p class="text-xs text-amber-900/90 mt-1 flex items-center gap-2">
+<span class="font-semibold text-slate-800">Warung Bu Sari • Kantin Gedung B</span>
+<span class="">•</span>
+<span class="text-accent font-bold flex items-center gap-1">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="clock" aria-hidden="true" class="lucide lucide-clock w-3.5 h-3.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg> Ambil s/d 18.00 WIB (Sisa 35 Menit)
+            </span>
+</p>
+</div>
+</div>
+<div class="flex items-center gap-2.5 shrink-0">
+<button class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white shadow-md transition-transform active:scale-95" onclick="openQrModal()">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="qr-code" aria-hidden="true" class="lucide lucide-qr-code w-4 h-4"><rect width="5" height="5" x="3" y="3" rx="1"></rect><rect width="5" height="5" x="16" y="3" rx="1"></rect><rect width="5" height="5" x="3" y="16" rx="1"></rect><path d="M21 16h-3a2 2 0 0 0-2 2v3"></path><path d="M21 21v.01"></path><path d="M12 7v3a2 2 0 0 1-2 2H7"></path><path d="M3 12h.01"></path><path d="M12 3h.01"></path><path d="M12 16v.01"></path><path d="M16 12h1"></path><path d="M21 12v.01"></path><path d="M12 21v-1"></path></svg>
+<span class="">Tampilkan QR Pengambilan</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 3. INFO ALERT (Payment on pickup reminder) -->
+<div class="rounded-2xl border border-emerald-200/80 bg-[#EAF4EC] px-4 py-3 text-xs text-emerald-950 flex items-center justify-between shadow-2xs mb-6" id="info-dismiss-alert">
+<div class="flex items-center gap-3">
+<div class="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="badge-dollar-sign" aria-hidden="true" class="lucide lucide-badge-dollar-sign w-4 h-4"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 18V6"></path></svg>
+</div>
+<p class="font-medium leading-relaxed">
+<strong class="font-bold text-primary">Bayar Langsung di Kasir Kantin:</strong> Kunci porsi online secara gratis, lalu selesaikan pembayaran (Tunai atau QRIS) saat mengambil makanan di gerai.
+      </p>
+</div>
+<button class="text-emerald-800/60 hover:text-emerald-950 p-1 rounded-lg hover:bg-emerald-200/40 transition-colors ml-2" onclick="document.getElementById('info-dismiss-alert').remove()" title="Tutup pemberitahuan">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-4 h-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</button>
+</div>
+<!-- 4. SEARCH AND AUTHENTIC MITRA FILTER -->
+<div class="mb-6 space-y-4">
+<div class="flex items-center gap-2.5 sm:gap-3">
+<!-- Input Search with icon -->
+<div class="relative flex-1">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" aria-hidden="true" class="lucide lucide-search w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+<input class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E0DACE] bg-white text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-warm-sm" id="searchInput" oninput="handleSearch(this.value)" placeholder="Cari santapan (Ayam Geprek, Sayur Lodeh, Soto, Rendang)..." type="text">
+</div>
+<!-- Mobile Filter Button -->
+<button class="md:hidden flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-[#E0DACE] bg-white text-slate-700 text-sm font-semibold hover:bg-[#F9F6F0] shrink-0 shadow-warm-sm" onclick="toggleMobileFilter(true)">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sliders-horizontal" aria-hidden="true" class="lucide lucide-sliders-horizontal w-4 h-4 text-primary"><path d="M10 5H3"></path><path d="M12 19H3"></path><path d="M14 3v4"></path><path d="M16 17v4"></path><path d="M21 12h-9"></path><path d="M21 19h-5"></path><path d="M21 5h-7"></path><path d="M8 10v4"></path><path d="M8 12H3"></path></svg>
+<span class="">Filter</span>
+</button>
+<!-- Desktop Select Sortir -->
+<div class="hidden md:flex items-center gap-2 shrink-0">
+<span class="text-xs font-semibold text-tertiary">Urutan:</span>
+<div class="relative">
+<select class="appearance-none bg-white border border-[#E0DACE] text-xs font-semibold text-slate-800 py-2.5 pl-3.5 pr-8 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-warm-sm cursor-pointer" id="sortSelect" onchange="handleSort(this.value)">
+<option value="newest">Waktu Masak Paling Baru</option>
+<option value="cheapest">Harga Paling Hemat</option>
+<option value="quota">Sisa Kuota Terbanyak</option>
+<option value="expiring">Paling Cepat Berakhir</option>
+</select>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" aria-hidden="true" class="lucide lucide-chevron-down w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"><path d="m6 9 6 6 6-6"></path></svg>
+</div>
+</div>
+</div>
+<!-- Filter by Mitra Tabs -->
+<div class="hidden md:flex items-center overflow-x-auto custom-scrollbar py-2 gap-2.5" id="desktopMitraToggle"><span class="text-xs font-semibold text-tertiary mr-1 shrink-0 whitespace-nowrap">Mitra Kantin:</span>
+<button class="mitra-chip active px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all inline-flex items-center gap-2 bg-primary text-white border-primary shadow-warm-sm shrink-0 whitespace-nowrap" onclick="filterMitra('all', this)">
+  <span class="whitespace-nowrap">Semua Gerai</span>
+  <span class="bg-white/20 text-white text-[10px] px-1.5 py-0.5 rounded-full font-semibold shrink-0">6</span>
+</button>
+<button class="mitra-chip px-3.5 py-1.5 rounded-full text-xs font-semibold border border-[#E2DCcf] bg-white text-slate-700 hover:bg-[#F9F7F1] transition-all inline-flex items-center gap-1.5 shadow-2xs shrink-0 whitespace-nowrap" onclick="filterMitra('Warung Bu Sari', this)">
+  <span class="w-4 h-4 rounded-full bg-orange-100 text-orange-800 text-[9px] font-extrabold flex items-center justify-center shrink-0">BS</span>
+  <span class="whitespace-nowrap">Warung Bu Sari</span>
+  <span class="text-[10px] text-tertiary font-normal shrink-0 whitespace-nowrap">(Gedung B)</span>
+</button>
+<button class="mitra-chip px-3.5 py-1.5 rounded-full text-xs font-semibold border border-[#E2DCcf] bg-white text-slate-700 hover:bg-[#F9F7F1] transition-all inline-flex items-center gap-1.5 shadow-2xs shrink-0 whitespace-nowrap" onclick="filterMitra('Kantin Fakultas Teknik', this)">
+  <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-800 text-[9px] font-extrabold flex items-center justify-center shrink-0">FT</span>
+  <span class="whitespace-nowrap">Kantin Teknik</span>
+  <span class="text-[10px] text-tertiary font-normal shrink-0 whitespace-nowrap">(Selasar Lt.1)</span>
+</button>
+<button class="mitra-chip px-3.5 py-1.5 rounded-full text-xs font-semibold border border-[#E2DCcf] bg-white text-slate-700 hover:bg-[#F9F7F1] transition-all inline-flex items-center gap-1.5 shadow-2xs shrink-0 whitespace-nowrap" onclick="filterMitra('Dapur Pak Joko', this)">
+  <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-extrabold flex items-center justify-center shrink-0">PJ</span>
+  <span class="whitespace-nowrap">Dapur Pak Joko</span>
+  <span class="text-[10px] text-tertiary font-normal shrink-0 whitespace-nowrap">(Vokasi)</span>
+</button>
+<button class="mitra-chip px-3.5 py-1.5 rounded-full text-xs font-semibold border border-[#E2DCcf] bg-white text-slate-700 hover:bg-[#F9F7F1] transition-all inline-flex items-center gap-1.5 shadow-2xs shrink-0 whitespace-nowrap" onclick="filterMitra('Kedai Soto Makmur', this)">
+  <span class="w-4 h-4 rounded-full bg-amber-100 text-amber-800 text-[9px] font-extrabold flex items-center justify-center shrink-0">SM</span>
+  <span class="whitespace-nowrap">Soto Makmur</span>
+  <span class="text-[10px] text-tertiary font-normal shrink-0 whitespace-nowrap">(Gedung C)</span>
+</button></div>
+</div>
+<!-- Status Bar / Count -->
+<div class="flex items-center justify-between text-xs text-tertiary px-1 mt-4 mb-5">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 bg-[#F0EBE0] text-slate-800 font-bold px-2 py-0.5 rounded-md text-[11px] whitespace-nowrap">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" aria-hidden="true" class="lucide lucide-sparkles w-3 h-3 text-primary"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg> Segar &amp; Layak
+      </span>
+<span id="activePortionCount" class="">Menampilkan 6 porsi yang sesuai kriteria</span>
+</div>
+<span class="text-[11px] text-slate-400 hidden sm:inline">Pembaruan otomatis tiap 2 menit</span>
+</div>
+<!-- ==================================================== -->
+<!-- 5. PORTION GRID WITH REAL PHOTOGRAPHY & TACTILE CARDS -->
+<!-- ==================================================== -->
+<div class="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 grid" id="catalogGrid">
+<!-- CARD 1: Nasi Ayam Geprek Sambal Matah -->
+<div class="portion-card bg-white border border-[#E6E0D5] rounded-2xl overflow-hidden shadow-warm-sm hover:shadow-warm-lg transition-all duration-300 flex-col group cursor-pointer flex" onclick="openDetailModal('Nasi Ayam Geprek Sambal Matah', 'Warung Bu Sari', '10.000', '18.000', 'Sisa 4 dari 10 porsi', 40, '15.30', '18.30', ['Ayam Renyah', 'Sambal Bawang Mentah', 'Lalap Segar', '100% Halal'], 'https://lh3.googleusercontent.com/aida-public/AB6AXuCqcTMdTgfnMR9PvOOHh3BaJQckFcE0Ho48cyFOiKF2AkXedMvkWMqyFk6ydeIhowRrMtmDwdLXFG_wvam3a93thmLkOC3pI9bDLUf3IP9N9bgD6dRaBoza4FxBuNQMmeHD8JNTaAtsqkksKF9HNm6kK9PGZmIHMp606W34yrsP2Rgp1JooJT6m9yxZj9iQfpZ6M_0VDcpsC3uAa4MNMHf380PlrfjsXMM6ZnVvvg_gSx_ic8L2Hmik', false)"><div class="relative aspect-4/3 w-full bg-stone-100 overflow-hidden"><img alt="Nasi Ayam Geprek Sambal Matah Warung Bu Sari" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqcTMdTgfnMR9PvOOHh3BaJQckFcE0Ho48cyFOiKF2AkXedMvkWMqyFk6ydeIhowRrMtmDwdLXFG_wvam3a93thmLkOC3pI9bDLUf3IP9N9bgD6dRaBoza4FxBuNQMmeHD8JNTaAtsqkksKF9HNm6kK9PGZmIHMp606W34yrsP2Rgp1JooJT6m9yxZj9iQfpZ6M_0VDcpsC3uAa4MNMHf380PlrfjsXMM6ZnVvvg_gSx_ic8L2Hmik"><div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 via-black/20 to-transparent pointer-events-none"></div><div class="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none"></div><div class="absolute top-3 left-3 bg-accent text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-md flex items-center gap-1 tracking-tight whitespace-nowrap shrink-0"><span class="">HEMAT 45%</span></div><div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-white/10 whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="clock" aria-hidden="true" class="lucide lucide-clock w-3 h-3 text-emerald-400 shrink-0"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg><span class="">Dimasak 15.30 WIB</span></div><div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px]"><span class="flex items-center gap-1 font-medium bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-md whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="map-pin" aria-hidden="true" class="lucide lucide-map-pin w-3 h-3 text-amber-400 shrink-0"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Kantin Gedung B</span><span class="bg-emerald-600/90 font-bold px-2 py-0.5 rounded-md flex items-center gap-1 whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="shield-check" aria-hidden="true" class="lucide lucide-shield-check w-2.5 h-2.5 shrink-0"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> Halal</span></div></div><div class="p-4 sm:p-5 flex-1 flex flex-col justify-between"><div><div class="flex items-start justify-between gap-2"><div><div class="flex items-center gap-1.5 text-xs text-tertiary mb-1 font-medium"><span class="w-4 h-4 rounded-full bg-orange-100 text-orange-800 text-[9px] font-extrabold flex items-center justify-center shrink-0">BS</span><span class="font-semibold text-slate-800">Warung Bu Sari</span><span class="">•</span><span class="">Pujasera Utama</span></div><h3 class="font-extrabold text-base sm:text-lg text-slate-900 leading-snug group-hover:text-primary transition-colors">Nasi Ayam Geprek Sambal Matah</h3></div></div><div class="flex items-baseline gap-2.5 mt-3"><span class="text-2xl font-black text-primary tracking-tight">Rp 10.000</span><span class="text-xs text-slate-400 line-through font-medium">Rp 18.000</span><span class="text-[11px] font-bold text-accent bg-accent-subtle px-1.5 py-0.5 rounded ml-auto whitespace-nowrap shrink-0">Hemat Rp 8rb</span></div><div class="mt-4 pt-3 border-t border-[#F0EBE0]"><div class="flex items-center justify-between text-xs mb-1.5"><span class="font-semibold text-slate-700 flex items-center gap-1.5 whitespace-nowrap"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span> Sisa 4 dari 10 porsi</span><span class="text-[11px] font-bold text-primary whitespace-nowrap shrink-0">Tersisa 40%</span></div><div class="w-full bg-[#EAE5DA] rounded-full h-2 overflow-hidden p-0.5"><div class="bg-primary h-full rounded-full transition-all duration-300" style="width: 40%"></div></div></div><div class="mt-3 flex items-center gap-2 text-xs text-tertiary bg-[#FAF7F0] p-2.5 rounded-xl border border-[#EDE7DB]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="timer" aria-hidden="true" class="lucide lucide-timer w-3.5 h-3.5 text-primary shrink-0"><line x1="10" x2="14" y1="2" y2="2"></line><line x1="12" x2="15" y1="14" y2="11"></line><circle cx="12" cy="14" r="8"></circle></svg><span class="">Batas ambil s/d <strong class="text-slate-900 font-bold">18.30 WIB</strong></span><span class="ml-auto text-[11px] text-slate-400 whitespace-nowrap">Tutup tenant</span></div><div class="flex flex-wrap gap-1.5 mt-3"><span class="text-[10px] font-semibold text-slate-700 bg-[#F4EFE6] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Ayam Krispi</span><span class="text-[10px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/50 whitespace-nowrap shrink-0">Pedas Segar</span><span class="text-[10px] font-semibold text-emerald-800 bg-[#EAF4EC] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Nasi Putih Pulen</span></div></div><div class="mt-5 pt-3"><button class="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold flex items-center justify-center gap-2 shadow-warm-sm group-hover:shadow transition-all"><span class="">Kunci Porsi Ini</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button></div></div></div>
+<!-- CARD 2: Paket Nasi Sayur + Telur Balado (Urgent/Low Quota) -->
+<div class="portion-card bg-white border border-amber-200/90 rounded-2xl overflow-hidden shadow-warm-sm hover:shadow-warm-lg transition-all duration-300 flex-col group cursor-pointer flex" onclick="openDetailModal('Paket Nasi Sayur + Telur Balado', 'Kantin Fakultas Teknik', '7.000', '14.000', 'Tinggal 2 porsi!', 20, '15.45', '18.45', ['Telur Balado Utuh', 'Sayur Lodeh Labu Siam', 'Tempe Bacem', '100% Halal'], 'https://lh3.googleusercontent.com/aida-public/AB6AXuBF1CqI5er4NQyTPUj2ZLnUq5T1j_W94i2-wPOjHBmB0S7GYmoUyxpIvE5b4G0HWueRjxl9gIoKqguiZW8YCu0ZbjLdgu06dHSpdxoNP8_M_z4TCRMzsP2a1TF-CReXKcZ3cBSDGasjbILvQErRVjR8qL183L0Axg4hfSaDizJvRUjOoZXsKhA4yiaU3jj6rLqilJgs03z1rxcBqt0hi08TAYlykE7RsxOBrP3b6qCBD7zCh6sIjvqk', false)"><div class="relative aspect-4/3 w-full bg-stone-100 overflow-hidden"><img alt="Paket Nasi Sayur Lodeh dan Telur Balado" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF1CqI5er4NQyTPUj2ZLnUq5T1j_W94i2-wPOjHBmB0S7GYmoUyxpIvE5b4G0HWueRjxl9gIoKqguiZW8YCu0ZbjLdgu06dHSpdxoNP8_M_z4TCRMzsP2a1TF-CReXKcZ3cBSDGasjbILvQErRVjR8qL183L0Axg4hfSaDizJvRUjOoZXsKhA4yiaU3jj6rLqilJgs03z1rxcBqt0hi08TAYlykE7RsxOBrP3b6qCBD7zCh6sIjvqk"><div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 via-black/20 to-transparent pointer-events-none"></div><div class="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none"></div><div class="absolute top-3 left-3 bg-accent text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-md flex items-center gap-1 tracking-tight whitespace-nowrap shrink-0"><span class="">HEMAT 50%</span></div><div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-white/10 whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="clock" aria-hidden="true" class="lucide lucide-clock w-3 h-3 text-emerald-400 shrink-0"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg><span class="">Dimasak 15.45 WIB</span></div><div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px]"><span class="flex items-center gap-1 font-medium bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-md whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="map-pin" aria-hidden="true" class="lucide lucide-map-pin w-3 h-3 text-amber-400 shrink-0"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Selasar FT Lt. 1</span><span class="bg-amber-600/90 font-bold px-2 py-0.5 rounded-md flex items-center gap-1 whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="flame" aria-hidden="true" class="lucide lucide-flame w-2.5 h-2.5 shrink-0"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"></path></svg> Cepat Habis</span></div></div><div class="p-4 sm:p-5 flex-1 flex flex-col justify-between"><div><div class="flex items-start justify-between gap-2"><div><div class="flex items-center gap-1.5 text-xs text-tertiary mb-1 font-medium"><span class="w-4 h-4 rounded-full bg-blue-100 text-blue-800 text-[9px] font-extrabold flex items-center justify-center shrink-0">FT</span><span class="font-semibold text-slate-800">Kantin Fakultas Teknik</span><span class="">•</span><span class="">Warung Barokah</span></div><h3 class="font-extrabold text-base sm:text-lg text-slate-900 leading-snug group-hover:text-primary transition-colors">Paket Nasi Sayur + Telur Balado</h3></div></div><div class="flex items-baseline gap-2.5 mt-3"><span class="text-2xl font-black text-accent tracking-tight">Rp 7.000</span><span class="text-xs text-slate-400 line-through font-medium">Rp 14.000</span><span class="text-[11px] font-bold text-accent bg-accent-subtle px-1.5 py-0.5 rounded ml-auto whitespace-nowrap shrink-0">Hemat Rp 7rb</span></div><div class="mt-4 pt-3 border-t border-[#F0EBE0]"><div class="flex items-center justify-between text-xs mb-1.5"><span class="font-extrabold text-accent flex items-center gap-1 whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="flame" aria-hidden="true" class="lucide lucide-flame w-3.5 h-3.5 animate-bounce shrink-0"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"></path></svg> Tinggal 2 porsi lagi!</span><span class="text-[11px] font-bold text-accent whitespace-nowrap shrink-0">Sisa 20%</span></div><div class="w-full bg-[#EAE5DA] rounded-full h-2 overflow-hidden p-0.5"><div class="bg-accent h-full rounded-full transition-all duration-300" style="width: 20%"></div></div></div><div class="mt-3 flex items-center gap-2 text-xs text-tertiary bg-[#FAF7F0] p-2.5 rounded-xl border border-[#EDE7DB]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="timer" aria-hidden="true" class="lucide lucide-timer w-3.5 h-3.5 text-accent shrink-0"><line x1="10" x2="14" y1="2" y2="2"></line><line x1="12" x2="15" y1="14" y2="11"></line><circle cx="12" cy="14" r="8"></circle></svg><span class="">Batas ambil s/d <strong class="text-slate-900 font-bold">18.45 WIB</strong></span><span class="ml-auto text-[11px] text-amber-700 font-semibold whitespace-nowrap">Tersisa 45 mnt</span></div><div class="flex flex-wrap gap-1.5 mt-3"><span class="text-[10px] font-semibold text-slate-700 bg-[#F4EFE6] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Telur Balado</span><span class="text-[10px] font-semibold text-slate-700 bg-[#F4EFE6] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Sayur Lodeh</span><span class="text-[10px] font-semibold text-emerald-800 bg-[#EAF4EC] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Menu Sehat</span></div></div><div class="mt-5 pt-3"><button class="w-full py-2.5 px-4 rounded-xl bg-accent hover:bg-accent-hover text-white text-xs font-bold flex items-center justify-center gap-2 shadow-warm-sm group-hover:shadow transition-all"><span class="">Amankan Porsi Cepat</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button></div></div></div>
+<!-- CARD 3: Nasi Pecel Madiun Lengkap -->
+<div class="portion-card bg-white border border-[#E6E0D5] rounded-2xl overflow-hidden shadow-warm-sm hover:shadow-warm-lg transition-all duration-300 flex-col group cursor-pointer flex" onclick="openDetailModal('Nasi Pecel Madiun Lengkap', 'Dapur Pak Joko', '8.000', '15.000', 'Sisa 5 dari 8 porsi', 62, '16.00', '19.00', ['Bumbu Kacang Gurih', 'Sayur Daun Singkong &amp; Tauge', 'Tempe Goreng Tepung', 'Peyek Kacang'], 'https://lh3.googleusercontent.com/aida-public/AB6AXuDwgNpRhyUzdYcSidbuGQxbYF8OE33qI7we3dAW9nCFBZGViGnAW7_rxJMz1RAgkAZyfsagqgPymCdCkkO16I1ijiXCkjjfv5JGT7T8AAQTpUYCWQJULMm2ua2cFeTqGT6DqiDE_cHR9TChD_6i2fFJf3zYZaoBA8ErsTa1CfcBLC-hP_AYum4O_xMRS5EGmJTcwKsOL-iJek4uAJ1d0iNhFcsnxKIz0ZmWf_jkROrElGQHFlbp85tp', false)"><div class="relative aspect-4/3 w-full bg-stone-100 overflow-hidden"><img alt="Nasi Pecel Madiun Tradisional Bumbu Kacang" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwgNpRhyUzdYcSidbuGQxbYF8OE33qI7we3dAW9nCFBZGViGnAW7_rxJMz1RAgkAZyfsagqgPymCdCkkO16I1ijiXCkjjfv5JGT7T8AAQTpUYCWQJULMm2ua2cFeTqGT6DqiDE_cHR9TChD_6i2fFJf3zYZaoBA8ErsTa1CfcBLC-hP_AYum4O_xMRS5EGmJTcwKsOL-iJek4uAJ1d0iNhFcsnxKIz0ZmWf_jkROrElGQHFlbp85tp"><div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 via-black/20 to-transparent pointer-events-none"></div><div class="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none"></div><div class="absolute top-3 left-3 bg-accent text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-md flex items-center gap-1 tracking-tight whitespace-nowrap shrink-0"><span class="">HEMAT 47%</span></div><div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-white/10 whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="clock" aria-hidden="true" class="lucide lucide-clock w-3 h-3 text-emerald-400 shrink-0"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg><span class="">Dimasak 16.00 WIB</span></div><div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px]"><span class="flex items-center gap-1 font-medium bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-md whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="map-pin" aria-hidden="true" class="lucide lucide-map-pin w-3 h-3 text-amber-400 shrink-0"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Pujasera Vokasi</span><span class="bg-emerald-600/90 font-bold px-2 py-0.5 rounded-md flex items-center gap-1 whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="leaf" aria-hidden="true" class="lucide lucide-leaf w-2.5 h-2.5 shrink-0"><path d="M11 20a10 10 0 0010-10 25.9 25.9 0 00-1.04-7.281 1 1 0 00-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0011 20"></path><path d="M2 21a5 5 0 012.911-4.544C7.613 15.212 8.351 15.24 11 13"></path></svg> Sayur Matang</span></div></div><div class="p-4 sm:p-5 flex-1 flex flex-col justify-between"><div><div class="flex items-start justify-between gap-2"><div><div class="flex items-center gap-1.5 text-xs text-tertiary mb-1 font-medium"><span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-extrabold flex items-center justify-center shrink-0">PJ</span><span class="font-semibold text-slate-800">Dapur Pak Joko</span><span class="">•</span><span class="">Kantin Vokasi</span></div><h3 class="font-extrabold text-base sm:text-lg text-slate-900 leading-snug group-hover:text-primary transition-colors">Nasi Pecel Madiun Lengkap</h3></div></div><div class="flex items-baseline gap-2.5 mt-3"><span class="text-2xl font-black text-primary tracking-tight">Rp 8.000</span><span class="text-xs text-slate-400 line-through font-medium">Rp 15.000</span><span class="text-[11px] font-bold text-accent bg-accent-subtle px-1.5 py-0.5 rounded ml-auto whitespace-nowrap shrink-0">Hemat Rp 7rb</span></div><div class="mt-4 pt-3 border-t border-[#F0EBE0]"><div class="flex items-center justify-between text-xs mb-1.5"><span class="font-semibold text-slate-700 flex items-center gap-1.5 whitespace-nowrap"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span> Sisa 5 dari 8 porsi</span><span class="text-[11px] font-bold text-primary whitespace-nowrap shrink-0">Tersisa 62%</span></div><div class="w-full bg-[#EAE5DA] rounded-full h-2 overflow-hidden p-0.5"><div class="bg-primary h-full rounded-full transition-all duration-300" style="width: 62%"></div></div></div><div class="mt-3 flex items-center gap-2 text-xs text-tertiary bg-[#FAF7F0] p-2.5 rounded-xl border border-[#EDE7DB]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="timer" aria-hidden="true" class="lucide lucide-timer w-3.5 h-3.5 text-primary shrink-0"><line x1="10" x2="14" y1="2" y2="2"></line><line x1="12" x2="15" y1="14" y2="11"></line><circle cx="12" cy="14" r="8"></circle></svg><span class="">Batas ambil s/d <strong class="text-slate-900 font-bold">19.00 WIB</strong></span><span class="ml-auto text-[11px] text-slate-400 whitespace-nowrap">Siap bawa pulang</span></div><div class="flex flex-wrap gap-1.5 mt-3"><span class="text-[10px] font-semibold text-rose-800 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200/60 flex items-center gap-1 whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="alert-circle" aria-hidden="true" class="lucide lucide-alert-circle w-2.5 h-2.5 shrink-0"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg> Mengandung Kacang</span><span class="text-[10px] font-semibold text-slate-700 bg-[#F4EFE6] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Tempe Mendoan</span><span class="text-[10px] font-semibold text-slate-700 bg-[#F4EFE6] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Rempeyek</span></div></div><div class="mt-5 pt-3"><button class="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold flex items-center justify-center gap-2 shadow-warm-sm group-hover:shadow transition-all"><span class="">Kunci Porsi Ini</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button></div></div></div>
+<!-- CARD 4: Soto Ayam Lamongan (Urgent Limit Timer) -->
+<div class="portion-card bg-white border border-orange-300 rounded-2xl overflow-hidden shadow-warm-sm hover:shadow-warm-lg transition-all duration-300 flex-col group cursor-pointer flex" onclick="openDetailModal('Soto Ayam Lamongan Kuah Segar', 'Kedai Soto Makmur', '9.000', '16.000', 'Tinggal 1 porsi!', 15, '15.00', '18.00', ['Ayam Suwir Kampung', 'Kuah Kuning Rempah Hangat', 'Koya Gurih', 'Soun &amp; Kol'], 'https://lh3.googleusercontent.com/aida-public/AB6AXuCjLeoVJ2hC27EZiV8FjCaTjdVLyOpput40bOinIyFiiOJGrAOYqQw81EHpj24OF4Tvk-IZGBCmjT-lknExZ6xWG-1TEP89AylvlfYn68UlFw-s_UPT6IwOr_XJEsinL9Qf7jAgUUv4A0Mde311KSOxWd_fX0mB1yQkCaixiyKZy5XMTblLYPnkfYYqftoiL2xGMmgntrZXgmn59JWMKTYzYgDaszg2voG26wqN4mU1m-dVgyF-iMJQ', false)"><div class="relative aspect-4/3 w-full bg-stone-100 overflow-hidden"><img alt="Soto Ayam Lamongan Hangat Berasap" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjLeoVJ2hC27EZiV8FjCaTjdVLyOpput40bOinIyFiiOJGrAOYqQw81EHpj24OF4Tvk-IZGBCmjT-lknExZ6xWG-1TEP89AylvlfYn68UlFw-s_UPT6IwOr_XJEsinL9Qf7jAgUUv4A0Mde311KSOxWd_fX0mB1yQkCaixiyKZy5XMTblLYPnkfYYqftoiL2xGMmgntrZXgmn59JWMKTYzYgDaszg2voG26wqN4mU1m-dVgyF-iMJQ"><div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 via-black/20 to-transparent pointer-events-none"></div><div class="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none"></div><div class="absolute top-3 left-3 bg-accent text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-md flex items-center gap-1 tracking-tight whitespace-nowrap shrink-0"><span class="">HEMAT 44%</span></div><div class="absolute top-3 right-3 bg-red-600/90 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="hourglass" aria-hidden="true" class="lucide lucide-hourglass w-3 h-3 text-white animate-spin shrink-0"><path d="M5 22h14"></path><path d="M5 2h14"></path><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path></svg><span class="">Sisa 25 Menit!</span></div><div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px]"><span class="flex items-center gap-1 font-medium bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-md whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="map-pin" aria-hidden="true" class="lucide lucide-map-pin w-3 h-3 text-amber-400 shrink-0"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Kantin Gedung C</span><span class="bg-amber-600/90 font-bold px-2 py-0.5 rounded-md flex items-center gap-1 whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="zap" aria-hidden="true" class="lucide lucide-zap w-2.5 h-2.5 shrink-0"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"></path></svg> Kuah Hangat</span></div></div><div class="p-4 sm:p-5 flex-1 flex flex-col justify-between"><div><div class="flex items-start justify-between gap-2"><div><div class="flex items-center gap-1.5 text-xs text-tertiary mb-1 font-medium"><span class="w-4 h-4 rounded-full bg-amber-100 text-amber-800 text-[9px] font-extrabold flex items-center justify-center shrink-0">SM</span><span class="font-semibold text-slate-800">Kedai Soto Makmur</span><span class="">•</span><span class="">Stand Kuah Spesial</span></div><h3 class="font-extrabold text-base sm:text-lg text-slate-900 leading-snug group-hover:text-primary transition-colors">Soto Ayam Lamongan Kuah Segar</h3></div></div><div class="flex items-baseline gap-2.5 mt-3"><span class="text-2xl font-black text-accent tracking-tight">Rp 9.000</span><span class="text-xs text-slate-400 line-through font-medium">Rp 16.000</span><span class="text-[11px] font-bold text-accent bg-accent-subtle px-1.5 py-0.5 rounded ml-auto whitespace-nowrap shrink-0">Hemat Rp 7rb</span></div><div class="mt-4 pt-3 border-t border-[#F0EBE0]"><div class="flex items-center justify-between text-xs mb-1.5"><span class="font-extrabold text-red-600 flex items-center gap-1 whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="alert-triangle" aria-hidden="true" class="lucide lucide-alert-triangle w-3.5 h-3.5 shrink-0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg> Terakhir! Tinggal 1 porsi</span><span class="text-[11px] font-bold text-red-600 whitespace-nowrap shrink-0">Sisa 10%</span></div><div class="w-full bg-[#EAE5DA] rounded-full h-2 overflow-hidden p-0.5"><div class="bg-red-500 h-full rounded-full transition-all duration-300" style="width: 10%"></div></div></div><div class="mt-3 flex items-center gap-2 text-xs font-semibold text-amber-900 bg-amber-50/90 p-2.5 rounded-xl border border-amber-200"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="alert-circle" aria-hidden="true" class="lucide lucide-alert-circle w-3.5 h-3.5 text-accent shrink-0"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg><span class="whitespace-nowrap">Batas jual s/d <strong class="text-accent">18.00 WIB</strong> (Segera ditarik)</span></div><div class="flex flex-wrap gap-1.5 mt-3"><span class="text-[10px] font-semibold text-slate-700 bg-[#F4EFE6] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Ayam Suwir</span><span class="text-[10px] font-semibold text-slate-700 bg-[#F4EFE6] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Koya Renyah</span><span class="text-[10px] font-semibold text-emerald-800 bg-[#EAF4EC] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Sambal Rawit Pisah</span></div></div><div class="mt-5 pt-3"><button class="w-full py-2.5 px-4 rounded-xl bg-accent hover:bg-accent-hover text-white text-xs font-bold flex items-center justify-center gap-2 shadow-warm-sm group-hover:shadow transition-all"><span class="">Amankan Porsi Cepat</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button></div></div></div>
+<!-- CARD 5: Paket Nasi Padang Rendang Basah -->
+<div class="portion-card bg-white border border-[#E6E0D5] rounded-2xl overflow-hidden shadow-warm-sm hover:shadow-warm-lg transition-all duration-300 flex-col group cursor-pointer flex" onclick="openDetailModal('Paket Nasi Padang Rendang Basah', 'Warung Bu Sari', '12.000', '22.000', 'Sisa 3 dari 6 porsi', 50, '15.30', '18.30', ['Daging Sapi Empuk', 'Bumbu Rendang Pekat', 'Daun Singkong Rebus', 'Sambal Ijo Khas Minang'], 'https://lh3.googleusercontent.com/aida-public/AB6AXuCutlTxl3Gn_cIt7Hoj6jZ1xW4QnqK10bKpt3nnpklzkJ0magcgYLaiStoC0xdC-gcy2phdEt5J-E9s3TvRNqB-4hxrNB_0lIE2QE2K7Shd9wSc934klXsT1vOo0prneKztasS70prbqUIZUP84mJl_kWH3B2fVOVrukV1kJnPS0mulkwdgVQH44-fTqaiENCMtefsjCMZiQtvEdhjrTbKsD0KYYSbOnleLw0fMivxHeoJBGvYyPBB2', false)"><div class="relative aspect-4/3 w-full bg-stone-100 overflow-hidden"><img alt="Paket Nasi Padang Rendang Basah Daging Sapi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCutlTxl3Gn_cIt7Hoj6jZ1xW4QnqK10bKpt3nnpklzkJ0magcgYLaiStoC0xdC-gcy2phdEt5J-E9s3TvRNqB-4hxrNB_0lIE2QE2K7Shd9wSc934klXsT1vOo0prneKztasS70prbqUIZUP84mJl_kWH3B2fVOVrukV1kJnPS0mulkwdgVQH44-fTqaiENCMtefsjCMZiQtvEdhjrTbKsD0KYYSbOnleLw0fMivxHeoJBGvYyPBB2"><div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 via-black/20 to-transparent pointer-events-none"></div><div class="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none"></div><div class="absolute top-3 left-3 bg-accent text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-md flex items-center gap-1 tracking-tight whitespace-nowrap shrink-0"><span class="">HEMAT 45%</span></div><div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-white/10 whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="clock" aria-hidden="true" class="lucide lucide-clock w-3 h-3 text-emerald-400 shrink-0"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg><span class="">Dimasak 15.30 WIB</span></div><div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px]"><span class="flex items-center gap-1 font-medium bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-md whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="map-pin" aria-hidden="true" class="lucide lucide-map-pin w-3 h-3 text-amber-400 shrink-0"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg> Kantin Gedung B</span><span class="bg-primary/90 font-bold px-2 py-0.5 rounded-md flex items-center gap-1 whitespace-nowrap shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="star" aria-hidden="true" class="lucide lucide-star w-2.5 h-2.5 shrink-0"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg> Favorit Mahasiswa</span></div></div><div class="p-4 sm:p-5 flex-1 flex flex-col justify-between"><div><div class="flex items-start justify-between gap-2"><div><div class="flex items-center gap-1.5 text-xs text-tertiary mb-1 font-medium"><span class="w-4 h-4 rounded-full bg-orange-100 text-orange-800 text-[9px] font-extrabold flex items-center justify-center shrink-0">BS</span><span class="font-semibold text-slate-800">Warung Bu Sari</span><span class="">•</span><span class="">Masakan Minang</span></div><h3 class="font-extrabold text-base sm:text-lg text-slate-900 leading-snug group-hover:text-primary transition-colors">Paket Nasi Padang Rendang Basah</h3></div></div><div class="flex items-baseline gap-2.5 mt-3"><span class="text-2xl font-black text-primary tracking-tight">Rp 12.000</span><span class="text-xs text-slate-400 line-through font-medium">Rp 22.000</span><span class="text-[11px] font-bold text-accent bg-accent-subtle px-1.5 py-0.5 rounded ml-auto whitespace-nowrap shrink-0">Hemat Rp 10rb</span></div><div class="mt-4 pt-3 border-t border-[#F0EBE0]"><div class="flex items-center justify-between text-xs mb-1.5"><span class="font-semibold text-slate-700 flex items-center gap-1.5 whitespace-nowrap"><span class="w-2 h-2 rounded-full bg-primary shrink-0"></span> Sisa 3 dari 6 porsi</span><span class="text-[11px] font-bold text-primary whitespace-nowrap shrink-0">Tersisa 50%</span></div><div class="w-full bg-[#EAE5DA] rounded-full h-2 overflow-hidden p-0.5"><div class="bg-primary h-full rounded-full transition-all duration-300" style="width: 50%"></div></div></div><div class="mt-3 flex items-center gap-2 text-xs text-tertiary bg-[#FAF7F0] p-2.5 rounded-xl border border-[#EDE7DB]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="timer" aria-hidden="true" class="lucide lucide-timer w-3.5 h-3.5 text-primary shrink-0"><line x1="10" x2="14" y1="2" y2="2"></line><line x1="12" x2="15" y1="14" y2="11"></line><circle cx="12" cy="14" r="8"></circle></svg><span class="">Batas ambil s/d <strong class="text-slate-900 font-bold">18.30 WIB</strong></span><span class="ml-auto text-[11px] text-slate-400 whitespace-nowrap">Warung Buka</span></div><div class="flex flex-wrap gap-1.5 mt-3"><span class="text-[10px] font-semibold text-slate-700 bg-[#F4EFE6] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Daging Sapi</span><span class="text-[10px] font-semibold text-slate-700 bg-[#F4EFE6] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Bumbu Santan Asli</span><span class="text-[10px] font-semibold text-emerald-800 bg-[#EAF4EC] px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">Sambal Ijo</span></div></div><div class="mt-5 pt-3"><button class="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold flex items-center justify-center gap-2 shadow-warm-sm group-hover:shadow transition-all"><span class="">Kunci Porsi Ini</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button></div></div></div>
+<!-- CARD 6: SOLD OUT CARD (Gracefully muted with tasteful overlay) -->
+<div class="portion-card bg-[#F9F7F2] border border-[#E3DDCF] rounded-2xl overflow-hidden shadow-none flex-col opacity-80 cursor-not-allowed flex">
+<div class="relative aspect-4/3 w-full bg-stone-200 overflow-hidden">
+<!-- Tasteful grayscale food image -->
+<img alt="Nasi Goreng Babat Spesial Canteen Dish" class="w-full h-full object-cover filter grayscale contrast-75 brightness-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChU7bJZ0Y5_csdwaONrzrZ6vU6lECpeTl_8ZOO-bAKudLlY9eU9BFRdfqtYCykNZaqTaszUWJVps24gFynMW6b-lIZXQ42lB2EuOgmkIUGAH9TWU8aDy15efdF30-u19DIIX8q6C3uvWV6aINP0mmG3dEtI94Kw3P9tBDxXgK51Bd6vj25-IlMP1jg2sKR5llbHWWd921eJx5jsriFEAOyxNShKG81rRKGKpyouWX1kNGp0kyPCAKK">
+<!-- Soft Vignette Scrim -->
+<div class="absolute inset-0 bg-stone-900/35 backdrop-blur-[1px] flex flex-col items-center justify-center">
+<span class="bg-stone-900/90 text-white text-xs font-extrabold px-4 py-2 rounded-xl uppercase tracking-wider shadow-lg flex items-center gap-2 border border-white/20 whitespace-nowrap">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check-circle" aria-hidden="true" class="lucide lucide-check-circle w-4 h-4 text-emerald-400"><path d="M21.801 10A10 10 0 1 1 17 3.335"></path><path d="m9 11 3 3L22 4"></path></svg>
+<span class="">Sudah Dipesan Semua</span>
+</span>
+<span class="text-[11px] text-white/90 mt-1.5 font-medium">6 dari 6 porsi berhasil diselamatkan</span>
+</div>
+<div class="absolute top-3 left-3 bg-stone-700/80 text-white text-[11px] font-semibold px-2 py-0.5 rounded-md whitespace-nowrap">
+          Habis 16.20
+        </div>
+</div>
+<div class="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between gap-2">
+<div>
+<div class="flex items-center gap-1.5 text-xs text-stone-400 mb-1 font-medium">
+<span class="w-4 h-4 rounded-full bg-stone-200 text-stone-600 text-[9px] font-bold flex items-center justify-center shrink-0">PJ</span>
+<span class="">Dapur Pak Joko</span>
+<span class="">•</span>
+<span class="">Kantin Vokasi</span>
+</div>
+<h3 class="font-bold text-base sm:text-lg text-stone-500 leading-snug line-through">
+                Nasi Goreng Babat + Telur Ceplok
+              </h3>
+</div>
+</div>
+<div class="flex items-baseline gap-2.5 mt-3">
+<span class="text-xl font-bold text-stone-400">Rp 9.000</span>
+<span class="text-xs text-stone-400 line-through">Rp 15.000</span>
+<span class="text-[11px] text-stone-400 ml-auto">Diselamatkan penuh</span>
+</div>
+<div class="mt-4 pt-3 border-t border-stone-200/60">
+<div class="flex items-center justify-between text-xs mb-1.5 text-stone-400">
+<span class="">0 dari 6 porsi tersisa</span>
+<span class="text-[11px] font-bold text-emerald-700">Terselamatkan 100%</span>
+</div>
+<div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
+<div class="bg-emerald-600/40 h-full rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<div class="mt-3 flex items-center gap-2 text-xs text-stone-400 bg-stone-100 p-2.5 rounded-xl">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check-check" aria-hidden="true" class="lucide lucide-check-check w-3.5 h-3.5 text-stone-400 shrink-0"><path d="M18 6 7 17l-5-5"></path><path d="m22 10-7.5 7.5L13 16"></path></svg>
+<span class="">Porsi hari ini telah habis diamankan mahasiswa</span>
+</div>
+</div>
+<div class="mt-5 pt-3">
+<button class="w-full py-2.5 px-4 rounded-xl bg-stone-200 text-stone-400 text-xs font-bold cursor-not-allowed flex items-center justify-center gap-1.5" disabled="">
+<span class="">Porsi Habis Hari Ini</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- ==================================================== -->
+<!-- SKELETON STATE (Toggled via Dev Toolbar)             -->
+<!-- ==================================================== -->
+<div class="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden" id="skeletonGrid">
+<div class="bg-white border border-[#E6E0D5] rounded-2xl overflow-hidden p-0 shadow-warm-sm animate-pulse">
+<div class="aspect-4/3 bg-stone-200 w-full"></div>
+<div class="p-5 space-y-3">
+<div class="h-4 bg-stone-200 rounded-lg w-3/4"></div>
+<div class="h-3 bg-stone-100 rounded-md w-1/2"></div>
+<div class="h-7 bg-stone-200 rounded-lg w-1/3 mt-2"></div>
+<div class="h-2 bg-stone-100 rounded-full w-full"></div>
+<div class="h-10 bg-stone-200 rounded-xl w-full mt-4"></div>
+</div>
+</div>
+<div class="bg-white border border-[#E6E0D5] rounded-2xl overflow-hidden p-0 shadow-warm-sm animate-pulse">
+<div class="aspect-4/3 bg-stone-200 w-full"></div>
+<div class="p-5 space-y-3">
+<div class="h-4 bg-stone-200 rounded-lg w-2/3"></div>
+<div class="h-3 bg-stone-100 rounded-md w-1/2"></div>
+<div class="h-7 bg-stone-200 rounded-lg w-1/3 mt-2"></div>
+<div class="h-2 bg-stone-100 rounded-full w-full"></div>
+<div class="h-10 bg-stone-200 rounded-xl w-full mt-4"></div>
+</div>
+</div>
+<div class="bg-white border border-[#E6E0D5] rounded-2xl overflow-hidden p-0 shadow-warm-sm animate-pulse">
+<div class="aspect-4/3 bg-stone-200 w-full"></div>
+<div class="p-5 space-y-3">
+<div class="h-4 bg-stone-200 rounded-lg w-4/5"></div>
+<div class="h-3 bg-stone-100 rounded-md w-2/5"></div>
+<div class="h-7 bg-stone-200 rounded-lg w-1/3 mt-2"></div>
+<div class="h-2 bg-stone-100 rounded-full w-full"></div>
+<div class="h-10 bg-stone-200 rounded-xl w-full mt-4"></div>
+</div>
+</div>
+</div>
+<!-- ==================================================== -->
+<!-- EMPTY STATE 1: Belum Ada Porsi Hari Ini             -->
+<!-- ==================================================== -->
+<div class="text-center py-16 px-4 bg-white rounded-3xl border border-dashed border-[#DCD5C8] shadow-warm-sm max-w-lg mx-auto hidden" id="emptyTodayState">
+<div class="w-20 h-20 mx-auto rounded-2xl bg-[#EAF4EC] text-primary flex items-center justify-center mb-4">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="utensils" aria-hidden="true" class="lucide lucide-utensils w-10 h-10 text-primary"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>
+</div>
+<h3 class="text-lg font-extrabold text-slate-900 mb-1">Belum Ada Porsi Baru yang Dirilis</h3>
+<p class="text-xs text-tertiary max-w-sm mx-auto mb-6 leading-relaxed">
+      Mitra kantin biasanya memperbarui daftar makanan surplus menjelang jam tutup (mulai pukul 15.30 WIB). Pantau kembali sesaat lagi!
+    </p>
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#D5CEC0] bg-white text-xs font-bold text-slate-800 hover:bg-[#FAF8F4] transition-colors shadow-2xs" onclick="setViewMode('normal')">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="refresh-cw" aria-hidden="true" class="lucide lucide-refresh-cw w-4 h-4 text-primary"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+<span class="">Muat Ulang Katalog</span>
+</button>
+</div>
+<!-- ==================================================== -->
+<!-- EMPTY STATE 2: Tidak Ada Hasil Filter / Cari        -->
+<!-- ==================================================== -->
+<div class="hidden text-center py-16 px-4 bg-white rounded-3xl border border-[#E6E0D5] shadow-warm-sm max-w-lg mx-auto" id="emptyFilterState">
+<div class="w-16 h-16 mx-auto rounded-2xl bg-amber-50 text-accent flex items-center justify-center mb-4">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search-x" aria-hidden="true" class="lucide lucide-search-x w-8 h-8"><path d="m13.5 8.5-5 5"></path><path d="m8.5 8.5 5 5"></path><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+</div>
+<h3 class="text-lg font-extrabold text-slate-900 mb-1">Tidak Menemukan Porsi yang Cocok</h3>
+<p class="text-xs text-tertiary max-w-xs mx-auto mb-6 leading-relaxed">
+      Coba ganti filter gerai kantin atau gunakan kata kunci menu yang lebih umum.
+    </p>
+<button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-hover transition-colors shadow-warm-sm" onclick="resetAllFilters()">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="rotate-ccw" aria-hidden="true" class="lucide lucide-rotate-ccw w-4 h-4"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+<span class="">Reset Semua Filter</span>
+</button>
+</div>
+<!-- ==================================================== -->
+<!-- ERROR STATE ALERT                                    -->
+<!-- ==================================================== -->
+<div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-red-900 shadow-2xs space-y-4 mt-10 mb-8" id="errorStateAlert">
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-xl bg-red-100 text-red-600 shrink-0">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="alert-octagon" aria-hidden="true" class="lucide lucide-alert-octagon w-5 h-5"><path d="M12 16h.01"></path><path d="M12 8v4"></path><path d="M15.312 2a2 2 0 0 1 1.414.586l4.688 4.688A2 2 0 0 1 22 8.688v6.624a2 2 0 0 1-.586 1.414l-4.688 4.688a2 2 0 0 1-1.414.586H8.688a2 2 0 0 1-1.414-.586l-4.688-4.688A2 2 0 0 1 2 15.312V8.688a2 2 0 0 1 .586-1.414l4.688-4.688A2 2 0 0 1 8.688 2z"></path></svg>
+</div>
+<div>
+<h4 class="text-sm font-bold text-red-950">Gagal menyinkronkan data porsi</h4>
+<p class="text-xs text-red-800 mt-0.5">Koneksi terputus saat mengambil ketersediaan kuota porsi kantin.</p>
+</div>
+</div>
+<button class="px-3.5 py-1.5 rounded-xl bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition-colors shrink-0" onclick="setViewMode('normal')">
+        Coba Lagi
+      </button>
+</div>
+</div>
+<!-- 6. EDITORIAL FOOTER NOTE -->
+<div class="mt-14 border-t border-[#E8E2D5] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-tertiary py-6">
+<div class="flex items-center gap-2 max-w-xl text-center sm:text-left">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="leaf" aria-hidden="true" class="lucide lucide-leaf w-4 h-4 text-primary shrink-0 hidden sm:inline"><path d="M11 20a10 10 0 0010-10 25.9 25.9 0 00-1.04-7.281 1 1 0 00-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0011 20"></path><path d="M2 21a5 5 0 012.911-4.544C7.613 15.212 8.351 15.24 11 13"></path></svg>
+<p class="leading-relaxed font-normal">
+<strong>Porsi Terakhir</strong> adalah inisiatif keberlanjutan kampus. Setiap makanan dipastikan matang, higienis, dan disimpan sesuai standar sanitasi tenant sebelum diselamatkan.
+      </p>
+</div>
+<a class="inline-flex items-center gap-1.5 font-bold text-primary hover:text-primary-hover hover:underline shrink-0" href="#carakerja">
+<span class="">Standar Kebersihan &amp; Ketentuan</span>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" aria-hidden="true" class="lucide lucide-chevron-right w-3.5 h-3.5"><path d="m9 18 6-6-6-6"></path></svg>
+</a>
+</div>
+</main>
+<!-- ==================================================== -->
+<!-- MOBILE BOTTOM NAVIGATION                             -->
+<!-- ==================================================== -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#E8E2D5] px-3 py-2 flex items-center justify-around shadow-warm-lg">
+<a class="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-primary bg-primary/10 transition-colors" href="#katalog">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="layout-grid" aria-hidden="true" class="lucide lucide-layout-grid w-5 h-5"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg>
+<span class="text-[10px] font-extrabold mt-1">Katalog</span>
+</a>
+<a class="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-500 hover:text-slate-900 transition-colors" href="#active-order-alert">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="receipt" aria-hidden="true" class="lucide lucide-receipt w-5 h-5"><path d="M12 17V7"></path><path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8"></path><path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z"></path></svg>
+<span class="text-[10px] font-semibold mt-1">Pesanan</span>
+<span class="absolute top-1 right-2.5 w-2.5 h-2.5 rounded-full bg-accent ring-2 ring-white"></span>
+</a>
+<a class="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-500 hover:text-slate-900 transition-colors" href="#profil">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="award" aria-hidden="true" class="lucide lucide-award w-5 h-5"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"></path><circle cx="12" cy="8" r="6"></circle></svg>
+<span class="text-[10px] font-semibold mt-1">Profil</span>
+</a>
+<a class="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-slate-500 hover:text-slate-900 transition-colors" href="#carakerja">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="help-circle" aria-hidden="true" class="lucide lucide-help-circle w-5 h-5"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+<span class="text-[10px] font-semibold mt-1">Bantuan</span>
+</a>
+</nav>
+<!-- ==================================================== -->
+<!-- MOBILE BOTTOM SHEET: FILTER & SORT MODAL            -->
+<!-- ==================================================== -->
+<div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-end justify-center transition-opacity" id="mobileFilterSheet">
+<div class="bg-white w-full rounded-t-3xl max-w-lg p-5 shadow-2xl animate-in slide-in-from-bottom duration-200">
+<div class="flex items-center justify-between pb-3 border-b border-[#E8E2D5]">
+<h3 class="font-extrabold text-base text-slate-900">Filter &amp; Urutkan Porsi</h3>
+<button class="p-1 rounded-lg hover:bg-slate-100 text-slate-400" onclick="toggleMobileFilter(false)">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</button>
+</div>
+<div class="py-4 space-y-4">
+<div>
+<label class="text-xs font-bold text-slate-800 block mb-2">Pilih Gerai Kantin</label>
+<div class="grid grid-cols-2 gap-2" id="mobileMitraOptions"><button class="mobile-chip active text-left px-3 py-2 rounded-xl border border-primary bg-primary/10 text-primary text-xs font-bold whitespace-nowrap truncate" onclick="selectMobileMitra('all', this)">
+  Semua Gerai
+</button>
+<button class="mobile-chip text-left px-3 py-2 rounded-xl border border-[#E0DACE] text-slate-700 text-xs font-medium whitespace-nowrap truncate" onclick="selectMobileMitra('Warung Bu Sari', this)">
+  Warung Bu Sari (Gedung B)
+</button>
+<button class="mobile-chip text-left px-3 py-2 rounded-xl border border-[#E0DACE] text-slate-700 text-xs font-medium whitespace-nowrap truncate" onclick="selectMobileMitra('Kantin Fakultas Teknik', this)">
+  Kantin FT (Selasar Lt.1)
+</button>
+<button class="mobile-chip text-left px-3 py-2 rounded-xl border border-[#E0DACE] text-slate-700 text-xs font-medium whitespace-nowrap truncate" onclick="selectMobileMitra('Dapur Pak Joko', this)">
+  Dapur Pak Joko (Vokasi)
+</button>
+<button class="mobile-chip text-left px-3 py-2 rounded-xl border border-[#E0DACE] text-slate-700 text-xs font-medium whitespace-nowrap truncate" onclick="selectMobileMitra('Kedai Soto Makmur', this)">
+  Soto Makmur (Gedung C)
+</button></div>
+</div>
+<div>
+<label class="text-xs font-bold text-slate-800 block mb-2">Urutan Tampilan</label>
+<select class="w-full bg-[#FAF8F4] border border-[#E0DACE] text-xs rounded-xl p-3 font-semibold" id="mobileSortSelect">
+<option value="newest">Waktu masak paling baru</option>
+<option value="cheapest">Harga paling hemat</option>
+<option value="quota">Sisa kuota terbanyak</option>
+</select>
+</div>
+</div>
+<div class="pt-3 border-t border-[#E8E2D5] flex items-center gap-3">
+<button class="w-1/2 py-2.5 rounded-xl border border-[#E0DACE] text-xs font-bold text-slate-700 hover:bg-[#FAF8F4]" onclick="resetAllFilters(); toggleMobileFilter(false);">
+        Reset Filter
+      </button>
+<button class="w-1/2 py-2.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-hover shadow-md" onclick="applyMobileFilter(); toggleMobileFilter(false);">
+        Terapkan
+      </button>
+</div>
+</div>
+</div>
+<!-- ==================================================== -->
+<!-- DETAIL PORSI MODAL (Click on card)                  -->
+<!-- ==================================================== -->
+<div class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 hidden" id="detailModal">
+<div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-150 border border-stone-200">
+<div class="relative aspect-16/10 bg-stone-100">
+<img alt="Menu" class="w-full h-full object-cover" id="modalImg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqcTMdTgfnMR9PvOOHh3BaJQckFcE0Ho48cyFOiKF2AkXedMvkWMqyFk6ydeIhowRrMtmDwdLXFG_wvam3a93thmLkOC3pI9bDLUf3IP9N9bgD6dRaBoza4FxBuNQMmeHD8JNTaAtsqkksKF9HNm6kK9PGZmIHMp606W34yrsP2Rgp1JooJT6m9yxZj9iQfpZ6M_0VDcpsC3uAa4MNMHf380PlrfjsXMM6ZnVvvg_gSx_ic8L2Hmik">
+<div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 to-transparent"></div>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors" onclick="closeDetailModal()">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x w-4 h-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</button>
+<span class="absolute bottom-3 left-3 bg-accent text-white text-xs font-black px-3 py-1 rounded-lg shadow-md" id="modalDiscountBadge">
+        HEMAT 45%
+      </span>
+</div>
+<div class="p-5 sm:p-6">
+<div class="flex items-start justify-between gap-3">
+<div>
+<h3 class="text-xl font-extrabold text-slate-900 leading-tight" id="modalTitle">Nasi Ayam Geprek Sambal Matah</h3>
+<p class="text-xs text-tertiary mt-1 font-semibold flex items-center gap-1.5" id="modalMitra"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="store" aria-hidden="true" class="lucide lucide-store w-3.5 h-3.5 text-primary"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"></path><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"></path><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"></path></svg> Warung Bu Sari • Kantin Terakreditasi Kampus</p>
+</div>
+<div class="text-right">
+<span class="text-2xl font-black text-primary block" id="modalDiscountPrice">Rp 10.000</span>
+<span class="text-xs text-slate-400 line-through font-medium" id="modalNormalPrice">Rp 18.000</span>
+</div>
+</div>
+<div class="my-4 p-3.5 bg-[#FAF7F0] rounded-2xl space-y-2 text-xs border border-[#EDE7DB]">
+<div class="flex justify-between text-slate-700">
+<span class="">Ketersediaan Kuota:</span>
+<strong class="text-primary font-bold" id="modalQuotaText">Sisa 4 dari 10 porsi</strong>
+</div>
+<div class="flex justify-between text-slate-700">
+<span class="">Waktu Matang di Kantin:</span>
+<span class="font-semibold text-slate-900" id="modalCookTime">15.30 WIB</span>
+</div>
+<div class="flex justify-between text-slate-700">
+<span class="">Batas Waktu Pengambilan:</span>
+<span class="font-extrabold text-accent" id="modalLimitTime">18.30 WIB</span>
+</div>
+</div>
+<div class="mb-5">
+<span class="text-xs font-bold text-slate-800 block mb-2">Komposisi &amp; Catatan Makanan:</span>
+<div class="flex flex-wrap gap-1.5" id="modalAllergenContainer"><span class="text-[11px] font-semibold bg-[#F4EFE6] border border-[#E8E2D5] px-2.5 py-0.5 rounded-md text-slate-800">Ayam Renyah</span><span class="text-[11px] font-semibold bg-[#F4EFE6] border border-[#E8E2D5] px-2.5 py-0.5 rounded-md text-slate-800">Sambal Bawang Mentah</span><span class="text-[11px] font-semibold bg-[#F4EFE6] border border-[#E8E2D5] px-2.5 py-0.5 rounded-md text-slate-800">Lalap Segar</span><span class="text-[11px] font-semibold bg-[#F4EFE6] border border-[#E8E2D5] px-2.5 py-0.5 rounded-md text-slate-800">100% Halal</span></div>
+</div>
+<div class="pt-3 border-t border-[#E8E2D5] flex items-center gap-3">
+<button class="w-1/3 py-2.5 rounded-xl border border-[#D5CEC0] text-xs font-bold text-slate-700 hover:bg-[#FAF8F4]" onclick="closeDetailModal()">
+          Batal
+        </button>
+<button class="w-2/3 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition-all" onclick="lockPortionOrder()">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="lock" aria-hidden="true" class="lucide lucide-lock w-4 h-4"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+<span class="">Kunci Porsi Gratis (Bayar di Tenant)</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- ==================================================== -->
+<!-- QR PICKUP PREVIEW MODAL                              -->
+<!-- ==================================================== -->
+<div class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 hidden" id="qrModal">
+<div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center border border-stone-200">
+<div class="w-12 h-12 mx-auto rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mb-3">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="qr-code" aria-hidden="true" class="lucide lucide-qr-code w-6 h-6 text-accent"><rect width="5" height="5" x="3" y="3" rx="1"></rect><rect width="5" height="5" x="16" y="3" rx="1"></rect><rect width="5" height="5" x="3" y="16" rx="1"></rect><path d="M21 16h-3a2 2 0 0 0-2 2v3"></path><path d="M21 21v.01"></path><path d="M12 7v3a2 2 0 0 1-2 2H7"></path><path d="M3 12h.01"></path><path d="M12 3h.01"></path><path d="M12 16v.01"></path><path d="M16 12h1"></path><path d="M21 12v.01"></path><path d="M12 21v-1"></path></svg>
+</div>
+<h3 class="font-extrabold text-lg text-slate-900">QR Pengambilan Makanan</h3>
+<p class="text-xs text-tertiary mt-1 mb-4">Tunjukkan layar ini langsung ke kasir tenant saat mengambil porsi.</p>
+<!-- Realistic QR Visual -->
+<div class="w-48 h-48 mx-auto p-3.5 bg-white border-2 border-slate-900 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+<div class="grid grid-cols-6 gap-1.5 w-full h-full p-2 bg-slate-900 rounded-xl">
+<div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div>
+<div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div>
+<div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div>
+<div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div>
+<div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div>
+<div class="bg-white rounded-xs"></div><div class="bg-slate-900"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div><div class="bg-white rounded-xs"></div>
+</div>
+</div>
+<div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-3.5 text-xs text-amber-950 text-left mb-4">
+<div class="flex justify-between">
+<span class="text-amber-800 font-semibold">Kode Reservasi:</span>
+<strong class="font-mono text-slate-900 font-bold">#PT-8291</strong>
+</div>
+<div class="flex justify-between mt-1.5 pt-1.5 border-t border-amber-200/60">
+<span class="text-amber-800 font-semibold">Total Bayar di Kasir:</span>
+<strong class="text-accent font-black text-sm">Rp 10.000 (Tunai/QRIS)</strong>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-colors shadow-md" onclick="closeQrModal()">
+      Tutup QR Code
+    </button>
+</div>
+</div>
+<!-- ==================================================== -->
+<!-- JAVASCRIPT LOGIC & STATE HANDLING                    -->
+<!-- ==================================================== -->
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  // State switcher for review/demo
+  function setViewMode(mode) {
+    const catalogGrid = document.getElementById('catalogGrid');
+    const skeletonGrid = document.getElementById('skeletonGrid');
+    const emptyTodayState = document.getElementById('emptyTodayState');
+    const emptyFilterState = document.getElementById('emptyFilterState');
+    const errorStateAlert = document.getElementById('errorStateAlert');
+
+    catalogGrid.classList.add('hidden');
+    catalogGrid.classList.remove('grid');
+    skeletonGrid.classList.add('hidden');
+    skeletonGrid.classList.remove('grid');
+    emptyTodayState.classList.add('hidden');
+    emptyFilterState.classList.add('hidden');
+    errorStateAlert.classList.add('hidden');
+
+    document.querySelectorAll('.demo-btn').forEach(btn => {
+      btn.classList.remove('bg-primary', 'font-medium', 'text-white');
+      btn.classList.add('bg-slate-800', 'text-slate-300');
+    });
+
+    if (mode === 'normal') {
+      catalogGrid.classList.remove('hidden');
+      catalogGrid.classList.add('grid');
+    } else if (mode === 'loading') {
+      skeletonGrid.classList.remove('hidden');
+      skeletonGrid.classList.add('grid');
+    } else if (mode === 'empty-today') {
+      emptyTodayState.classList.remove('hidden');
+    } else if (mode === 'empty-filter') {
+      emptyFilterState.classList.remove('hidden');
+    } else if (mode === 'error') {
+      catalogGrid.classList.remove('hidden');
+      catalogGrid.classList.add('grid');
+      errorStateAlert.classList.remove('hidden');
+    }
+    lucide.createIcons();
+  }
+
+  // Toast generator (Sonner style)
+  function triggerToast(message) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'pointer-events-auto bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-warm-lg border border-slate-700/60 text-xs flex items-center gap-2.5 animate-in slide-in-from-bottom duration-200';
+    toast.innerHTML = `
+      <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+      <span class="font-medium">${message}</span>
+      <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white ml-2">
+        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+      </button>
+    `;
+    container.appendChild(toast);
+    lucide.createIcons();
+    setTimeout(() => {
+      if (toast.parentElement) toast.remove();
+    }, 4000);
+  }
+
+  // Filter Mitra Chips (Desktop)
+  let currentMitraFilter = 'all';
+  function filterMitra(mitra, buttonElement) {
+    currentMitraFilter = mitra;
+    document.querySelectorAll('.mitra-chip').forEach(btn => {
+      btn.classList.remove('active', 'bg-primary', 'text-white', 'border-primary');
+      btn.classList.add('bg-white', 'text-slate-700', 'border-[#E2DCcf]');
+    });
+    buttonElement.classList.add('active', 'bg-primary', 'text-white', 'border-primary');
+    buttonElement.classList.remove('bg-white', 'text-slate-700', 'border-[#E2DCcf]');
+
+    applyFiltering();
+  }
+
+  function handleSearch(query) {
+    applyFiltering();
+  }
+
+  function handleSort(sortType) {
+    triggerToast(`Katalog disortir berdasarkan: ${sortType}`);
+  }
+
+  function applyFiltering() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('#catalogGrid .portion-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      const matchesQuery = query === '' || text.includes(query);
+      const matchesMitra = currentMitraFilter === 'all' || text.includes(currentMitraFilter.toLowerCase());
+
+      if (matchesQuery && matchesMitra) {
+        card.classList.remove('hidden');
+        card.classList.add('flex');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+        card.classList.remove('flex');
+      }
+    });
+
+    const catalogGrid = document.getElementById('catalogGrid');
+    const emptyFilterState = document.getElementById('emptyFilterState');
+    const activeCountLabel = document.getElementById('activePortionCount');
+
+    if (visibleCount === 0) {
+      catalogGrid.classList.add('hidden');
+      emptyFilterState.classList.remove('hidden');
+    } else {
+      catalogGrid.classList.remove('hidden');
+      emptyFilterState.classList.add('hidden');
+      activeCountLabel.textContent = `Menampilkan ${visibleCount} porsi yang sesuai kriteria`;
+    }
+  }
+
+  function resetAllFilters() {
+    document.getElementById('searchInput').value = '';
+    currentMitraFilter = 'all';
+    document.querySelectorAll('.mitra-chip').forEach((btn, idx) => {
+      if (idx === 0) {
+        btn.classList.add('active', 'bg-primary', 'text-white', 'border-primary');
+        btn.classList.remove('bg-white', 'text-slate-700', 'border-[#E2DCcf]');
+      } else {
+        btn.classList.remove('active', 'bg-primary', 'text-white', 'border-primary');
+        btn.classList.add('bg-white', 'text-slate-700', 'border-[#E2DCcf]');
+      }
+    });
+    setViewMode('normal');
+    applyFiltering();
+    triggerToast("Filter katalog telah direset.");
+  }
+
+  // Mobile Filter Sheet
+  function toggleMobileFilter(show) {
+    const sheet = document.getElementById('mobileFilterSheet');
+    if (show) {
+      sheet.classList.remove('hidden');
+    } else {
+      sheet.classList.add('hidden');
+    }
+  }
+
+  function selectMobileMitra(mitra, el) {
+    document.querySelectorAll('.mobile-chip').forEach(btn => {
+      btn.classList.remove('active', 'border-primary', 'bg-primary/10', 'text-primary');
+      btn.classList.add('border-[#E0DACE]', 'text-slate-700');
+    });
+    el.classList.add('active', 'border-primary', 'bg-primary/10', 'text-primary');
+    el.classList.remove('border-[#E0DACE]', 'text-slate-700');
+    currentMitraFilter = mitra;
+  }
+
+  function applyMobileFilter() {
+    applyFiltering();
+    triggerToast("Filter berhasil diterapkan.");
+  }
+
+  // Detail Modal Handlers
+  function openDetailModal(title, mitra, discPrice, normPrice, quotaText, quotaPct, cookTime, limitTime, allergens, imgUrl, isSoldOut) {
+    if (isSoldOut) return;
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMitra').innerHTML = `<i class="w-3.5 h-3.5 text-primary" data-lucide="store"></i> ${mitra} • Kantin Terakreditasi Kampus`;
+    document.getElementById('modalDiscountPrice').textContent = `Rp ${discPrice}`;
+    document.getElementById('modalNormalPrice').textContent = `Rp ${normPrice}`;
+    document.getElementById('modalQuotaText').textContent = quotaText;
+    document.getElementById('modalCookTime').textContent = `${cookTime} WIB`;
+    document.getElementById('modalLimitTime').textContent = `${limitTime} WIB`;
+    document.getElementById('modalImg').src = imgUrl;
+
+    const container = document.getElementById('modalAllergenContainer');
+    container.innerHTML = '';
+    allergens.forEach(item => {
+      const span = document.createElement('span');
+      span.className = 'text-[11px] font-semibold bg-[#F4EFE6] border border-[#E8E2D5] px-2.5 py-0.5 rounded-md text-slate-800';
+      span.textContent = item;
+      container.appendChild(span);
+    });
+
+    document.getElementById('detailModal').classList.remove('hidden');
+    lucide.createIcons();
+  }
+
+  function closeDetailModal() {
+    document.getElementById('detailModal').classList.add('hidden');
+  }
+
+  function lockPortionOrder() {
+    closeDetailModal();
+    triggerToast("Porsi berhasil dikunci! Datangi kasir tenant sebelum waktu batas untuk pickup.");
+    document.getElementById('active-order-alert').classList.remove('hidden');
+  }
+
+  // QR Modal Handlers
+  function openQrModal() {
+    document.getElementById('qrModal').classList.remove('hidden');
+    lucide.createIcons();
+  }
+  function closeQrModal() {
+    document.getElementById('qrModal').classList.add('hidden');
+  }
+</script>
+
+
+<script class="">if (typeof lucide !== 'undefined') { lucide.createIcons(); }</script></body></html>

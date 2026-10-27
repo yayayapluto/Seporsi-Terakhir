@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+
+<html lang="id"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed-variant": "#00522c", "error": "#ba1a1a", "canvas-background": "#FFFBF5", "surface-container-lowest": "#ffffff", "background": "#effcf9", "primary": "#0b6438", "accent-hover": "#DE7819", "inverse-surface": "#273331", "on-error-container": "#93000a", "on-error": "#ffffff", "secondary-fixed-dim": "#ffb77d", "on-surface": "#121e1c", "surface-bright": "#effcf9", "surface-variant": "#d8e5e2", "outline-variant": "#bfc9be", "surface-container-low": "#e9f7f3", "inverse-on-surface": "#e6f4f0", "surface-card": "#FFFFFF", "on-surface-variant": "#3f4941", "surface-tint": "#196c40", "surface-container": "#e3f1ed", "on-background": "#121e1c", "primary-hover": "#256640", "accent-light": "#FEF3E7", "on-tertiary-fixed-variant": "#404943", "on-secondary-fixed": "#2f1500", "on-secondary": "#ffffff", "on-tertiary-fixed": "#151d19", "border-subtle": "#E5E1D8", "on-primary-fixed": "#00210f", "inverse-primary": "#88d7a1", "tertiary-fixed": "#dbe5dd", "primary-fixed-dim": "#88d7a1", "on-primary-container": "#ceffd9", "surface": "#effcf9", "tertiary-container": "#67716b", "secondary-container": "#fc9430", "on-primary": "#ffffff", "on-secondary-container": "#663500", "text-muted": "#64746B", "on-secondary-fixed-variant": "#6e3900", "tertiary-fixed-dim": "#bfc9c1", "primary-container": "#2e7d4f", "error-container": "#ffdad6", "outline": "#6f7a70", "tertiary": "#4f5953", "on-tertiary": "#ffffff", "on-tertiary-container": "#ebf5ed", "surface-container-highest": "#d8e5e2", "primary-fixed": "a4f4bc", "primary-light": "#EAF4EC", "surface-container-high": "#ddebe8", "secondary-fixed": "#ffdcc3", "secondary": "#914d00", "surface-dim": "#cfddd9" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter": "1rem", "space-sm": "0.5rem", "margin": "1rem", "space-md": "1rem", "space-xl": "2rem", "margin-md": "1.5rem", "gutter-lg": "1.5rem", "space-xs": "0.25rem", "space-lg": "1.5rem", "margin-lg": "2rem" }, "fontFamily": { "headline-sm": [ "Plus Jakarta Sans" ], "headline-lg": [ "Plus Jakarta Sans" ], "headline-md": [ "Plus Jakarta Sans" ], "body-lg": [ "Inter" ], "display": [ "Plus Jakarta Sans" ], "body-sm": [ "Inter" ], "label-lg": [ "Inter" ], "headline-lg-mobile": [ "Plus Jakarta Sans" ], "body-md": [ "Inter" ], "label-md": [ "Inter" ], "label-sm": [ "Inter" ], "display-mobile": [ "Plus Jakarta Sans" ] }, "fontSize": { "headline-sm": [ "18px", { "lineHeight": "24px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "headline-lg": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "600" } ], "headline-md": [ "22px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "body-lg": [ "16px", { "lineHeight": "24px", "fontWeight": "400" } ], "display": [ "40px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700" } ], "body-sm": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "label-lg": [ "14px", { "lineHeight": "20px", "letterSpacing": "-0.005em", "fontWeight": "600" } ], "headline-lg-mobile": [ "26px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "body-md": [ "14px", { "lineHeight": "20px", "fontWeight": "400" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "600" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.01em", "fontWeight": "600" } ], "display-mobile": [ "32px", { "lineHeight": "38px", "letterSpacing": "-0.025em", "fontWeight": "700" } ] } } } };</script></head><body class="bg-canvas-background font-body-md text-on-surface antialiased"><header class="fixed top-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full max-w-6xl mx-auto px-margin-lg"><div class="h-12 flex items-center justify-between"><div class="flex items-center gap-space-sm"><span class="font-label-sm text-label-sm text-text-muted">Portal Kampus Terpadu</span><span class="font-label-sm text-label-sm text-outline-variant">/</span><span class="font-label-sm text-label-sm text-text-muted">UPT Pengelolaan Sarana Kampus</span><span class="font-label-sm text-label-sm text-outline-variant">/</span><span class="font-label-sm text-label-sm text-primary font-semibold">Porsi Terakhir Admin Workspace</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-accent-light"><span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-secondary font-semibold">Fase Operasional: Pilot Tahap 1 - Zona Barat</span></div><div class="hidden md:flex items-center gap-space-xs text-text-muted"><span class="material-symbols-outlined text-[16px]">school</span><span class="font-label-sm text-label-sm">Konsorsium Kantin Sehat &amp; Berkelanjutan</span></div></div></div><div class="h-16 flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[22px]">eco</span></div><div><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Porsi Terakhir</span><span class="font-label-sm text-label-sm px-1.5 py-0.2 rounded bg-primary-light text-primary font-semibold">UPT Kantin</span></div><p class="font-label-sm text-label-sm text-text-muted">Pengelola Kampus &amp; Pengawasan Mutu Makanan</p></div></div><nav class="hidden xl:flex items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary font-semibold rounded-lg shadow-sm"><a aria-current="page" class="px-space-md py-space-sm transition-all flex items-center gap-space-xs bg-primary-container text-on-primary font-semibold rounded-lg shadow-sm" data-path="persetujuan-mitra" href="#">Persetujuan Mitra<span class="inline-flex items-center justify-center px-1.5 py-0.5 text-[11px] font-bold rounded-full bg-secondary-container text-on-secondary">3</span></a><a class="px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dasbor-dampak-pilot" href="#">Dasbor Dampak Pilot</a><a class="px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="audit-higienitas" href="#">Audit Higienitas</a><a class="px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="data-transaksi" href="#">Data Transaksi</a><a class="px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="pengaturan-kampus" href="#">Pengaturan Kampus</a></nav></div><div class="flex items-center gap-space-md"><div class="hidden lg:flex flex-col text-right"><span class="font-label-sm text-label-sm font-semibold text-on-surface">UPT Pengelolaan Sarana Kampus</span><span class="font-label-sm text-label-sm text-text-muted">Admin Kemahasiswaan &amp; Sanitasi</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-28 bg-canvas-background min-h-[calc(100vh-140px)]"><div class="max-w-6xl mx-auto px-margin-lg py-space-lg"><div class="flex flex-col w-full">
+<!-- Simulation State Switcher Bar -->
+<div class="mb-space-lg p-space-md bg-surface-container rounded-xl shadow-sm">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0">tune</span>
+<span class="font-label-md text-label-md text-on-surface whitespace-nowrap font-bold">Mode Simulasi Pengujian:</span>
+<span class="font-body-sm text-body-sm text-text-muted truncate hidden sm:inline">Pilih status kerja untuk menguji seluruh alur persetujuan admin UPT Kantin.</span>
+</div>
+<div class="flex items-center gap-space-xs flex-wrap">
+<button class="px-3 py-1.5 rounded-lg font-label-sm text-label-sm bg-primary text-on-primary transition-all whitespace-nowrap shadow-sm" id="sim-btn-queue" onclick="setSimState('queue')">1. Antrean Normal (3)</button>
+<button class="px-3 py-1.5 rounded-lg font-label-sm text-label-sm bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-all whitespace-nowrap" id="sim-btn-detail" onclick="setSimState('detail')">2. Detail Terbuka</button>
+<button class="px-3 py-1.5 rounded-lg font-label-sm text-label-sm bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-all whitespace-nowrap" id="sim-btn-modal" onclick="setSimState('modal')">3. Modal Konfirmasi</button>
+<button class="px-3 py-1.5 rounded-lg font-label-sm text-label-sm bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-all whitespace-nowrap" id="sim-btn-success" onclick="setSimState('success')">4. Notifikasi Sukses</button>
+<button class="px-3 py-1.5 rounded-lg font-label-sm text-label-sm bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-all whitespace-nowrap" id="sim-btn-approved" onclick="setSimState('approved')">5. Tab Mitra Aktif</button>
+<button class="px-3 py-1.5 rounded-lg font-label-sm text-label-sm bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-all whitespace-nowrap" id="sim-btn-empty" onclick="setSimState('empty')">6. Antrean Kosong</button>
+<button class="px-3 py-1.5 rounded-lg font-label-sm text-label-sm bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-all whitespace-nowrap" id="sim-btn-error" onclick="setSimState('error')">7. Gagal Muat</button>
+</div>
+</div>
+</div>
+<!-- Operational Header & Breadcrumb -->
+<div class="mb-space-lg flex flex-col gap-space-sm">
+<div class="flex items-center gap-space-xs text-text-muted font-label-sm text-label-sm">
+<span>UPT Pengelolaan Sarana Kampus</span>
+<span class="text-outline-variant">/</span>
+<span>Kemitraan Kantin</span>
+<span class="text-outline-variant">/</span>
+<span class="text-primary font-semibold">Verifikasi &amp; Persetujuan Berkas</span>
+</div>
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md pt-space-xs">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Ruang Kerja Persetujuan Mitra Kantin</h1>
+<p class="font-body-md text-body-md text-text-muted max-w-3xl mt-1">
+          Verifikasi kelaikan pendaftaran kios kantin kampus untuk aktivasi rilis porsi sore berdiskon dan hak akses scanner validasi tiket fisik sivitas akademika (Mendukung SDG 12).
+        </p>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex flex-col items-end text-right">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface">Sinkronisasi Siaga</span>
+<span class="font-body-sm text-body-sm text-text-muted">Hari ini, 15:40 WIB</span>
+</div>
+<button class="h-10 px-4 rounded-lg bg-surface-card hover:bg-surface-container text-on-surface flex items-center gap-space-xs shadow-sm transition-all font-label-lg text-label-lg active:scale-95" onclick="triggerSync()">
+<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>
+<span>Sinkronkan Berkas</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Realtime Toast Notification (Hidden by default, triggered on approval) -->
+<div class="hidden mb-space-md p-space-md rounded-xl bg-primary-light text-primary shadow-sm flex items-center justify-between gap-space-md animate-fade-in" id="toast-banner">
+<div class="flex items-center gap-space-md">
+<div class="w-8 h-8 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shrink-0">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+</div>
+<div>
+<p class="font-label-lg text-label-lg font-bold">Kemitraan Berhasil Diaktivasi!</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Kios <strong>Warung Bu Sari (#MTR-2024-089)</strong> telah disetujui. Akun portal vendor aktif dan hak akses pemindai QR tiket sore telah dibuka.</p>
+</div>
+</div>
+<button class="text-text-muted hover:text-on-surface p-1" onclick="dismissToast()">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line></svg>
+</button>
+</div>
+<!-- Search & Segmented Filtering Bar -->
+<div class="bg-surface-card rounded-xl p-space-md shadow-sm mb-space-lg flex flex-col gap-space-md">
+<div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-space-md">
+<!-- Segmented Nav -->
+<div class="flex items-center gap-1.5 p-1 bg-surface-container rounded-xl shrink-0 overflow-x-auto">
+<button class="px-space-md py-2 rounded-lg font-label-lg text-label-lg bg-primary-container text-on-primary shadow-sm transition-all flex items-center gap-space-sm whitespace-nowrap" id="tab-pending" onclick="switchTab('pending')">
+<span>Menunggu Persetujuan</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest text-primary font-bold text-[11px] whitespace-nowrap" id="badge-pending-count">3</span>
+</button>
+<button class="px-space-md py-2 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all flex items-center gap-space-sm whitespace-nowrap" id="tab-approved" onclick="switchTab('approved')">
+<span>Mitra Aktif Disetujui</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-semibold text-[11px] whitespace-nowrap">12</span>
+</button>
+<button class="px-space-md py-2 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all flex items-center gap-space-sm whitespace-nowrap" id="tab-all" onclick="switchTab('all')">
+<span>Semua Pengajuan</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-semibold text-[11px] whitespace-nowrap">15</span>
+</button>
+</div>
+<!-- Quick Search Input -->
+<div class="relative w-full md:w-80">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-muted">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+</span>
+<input class="w-full h-10 pl-9 pr-3 rounded-lg bg-surface-container text-on-surface placeholder:text-text-muted font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary/20" id="search-input" onkeyup="handleFilterSearch()" placeholder="Cari nama kios, gedung, atau penanggung jawab..." type="text"/>
+</div>
+</div>
+<!-- Sub-Filter Location Chips -->
+<div class="flex items-center gap-space-xs overflow-x-auto pb-0.5 text-label-sm">
+<span class="text-text-muted font-medium whitespace-nowrap mr-1">Filter Gedung:</span>
+<button class="px-3 py-1 rounded-full bg-primary text-on-primary font-semibold whitespace-nowrap shadow-sm">Semua Gedung</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all">Kantin Gedung B (Pujasera Utama)</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all">Kantin Fak. Teknik</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all">Kantin Gedung C</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all">Asrama &amp; Vokasi</button>
+</div>
+</div>
+<!-- VIEW AREA 1: PENDING QUEUE + INSPECTION PANEL (Default) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start" id="view-pending">
+<!-- Left Column: Verification Queue (~60%) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Daftar Pengajuan Pending</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-accent-light text-secondary font-semibold font-label-sm text-label-sm whitespace-nowrap">Prioritas Hari Ini</span>
+</div>
+<span class="font-body-sm text-body-sm text-text-muted">Urutan pendaftaran terbaru</span>
+</div>
+<!-- Queue Card 1 (Active/Inspected by Default: Warung Bu Sari) -->
+<div class="bg-surface-card rounded-xl p-space-lg shadow-md cursor-pointer transition-all hover:shadow-lg relative overflow-hidden bg-surface-container-lowest" id="queue-item-1" onclick="selectTenant('busari')">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary"></div>
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-space-md">
+<div class="space-y-space-xs min-w-0">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Warung Bu Sari</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-mono font-semibold text-[11px] whitespace-nowrap">#MTR-2024-089</span>
+<span class="px-2.5 py-0.5 rounded-full bg-accent-light text-secondary font-semibold font-label-sm text-label-sm whitespace-nowrap">Menunggu Peninjauan Admin</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-space-xs">
+<svg class="w-4 h-4 text-text-muted shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+<span>Penanggung Jawab: <strong>Siti Rahmawati (Bu Sari)</strong></span>
+</p>
+<p class="font-body-sm text-body-sm text-text-muted flex items-start gap-space-xs">
+<svg class="w-4 h-4 text-text-muted shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+<span>Kantin Gedung B (Pujasera Utama), Selasar Barat Lt. 1 — Kios No. B-04</span>
+</p>
+</div>
+<div class="sm:text-right shrink-0">
+<span class="font-label-sm text-label-sm text-text-muted block">Diajukan:</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface block whitespace-nowrap">Hari ini, 13:45 WIB</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-md bg-surface-container-low -mx-space-lg -mb-space-lg px-space-lg py-space-sm flex items-center justify-between flex-wrap gap-space-sm">
+<div class="flex items-center gap-space-md flex-wrap text-text-muted font-body-sm text-body-sm">
+<span class="flex items-center gap-1 text-primary font-medium">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Lokasi Kios Valid
+            </span>
+<span>•</span>
+<span class="flex items-center gap-1 text-primary font-medium">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              KTP &amp; Izin Lengkap
+            </span>
+<span>•</span>
+<span>Estimasi 15-20 porsi/hari</span>
+</div>
+<span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1 hover:translate-x-1 transition-transform">
+            Sedang Ditinjau
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="5" x2="19" y1="12" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+</span>
+</div>
+</div>
+<!-- Queue Card 2: Kantin Barokah Mas Eko -->
+<div class="bg-surface-card rounded-xl p-space-lg shadow-sm cursor-pointer transition-all hover:shadow-md relative overflow-hidden" id="queue-item-2" onclick="selectTenant('maseko')">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-space-md">
+<div class="space-y-space-xs min-w-0">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Kantin Barokah Mas Eko</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-mono font-semibold text-[11px] whitespace-nowrap">#MTR-2024-091</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-semibold font-label-sm text-label-sm whitespace-nowrap">Menunggu Peninjauan Admin</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-space-xs">
+<svg class="w-4 h-4 text-text-muted shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+<span>Penanggung Jawab: <strong>Eko Prasetyo</strong></span>
+</p>
+<p class="font-body-sm text-body-sm text-text-muted flex items-start gap-space-xs">
+<svg class="w-4 h-4 text-text-muted shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+<span>Kantin Gedung C (Selaras Budaya Lt. 1) — Kios No. C-12</span>
+</p>
+</div>
+<div class="sm:text-right shrink-0">
+<span class="font-label-sm text-label-sm text-text-muted block">Diajukan:</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface block whitespace-nowrap">Kemarin, 16:10 WIB</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-md bg-surface-container-low -mx-space-lg -mb-space-lg px-space-lg py-space-sm flex items-center justify-between flex-wrap gap-space-sm">
+<div class="flex items-center gap-space-md flex-wrap text-text-muted font-body-sm text-body-sm">
+<span class="flex items-center gap-1 text-primary font-medium">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Kios Aktif Terdata
+            </span>
+<span>•</span>
+<span>Ayam Geprek &amp; Nasi Goreng</span>
+<span>•</span>
+<span>Estimasi 10-12 porsi/hari</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant hover:text-primary font-semibold flex items-center gap-1 transition-colors">
+            Buka Detail
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="5" x2="19" y1="12" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+</span>
+</div>
+</div>
+<!-- Queue Card 3: Dapur Selera Mahasiswa -->
+<div class="bg-surface-card rounded-xl p-space-lg shadow-sm cursor-pointer transition-all hover:shadow-md relative overflow-hidden" id="queue-item-3" onclick="selectTenant('selera')">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-space-md">
+<div class="space-y-space-xs min-w-0">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Dapur Selera Mahasiswa</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-mono font-semibold text-[11px] whitespace-nowrap">#MTR-2024-092</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-semibold font-label-sm text-label-sm whitespace-nowrap">Menunggu Peninjauan Admin</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-space-xs">
+<svg class="w-4 h-4 text-text-muted shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+<span>Penanggung Jawab: <strong>Hj. Nurhayati</strong></span>
+</p>
+<p class="font-body-sm text-body-sm text-text-muted flex items-start gap-space-xs">
+<svg class="w-4 h-4 text-text-muted shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+<span>Kantin Asrama Putra Blok A — Kios Selasar No. 02</span>
+</p>
+</div>
+<div class="sm:text-right shrink-0">
+<span class="font-label-sm text-label-sm text-text-muted block">Diajukan:</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface block whitespace-nowrap">18 Okt 2024, 09:20 WIB</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-md bg-surface-container-low -mx-space-lg -mb-space-lg px-space-lg py-space-sm flex items-center justify-between flex-wrap gap-space-sm">
+<div class="flex items-center gap-space-md flex-wrap text-text-muted font-body-sm text-body-sm">
+<span class="flex items-center gap-1 text-primary font-medium">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Verifikasi Asrama Selesai
+            </span>
+<span>•</span>
+<span>Aneka Sayur &amp; Lauk Sunda</span>
+<span>•</span>
+<span>Estimasi 18-25 porsi/hari</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant hover:text-primary font-semibold flex items-center gap-1 transition-colors">
+            Buka Detail
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><line x1="5" x2="19" y1="12" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Detail Inspection Panel (~40%) -->
+<div class="lg:col-span-5 bg-surface-card rounded-2xl p-space-lg shadow-lg flex flex-col gap-space-md transition-all sticky top-32" id="detail-panel">
+<!-- Panel Header -->
+<div class="flex items-center justify-between pb-space-sm bg-surface-container-high/40 -mx-space-lg -mt-space-lg px-space-lg pt-space-md rounded-t-2xl">
+<div class="flex items-center gap-space-xs">
+<svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+<span class="font-headline-sm text-headline-sm text-on-surface">Rincian Pengajuan Mitra</span>
+</div>
+<span class="px-2.5 py-1 rounded bg-surface-container font-mono font-bold text-xs text-primary" id="detail-id-tag">#MTR-2024-089</span>
+</div>
+<!-- Tenant Card Overview -->
+<div class="space-y-space-sm">
+<div class="flex items-start justify-between gap-space-sm">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold leading-tight" id="detail-name">Warung Bu Sari</h3>
+<p class="font-body-md text-body-md text-primary font-semibold mt-0.5" id="detail-owner">Siti Rahmawati (Bu Sari)</p>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-accent-light text-secondary font-semibold font-label-sm text-label-sm whitespace-nowrap">Siap Ditinjau</span>
+</div>
+<div class="grid grid-cols-1 gap-2.5 pt-space-xs text-body-sm">
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-start gap-space-sm">
+<svg class="w-4 h-4 text-text-muted mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+<div>
+<span class="text-text-muted block text-[11px] uppercase tracking-wider font-semibold">Kontak Operasional Kios</span>
+<span class="font-medium text-on-surface" id="detail-phone">WhatsApp: 0812-9988-7766</span>
+</div>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-start gap-space-sm">
+<svg class="w-4 h-4 text-text-muted mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+<div>
+<span class="text-text-muted block text-[11px] uppercase tracking-wider font-semibold">Posisi Fisik di Kampus</span>
+<span class="font-medium text-on-surface" id="detail-location">Kantin Gedung B, Pujasera Utama, Selasar Barat Lt. 1 (Kios B-04, dekat tangga utama)</span>
+</div>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-start gap-space-sm">
+<svg class="w-4 h-4 text-text-muted mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" x2="6" y1="1" y2="4"></line><line x1="10" x2="10" y1="1" y2="4"></line><line x1="14" x2="14" y1="1" y2="4"></line></svg>
+<div>
+<span class="text-text-muted block text-[11px] uppercase tracking-wider font-semibold">Klasifikasi Menu &amp; Jam Rilis</span>
+<span class="font-medium text-on-surface" id="detail-menu">Aneka Nasi Rames, Ayam Goreng/Bakar, Sayur Lodeh, Masakan Nusantara.</span>
+<span class="text-secondary font-semibold block mt-0.5">Jam Buka: 07:30 – 17:00 WIB (Porsi sore siap rilis pkl 16:00)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Information Callout Box: Dampak & Hak Akses -->
+<div class="p-space-md bg-surface-container rounded-xl">
+<div class="flex items-center gap-space-xs text-primary font-label-md text-label-md font-bold mb-2">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="16" y2="12"></line><line x1="12" x2="12.01" y1="8" y2="8"></line></svg>
+<span>Dampak &amp; Hak Akses Setelah Disetujui</span>
+</div>
+<ul class="space-y-1.5 font-body-sm text-body-sm text-on-surface-variant">
+<li class="flex items-start gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+<span>Akun mitra langsung <strong>teraktivasi secara instan</strong> untuk akses masuk ke Portal Kios Kantin.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+<span>Membuka fitur posting paket porsi penyelamatan sore hari (16:00 – 18:30 WIB) langsung ke feed mahasiswa.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+<span>Mengaktifkan <strong>Kamera Scanner QR</strong> di ponsel pengelola untuk memvalidasi tiket ambil mahasiswa di kasir fisik.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+<span>Pencatatan omzet terpadu dan agregasi reduksi gas emisi limbah pangan universitas (SDG 12.3).</span>
+</li>
+</ul>
+</div>
+<!-- Checklist Verifikasi Sanitasi & Sarana Kampus -->
+<div class="space-y-2">
+<span class="font-label-sm text-label-sm text-text-muted uppercase font-bold tracking-wider">Verifikasi Mutu &amp; Sarana Kampus:</span>
+<label class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="mt-0.5 w-4 h-4 rounded text-primary focus:ring-primary accent-primary" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface"><strong>Lokasi Fisik Terverifikasi</strong> (Kios aktif terdaftar di Bagian Pengelolaan Aset &amp; Sarpras Kampus).</span>
+</label>
+<label class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="mt-0.5 w-4 h-4 rounded text-primary focus:ring-primary accent-primary" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface"><strong>Komitmen Higienitas Terbaca</strong> (Penyelamatan masakan bersih etalase higienis, bukan sisa santap).</span>
+</label>
+<label class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<input checked="" class="mt-0.5 w-4 h-4 rounded text-primary focus:ring-primary accent-primary" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface"><strong>Dukungan Wadah Mandiri</strong> (Bersedia melayani mahasiswa yang membawa wadah/kotak makan sendiri).</span>
+</label>
+</div>
+<!-- Action Buttons -->
+<div class="pt-space-sm flex flex-col gap-2">
+<button class="w-full h-11 rounded-lg bg-primary-container hover:bg-primary-hover text-on-primary font-label-lg text-label-lg font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-space-xs active:scale-[0.99]" id="btn-open-modal" onclick="openApprovalModal()">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+<span>Setujui Pendaftaran Mitra</span>
+</button>
+<div class="grid grid-cols-2 gap-2">
+<a class="h-9 px-3 rounded-lg bg-surface-card hover:bg-surface-container text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-1.5 shadow-sm transition-all text-center" href="https://wa.me/6281299887766" target="_blank">
+<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+<span>Hubungi WA</span>
+</a>
+<button class="h-9 px-3 rounded-lg bg-surface-card hover:bg-surface-container text-on-surface-variant font-label-md text-label-md font-semibold flex items-center justify-center gap-1.5 shadow-sm transition-all text-center" onclick="requestCorrection()">
+<svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+<span>Minta Revisi</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted text-center pt-1">
+          Persetujuan bersifat resmi &amp; mengikat pakta integritas sanitasi kantin universitas.
+        </p>
+</div>
+</div>
+</div>
+<!-- VIEW AREA 2: APPROVED TENANTS TABLE (Rendered when Tab Mitra Aktif is selected) -->
+<div class="hidden bg-surface-card rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md" id="view-approved">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">Mitra Kantin Aktif Terverifikasi</h2>
+<p class="font-body-md text-body-md text-text-muted">Kios yang telah disahkan UPT Kampus dengan hak posting porsi sore aktif dan scanner tiket operasional.</p>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="px-3 py-1 rounded-full bg-primary-light text-primary font-semibold font-label-md text-label-md whitespace-nowrap">Total 12 Mitra Aktif</span>
+</div>
+</div>
+<!-- Approved Table Responsive Wrapper -->
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md text-body-md">
+<thead>
+<tr class="bg-surface-container text-text-muted font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-3 px-4 rounded-l-lg">Kios &amp; Pemilik</th>
+<th class="py-3 px-4">Lokasi Gedung</th>
+<th class="py-3 px-4">Jam Rilis Porsi</th>
+<th class="py-3 px-4">Total Porsi Diselamatkan</th>
+<th class="py-3 px-4">Status Akun</th>
+<th class="py-3 px-4 rounded-r-lg text-right">Tindakan</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4">
+<span class="font-bold text-on-surface block">Warung Bu Sari</span>
+<span class="text-body-sm text-text-muted">Siti Rahmawati • #MTR-2024-089</span>
+</td>
+<td class="py-3 px-4">Gedung B (Pujasera Kios B-04)</td>
+<td class="py-3 px-4 font-mono font-medium text-xs">16:00 - 18:30 WIB</td>
+<td class="py-3 px-4 font-bold text-primary">312 Porsi</td>
+<td class="py-3 px-4">
+<span class="px-2.5 py-0.5 rounded-full bg-primary-light text-primary font-semibold text-xs whitespace-nowrap">Aktif Terverifikasi</span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high font-label-sm text-label-sm font-semibold transition-all">Lihat Log</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4">
+<span class="font-bold text-on-surface block">Kantin Teknik Pak Joko</span>
+<span class="text-body-sm text-text-muted">Joko Widodo • #MTR-2024-071</span>
+</td>
+<td class="py-3 px-4">Kantin Fak. Teknik Lt. 1</td>
+<td class="py-3 px-4 font-mono font-medium text-xs">15:45 - 18:00 WIB</td>
+<td class="py-3 px-4 font-bold text-primary">845 Porsi</td>
+<td class="py-3 px-4">
+<span class="px-2.5 py-0.5 rounded-full bg-primary-light text-primary font-semibold text-xs whitespace-nowrap">Aktif Terverifikasi</span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high font-label-sm text-label-sm font-semibold transition-all">Lihat Log</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4">
+<span class="font-bold text-on-surface block">Dapur Bu Dewi</span>
+<span class="text-body-sm text-text-muted">Dewi Sartika • #MTR-2024-065</span>
+</td>
+<td class="py-3 px-4">Gedung B (Pujasera Kios B-11)</td>
+<td class="py-3 px-4 font-mono font-medium text-xs">16:15 - 18:45 WIB</td>
+<td class="py-3 px-4 font-bold text-primary">520 Porsi</td>
+<td class="py-3 px-4">
+<span class="px-2.5 py-0.5 rounded-full bg-primary-light text-primary font-semibold text-xs whitespace-nowrap">Aktif Terverifikasi</span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high font-label-sm text-label-sm font-semibold transition-all">Lihat Log</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4">
+<span class="font-bold text-on-surface block">Soto Makmur Sejahtera</span>
+<span class="text-body-sm text-text-muted">Bambang Irawan • #MTR-2024-054</span>
+</td>
+<td class="py-3 px-4">Kantin Gedung C Lt. 1</td>
+<td class="py-3 px-4 font-mono font-medium text-xs">16:00 - 18:00 WIB</td>
+<td class="py-3 px-4 font-bold text-primary">419 Porsi</td>
+<td class="py-3 px-4">
+<span class="px-2.5 py-0.5 rounded-full bg-primary-light text-primary font-semibold text-xs whitespace-nowrap">Aktif Terverifikasi</span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high font-label-sm text-label-sm font-semibold transition-all">Lihat Log</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- VIEW AREA 3: EMPTY QUEUE STATE -->
+<div class="hidden bg-surface-card rounded-2xl p-space-xl shadow-sm text-center flex flex-col items-center justify-center my-space-lg" id="view-empty">
+<div class="w-16 h-16 rounded-full bg-primary-light text-primary flex items-center justify-center mb-space-md shadow-inner">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Antrean Pengajuan Bersih!</h3>
+<p class="font-body-md text-body-md text-text-muted max-w-md mt-1 mb-space-lg">
+      Tidak ada pengajuan kios pending saat ini. Seluruh permohonan kemitraan kantin telah ditinjau dan disetujui sesuai regulasi sanitasi kampus.
+    </p>
+<div class="flex items-center gap-space-sm">
+<button class="h-10 px-4 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg font-semibold hover:bg-primary-hover shadow-sm transition-all" onclick="setSimState('approved')">
+        Buka Direktori Mitra Aktif
+      </button>
+<button class="h-10 px-4 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg font-semibold transition-all" onclick="setSimState('queue')">
+        Muat Ulang Antrean
+      </button>
+</div>
+</div>
+<!-- VIEW AREA 4: ERROR / FAILED LOAD STATE -->
+<div class="hidden bg-surface-card rounded-2xl p-space-xl shadow-sm text-center flex flex-col items-center justify-center my-space-lg" id="view-error">
+<div class="w-16 h-16 rounded-full bg-error-container text-error flex items-center justify-center mb-space-md">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Gagal Menyinkronkan Berkas Pendaftaran</h3>
+<p class="font-body-md text-body-md text-text-muted max-w-md mt-1 mb-space-lg">
+      Koneksi ke pangkalan data UPT Sarana &amp; Prasarana terputus (HTTP 503). Periksa integrasi API internal kampus atau coba sesaat lagi.
+    </p>
+<button class="h-10 px-5 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg font-semibold hover:bg-primary-hover shadow-sm transition-all flex items-center gap-2" onclick="setSimState('queue')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>
+<span>Coba Hubungkan Ulang</span>
+</button>
+</div>
+<!-- ACCESSIBLE MODAL: Konfirmasi Persetujuan Kemitraan -->
+<div aria-labelledby="modal-title" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/60 backdrop-blur-sm hidden" id="approval-modal" role="dialog">
+<div class="bg-surface-card rounded-2xl max-w-lg w-full p-space-xl shadow-2xl animate-fade-in relative">
+<div class="flex items-center gap-space-md mb-space-md">
+<div class="w-12 h-12 rounded-xl bg-primary-light text-primary flex items-center justify-center shrink-0">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold" id="modal-title">Konfirmasi Persetujuan Kemitraan</h3>
+<p class="font-body-sm text-body-sm text-text-muted">Aktivasi akun tenant portal &amp; pemindai QR kantin</p>
+</div>
+</div>
+<div class="space-y-space-sm py-space-xs text-body-md text-on-surface-variant font-body-md">
+<p>
+          Anda akan menyetujui pendaftaran resmi untuk <strong class="text-on-surface" id="modal-tenant-name">Warung Bu Sari</strong> (Kios B-04, Pujasera Gedung B).
+        </p>
+<div class="p-3 bg-surface-container rounded-lg space-y-1 text-body-sm">
+<div class="flex items-center gap-2 text-primary font-semibold">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+<span>Akses posting kuota porsi sore 16:00 WIB dibuka.</span>
+</div>
+<div class="flex items-center gap-2 text-primary font-semibold">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+<span>Kamera scanner tiket fisik langsung teraktivasi.</span>
+</div>
+</div>
+<p class="text-body-sm text-text-muted">
+          Pemberitahuan kredensial akses dan panduan operasional akan otomatis dikirimkan ke WhatsApp penanggung jawab. Lanjutkan persetujuan resmi UPT Kampus?
+        </p>
+</div>
+<div class="mt-space-lg flex items-center justify-end gap-space-sm">
+<button class="h-10 px-4 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg font-semibold transition-all" onclick="closeApprovalModal()">
+          Batal
+        </button>
+<button class="h-10 px-5 rounded-lg bg-primary hover:bg-primary-hover text-on-primary font-label-lg text-label-lg font-bold shadow-md transition-all flex items-center gap-2 active:scale-95" onclick="confirmApprovalAction()">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+<span>Ya, Setujui &amp; Aktifkan Akses</span>
+</button>
+</div>
+</div>
+</div>
+<!-- SCRIPT FOR CLIENT-SIDE INTERACTIVITY & SIMULATION STATES -->
+<script>
+    const tenantData = {
+      busari: {
+        id: '#MTR-2024-089',
+        name: 'Warung Bu Sari',
+        owner: 'Siti Rahmawati (Bu Sari)',
+        phone: 'WhatsApp: 0812-9988-7766',
+        location: 'Kantin Gedung B, Pujasera Utama, Selasar Barat Lt. 1 (Kios B-04, dekat tangga utama)',
+        menu: 'Aneka Nasi Rames, Ayam Goreng/Bakar, Sayur Lodeh, Masakan Nusantara. Jam Buka: 07:30 – 17:00 WIB (Porsi sore siap rilis pkl 16:00)',
+      },
+      maseko: {
+        id: '#MTR-2024-091',
+        name: 'Kantin Barokah Mas Eko',
+        owner: 'Eko Prasetyo',
+        phone: 'WhatsApp: 0813-2233-4455',
+        location: 'Kantin Gedung C (Selaras Budaya Lt. 1) — Kios No. C-12',
+        menu: 'Ayam Geprek Sambal Bawang, Nasi Goreng Kampus, Mie Nyemek. Jam Buka: 08:00 – 17:30 WIB (Porsi sore siap rilis pkl 16:15)',
+      },
+      selera: {
+        id: '#MTR-2024-092',
+        name: 'Dapur Selera Mahasiswa',
+        owner: 'Hj. Nurhayati',
+        phone: 'WhatsApp: 0877-1122-8899',
+        location: 'Kantin Asrama Putra Blok A — Kios Selasar No. 02',
+        menu: 'Aneka Tumisan Sayur, Pepes Tahu Ikan, Telur Balado, Masakan Sunda. Jam Buka: 07:00 – 18:00 WIB (Porsi sore siap rilis pkl 16:00)',
+      }
+    };
+
+    let currentSelectedTenant = 'busari';
+
+    function selectTenant(key) {
+      currentSelectedTenant = key;
+      const data = tenantData[key];
+      if (!data) return;
+
+      document.getElementById('detail-id-tag').textContent = data.id;
+      document.getElementById('detail-name').textContent = data.name;
+      document.getElementById('detail-owner').textContent = data.owner;
+      document.getElementById('detail-phone').textContent = data.phone;
+      document.getElementById('detail-location').textContent = data.location;
+      document.getElementById('detail-menu').textContent = data.menu;
+      document.getElementById('modal-tenant-name').textContent = data.name;
+
+      // Update card visual highlight
+      ['queue-item-1', 'queue-item-2', 'queue-item-3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('bg-surface-container-lowest', 'shadow-md');
+          el.classList.add('shadow-sm');
+          const bar = el.querySelector('.absolute.left-0');
+          if (bar) bar.remove();
+        }
+      });
+
+      const activeElMap = { busari: 'queue-item-1', maseko: 'queue-item-2', selera: 'queue-item-3' };
+      const activeEl = document.getElementById(activeElMap[key]);
+      if (activeEl) {
+        activeEl.classList.add('bg-surface-container-lowest', 'shadow-md');
+        activeEl.classList.remove('shadow-sm');
+        if (!activeEl.querySelector('.absolute.left-0')) {
+          const bar = document.createElement('div');
+          bar.className = 'absolute left-0 top-0 bottom-0 w-1.5 bg-primary';
+          activeEl.prepend(bar);
+        }
+      }
+    }
+
+    function openApprovalModal() {
+      const modal = document.getElementById('approval-modal');
+      modal.classList.remove('hidden');
+    }
+
+    function closeApprovalModal() {
+      const modal = document.getElementById('approval-modal');
+      modal.classList.add('hidden');
+    }
+
+    function confirmApprovalAction() {
+      closeApprovalModal();
+      const toast = document.getElementById('toast-banner');
+      toast.classList.remove('hidden');
+      
+      // Visual feedback: remove card from pending queue
+      const itemToHide = document.getElementById('queue-item-1');
+      if (itemToHide) {
+        itemToHide.style.transition = 'all 0.3s ease';
+        itemToHide.style.opacity = '0.4';
+        itemToHide.style.pointerEvents = 'none';
+      }
+      
+      const countBadge = document.getElementById('badge-pending-count');
+      if (countBadge) countBadge.textContent = '2';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function dismissToast() {
+      document.getElementById('toast-banner').classList.add('hidden');
+    }
+
+    function switchTab(tab) {
+      const pendingView = document.getElementById('view-pending');
+      const approvedView = document.getElementById('view-approved');
+      const emptyView = document.getElementById('view-empty');
+      const errorView = document.getElementById('view-error');
+
+      const tabPending = document.getElementById('tab-pending');
+      const tabApproved = document.getElementById('tab-approved');
+      const tabAll = document.getElementById('tab-all');
+
+      [tabPending, tabApproved, tabAll].forEach(t => {
+        t.className = 'px-space-md py-2 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all flex items-center gap-space-sm whitespace-nowrap';
+      });
+
+      if (tab === 'pending') {
+        tabPending.className = 'px-space-md py-2 rounded-lg font-label-lg text-label-lg bg-primary-container text-on-primary shadow-sm transition-all flex items-center gap-space-sm whitespace-nowrap';
+        pendingView.classList.remove('hidden');
+        approvedView.classList.add('hidden');
+        emptyView.classList.add('hidden');
+        errorView.classList.add('hidden');
+      } else if (tab === 'approved') {
+        tabApproved.className = 'px-space-md py-2 rounded-lg font-label-lg text-label-lg bg-primary-container text-on-primary shadow-sm transition-all flex items-center gap-space-sm whitespace-nowrap';
+        pendingView.classList.add('hidden');
+        approvedView.classList.remove('hidden');
+        emptyView.classList.add('hidden');
+        errorView.classList.add('hidden');
+      } else if (tab === 'all') {
+        tabAll.className = 'px-space-md py-2 rounded-lg font-label-lg text-label-lg bg-primary-container text-on-primary shadow-sm transition-all flex items-center gap-space-sm whitespace-nowrap';
+        pendingView.classList.remove('hidden');
+        approvedView.classList.remove('hidden');
+        emptyView.classList.add('hidden');
+        errorView.classList.add('hidden');
+      }
+    }
+
+    function triggerSync() {
+      const btn = event.currentTarget;
+      btn.classList.add('animate-pulse');
+      setTimeout(() => {
+        btn.classList.remove('animate-pulse');
+        alert('Sinkronisasi selesai: Data kios & status perizinan UPT kampus paling mutakhir.');
+      }, 600);
+    }
+
+    function requestCorrection() {
+      alert('Tautan formulir revisi berkas telah dikirimkan ke kontak WhatsApp penanggung jawab.');
+    }
+
+    function handleFilterSearch() {
+      const val = document.getElementById('search-input').value.toLowerCase();
+      const items = [
+        { id: 'queue-item-1', text: 'warung bu sari siti pujasera b-04' },
+        { id: 'queue-item-2', text: 'kantin barokah mas eko c-12 gedung c' },
+        { id: 'queue-item-3', text: 'dapur selera mahasiswa hj nurhayati asrama' }
+      ];
+      items.forEach(it => {
+        const el = document.getElementById(it.id);
+        if (el) {
+          el.style.display = it.text.includes(val) ? 'block' : 'none';
+        }
+      });
+    }
+
+    // State Simulation Controller
+    function setSimState(state) {
+      // Reset button styles
+      const simBtns = ['queue', 'detail', 'modal', 'success', 'approved', 'empty', 'error'];
+      simBtns.forEach(key => {
+        const btn = document.getElementById('sim-btn-' + key);
+        if (btn) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-label-sm text-label-sm bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-all whitespace-nowrap';
+        }
+      });
+      const activeBtn = document.getElementById('sim-btn-' + state);
+      if (activeBtn) {
+        activeBtn.className = 'px-3 py-1.5 rounded-lg font-label-sm text-label-sm bg-primary text-on-primary transition-all whitespace-nowrap shadow-sm';
+      }
+
+      const pendingView = document.getElementById('view-pending');
+      const approvedView = document.getElementById('view-approved');
+      const emptyView = document.getElementById('view-empty');
+      const errorView = document.getElementById('view-error');
+      const toast = document.getElementById('toast-banner');
+
+      closeApprovalModal();
+      toast.classList.add('hidden');
+
+      if (state === 'queue' || state === 'detail') {
+        switchTab('pending');
+        selectTenant('busari');
+      } else if (state === 'modal') {
+        switchTab('pending');
+        selectTenant('busari');
+        openApprovalModal();
+      } else if (state === 'success') {
+        switchTab('pending');
+        confirmApprovalAction();
+      } else if (state === 'approved') {
+        switchTab('approved');
+      } else if (state === 'empty') {
+        pendingView.classList.add('hidden');
+        approvedView.classList.add('hidden');
+        emptyView.classList.remove('hidden');
+        errorView.classList.add('hidden');
+      } else if (state === 'error') {
+        pendingView.classList.add('hidden');
+        approvedView.classList.add('hidden');
+        emptyView.classList.add('hidden');
+        errorView.classList.remove('hidden');
+      }
+    }
+  </script>
+</div></div></main><footer class="w-full bg-surface-container-low mt-space-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="max-w-6xl mx-auto px-margin-lg py-space-xl"><div class="flex flex-col md:flex-row md:items-center justify-between gap-space-lg pb-space-lg"><div class="space-y-space-xs"><div class="flex items-center gap-space-sm"><div class="w-6 h-6 rounded bg-primary flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[16px]">recycling</span></div><span class="font-headline-sm text-headline-sm text-on-surface">Porsi Terakhir • Administrasi Kampus Berkelanjutan</span></div><p class="font-body-sm text-body-sm text-text-muted max-w-xl">Sistem monitoring dan tata kelola penyelamatan surplus pangan kantin perguruan tinggi. Mengintegrasikan standar higienitas sanitasi, mitigasi emisi gas rumah kaca, dan efisiensi konsumsi sivitas akademika.</p></div><div class="flex flex-col sm:flex-row items-start sm:items-center gap-space-md"><div class="px-space-md py-space-sm rounded-xl bg-surface-container flex items-center gap-space-sm"><div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-on-primary font-bold text-xs">12</div><div><p class="font-label-sm text-label-sm font-bold text-on-surface">SDG 12: Konsumsi &amp; Produksi Bertanggung Jawab</p><p class="font-body-sm text-body-sm text-text-muted">Target 12.3: Reduksi 50% limbah pangan per kapita tingkat kampus</p></div></div></div></div><div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-sm text-text-muted"><p class="font-body-sm text-body-sm">© 2024 UPT Pengelolaan Sarana Kampus &amp; Divisi Kemahasiswaan. Terintegrasi Protokol Sanitasi BPOM &amp; Kantin Sehat.</p><div class="flex items-center gap-space-md font-label-sm text-label-sm"><span class="text-primary font-medium">Status Server: Siaga Aktif (99.98%)</span><span class="text-outline-variant">•</span><span>Versi 1.2-pilot</span></div></div></div></footer></body></html>

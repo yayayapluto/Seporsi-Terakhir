@@ -45,6 +45,7 @@ export async function updateSession(request: NextRequest) {
   const isAuthPage = path === "/masuk" || path.startsWith("/auth/");
   const isProtected =
     path.startsWith("/katalog") ||
+    path.startsWith("/pesanan") ||
     path.startsWith("/profil") ||
     path.startsWith("/tenant") ||
     path.startsWith("/admin");

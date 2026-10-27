@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+
+<html lang="id"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary-light": "#EAF4EC", "outline-variant": "#bfc9be", "on-primary-container": "#ceffd9", "on-tertiary-fixed-variant": "#404943", "on-primary": "#ffffff", "secondary-container": "#fc9430", "accent-light": "#FEF3E7", "tertiary-fixed-dim": "#bfc9c1", "tertiary": "#4f5953", "on-secondary-fixed": "#2f1500", "surface-bright": "#effcf9", "secondary-fixed": "#ffdcc3", "surface-container": "#e3f1ed", "on-background": "#121e1c", "primary-container": "#2e7d4f", "text-muted": "#64746B", "on-tertiary-fixed": "#151d19", "inverse-surface": "#273331", "primary-fixed": "#a4f4bc", "primary": "#0b6438", "surface-container-lowest": "#ffffff", "on-surface-variant": "#3f4941", "on-secondary-fixed-variant": "#6e3900", "error": "#ba1a1a", "on-primary-fixed-variant": "#00522c", "on-primary-fixed": "#00210f", "primary-fixed-dim": "#88d7a1", "error-container": "#ffdad6", "accent-hover": "#DE7819", "secondary-fixed-dim": "#ffb77d", "surface-container-highest": "#d8e5e2", "outline": "#6f7a70", "surface": "#effcf9", "inverse-primary": "#88d7a1", "secondary": "#914d00", "surface-dim": "#cfddd9", "on-secondary": "#ffffff", "background": "#effcf9", "on-secondary-container": "#663500", "primary-hover": "#256640", "inverse-on-surface": "#e6f4f0", "surface-container-low": "#e9f7f3", "on-tertiary": "#ffffff", "on-tertiary-container": "#ebf5ed", "on-surface": "#121e1c", "surface-tint": "#196c40", "surface-variant": "#d8e5e2", "on-error": "#ffffff", "on-error-container": "#93000a", "surface-card": "#FFFFFF", "canvas-background": "#FFFBF5", "border-subtle": "#E5E1D8", "tertiary-fixed": "#dbe5dd", "surface-container-high": "#ddebe8", "tertiary-container": "#67716b" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-lg": "1.5rem", "margin-lg": "2rem", "gutter-lg": "1.5rem", "space-xs": "0.25rem", "space-xl": "2rem", "margin": "1rem", "margin-md": "1.5rem", "space-md": "1rem", "space-sm": "0.5rem", "gutter": "1rem" }, "fontFamily": { "headline-lg-mobile": ["Plus Jakarta Sans"], "body-lg": ["Inter"], "label-sm": ["Inter"], "display-mobile": ["Plus Jakarta Sans"], "display": ["Plus Jakarta Sans"], "label-md": ["Inter"], "body-sm": ["Inter"], "headline-lg": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "body-md": ["Inter"], "headline-md": ["Plus Jakarta Sans"], "label-lg": ["Inter"] }, "fontSize": { "headline-lg-mobile": ["26px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.01em", "fontWeight": "600" }], "display-mobile": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.025em", "fontWeight": "700" }], "display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-md": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "-0.005em", "fontWeight": "600" }] } } } };</script></head><body class="bg-canvas-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col justify-between p-space-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col gap-space-lg"><div class="flex items-center gap-space-sm px-space-xs"><div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[22px]">nest_eco_leaf</span></div><div><span class="font-headline-sm text-headline-sm text-primary font-bold block leading-tight">Porsi Terakhir</span><span class="font-label-sm text-label-sm text-text-muted">Portal Mitra Kampus</span></div></div><div class="p-space-sm rounded-xl bg-surface-container border border-border-subtle"><div class="flex items-center justify-between mb-1"><span class="font-label-sm text-label-sm text-text-muted">Status Operasional</span><span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary font-semibold"><span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>Buka</span></div><p class="font-headline-sm text-headline-sm text-on-surface font-semibold">Sesi Sore</p><p class="font-body-sm text-body-sm text-text-muted">16.00 - 18.30 WIB</p></div><nav class="flex flex-col gap-1" data-active-classes="bg-primary-container text-on-primary font-semibold rounded-lg shadow-sm"><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-2.5 transition-all bg-primary-container text-on-primary font-semibold rounded-lg shadow-sm" data-path="scanner-validasi" href="#"><span class="material-symbols-outlined text-[20px]">qr_code_scanner</span>Scanner Validasi</a><a class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="daftar-pesanan" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span>Daftar Pesanan</a><a class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="dasbor-operasional" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span>Dasbor</a><a class="flex items-center gap-space-sm px-space-md py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="manajemen-menu" href="#"><span class="material-symbols-outlined text-[20px]">restaurant_menu</span>Menu</a></nav></div><div class="flex flex-col gap-space-sm pt-space-md border-t border-border-subtle"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex-1 min-w-0"><p class="font-label-md text-label-md text-on-surface font-semibold truncate">Warung Bu Sari</p><p class="font-body-sm text-body-sm text-text-muted truncate">Kantin Gedung B</p></div></div><div class="bg-primary-light px-space-sm py-1.5 rounded-lg flex items-center gap-1.5"><span class="material-symbols-outlined text-primary text-[16px]">verified</span><span class="font-label-sm text-label-sm text-primary font-semibold">Mitra Terverifikasi UI</span></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-gutter-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface font-bold leading-tight">Warung Bu Sari</span><span class="font-body-sm text-body-sm text-text-muted">Kantin Gedung B • Slot Sesi Sore (16.00 - 18.30 WIB)</span></div></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-accent-light text-secondary border border-secondary-fixed"><span class="material-symbols-outlined text-[18px]">timer</span><span class="font-label-sm text-label-sm font-semibold">Sisa Waktu Ambil: 2j 15m</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 w-full px-gutter-lg min-h-screen flex flex-col justify-between bg-canvas-background"><div class="py-space-lg flex-1"><div class="flex flex-col w-full">
+<!-- Interactive State Bar: Dedicated QA Simulator Switcher -->
+<div class="w-full bg-surface-container-high rounded-xl p-space-sm mb-space-lg shadow-sm">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-primary font-semibold font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span class="whitespace-nowrap">Mode Simulasi Uji Meja Kasir</span>
+</div>
+<span class="font-label-sm text-label-sm text-text-muted hidden sm:inline whitespace-nowrap">Pilih kondisi kamera untuk simulasi alur operasional</span>
+</div>
+<!-- Interactive Scenario Badges (Horizontal Scroll on Mobile) -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-sm no-scrollbar">
+<button class="state-btn active-state px-3 py-1.5 rounded-lg font-label-md text-label-md whitespace-nowrap transition-all bg-primary text-on-primary font-semibold shadow-sm" data-state-btn="idle" onclick="setScannerState('idle')" type="button">
+          1. Siap Pindai
+        </button>
+<button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface hover:bg-surface-container font-medium" data-state-btn="loading" onclick="setScannerState('loading')" type="button">
+          2. Loading Kamera
+        </button>
+<button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface hover:bg-surface-container font-medium" data-state-btn="denied" onclick="setScannerState('denied')" type="button">
+          3. Izin Ditolak
+        </button>
+<button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface hover:bg-surface-container font-medium" data-state-btn="review" onclick="setScannerState('review')" type="button">
+          4. QR Terdeteksi
+        </button>
+<button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface hover:bg-surface-container font-medium" data-state-btn="success" onclick="setScannerState('success')" type="button">
+          5. Sukses Serah Terima
+        </button>
+<button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface hover:bg-surface-container font-medium" data-state-btn="invalid" onclick="setScannerState('invalid')" type="button">
+          6. QR Tidak Valid
+        </button>
+<button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface hover:bg-surface-container font-medium" data-state-btn="expired" onclick="setScannerState('expired')" type="button">
+          7. Kedaluwarsa
+        </button>
+<button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface hover:bg-surface-container font-medium" data-state-btn="used" onclick="setScannerState('used')" type="button">
+          8. Sudah Digunakan
+        </button>
+<button class="state-btn px-3 py-1.5 rounded-lg font-label-md text-label-md whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface hover:bg-surface-container font-medium" data-state-btn="wrong_vendor" onclick="setScannerState('wrong_vendor')" type="button">
+          9. Salah Gerai
+        </button>
+</div>
+</div>
+</div>
+<!-- Sub-Header & Operational Banner -->
+<div class="flex flex-col gap-space-sm mb-space-lg">
+<div class="flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<a class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors font-label-md text-label-md text-on-surface font-semibold shadow-sm" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span class="whitespace-nowrap">Daftar Pesanan</span>
+</a>
+<div class="h-4 w-px bg-surface-variant hidden sm:block"></div>
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold whitespace-nowrap">Pindai QR Serah Terima</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary-light text-primary font-label-sm text-label-sm font-semibold whitespace-nowrap">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            Kasir Aktif
+          </span>
+</div>
+</div>
+<!-- Quick Session Badge -->
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">storefront</span>
+<span class="font-medium whitespace-nowrap">Warung Bu Sari • Kantin Gedung B</span>
+<span class="text-text-muted">•</span>
+<span class="text-secondary font-semibold whitespace-nowrap">Sesi Sore (16.00 - 18.30)</span>
+</div>
+</div>
+<!-- Hygiene & Cash Settlement Notice -->
+<div class="flex items-start gap-space-sm bg-accent-light text-on-surface p-space-sm rounded-xl shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[22px] flex-shrink-0 mt-0.5">clean_hands</span>
+<div class="flex-1 min-w-0">
+<p class="font-label-md text-label-md font-bold text-on-secondary-fixed leading-tight">Protokol Kebersihan &amp; Pembayaran Meja Kasir</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Pindai tiket QR mahasiswa sebelum menyerahkan wadah makanan. Pastikan pembayaran fisik di kasir telah rampung sebelum menyerahkan porsi.</p>
+</div>
+</div>
+</div>
+<!-- Master Split Layout: Viewfinder (Left) + Validation Surface (Right) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT: Realistic Device Viewfinder (Span 7 Columns on Desktop) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<div class="relative w-full aspect-[4/3] sm:aspect-[16/11] bg-inverse-surface rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between p-space-md select-none">
+<!-- Live Simulated Video Frame / Placeholder Ambient -->
+<div class="absolute inset-0 z-0 bg-gradient-to-b from-[#1b2624] via-[#141d1c] to-[#0e1615]" id="camera-ambient-layer">
+<!-- Ambient subtle camera grid -->
+<div class="w-full h-full opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+</div>
+<!-- Camera Header Controls (Flash & Flip) -->
+<div class="relative z-10 flex items-center justify-between w-full">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-inverse-surface/80 backdrop-blur-md text-on-primary font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary-fixed animate-ping" id="camera-status-dot"></span>
+<span class="whitespace-nowrap font-medium" id="camera-status-text">Kamera Belakang • 1080p</span>
+</div>
+<div class="flex items-center gap-2">
+<!-- Flash Toggle Button -->
+<button class="w-10 h-10 rounded-full bg-surface-container-highest/30 hover:bg-surface-container-highest/50 backdrop-blur-md text-on-primary flex items-center justify-center transition-transform active:scale-95 shadow-sm" id="torch-btn" onclick="toggleTorch()" title="Nyalakan Lampu Kasir" type="button">
+<span class="material-symbols-outlined text-[20px]" id="torch-icon">flashlight_on</span>
+</button>
+<!-- Switch Camera Button -->
+<button class="w-10 h-10 rounded-full bg-surface-container-highest/30 hover:bg-surface-container-highest/50 backdrop-blur-md text-on-primary flex items-center justify-center transition-transform active:scale-95 shadow-sm" onclick="flipCameraSim()" title="Ganti Lensa Kamera" type="button">
+<span class="material-symbols-outlined text-[20px]">flip_camera_ios</span>
+</button>
+</div>
+</div>
+<!-- Central Scanner Viewport & Reticle Target -->
+<div class="relative z-10 self-center my-auto w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center" id="reticle-container">
+<!-- Restrained Precision Corner Brackets (Minimal, refined SVG corners) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none text-primary-fixed" fill="none" viewbox="0 0 288 288">
+<!-- Top-Left -->
+<path d="M 8 44 L 8 16 C 8 11.58 11.58 8 16 8 L 44 8" stroke="currentColor" stroke-linecap="round" stroke-width="4"></path>
+<!-- Top-Right -->
+<path d="M 244 8 L 272 8 C 276.42 8 280 11.58 280 16 L 280 44" stroke="currentColor" stroke-linecap="round" stroke-width="4"></path>
+<!-- Bottom-Left -->
+<path d="M 8 244 L 8 272 C 8 276.42 11.58 280 16 280 L 44 280" stroke="currentColor" stroke-linecap="round" stroke-width="4"></path>
+<!-- Bottom-Right -->
+<path d="M 244 280 L 272 280 C 276.42 280 280 276.42 280 272 L 280 244" stroke="currentColor" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<!-- Smooth Laser Scanline Animation -->
+<div class="absolute w-[88%] h-0.5 bg-gradient-to-r from-transparent via-primary-fixed to-transparent shadow-[0_0_12px_#a4f4bc] animate-[bounce_2.5s_infinite] top-6 pointer-events-none" id="laser-line"></div>
+<!-- Micro QR Target Guide Watermark (subtle center marker) -->
+<div class="w-16 h-16 rounded-xl border border-dashed border-primary-fixed/30 flex items-center justify-center opacity-40">
+<span class="material-symbols-outlined text-primary-fixed text-[28px]">qr_code_2</span>
+</div>
+<!-- Quick Mock Simulation Trigger (Interactive on Viewfinder click) -->
+<button aria-label="Simulasi Deteksi QR" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onclick="setScannerState('review')"></button>
+</div>
+<!-- Camera Viewfinder Overlay States (Loading / Denied overlays) -->
+<!-- Overlay 1: Loading Camera State -->
+<div class="hidden absolute inset-0 z-20 bg-inverse-surface/95 backdrop-blur-md flex flex-col items-center justify-center p-space-md text-center" id="overlay-loading">
+<div class="w-12 h-12 rounded-full border-4 border-primary-fixed/20 border-t-primary-fixed animate-spin mb-space-sm"></div>
+<p class="font-headline-sm text-headline-sm text-on-primary font-bold">Menyiapkan Lensa Kamera...</p>
+<p class="font-body-sm text-body-sm text-surface-container-highest max-w-xs mt-1">Mengakses sensor optik meja kasir untuk pemindaian kode verifikasi porsi.</p>
+</div>
+<!-- Overlay 2: Permission Denied State -->
+<div class="hidden absolute inset-0 z-20 bg-inverse-surface/95 backdrop-blur-md flex flex-col items-center justify-center p-space-md text-center" id="overlay-denied">
+<div class="w-14 h-14 rounded-2xl bg-error/20 text-error-container flex items-center justify-center mb-space-sm">
+<span class="material-symbols-outlined text-[32px]">videocam_off</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-primary font-bold">Izin Kamera Tidak Diberikan</p>
+<p class="font-body-sm text-body-sm text-surface-container-highest max-w-xs mt-1">Buka pengaturan peramban lalu izinkan akses kamera agar kasir dapat memindai tiket mahasiswa.</p>
+<button class="mt-space-md inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-on-primary font-label-md text-label-md font-semibold hover:bg-primary-hover shadow-sm" onclick="setScannerState('idle')" type="button">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+<span class="whitespace-nowrap">Minta Izin Ulang</span>
+</button>
+</div>
+<!-- Bottom Guidance Strip Inside Viewfinder -->
+<div class="relative z-10 w-full flex items-center justify-between text-on-primary/90 px-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-fixed">center_focus_strong</span>
+<span class="font-label-sm text-label-sm font-medium tracking-wide">Posisikan kode QR di dalam bingkai sudut</span>
+</div>
+<span class="font-label-sm text-label-sm text-surface-container-highest hidden sm:inline whitespace-nowrap">Pencahayaan Otomatis Aktif</span>
+</div>
+</div>
+<!-- Quick Operational Hints (Below Camera Frame) -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm">
+<div class="bg-surface-container-lowest p-space-sm rounded-xl shadow-sm flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">tap_and_play</span>
+<div>
+<p class="font-label-sm text-label-sm font-semibold text-on-surface">Jarak Ideal</p>
+<p class="font-body-sm text-body-sm text-text-muted">15–25 cm dari layar ponsel mahasiswa</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-sm rounded-xl shadow-sm flex items-start gap-2.5">
+<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5">brightness_6</span>
+<div>
+<p class="font-label-sm text-label-sm font-semibold text-on-surface">Layar Terlalu Redup?</p>
+<p class="font-body-sm text-body-sm text-text-muted">Minta mahasiswa menaikkan kontras layar</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-sm rounded-xl shadow-sm flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">eco</span>
+<div>
+<p class="font-label-sm text-label-sm font-semibold text-on-surface">SDG 12 Food Rescue</p>
+<p class="font-body-sm text-body-sm text-text-muted">Setiap porsi menyelamatkan ~0.42 kg CO₂e</p>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT: Validation Status Panel & Action Card (Span 5 Columns on Desktop) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- ========================================== -->
+<!-- STATE 1: IDLE / READY TO SCAN VIEW         -->
+<!-- ========================================== -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col items-center text-center justify-center min-h-[460px]" id="panel-idle">
+<div class="w-16 h-16 rounded-2xl bg-surface-container flex items-center justify-center text-primary mb-space-md">
+<span class="material-symbols-outlined text-[36px] animate-pulse">qr_code_scanner</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-light text-primary font-label-md text-label-md font-semibold mb-space-xs whitespace-nowrap">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+          Sensor Siaga Aktif
+        </span>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface mt-1">Menunggu Mahasiswa Menunjukkan QR</h2>
+<p class="font-body-md text-body-md text-text-muted mt-space-xs max-w-sm">
+          Arahkan layar ponsel mahasiswa ke pemindai. Tiket digital akan otomatis divalidasi dengan basis data reservasi kantin.
+        </p>
+<div class="w-full bg-surface-container-low rounded-xl p-space-sm mt-space-lg text-left">
+<p class="font-label-sm text-label-sm font-semibold text-text-muted uppercase tracking-wider mb-2">Pemberitahuan Terkini Meja Kasir</p>
+<div class="flex items-center justify-between text-on-surface py-1">
+<span class="font-body-sm text-body-sm">Porsi Terklaim Hari Ini</span>
+<span class="font-headline-sm text-headline-sm font-bold text-primary">14 / 18 Porsi</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 mt-1 overflow-hidden">
+<div class="bg-primary h-full w-[78%] rounded-full"></div>
+</div>
+</div>
+<button class="w-full mt-space-md py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold transition-colors flex items-center justify-center gap-2" onclick="setScannerState('review')" type="button">
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+<span class="whitespace-nowrap">Simulasi QR Terbaca</span>
+</button>
+</div>
+<!-- ========================================== -->
+<!-- STATE 2 & 3: ERROR / CAMERA NOT READY      -->
+<!-- ========================================== -->
+<div class="hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col items-center text-center justify-center min-h-[460px]" id="panel-denied-info">
+<div class="w-16 h-16 rounded-2xl bg-error-container text-error flex items-center justify-center mb-space-md">
+<span class="material-symbols-outlined text-[36px]">no_photography</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Kamera Belum Terhubung</h2>
+<p class="font-body-md text-body-md text-text-muted mt-space-xs max-w-sm">
+          Perangkat kasir memerlukan otorisasi peramban untuk mengaktifkan video feed meja kasir.
+        </p>
+<button class="mt-space-lg px-6 py-2.5 rounded-lg bg-primary text-on-primary font-label-md text-label-md font-semibold hover:bg-primary-hover shadow-sm flex items-center gap-2" onclick="setScannerState('idle')" type="button">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+<span class="whitespace-nowrap">Aktifkan Perangkat</span>
+</button>
+</div>
+<!-- ========================================== -->
+<!-- STATE 4: QR DETECTED (CONFIRMATION STAGE)  -->
+<!-- ========================================== -->
+<div class="hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-md flex flex-col gap-space-md" id="panel-review">
+<!-- Detected Status Header Pill -->
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-light text-secondary font-label-md text-label-md font-bold whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+            QR Valid • Menunggu Konfirmasi Kasir
+          </span>
+<span class="font-headline-sm text-headline-sm font-bold text-primary whitespace-nowrap">#PT-8821</span>
+</div>
+<!-- Student Customer Profile Pill -->
+<div class="flex items-center gap-space-sm bg-surface-container p-space-sm rounded-xl">
+<div class="w-11 h-11 rounded-full bg-primary text-on-primary flex items-center justify-center font-headline-sm text-headline-sm font-bold flex-shrink-0">
+            RA
+          </div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface truncate">Rafi Anggara</span>
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted truncate">Fakultas Teknik UI • Angkatan 2022</p>
+</div>
+</div>
+<!-- Food Item Detail Card with Real Graphic -->
+<div class="bg-surface-container-low rounded-xl p-space-sm flex gap-space-sm">
+<img alt="Nasi Ayam Geprek Sambal Matah" class="w-24 h-24 rounded-lg object-cover flex-shrink-0 shadow-sm" src="https://lh3.googleusercontent.com/aida/AEtjO1WEC4KRdJCYZwXB13_H3fejVzNVF8Ufm17j4Ia0W3stOJiGPcNpVcKUnJ8T-rGKaTIPNFRGDHhS4deNWGSq7szV2hwFLMDRo5oP_DEO5jV8YKywqNA8bDzFzaPFi9Fd8596M405Gadxn3DH73e-gKMciGPw0LW5o7g5y585eJBYdvJ3B-3K4m6bS0WKOtraFA1yEnLCkeWxsqO-8gxzTBCIQ1UIQuhVhbc_ktgoGeDmIWgWrNtIQNIS3g"/>
+<div class="flex-1 min-w-0 flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider block">Menu Food Rescue Hari Ini</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface truncate mt-0.5">Ayam Geprek Sambal Matah</h3>
+<p class="font-body-sm text-body-sm text-text-muted">1x Porsi Lengkap (Ayam, Nasi, Lalapan)</p>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-body-sm text-body-sm line-through text-text-muted">Rp 20.000</span>
+<span class="font-headline-sm text-headline-sm font-bold text-primary">Rp 10.000</span>
+</div>
+</div>
+</div>
+<!-- BYOC (Bring Your Own Container) Environmental Alert -->
+<div class="bg-primary-light text-on-surface p-space-sm rounded-xl flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-primary text-on-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">lunch_dining</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-md text-label-md font-bold text-primary leading-tight whitespace-nowrap">Bawa Kotak Makan Sendiri (Tepak Pribadi)</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Mahasiswa tidak memerlukan bungkus plastik. Mohon tuangkan porsi langsung ke wadah makan mahasiswa.</p>
+</div>
+</div>
+<!-- Pickup Time Slot & Cash Settlement Status -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="p-space-sm rounded-xl bg-surface-container">
+<span class="font-label-sm text-label-sm text-text-muted block">Slot Reservasi</span>
+<span class="font-label-md text-label-md font-bold text-on-surface mt-0.5 block whitespace-nowrap">17.30 - 17.50 WIB</span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary font-semibold mt-1 whitespace-nowrap">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              Slot Aktif Sekarang
+            </span>
+</div>
+<div class="p-space-sm rounded-xl bg-surface-container">
+<span class="font-label-sm text-label-sm text-text-muted block">Bayar di Kasir Warung</span>
+<span class="font-headline-sm text-headline-sm font-bold text-primary mt-0.5 block whitespace-nowrap">Rp 10.000</span>
+<span class="font-label-sm text-label-sm text-text-muted mt-1 block whitespace-nowrap">Tunai / QRIS Fisik</span>
+</div>
+</div>
+<!-- High Contrast Real Action Confirm Button -->
+<div class="flex flex-col gap-2 pt-space-xs">
+<button class="w-full h-12 rounded-xl bg-primary hover:bg-primary-hover text-on-primary font-headline-sm text-headline-sm font-bold transition-all shadow-md flex items-center justify-center gap-2 active:scale-[0.99]" onclick="setScannerState('success')" type="button">
+<span class="material-symbols-outlined text-[22px]">check_circle</span>
+<span class="whitespace-nowrap">Konfirmasi Serah Terima Porsi</span>
+</button>
+<button class="w-full py-2.5 rounded-xl hover:bg-surface-container text-text-muted hover:text-on-surface font-label-md text-label-md font-semibold transition-colors flex items-center justify-center gap-1.5" onclick="setScannerState('idle')" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+<span class="whitespace-nowrap">Batalkan / Pindai Ulang</span>
+</button>
+</div>
+</div>
+<!-- ========================================== -->
+<!-- STATE 5: SUCCESSFUL HANDOVER VERIFICATION  -->
+<!-- ========================================== -->
+<div class="hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-md flex flex-col items-center text-center justify-between min-h-[460px]" id="panel-success">
+<div class="w-full flex flex-col items-center pt-space-md">
+<!-- Animated Check Graphic Ring -->
+<div class="w-20 h-20 rounded-full bg-primary-light text-primary flex items-center justify-center mb-space-md shadow-sm">
+<span class="material-symbols-outlined text-[48px]" style="font-variation-settings: 'FILL' 1;">task_alt</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-light text-primary font-label-md text-label-md font-bold mb-2 whitespace-nowrap">
+<span class="material-symbols-outlined text-[16px]">celebration</span>
+            Transaksi Tuntas &amp; Higienis
+          </span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-on-surface">Porsi Berhasil Diserahkan!</h2>
+<p class="font-body-md text-body-md text-text-muted mt-2 max-w-sm">
+<strong class="text-on-surface">1x Ayam Geprek Sambal Matah</strong> telah diserahkan langsung kepada mahasiswa <strong class="text-on-surface">Rafi Anggara</strong>.
+          </p>
+<!-- Audit Timestamp Receipt Badge -->
+<div class="mt-space-md bg-surface-container-low px-4 py-2.5 rounded-xl flex items-center gap-space-sm text-left w-full max-w-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">schedule</span>
+<div class="flex-1 min-w-0">
+<span class="font-label-sm text-label-sm text-text-muted block">Stempel Waktu Penyerahan</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface block whitespace-nowrap">Tercatat di sistem: 17.34 WIB (Hari Ini)</span>
+</div>
+</div>
+</div>
+<!-- Action CTAs -->
+<div class="w-full flex flex-col gap-2 pt-space-lg">
+<button class="w-full h-11 rounded-xl bg-primary hover:bg-primary-hover text-on-primary font-label-lg text-label-lg font-bold transition-all shadow-sm flex items-center justify-center gap-2" onclick="setScannerState('idle')" type="button">
+<span class="material-symbols-outlined text-[20px]">qr_code_scanner</span>
+<span class="whitespace-nowrap">Pindai Pesanan Berikutnya</span>
+</button>
+<a class="w-full py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold transition-colors flex items-center justify-center gap-2" href="#">
+<span class="material-symbols-outlined text-[18px]">receipt_long</span>
+<span class="whitespace-nowrap">Lihat di Daftar Pesanan Selesai</span>
+</a>
+</div>
+</div>
+<!-- ========================================== -->
+<!-- STATE 6: INVALID QR (UNRECOGNIZED)         -->
+<!-- ========================================== -->
+<div class="hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col items-center text-center justify-center min-h-[460px]" id="panel-invalid">
+<div class="w-16 h-16 rounded-2xl bg-error-container text-error flex items-center justify-center mb-space-md">
+<span class="material-symbols-outlined text-[36px]">qr_code_2</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container text-error font-label-md text-label-md font-bold mb-2 whitespace-nowrap">
+          Kode Tidak Dikenali
+        </span>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Bukan Tiket Resmi Porsi Terakhir</h2>
+<p class="font-body-md text-body-md text-text-muted mt-space-xs max-w-sm">
+          Format kode QR ini tidak terdaftar dalam protokol portal kampus. Mohon minta mahasiswa membuka tiket di aplikasi resmi mitra kampus.
+        </p>
+<button class="mt-space-lg w-full max-w-xs py-2.5 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-semibold hover:bg-primary-hover shadow-sm" onclick="setScannerState('idle')" type="button">
+<span class="whitespace-nowrap">Pindai Ulang Tiket</span>
+</button>
+</div>
+<!-- ========================================== -->
+<!-- STATE 7: EXPIRED TICKET (FOOD SAFETY RULE) -->
+<!-- ========================================== -->
+<div class="hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col items-center text-center justify-center min-h-[460px]" id="panel-expired">
+<div class="w-16 h-16 rounded-2xl bg-secondary-fixed text-secondary flex items-center justify-center mb-space-md">
+<span class="material-symbols-outlined text-[36px]">timer_off</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-light text-secondary font-label-md text-label-md font-bold mb-2 whitespace-nowrap">
+          Batas Waktu Pengambilan Lewat
+        </span>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Tiket Melewati Batas Higienitas</h2>
+<p class="font-body-md text-body-md text-text-muted mt-space-xs max-w-sm">
+          Batas toleransi pengambilan makanan (Slot 15.00 - 15.30 WIB) telah berakhir lebih dari 45 menit lalu. Makanan tidak dapat diserahkan demi standar sanitasi makanan kampus.
+        </p>
+<div class="mt-space-md bg-surface-container p-space-sm rounded-xl text-left w-full max-w-xs">
+<span class="font-label-sm text-label-sm text-text-muted block">Status Reservasi</span>
+<span class="font-label-md text-label-md font-bold text-secondary block whitespace-nowrap">Dibatalkan Otomatis Sistem Sanitasi</span>
+</div>
+<button class="mt-space-md w-full max-w-xs py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold transition-colors" onclick="setScannerState('idle')" type="button">
+<span class="whitespace-nowrap">Kembali ke Pemindai</span>
+</button>
+</div>
+<!-- ========================================== -->
+<!-- STATE 8: ALREADY CLAIMED / USED TICKET     -->
+<!-- ========================================== -->
+<div class="hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col items-center text-center justify-center min-h-[460px]" id="panel-used">
+<div class="w-16 h-16 rounded-2xl bg-error-container text-error flex items-center justify-center mb-space-md">
+<span class="material-symbols-outlined text-[36px]">history_edu</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container text-error font-label-md text-label-md font-bold mb-2 whitespace-nowrap">
+          Peringatan: Tiket Sudah Digunakan
+        </span>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Porsi Sudah Diambil Sebelumnya</h2>
+<p class="font-body-md text-body-md text-text-muted mt-space-xs max-w-sm">
+          Tiket ini telah diverifikasi dan diserahkan di meja kasir pada pukul <strong>16.48 WIB</strong> oleh kasir Warung Bu Sari.
+        </p>
+<div class="mt-space-md bg-surface-container-low p-space-sm rounded-xl text-left w-full max-w-xs flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-text-muted block">ID Tiket</span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface whitespace-nowrap">#PT-8804</span>
+</div>
+<span class="px-2 py-0.5 rounded bg-error-container text-error font-label-sm text-label-sm font-bold whitespace-nowrap">Status: Selesai</span>
+</div>
+<button class="mt-space-lg w-full max-w-xs py-2.5 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-semibold hover:bg-primary-hover shadow-sm" onclick="setScannerState('idle')" type="button">
+<span class="whitespace-nowrap">Pindai Tiket Lain</span>
+</button>
+</div>
+<!-- ========================================== -->
+<!-- STATE 9: WRONG CANTEEN VENDOR LOCATION     -->
+<!-- ========================================== -->
+<div class="hidden bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col items-center text-center justify-center min-h-[460px]" id="panel-wrong_vendor">
+<div class="w-16 h-16 rounded-2xl bg-secondary-fixed text-secondary flex items-center justify-center mb-space-md">
+<span class="material-symbols-outlined text-[36px]">wrong_location</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-light text-secondary font-label-md text-label-md font-bold mb-2 whitespace-nowrap">
+          Salah Lokasi Mitra Gerai
+        </span>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Bukan Pesanan Warung Bu Sari</h2>
+<p class="font-body-md text-body-md text-text-muted mt-space-xs max-w-sm">
+          Tiket mahasiswa ini tercatat untuk gerai mitra kantin yang berbeda. Arahkan mahasiswa ke lokasi gerai yang tertera di tiketnya.
+        </p>
+<!-- Redirect Destination Details -->
+<div class="mt-space-md bg-surface-container p-space-sm rounded-xl text-left w-full max-w-xs">
+<span class="font-label-sm text-label-sm text-text-muted block">Gerai Asli Pemesanan</span>
+<p class="font-label-md text-label-md font-bold text-primary mt-0.5 truncate">Soto Ayam Makmur</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Kantin Rumpun Ilmu Kesehatan (Kantin C)</p>
+</div>
+<button class="mt-space-md w-full max-w-xs py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold transition-colors" onclick="setScannerState('idle')" type="button">
+<span class="whitespace-nowrap">Kembali ke Pemindai</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Operational Footer Metrics (Bento-style summary of today's rescues) -->
+<div class="mt-space-xl pt-space-lg border-t border-border-subtle grid grid-cols-1 md:grid-cols-4 gap-space-md">
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-text-muted">Target Penyelamatan Sesi</span>
+<span class="material-symbols-outlined text-primary text-[20px]">inventory_2</span>
+</div>
+<p class="font-display text-display font-bold text-on-surface mt-1">18 <span class="font-headline-sm text-headline-sm font-normal text-text-muted">Porsi</span></p>
+<span class="font-body-sm text-body-sm text-primary font-medium">Sisa 4 porsi belum dipesan</span>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-text-muted">Emisi Karbon Dicegah</span>
+<span class="material-symbols-outlined text-primary text-[20px]">compost</span>
+</div>
+<p class="font-display text-display font-bold text-primary mt-1">5.88 <span class="font-headline-sm text-headline-sm font-normal text-text-muted">kg CO₂e</span></p>
+<span class="font-body-sm text-body-sm text-text-muted">Setara 24 km sepeda motor</span>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-text-muted">Rata-rata Waktu Verifikasi</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">bolt</span>
+</div>
+<p class="font-display text-display font-bold text-on-surface mt-1">4.2 <span class="font-headline-sm text-headline-sm font-normal text-text-muted">detik</span></p>
+<span class="font-body-sm text-body-sm text-primary font-medium">Alur kasir sangat lancar</span>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-text-muted">Kepatuhan Kotak Pribadi</span>
+<span class="material-symbols-outlined text-primary text-[20px]">takeout_dining</span>
+</div>
+<p class="font-display text-display font-bold text-on-surface mt-1">92% <span class="font-headline-sm text-headline-sm font-normal text-text-muted">BYOC</span></p>
+<span class="font-body-sm text-body-sm text-text-muted">13 mahasiswa bawa tepak</span>
+</div>
+</div>
+</div>
+<!-- Inline Interactive Script for Instant State Switching -->
+<script>
+  let isTorchOn = false;
+  let isFrontCamera = false;
+
+  function toggleTorch() {
+    isTorchOn = !isTorchOn;
+    const btn = document.getElementById('torch-btn');
+    const icon = document.getElementById('torch-icon');
+    if (isTorchOn) {
+      btn.classList.add('bg-secondary', 'text-on-secondary');
+      btn.classList.remove('bg-surface-container-highest/30', 'text-on-primary');
+      icon.innerText = 'flashlight_off';
+    } else {
+      btn.classList.remove('bg-secondary', 'text-on-secondary');
+      btn.classList.add('bg-surface-container-highest/30', 'text-on-primary');
+      icon.innerText = 'flashlight_on';
+    }
+  }
+
+  function flipCameraSim() {
+    isFrontCamera = !isFrontCamera;
+    const dotText = document.getElementById('camera-status-text');
+    dotText.innerText = isFrontCamera ? 'Kamera Depan • 1080p' : 'Kamera Belakang • 1080p';
+  }
+
+  function setScannerState(stateKey) {
+    // 1. Update State Pill Buttons
+    document.querySelectorAll('.state-btn').forEach(btn => {
+      btn.classList.remove('bg-primary', 'text-on-primary', 'font-semibold', 'shadow-sm');
+      btn.classList.add('bg-surface-container-lowest', 'text-on-surface', 'font-medium');
+    });
+
+    const activeBtn = document.querySelector(`[data-state-btn="${stateKey}"]`);
+    if (activeBtn) {
+      activeBtn.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'font-medium');
+      activeBtn.classList.add('bg-primary', 'text-on-primary', 'font-semibold', 'shadow-sm');
+    }
+
+    // 2. Viewfinder Internal Overlays
+    const loadingOverlay = document.getElementById('overlay-loading');
+    const deniedOverlay = document.getElementById('overlay-denied');
+    const laserLine = document.getElementById('laser-line');
+
+    loadingOverlay.classList.add('hidden');
+    deniedOverlay.classList.add('hidden');
+    laserLine.classList.remove('hidden');
+
+    if (stateKey === 'loading') {
+      loadingOverlay.classList.remove('hidden');
+      laserLine.classList.add('hidden');
+    } else if (stateKey === 'denied') {
+      deniedOverlay.classList.remove('hidden');
+      laserLine.classList.add('hidden');
+    } else if (stateKey === 'success' || stateKey === 'invalid' || stateKey === 'expired' || stateKey === 'used' || stateKey === 'wrong_vendor') {
+      laserLine.classList.add('hidden');
+    }
+
+    // 3. Right Status Cards
+    const panels = [
+      'panel-idle',
+      'panel-denied-info',
+      'panel-review',
+      'panel-success',
+      'panel-invalid',
+      'panel-expired',
+      'panel-used',
+      'panel-wrong_vendor'
+    ];
+
+    panels.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    });
+
+    if (stateKey === 'idle') {
+      document.getElementById('panel-idle').classList.remove('hidden');
+    } else if (stateKey === 'loading') {
+      document.getElementById('panel-idle').classList.remove('hidden');
+    } else if (stateKey === 'denied') {
+      document.getElementById('panel-denied-info').classList.remove('hidden');
+    } else if (stateKey === 'review') {
+      document.getElementById('panel-review').classList.remove('hidden');
+    } else if (stateKey === 'success') {
+      document.getElementById('panel-success').classList.remove('hidden');
+    } else if (stateKey === 'invalid') {
+      document.getElementById('panel-invalid').classList.remove('hidden');
+    } else if (stateKey === 'expired') {
+      document.getElementById('panel-expired').classList.remove('hidden');
+    } else if (stateKey === 'used') {
+      document.getElementById('panel-used').classList.remove('hidden');
+    } else if (stateKey === 'wrong_vendor') {
+      document.getElementById('panel-wrong_vendor').classList.remove('hidden');
+    }
+  }
+</script></div><footer class="w-full py-space-md border-t border-border-subtle mt-auto bg-surface-container-lowest/60"><div class="flex flex-col md:flex-row items-center justify-between gap-space-sm text-center md:text-left"><div class="flex items-center gap-space-sm text-text-muted"><span class="material-symbols-outlined text-[18px] text-primary">verified_user</span><span class="font-body-sm text-body-sm">Standar Kebersihan &amp; Kepatuhan Sanitasi Kampus Bebas Emisi • SDG 12</span></div><p class="font-body-sm text-body-sm text-text-muted">© 2024 Porsi Terakhir Mitra Kampus. Hak Cipta Dilindungi.</p></div></footer></main></div></body></html>

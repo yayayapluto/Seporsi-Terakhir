@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 const Body = z.object({
   portionId: z.string().uuid(),
   quantity: z.number().int().min(1).max(2).default(1),
+  slotStart: z.string().datetime().optional(),
+  slotEnd: z.string().datetime().optional(),
 });
 
 /**
@@ -22,9 +24,11 @@ export async function POST(req: Request) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Masuk dulu untuk memesan." }, { status: 401 });
-  const { error } = await supabase.rpc("place_order", {
+  const { data, error } = await supabase.rpc("place_order", {
     p_portion_id: parsed.data.portionId,
     p_quantity: parsed.data.quantity,
+    p_slot_start: parsed.data.slotStart ?? null,
+    p_slot_end: parsed.data.slotEnd ?? null,
   });
   if (error) {
     const msg = error.message.toLowerCase();
@@ -40,10 +44,14 @@ export async function POST(req: Request) {
         { status: 429 },
       );
     }
+    if (msg.includes("slot")) {
+      return NextResponse.json({ error: "Slot pickup tidak valid." }, { status: 400 });
+    }
     if (msg.includes("quantity")) {
       return NextResponse.json({ error: "Maksimal 2 porsi per pesanan." }, { status: 400 });
     }
     return NextResponse.json({ error: "Gagal memesan. Coba lagi." }, { status: 400 });
   }
-  return NextResponse.json({ ok: true }, { status: 201 });
+  const orderId = (data as unknown as { id?: string } | null)?.id ?? null;
+  return NextResponse.json({ ok: true, orderId }, { status: 201 });
 }

@@ -77,3 +77,20 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
     dimatikan utk pilot kampus biar signup langsung login. Tanpa DB lokal
     (Docker mati) — verifikasi fungsional di tangan owner via `bun run seed`
     lalu coba daftar/masuk di `/masuk`.
+
+## Phase 4 (full implementation, 27–28 Okt 2026)
+
+15. **Struktur rute**: student (`katalog/[portionId]`, `pesanan`, `profil`) di
+    `src/app/(public)/` — URL tetap `/katalog`, `/pesanan`, `/profil` (tanpa
+    prefix grup). `tenant/*` dan `admin/*` di root `src/app/` karena butuh guard
+    role; file `src/app/katalog|pesanan|profil` duplikat hasil paralel dihapus.
+16. **RPC `place_order` sudah dukung slot** (`p_slot_start/end`, migrasi
+    `20261027000002/04`); `src/app/api/orders/route.ts` diteruskan + balikan
+    `{ ok, orderId }` agar `OrderForm` push ke `/pesanan/[orderId]`. Validasi
+    slot berpasangan di client, ketat di DB (`slot past expiry`, dsb → 400).
+17. **Proxy guard `/pesanan`**: `src/lib/supabase/proxy.ts` lindungi
+    `/katalog|/pesanan|/profil|/tenant|/admin`; anon → `/masuk?next=`.
+18. **Unverified**: alur runtime (order, cancel, scan, approve, CSV) butuh DB
+    lokal (Docker mati, konsisten #11) + login sungguhan; `bun run build` 20
+    route lolos, `bun run check` gagal di file lama (CRLF/`any`/Card — di luar
+    scope, tak disentuh).
