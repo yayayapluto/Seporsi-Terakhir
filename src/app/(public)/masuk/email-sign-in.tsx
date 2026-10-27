@@ -34,10 +34,11 @@ export function EmailSignIn({ next }: { next?: string }) {
         ? await supabase.auth.signInWithPassword(values)
         : await supabase.auth.signUp(values);
     if (error) {
+      console.error("[masuk] sign-in gagal:", error.message);
       setFormError(
         error.message === "Invalid login credentials"
           ? "Email atau kata sandi salah."
-          : "Gagal. Coba lagi.",
+          : `Gagal (${error.message}). Coba lagi.`,
       );
       return;
     }
