@@ -32,13 +32,14 @@ async function refreshSession(request: NextRequest) {
  */
 export async function updateSession(request: NextRequest) {
   const response = await refreshSession(request);
-  // Reuse the refreshed session cookie — no second getUser round-trip.
+  // Read the mutated request cookies (refresh writes back here) — the
+  // response only carries Set-Cookie deltas, which getUser can't parse.
   const supabase = createServerClient(
     getEnv().NEXT_PUBLIC_SUPABASE_URL,
     getEnv().NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
-        getAll: () => response.cookies.getAll(),
+        getAll: () => request.cookies.getAll(),
         setAll: () => {},
       },
     },
