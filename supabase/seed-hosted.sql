@@ -33,8 +33,8 @@ where not exists (select 1 from auth.users u where u.email = v.e);
 -- ke auth.users tak bikin otomatis -> "Database error querying schema".
 insert into auth.identities (id, user_id, provider_id, identity_data,
   provider, last_sign_in_at, created_at, updated_at)
-select gen_random_uuid(), u.id, u.id,
-  jsonb_build_object('sub', u.id, 'email', u.email),
+select gen_random_uuid(), u.id, u.id::text,
+  jsonb_build_object('sub', u.id::text, 'email', u.email),
   'email', now(), now(), now()
 from auth.users u
 where u.email in ('admin@kampus.ac.id', 'warteg@kampus.ac.id',
