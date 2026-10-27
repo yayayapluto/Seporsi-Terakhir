@@ -1,7 +1,5 @@
+import Image from "next/image";
 import Link from "next/link";
-import { SectionReveal } from "@/components/reveal";
-import { Skeleton } from "@/components/ui/skeleton";
-import { HeroMotion } from "./hero-motion";
 
 const BOARD = [
   {
@@ -102,13 +100,10 @@ export default function Home() {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 sm:px-6">
       {/* HERO */}
-      <HeroMotion className="grid gap-8 py-10 sm:py-14 lg:grid-cols-[1.05fr_1fr]">
+      <section className="grid gap-8 py-10 sm:py-14 lg:grid-cols-[1.05fr_1fr]">
         <div className="flex flex-col gap-5">
-          <p className="text-xs font-bold tracking-[0.2em] text-primary">
-            KANTIN KAMPUS — SORE INI
-          </p>
           <h1 className="max-w-xl text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
-            Porsi terakhir hari ini.
+            Porsi terakhir hari ini di kantin kampus.
           </h1>
           <p className="max-w-xl text-base text-muted-foreground">
             Setiap sore, makanan layak makan di kantin kampus sering berakhir di tempat sampah.
@@ -135,12 +130,19 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <div>
-            <Skeleton className="h-36 w-full rounded-lg" aria-label="Slot foto kantin" />
-            <p className="mt-1 text-[11px] text-muted-foreground">
-              Slot foto suasana kantin — ganti dengan foto asli.
-            </p>
-          </div>
+          <figure>
+            <Image
+              src="/images/foto_kantin.webp"
+              alt="Suasana kantin kampus sore hari"
+              width={520}
+              height={346}
+              className="h-auto w-full rounded-md border object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+            <figcaption className="mt-1 text-[11px] text-muted-foreground">
+              Suasana kantin kampus sore hari.
+            </figcaption>
+          </figure>
           <section
             aria-label="Contoh papan porsi sore ini"
             className="border-t-2 border-foreground"
@@ -170,10 +172,10 @@ export default function Home() {
             </p>
           </section>
         </div>
-      </HeroMotion>
+      </section>
 
       {/* MASALAH */}
-      <SectionReveal className="flex flex-col gap-2 py-10">
+      <section className="flex flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">MASALAH</p>
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Satu masalah, dua pihak butuh.
@@ -186,10 +188,10 @@ export default function Home() {
             </li>
           ))}
         </ul>
-      </SectionReveal>
+      </section>
 
       {/* CARA KERJA */}
-      <SectionReveal className="flex flex-col gap-2 py-10">
+      <section className="flex flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">CARA KERJA</p>
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Dari katalog sampai makan, 4 langkah.
@@ -213,10 +215,10 @@ export default function Home() {
         <p className="text-sm text-muted-foreground">
           Tanpa perantara dana: kamu membayar langsung ke tenant saat pickup.
         </p>
-      </SectionReveal>
+      </section>
 
       {/* KEAMANAN */}
-      <SectionReveal id="keamanan" className="flex flex-col gap-2 py-10">
+      <section id="keamanan" className="flex flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">KEAMANAN PANGAN</p>
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Aturan jelas supaya tetap aman.
@@ -236,10 +238,10 @@ export default function Home() {
           </Link>
           .
         </p>
-      </SectionReveal>
+      </section>
 
       {/* FAQ */}
-      <SectionReveal id="faq" className="mx-auto flex w-full max-w-3xl flex-col gap-2 py-10">
+      <section id="faq" className="mx-auto flex w-full max-w-3xl flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">TANYA JAWAB</p>
         <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
           Pertanyaan yang sering ditanyakan.
@@ -254,10 +256,10 @@ export default function Home() {
             </details>
           ))}
         </div>
-      </SectionReveal>
+      </section>
 
       {/* CTA */}
-      <SectionReveal className="mb-12 flex flex-col items-center gap-4 border-t-2 border-foreground px-6 py-12 text-center">
+      <section className="mb-12 flex flex-col items-center gap-4 border-t-2 border-foreground px-6 py-12 text-center">
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Jangan biarkan porsi terakhir terbuang.
         </h2>
@@ -280,7 +282,7 @@ export default function Home() {
           </Link>
         </div>
         <p className="text-xs text-muted-foreground">Pilot SDG 12 di lingkungan kampus</p>
-      </SectionReveal>
+      </section>
     </div>
   );
 }

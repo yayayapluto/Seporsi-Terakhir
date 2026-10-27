@@ -1,17 +1,16 @@
-import { SectionReveal } from "@/components/reveal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function CaraKerjaPage() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <SectionReveal className="flex flex-col gap-2">
+      <section className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold">Cara Kerja</h1>
         <p className="text-muted-foreground">
           Transparan sejak awal: baseline, rumus dampak, SOP keamanan pangan, dan prinsip opt-in.
         </p>
-      </SectionReveal>
+      </section>
 
-      <SectionReveal>
+      <section>
         <Card>
           <CardHeader>
             <CardTitle>Alur 3 langkah</CardTitle>
@@ -31,9 +30,9 @@ export default function CaraKerjaPage() {
             </p>
           </CardContent>
         </Card>
-      </SectionReveal>
+      </section>
 
-      <SectionReveal>
+      <section>
         <Card>
           <CardHeader>
             <CardTitle>Rumus dampak</CardTitle>
@@ -49,9 +48,9 @@ export default function CaraKerjaPage() {
             <p>% sisa terjual = porsi terjual / porsi diunggah.</p>
           </CardContent>
         </Card>
-      </SectionReveal>
+      </section>
 
-      <SectionReveal>
+      <section>
         <Card>
           <CardHeader>
             <CardTitle>SOP keamanan pangan</CardTitle>
@@ -65,9 +64,9 @@ export default function CaraKerjaPage() {
             </p>
           </CardContent>
         </Card>
-      </SectionReveal>
+      </section>
 
-      <SectionReveal>
+      <section>
         <Card>
           <CardHeader>
             <CardTitle>Prinsip opt-in</CardTitle>
@@ -79,7 +78,7 @@ export default function CaraKerjaPage() {
             </p>
           </CardContent>
         </Card>
-      </SectionReveal>
+      </section>
     </div>
   );
 }

@@ -25,14 +25,11 @@ export function SiteFooter() {
           <Link href="/katalog" className="w-fit text-muted-foreground hover:text-foreground">
             Lihat Porsi Hari Ini
           </Link>
-          <Link href="/#tenant" className="w-fit text-muted-foreground hover:text-foreground">
-            Untuk Mitra Kantin
+          <Link href="/cara-kerja" className="w-fit text-muted-foreground hover:text-foreground">
+            Cara Kerja & Jadi Tenant
           </Link>
           <Link href="/#keamanan" className="w-fit text-muted-foreground hover:text-foreground">
             Standar Keamanan
-          </Link>
-          <Link href="/#dampak" className="w-fit text-muted-foreground hover:text-foreground">
-            Kalkulator Dampak
           </Link>
           <Link href="/#faq" className="w-fit text-muted-foreground hover:text-foreground">
             Tanya Jawab (FAQ)

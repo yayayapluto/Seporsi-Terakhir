@@ -2,8 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  allowedDevOrigins: ["seporsi-terakhir.my.id"],
-  cacheComponents: true,
+  /* foto hero lokal: /images/foto_kantin.webp, tanpa remote host */
   turbopack: {
     rules: {
       "*.css": {

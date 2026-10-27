@@ -8,9 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 
 const NAV = [
   { href: "/cara-kerja", label: "Cara Kerja" },
-  { href: "/#tenant", label: "Untuk Tenant" },
   { href: "/#keamanan", label: "Keamanan Pangan" },
-  { href: "/#dampak", label: "Dampak" },
   { href: "/#faq", label: "FAQ" },
 ];
 
@@ -83,10 +81,10 @@ export function SiteHeader() {
           ) : (
             <>
               <Link
-                href="/#tenant"
+                href="/cara-kerja"
                 className="hidden rounded-lg px-3 py-2 font-medium transition-colors hover:bg-muted md:inline"
               >
-                Daftar Tenant
+                Jadi Tenant
               </Link>
               <Link
                 href="/masuk"

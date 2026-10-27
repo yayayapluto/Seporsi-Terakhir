@@ -47,8 +47,7 @@ create table portions (
     check (sell_window_minutes between 120 and 240),
   release_at timestamptz not null,
   discount_price integer not null check (discount_price > 0),
-  expires_at timestamptz
-    generated always as (cooked_at + make_interval(mins => sell_window_minutes)) stored,
+  expires_at timestamptz not null,
   created_at timestamptz not null default now(),
   check (quantity_remaining <= quantity_posted)
 );
@@ -75,6 +74,22 @@ create table orders (
 create index orders_student_idx on orders (student_id);
 create index orders_portion_idx on orders (portion_id);
 create index orders_token_idx on orders (pickup_token);
+
+-- expiry auto-fill: cooked_at + sell_window (generated column impossible,
+-- make_interval is stable not immutable). Trigger covers insert + updates
+-- to cooked_at/sell_window; explicit expires_at respected.
+create or replace function fill_expires_at() returns trigger
+  language plpgsql set search_path = public as $$
+begin
+  if tg_op = 'INSERT' or new.cooked_at is distinct from old.cooked_at
+     or new.sell_window_minutes is distinct from old.sell_window_minutes then
+    new.expires_at := new.cooked_at + (new.sell_window_minutes || ' minutes')::interval;
+  end if;
+  return new;
+end $$;
+
+create trigger portions_expiry before insert or update on portions
+  for each row execute function fill_expires_at();
 
 -- updated_at maintenance
 create or replace function touch_updated_at() returns trigger
