@@ -84,7 +84,7 @@ on conflict (tenant_id, name) do update
 -- 5. portions relatif ke now() (1 expired = bukti filter BR-2)
 insert into portions (tenant_id, menu_item_id, quantity_posted, quantity_remaining,
     cooked_at, sell_window_minutes, release_at, discount_price)
-select t.id, m.id, v.qp, v.qr, now() - v.ca, v.sw, now() - v.ra, v.dp
+select t.id, m.id, v.qp, v.qr, now() - v.ca::interval, v.sw, now() - v.ra::interval, v.dp
 from (values
   ('Warteg Barokah', 'Nasi ayam + sayur', 10, 10, '30 minutes', 180, '25 minutes', 7000),
   ('Warteg Barokah', 'Nasi telur + tempe', 5, 2, '3 hours', 180, '2 hours 50 minutes', 5500),
