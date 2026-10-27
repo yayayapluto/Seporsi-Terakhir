@@ -27,6 +27,7 @@ export function KatalogList({
   async function order(id: string) {
     setOrdering(id);
     setError(null);
+    setSuccess(null);
     try {
       const res = await fetch("/api/orders", {
         method: "POST",
@@ -41,7 +42,7 @@ export function KatalogList({
       setItems((prev) =>
         prev.map((p) => (p.id === id ? { ...p, quantityRemaining: p.quantityRemaining - 1 } : p)),
       );
-      setSuccess("Pesanan terkunci. Tunjukkan QR saat pengambilan dan bayar di tempat.");
+      setSuccess("Pesanan terkunci. Bayar di tempat dan tunjukkan pesanan ini ke tenant.");
     } catch {
       setError("Gagal memesan. Coba lagi.");
     } finally {

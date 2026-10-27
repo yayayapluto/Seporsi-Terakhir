@@ -38,19 +38,26 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 ## Phase 3
 
 10. **Blank `/cara-kerja` on prod is a deploy issue, not a code bug**: prod HTML
-    is byte-identical to local dev (40003 bytes) and references
-    `turbopack_browser_dev_hmr-client` + `react-dom_development` chunks —
-    the host runs `next dev`, not `next build`/`next start`. Verified via
-    Hypothesis: local curl shows content present, inline
-    `opacity:0;transform:translateY(20px)` SSR styles waiting on JS
-    hydration that the dev runtime can't deliver in that env. Action for
-    deploy owner: redeploy from `bun run build` + `bun run start`.
-11. **Daily cap 2 porsi/hari enforced in DB**: FAQ + katalog copy promised it,
-    but `place_order` had no guard. Added migration
-    `20261027000004_daily_cap.sql` — students capped at 2 portions/day
-    (cancelled orders excluded, admins exempt); route maps it to 429
-    "Batas harian tercapai". Window hardcoded 180 in old dead filter removed
-    — actual `sell_window_minutes` lives per-row; SQL filters carry it.
-12. **Order success feedback**: `KatalogList` now shows `role="status"`
-    confirmation + decrements local `Sisa N` and disables the button at 0,
-    so a second click can't fire a duplicate real order.
+    is byte-identical to local dev (40003 bytes) and references dev-only
+    chunks (`turbopack_browser_dev_hmr-client`, `react-dom_development`) —
+    the host serves `next dev`, not `next build` output. All chunk URLs return
+    200, and local curl shows the content present in HTML (inline
+    `opacity:0;translateY(20px)` SSR styles); the page only stays blank if JS
+    never hydrates. Fix is deploy-side: `bun run build && bun run start`.
+    No repo/Dockerfile/CI config exists and `git remote` is empty — prod launch
+    method unknown, host owner must confirm. Robustness follow-up (unplanned):
+    motion wrappers SSR `opacity:0`, so any hydration failure blanks the page;
+    prefer visible-by-default + client-effect animation later.
+11. **Daily cap 2 porsi/hari enforced in DB** (`20261027000004_daily_cap.sql`,
+    `create or replace`, UNTESTED — no Docker/local DB here, `bun run db:reset`
+    + `db:test` pending on deploy owner): sums same-day `quantity` (WIB day
+    boundary via `at time zone 'Asia/Jakarta'`, cancelled excluded, admin
+    exempt), rejects over 2 with `daily limit`; route maps it to 429
+    "Batas harian tercapai". Dead `isPortionOrderable` filter removed — SQL
+    `.gt/.lte` on `expires_at`/`release_at` carries the per-row window.
+12. **Order success feedback narrows, not duplicates**: `KatalogList` shows an
+    `<output>` confirmation + decrements local `Sisa N`, clears stale success
+    on next order, disables the button at 0 to avoid futile clicks (DB stays
+    the real duplicate guard). Copy softened — no QR page exists yet, so no
+    QR promise. `/katalog:307` verified expected: middleware redirects anon
+    to `/masuk?next=/katalog`, same local and prod.

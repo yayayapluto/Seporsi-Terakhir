@@ -37,13 +37,14 @@ begin
   end if;
 
   -- daily cap (BR pilot rule): students max 2 portions/day across orders.
-  -- cancelled orders refund quota, so they don't count.
+  -- cancelled orders refund quota, so they don't count. Day boundary in WIB.
   if not exists (select 1 from profiles where id = auth.uid() and role = 'admin') then
     select coalesce(sum(quantity), 0) into v_day_total
       from orders
      where student_id = auth.uid()
        and status <> 'cancelled'
-       and created_at >= date_trunc('day', now());
+       and date_trunc('day', created_at at time zone 'Asia/Jakarta')
+         = date_trunc('day', now() at time zone 'Asia/Jakarta');
     if v_day_total + p_quantity > v_max_qty then
       raise exception 'daily limit: max % portions per day', v_max_qty;
     end if;
