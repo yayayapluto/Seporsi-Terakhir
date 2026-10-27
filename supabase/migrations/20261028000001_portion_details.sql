@@ -78,7 +78,7 @@ begin
       update menu_items set
         name = btrim(p_name), normal_price = p_normal_price,
         avg_weight_grams = p_avg_weight_grams,
-        is_active = coalesce(p_is_active, true),
+        is_active = coalesce(p_is_active, v_menu.is_active),
         ingredients = nullif(btrim(coalesce(p_ingredients, '')), ''),
         allergen_note = nullif(btrim(coalesce(p_allergen_note, '')), '')
       where id = p_id returning * into v_menu;

@@ -92,5 +92,17 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
     `/katalog|/pesanan|/profil|/tenant|/admin`; anon → `/masuk?next=`.
 18. **Unverified**: alur runtime (order, cancel, scan, approve, CSV) butuh DB
     lokal (Docker mati, konsisten #11) + login sungguhan; `bun run build` 20
-    route lolos, `bun run check` gagal di file lama (CRLF/`any`/Card — di luar
     scope, tak disentuh).
+19. **Advisories audit (28 Okt, weighed)**: `is_active` reactivation bug fixed
+    (`coalesce(p_is_active, v_menu.is_active)` di update branch). `scripts`
+    `db:test`/`db:types` ditambah (syntax terverifikasi, DB tetap down).
+    `getOwnTenant` tanpa redirect di dalam — tiap call site redirect sendiri
+    (pendaftaran/menunggu butuh non-redirect path). Semua RPC call snake_case.
+    QR `import { QRCode }` valid (build lolos). Policy replay-safe (drop if
+    exists + create), grants explicit ke `authenticated`.
+20. **DB debt eksplisit**: Docker daemon down (CLI `supabase@2.122.0` ada tapi
+    `supabase status` gagal konek) → `db:reset`/`db:test`/`db:types` belum bisa
+    jalan. `src/types/database.ts` tetap belum generated (tak ada import —
+    aman). pgTAP daily-cap skip bertahan. Sebelum screen baru bertumpuk:
+    hidupkan Docker → `bun run db:reset` → `bun run db:test` →
+    `bun run db:types`. Bukan silent — ini gate.
