@@ -27,7 +27,7 @@ from (values
   ('geprek@kampus.ac.id', 'Mas Geprek'),
   ('rafi@student.ac.id', 'Rafi Anggara')
 ) as v(e, n)
-on conflict (email) do nothing;
+where not exists (select 1 from auth.users u where u.email = v.e);
 
 -- 2. roles (trigger bikin profil student otomatis; tinggal update role)
 update profiles p set role = 'admin', full_name = 'Admin BEM'
@@ -53,7 +53,7 @@ from (values
   ('geprek@kampus.ac.id', 'Ayam Geprek Mas Boy', 'Kantin gedung B')
 ) as v(e, t, l)
 join auth.users u on u.email = v.e
-on conflict do nothing;
+where not exists (select 1 from tenants t where t.owner_id = u.id);
 
 -- 4. menus
 insert into menu_items (tenant_id, name, normal_price, avg_weight_grams)
