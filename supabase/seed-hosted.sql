@@ -34,13 +34,24 @@ where not exists (select 1 from auth.users u where u.email = v.e);
 insert into auth.identities (id, user_id, provider_id, identity_data,
   provider, last_sign_in_at, created_at, updated_at)
 select gen_random_uuid(), u.id, u.id::text,
-  jsonb_build_object('sub', u.id::text, 'email', u.email),
+  jsonb_build_object('sub', u.id::text, 'email', u.email,
+    'email_verified', true, 'phone_verified', false),
   'email', now(), now(), now()
 from auth.users u
 where u.email in ('admin@kampus.ac.id', 'warteg@kampus.ac.id',
   'kopi@kampus.ac.id', 'padang@kampus.ac.id', 'soto@kampus.ac.id',
   'pecel@kampus.ac.id', 'geprek@kampus.ac.id', 'rafi@student.ac.id')
   and not exists (select 1 from auth.identities i where i.user_id = u.id);
+
+-- perbaiki baris lama yg identity_data-nya tanpa flag verified (GoTrue
+-- tolak parse saat login -> 500). Aman diulang.
+update auth.identities i
+set identity_data = i.identity_data
+  || '{"email_verified": true, "phone_verified": false}'::jsonb,
+  updated_at = now()
+from auth.users u
+where i.user_id = u.id and i.provider = 'email'
+  and (i.identity_data ->> 'email_verified') is null;
 
 -- 2. roles: matikan trigger guard selama seed (SQL Editor autocommit tiap
 -- statement, jadi set_config transaction-local tak bertahan antar statement).
