@@ -16,7 +16,10 @@
       "!coverage",
       "!supabase/.temp",
       "!src/types/database.ts",
-      "!docs/design"
+      "!docs/design",
+      "!.claude/**",
+      "!.omp/**",
+      "!.pi/**"
     ]
   },
   "formatter": {

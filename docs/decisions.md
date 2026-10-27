@@ -103,9 +103,9 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
     `db:types` belum bisa jalan. `src/types/` dibuat + `.gitattributes`
     (`eol=lf`) agar state nempel. pgTAP policy count dibetulkan 5→6
     (akibat `tenants_admin_read`) + cek 12 RPC; daily-cap skip bertahan.
+    Gate sebelum screen baru: Docker hidup → `db:reset` → `db:test` →
     `db:types`. Bukan silent.
-21. **Lint truth (28 Okt)**: `bun run lint` gagal = 100% file vendored skill
-    (`impeccable/scripts/*.js`, `data/font-index.json` oversize);
-    `biome check src supabase package.json docs tsconfig.json` 0 error,
-    typecheck + vitest hijau, build 20 rute. `bun run format` + `.gitattributes`
-    bersihkan CRLF repo. DoD phase = scope repo, skill vendored excluded.
+21. **Lint truth (28 Okt)**: `biome.json` exclude `.claude/.omp/.pi/**`
+    (vendored skill, read-only) → `bun run lint` hijau (exit 0). `bun run format`
+    + `.gitattributes` bersihkan CRLF repo. DoD phase = `bun run check`
+    hijau penuh.
