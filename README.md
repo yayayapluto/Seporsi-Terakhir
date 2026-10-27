@@ -18,10 +18,22 @@ Local Supabase (needs Docker):
 
 ```bash
 bun run db:start   # start
-bun run db:reset   # migrate + seed
-bun run db:types   # regenerate src/types/database.ts
+bun run seed       # reset + seed demo (6 tenants, 16 menus, 12 portions)
 bun run db:stop    # stop
 ```
+
+## Demo accounts (seed)
+
+| Role    | Email               |
+| ------- | ------------------- |
+| admin   | admin@kampus.ac.id  |
+| tenant  | warteg@kampus.ac.id  |
+| student | rafi@student.ac.id  |
+
+Seed hanya isi `profiles` (tanpa password). Buat auth user dulu dengan email
+yang sama di Supabase dashboard/CLI (matikan confirm email untuk lokal), atau
+daftar via `/masuk` lalu samakan role via `docs/setup.md` §4. UUID seed
+placeholder — ganti dengan auth user id asli.
 
 ## Commands
 
@@ -32,8 +44,9 @@ bun run db:stop    # stop
 | `bun run build`    | production build                  |
 | `bun run test`     | Vitest (unit tests, domain logic) |
 | `bun run db:*`     | Supabase local lifecycle          |
+| `bun run seed`     | reset + seed demo data            |
 
 ## Manual steps
 
-See `docs/setup.md` (Google OAuth, Supabase, roles). Without those, Google
-login cannot be verified — expected until Phase 3 credentials exist.
+See `docs/setup.md` (Google OAuth, Supabase, roles). Demo login: tabel akun di
+atas + Email provider aktif; Google perlu kredensial OAuth manusia.
