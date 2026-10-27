@@ -16,10 +16,12 @@ export function KatalogList({
   const [tenant, setTenant] = useState<string>("semua");
   const [ordering, setOrdering] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [items, setItems] = useState<CatalogPortion[]>(portions);
 
   const filtered = useMemo(
-    () => (tenant === "semua" ? portions : portions.filter((p) => p.tenantName === tenant)),
-    [portions, tenant],
+    () => (tenant === "semua" ? items : items.filter((p) => p.tenantName === tenant)),
+    [items, tenant],
   );
 
   async function order(id: string) {
@@ -34,7 +36,12 @@ export function KatalogList({
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as { error?: string } | null;
         setError(body?.error ?? "Gagal memesan. Coba lagi.");
+        return;
       }
+      setItems((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, quantityRemaining: p.quantityRemaining - 1 } : p)),
+      );
+      setSuccess("Pesanan terkunci. Tunjukkan QR saat pengambilan dan bayar di tempat.");
     } catch {
       setError("Gagal memesan. Coba lagi.");
     } finally {
@@ -70,6 +77,11 @@ export function KatalogList({
         >
           {error}
         </p>
+      )}
+      {success && (
+        <output className="block rounded-lg border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
+          {success}
+        </output>
       )}
       {filtered.length === 0 ? (
         <div className="rounded-xl border bg-card p-8 text-center">
@@ -112,11 +124,15 @@ export function KatalogList({
                 <motion.button
                   type="button"
                   whileTap={{ scale: 0.98 }}
-                  disabled={ordering === p.id}
+                  disabled={ordering === p.id || p.quantityRemaining <= 0}
                   onClick={() => order(p.id)}
                   className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-70"
                 >
-                  {ordering === p.id ? "Memesan…" : "Pesan 1 porsi"}
+                  {ordering === p.id
+                    ? "Memesan…"
+                    : p.quantityRemaining <= 0
+                      ? "Habis"
+                      : "Pesan 1 porsi"}
                 </motion.button>
                 <Link
                   href={`/katalog/${p.id}`}

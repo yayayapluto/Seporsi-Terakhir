@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { isPortionOrderable } from "@/lib/domain/expiry";
 import { createClient } from "@/lib/supabase/server";
 import { KatalogList } from "./katalog-list";
 
@@ -38,17 +37,6 @@ async function loadCatalog(): Promise<{ portions: CatalogPortion[]; tenants: str
     const menu = row.menu_items as unknown as { name: string; normal_price: number };
     const tenant = row.tenants as unknown as { name: string; location_note: string | null };
     tenantSet.add(tenant.name);
-    if (
-      !isPortionOrderable({
-        cookedAt: new Date(row.cooked_at),
-        sellWindowMinutes: 180,
-        releaseAt: new Date(row.release_at),
-        now,
-        quantityRemaining: row.quantity_remaining,
-      }) &&
-      new Date(row.expires_at).getTime() <= now.getTime()
-    )
-      continue;
     portions.push({
       id: row.id,
       menuName: menu.name,

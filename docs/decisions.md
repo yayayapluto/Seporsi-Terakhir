@@ -7,6 +7,7 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 1. **Repo name vs scaffold**: `create-next-app` refuses uppercase project names
    ("INFINITY"). Scaffolded into a temp dir (`porsi-scaffold`) and copied into
    this repo instead. Package renamed to `porsi-terakhir`.
+
 2. **Next.js 16.4.3 / React 19.3.0 / Tailwind v4 / Biome 2.4.2**: installed by the
    scaffold's pinned latest; accepted as "latest stable" per brief.
 3. **BR-6 interpretation**: discounted price = 45% of normal price (midpoint of
@@ -33,3 +34,23 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
    dialog, avatar, dropdown-menu.
 9. **`metrics.wastePreventedKg` returns `null`** (not 0) when average weight is
    missing, so UI can distinguish "no data" from "zero waste".
+
+## Phase 3
+
+10. **Blank `/cara-kerja` on prod is a deploy issue, not a code bug**: prod HTML
+    is byte-identical to local dev (40003 bytes) and references
+    `turbopack_browser_dev_hmr-client` + `react-dom_development` chunks —
+    the host runs `next dev`, not `next build`/`next start`. Verified via
+    Hypothesis: local curl shows content present, inline
+    `opacity:0;transform:translateY(20px)` SSR styles waiting on JS
+    hydration that the dev runtime can't deliver in that env. Action for
+    deploy owner: redeploy from `bun run build` + `bun run start`.
+11. **Daily cap 2 porsi/hari enforced in DB**: FAQ + katalog copy promised it,
+    but `place_order` had no guard. Added migration
+    `20261027000004_daily_cap.sql` — students capped at 2 portions/day
+    (cancelled orders excluded, admins exempt); route maps it to 429
+    "Batas harian tercapai". Window hardcoded 180 in old dead filter removed
+    — actual `sell_window_minutes` lives per-row; SQL filters carry it.
+12. **Order success feedback**: `KatalogList` now shows `role="status"`
+    confirmation + decrements local `Sisa N` and disables the button at 0,
+    so a second click can't fire a duplicate real order.

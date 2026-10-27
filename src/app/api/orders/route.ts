@@ -34,6 +34,12 @@ export async function POST(req: Request) {
     if (msg.includes("expired") || msg.includes("not_released")) {
       return NextResponse.json({ error: "Porsi sudah kedaluwarsa." }, { status: 410 });
     }
+    if (msg.includes("daily limit")) {
+      return NextResponse.json(
+        { error: "Batas harian tercapai: maksimal 2 porsi per hari." },
+        { status: 429 },
+      );
+    }
     if (msg.includes("quantity")) {
       return NextResponse.json({ error: "Maksimal 2 porsi per pesanan." }, { status: 400 });
     }
