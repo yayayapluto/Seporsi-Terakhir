@@ -29,6 +29,19 @@ from (values
 ) as v(e, n)
 where not exists (select 1 from auth.users u where u.email = v.e);
 
+-- 1b. identities: GoTrue login email butuh baris ini; insert mentah
+-- ke auth.users tak bikin otomatis -> "Database error querying schema".
+insert into auth.identities (id, user_id, provider_id, identity_data,
+  provider, last_sign_in_at, created_at, updated_at)
+select gen_random_uuid(), u.id, u.id,
+  jsonb_build_object('sub', u.id, 'email', u.email),
+  'email', now(), now(), now()
+from auth.users u
+where u.email in ('admin@kampus.ac.id', 'warteg@kampus.ac.id',
+  'kopi@kampus.ac.id', 'padang@kampus.ac.id', 'soto@kampus.ac.id',
+  'pecel@kampus.ac.id', 'geprek@kampus.ac.id', 'rafi@student.ac.id')
+  and not exists (select 1 from auth.identities i where i.user_id = u.id);
+
 -- 2. roles: matikan trigger guard selama seed (SQL Editor autocommit tiap
 -- statement, jadi set_config transaction-local tak bertahan antar statement).
 alter table profiles disable trigger profiles_role_guard;
