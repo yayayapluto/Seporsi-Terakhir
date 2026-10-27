@@ -27,10 +27,14 @@ export async function GET(request: NextRequest) {
           getAll: () => request.cookies.getAll().map(({ name, value }) => ({ name, value })),
           setAll: (toSet) => {
             for (const { name, value, options } of toSet) {
-              response.headers.append(
-                "Set-Cookie",
-                `${name}=${value}; Path=${options?.path ?? "/"}; HttpOnly; SameSite=Lax`,
-              );
+              let cookie = `${name}=${value}; Path=${options?.path ?? "/"}`;
+              if (options?.maxAge) cookie += `; Max-Age=${options.maxAge}`;
+              if (options?.expires) cookie += `; Expires=${options.expires.toUTCString()}`;
+              if (options?.domain) cookie += `; Domain=${options.domain}`;
+              if (options?.sameSite) cookie += `; SameSite=${options.sameSite}`;
+              if (options?.secure) cookie += "; Secure";
+              if (options?.httpOnly) cookie += "; HttpOnly";
+              response.headers.append("Set-Cookie", cookie);
             }
           },
         },

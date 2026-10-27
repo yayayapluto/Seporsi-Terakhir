@@ -1,8 +1,9 @@
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { KatalogList } from "./katalog-list";
-
-/** Auth + live stock: per-request data, streamed inside Suspense. */
+ 
+ /** Auth + live stock: per-request data, streamed inside Suspense. */
 
 export interface CatalogPortion {
   id: string;
@@ -19,6 +20,7 @@ export interface CatalogPortion {
 
 async function loadCatalog(): Promise<{ portions: CatalogPortion[]; tenants: string[] }> {
   const supabase = await createClient();
+  await connection();
   const now = new Date();
   const { data, error } = await supabase
     .from("portions")

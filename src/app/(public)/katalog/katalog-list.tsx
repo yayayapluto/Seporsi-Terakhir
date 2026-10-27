@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import type { CatalogPortion } from "./page";
@@ -52,15 +50,15 @@ export function KatalogList({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <label htmlFor="tenant-filter" className="text-sm font-medium">
-          Tenant:
+      <div className="flex flex-wrap items-center gap-3 border-b pb-4">
+        <label htmlFor="tenant-filter" className="text-sm font-semibold">
+          Tenant
         </label>
         <select
           id="tenant-filter"
           value={tenant}
           onChange={(e) => setTenant(e.target.value)}
-          className="h-10 rounded-lg border bg-card px-3 text-sm"
+          className="h-11 rounded-md border bg-card px-3 text-sm"
         >
           <option value="semua">Semua tenant</option>
           {tenants.map((t) => (
@@ -74,76 +72,59 @@ export function KatalogList({
       {error && (
         <p
           role="alert"
-          className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
         >
           {error}
         </p>
       )}
       {success && (
-        <output className="block rounded-lg border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
+        <output className="block rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
           {success}
         </output>
       )}
       {filtered.length === 0 ? (
-        <div className="rounded-xl border bg-card p-8 text-center">
+        <div className="border-b py-10 text-center">
           <p className="font-bold">Belum ada porsi tersedia</p>
           <p className="mt-1 text-sm text-muted-foreground">
             Katalog biasanya diperbarui tenant pukul 15.30–16.30. Cek lagi sore ini.
           </p>
         </div>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((p, i) => (
-            <motion.li
-              key={p.id}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.22, delay: Math.min(i % 6, 5) * 0.04 }}
-              className="flex flex-col gap-3 rounded-xl border bg-card p-4"
-            >
-              <div>
-                <h2 className="font-bold leading-snug">{p.menuName}</h2>
-                <p className="text-xs text-muted-foreground">
-                  {p.tenantName}
-                  {p.tenantLocation ? ` • ${p.tenantLocation}` : ""}
-                </p>
-              </div>
-              <p className="flex flex-wrap gap-1.5 text-[11px] text-muted-foreground">
-                <span className="rounded-md border px-1.5 py-0.5">
-                  Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
-                </span>
-                <span className="rounded-md border px-1.5 py-0.5">
-                  Sisa {p.quantityRemaining} porsi
-                </span>
-              </p>
-              <p className="text-sm">
-                <s className="mr-1.5 text-xs text-muted-foreground">{formatIDR(p.normalPrice)}</s>
-                <strong className="text-[#8a5a00]">{formatIDR(p.discountPrice)}</strong>
-              </p>
-              <div className="mt-auto flex gap-2">
-                <motion.button
-                  type="button"
-                  whileTap={{ scale: 0.98 }}
-                  disabled={ordering === p.id || p.quantityRemaining <= 0}
-                  onClick={() => order(p.id)}
-                  className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-70"
-                >
-                  {ordering === p.id
-                    ? "Memesan…"
-                    : p.quantityRemaining <= 0
-                      ? "Habis"
-                      : "Pesan 1 porsi"}
-                </motion.button>
-                <Link
-                  href={`/katalog/${p.id}`}
-                  className="rounded-lg border px-4 py-2 text-sm font-semibold transition-colors hover:bg-muted"
-                >
-                  Detail
-                </Link>
-              </div>
-            </motion.li>
-          ))}
+        <ul className="divide-y divide-border border-b">
+          {filtered.map((p) => {
+            const soldOut = p.quantityRemaining <= 0;
+            return (
+              <li key={p.id} className="flex flex-col gap-2 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+                <div className="min-w-0">
+                  <h2 className="font-bold leading-snug">{p.menuName}</h2>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {p.tenantName}
+                    {p.tenantLocation ? ` • ${p.tenantLocation}` : ""} • Dimasak{" "}
+                    {formatDateTimeWIB(new Date(p.cookedAt))}
+                  </p>
+                  <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+                    {soldOut ? "Sudah habis" : `Sisa ${p.quantityRemaining} porsi`}
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
+                  <p className="text-sm">
+                    <s className="mr-1.5 text-xs text-muted-foreground">
+                      {formatIDR(p.normalPrice)}
+                    </s>
+                    <strong className="text-lg">{formatIDR(p.discountPrice)}</strong>
+                  </p>
+                  <button
+                    type="button"
+                    disabled={ordering === p.id || soldOut}
+                    onClick={() => order(p.id)}
+                    className="inline-flex h-11 items-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-50"
+                  >
+                    {ordering === p.id ? "Memesan…" : soldOut ? "Habis" : "Kunci 1 porsi"}
+                  </button>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

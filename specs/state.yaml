@@ -1,0 +1,24 @@
+project_cycle:
+  current_phase: 1
+  completed_phases: []
+  mode: fast-track
+active_epic: katalog-screen
+active_flow: discover
+handoff:
+  last_step_completed: orchestrate-init
+  next_skill: elaborate-spec
+  open_decisions:
+    - mode-confirm: fast-track vs standard
+    - scope-lock: Stitch katalog as target vs incremental polish
+  required_reading:
+    - docs/product-brief.md
+    - docs/design/porsi_terakhir_katalog_mahasiswa/screen.png
+    - src/app/(public)/katalog/page.tsx
+    - src/app/(public)/katalog/katalog-list.tsx
+git:
+  branch: master
+  hash: b50976f
+decisions: []
+risks:
+  - no-images-in-schema: Stitch cards need food photos, DB has none
+  - no-qr-page-yet: active-order banner CTA has no target

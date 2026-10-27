@@ -26,7 +26,8 @@ Create an OAuth client (Web):
 - **Hosted dev project**: put the project URL + anon key in `.env.local`, and
   the Google client id/secret in the hosted project's Auth settings.
 - Add app redirect URLs to Supabase allowed redirects: `http://localhost:3000`,
-  `http://localhost:3000/auth/callback` (plus your deployed URL later).
+  `http://localhost:3000/auth/callback`, `https://seporsi-terakhir.my.id`,
+  `https://seporsi-terakhir.my.id/auth/callback`.
 - If you connect the Supabase MCP to the agent, point it **only at the dev project**.
 
 ## 4. Roles without the admin UI (until Phase 6)

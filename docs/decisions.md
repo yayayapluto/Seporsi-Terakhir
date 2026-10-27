@@ -60,4 +60,20 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
     on next order, disables the button at 0 to avoid futile clicks (DB stays
     the real duplicate guard). Copy softened — no QR page exists yet, so no
     QR promise. `/katalog:307` verified expected: middleware redirects anon
-    to `/masuk?next=/katalog`, same local and prod.
+13. **Seed kaya + `bun run seed`**: `supabase/seed.sql` jadi 6 tenant kantin
+    (Warteg, Kopi Pojok, Padang, Soto, Pecel, Geprek), 16 menu, 12 porsi
+    (segar/hampir habis/hampir kedaluwarsa/1 expired sbg bukti filter BR-2).
+    `scripts/seed.ts` cuma `supabase db reset` via node:child_process —
+    versi Bun.$ + SQL dibuang karena `tsc --noEmit` tak kenal modul `bun`
+    (perlu `bun-types`, dep baru; YAGNI). Trip `db reset` ikut config
+    `[db.seed] sql_paths` otomatis, jadi script = reset + log.
+14. **Login email+password di samping Google**: `masuk/email-sign-in.tsx`
+    (react-hook-form + zod, pola repo yg sudah ada; `signInWithPassword` /
+    `signUp` dari supabase-js bawaan — tanpa dep baru). Daftar langsung
+    bikin profil student via trigger `handle_new_user`. Error credential
+    dibedakan ("Email atau kata sandi salah"), error lain generik.
+    Backend butuh **email provider aktif** di Supabase
+    (Auth > Providers > Email); konfirmasi email opsional tapi disarankan
+    dimatikan utk pilot kampus biar signup langsung login. Tanpa DB lokal
+    (Docker mati) — verifikasi fungsional di tangan owner via `bun run seed`
+    lalu coba daftar/masuk di `/masuk`.
