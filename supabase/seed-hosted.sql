@@ -29,9 +29,9 @@ from (values
 ) as v(e, n)
 where not exists (select 1 from auth.users u where u.email = v.e);
 
--- 2. roles: guard_profile_role blok update langsung, pakai bypass yg sama
--- dgn approve_tenant (transaction-local, aman utk seed sekali jalan)
-select set_config('app.role_guard_bypass', 'on', true);
+-- 2. roles: matikan trigger guard selama seed (SQL Editor autocommit tiap
+-- statement, jadi set_config transaction-local tak bertahan antar statement).
+alter table profiles disable trigger profiles_role_guard;
 update profiles p set role = 'admin', full_name = 'Admin BEM'
 from auth.users u where u.email = 'admin@kampus.ac.id' and p.id = u.id;
 update profiles p set role = 'tenant'
@@ -40,6 +40,7 @@ from auth.users u where p.id = u.id and u.email in
    'soto@kampus.ac.id', 'pecel@kampus.ac.id', 'geprek@kampus.ac.id');
 update profiles p set full_name = 'Rafi Anggara'
 from auth.users u where u.email = 'rafi@student.ac.id' and p.id = u.id;
+alter table profiles enable trigger profiles_role_guard;
 
 -- 3. tenants (owner resolve via email, bukan UUID mati)
 insert into tenants (owner_id, name, location_note, is_approved)
