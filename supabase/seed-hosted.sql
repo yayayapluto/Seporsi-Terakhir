@@ -29,15 +29,15 @@ from (values
 ) as v(e, n)
 where not exists (select 1 from auth.users u where u.email = v.e);
 
--- 2. roles (trigger bikin profil student otomatis; tinggal update role)
+-- 2. roles: guard_profile_role blok update langsung, pakai bypass yg sama
+-- dgn approve_tenant (transaction-local, aman utk seed sekali jalan)
+select set_config('app.role_guard_bypass', 'on', true);
 update profiles p set role = 'admin', full_name = 'Admin BEM'
 from auth.users u where u.email = 'admin@kampus.ac.id' and p.id = u.id;
-
 update profiles p set role = 'tenant'
 from auth.users u where p.id = u.id and u.email in
   ('warteg@kampus.ac.id', 'kopi@kampus.ac.id', 'padang@kampus.ac.id',
    'soto@kampus.ac.id', 'pecel@kampus.ac.id', 'geprek@kampus.ac.id');
-
 update profiles p set full_name = 'Rafi Anggara'
 from auth.users u where u.email = 'rafi@student.ac.id' and p.id = u.id;
 
