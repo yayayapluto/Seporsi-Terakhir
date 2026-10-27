@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 const schema = z.object({
   email: z.string().email("Email tidak valid."),
   password: z.string().min(6, "Kata sandi minimal 6 karakter."),
+  confirm: z.string().optional(),
 });
 
 type Values = z.infer<typeof schema>;
@@ -28,11 +29,15 @@ export function EmailSignIn({ next }: { next?: string }) {
 
   async function onSubmit(values: Values) {
     setFormError(null);
+    if (mode === "up" && values.password !== (values.confirm ?? "")) {
+      setFormError("Konfirmasi kata sandi tidak cocok.");
+      return;
+    }
     const supabase = createClient();
     const { error } =
       mode === "in"
         ? await supabase.auth.signInWithPassword(values)
-        : await supabase.auth.signUp(values);
+        : await supabase.auth.signUp({ email: values.email, password: values.password });
     if (error) {
       console.error("[masuk] sign-in gagal:", error.message);
       setFormError(
@@ -85,6 +90,20 @@ export function EmailSignIn({ next }: { next?: string }) {
         </div>
         {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
       </div>
+      {mode === "up" && (
+        <div className="flex flex-col gap-1">
+          <label htmlFor="confirm" className="text-sm font-medium">
+            Konfirmasi kata sandi
+          </label>
+          <input
+            id="confirm"
+            type={show ? "text" : "password"}
+            autoComplete="new-password"
+            {...register("confirm")}
+            className="h-11 w-full rounded-lg border bg-card px-3 text-sm"
+          />
+        </div>
+      )}
       {formError && (
         <p role="alert" className="text-sm text-destructive">
           {formError}
