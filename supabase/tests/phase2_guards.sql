@@ -96,8 +96,8 @@ select ok(
 -- 13-14. daily cap (UNTESTED — no local DB here): verify on live local DB via
 -- `bun run db:reset && bun run db:test` with seeded portion + student:
 -- order qty 1 twice ok, third same-day order must raise 'daily limit'.
-select todo(false, 'cap allows 2/day (needs seeded local DB)');
-select todo(false, 'cap rejects 3rd same-day (needs seeded local DB)');
+select skip('cap allows 2/day (needs seeded local DB)');
+select skip('cap rejects 3rd same-day (needs seeded local DB)');
 
 select * from finish();
 rollback;
