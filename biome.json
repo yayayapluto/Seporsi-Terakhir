@@ -17,9 +17,9 @@
       "!supabase/.temp",
       "!src/types/database.ts",
       "!docs/design",
-      "!.claude/**",
-      "!.omp/**",
-      "!.pi/**"
+      "!.claude",
+      "!.omp",
+      "!.pi"
     ]
   },
   "formatter": {

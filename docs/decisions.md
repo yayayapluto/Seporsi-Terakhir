@@ -105,7 +105,14 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
     (akibat `tenants_admin_read`) + cek 12 RPC; daily-cap skip bertahan.
     Gate sebelum screen baru: Docker hidup → `db:reset` → `db:test` →
     `db:types`. Bukan silent.
-21. **Lint truth (28 Okt)**: `biome.json` exclude `.claude/.omp/.pi/**`
-    (vendored skill, read-only) → `bun run lint` hijau (exit 0). `bun run format`
-    + `.gitattributes` bersihkan CRLF repo. DoD phase = `bun run check`
-    hijau penuh.
+21. **Lint truth (28 Okt)**: `biome.json` exclude `.claude/.omp/.pi` (tanpa
+    `/**` — rule Biome 2.2 `useBiomeIgnoreFolder`, safe-fix) → `bun run check`
+    hijau penuh (lint + typecheck + 29 test).
+22. **Deviasi `cara-kerja` dari mockup (28 Okt)**: BR-2 "120–240 mnt pasca-
+    masak" (= "2–4 jam") menggantikan copy mockup "sebelum tutup"; klaim
+    santan/gulai 4 jam dihapus (tak ada enforcement di RPC/schema — klaim
+    berani tanpa kode = dilarang); FAQ "kuota kembali bila dibatalkan"
+    (cancel manual via `cancel_order`, bukan auto-release); struktur 3
+    langkah/false "nol rupiah" diubah agar selaras RPC (`place_order` gratis,
+    bayar tunai/QRIS di tenant, fee pilot 0). Hero reuse foto existing
+    `public/images/foto_kantin.webp` (tanpa aset baru).
