@@ -8,7 +8,7 @@ import { SignOutButton } from "./sign-out-button";
 
 /** Status pendaftaran tenant yang belum disetujui. Approved → dashboard. */
 export default async function MenungguPersetujuanPage() {
-  await requireRole("/tenant/menunggu-persetujuan", "tenant", "admin");
+  await requireRole("/tenant/menunggu-persetujuan", "student", "tenant", "admin");
   const tenant = await getOwnTenant();
   if (!tenant) redirect("/tenant/pendaftaran");
   if (tenant.is_approved) redirect("/tenant");

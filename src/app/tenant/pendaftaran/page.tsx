@@ -4,11 +4,12 @@ import { getOwnTenant } from "@/lib/tenant";
 import { PendaftaranForm } from "./pendaftaran-form";
 
 /**
- * Pendaftaran tenant: terbuka untuk role tenant/admin yang belum punya row
- * tenants. Sudah mendaftar → redirect sesuai status.
+ * Pendaftaran tenant: terbuka untuk semua user login (applicant baru
+ * masih role student; role baru jadi tenant setelah admin approve).
+ * Sudah mendaftar → redirect sesuai status.
  */
 export default async function PendaftaranPage() {
-  await requireRole("/tenant/pendaftaran", "tenant", "admin");
+  await requireRole("/tenant/pendaftaran", "student", "tenant", "admin");
   const tenant = await getOwnTenant();
   if (tenant) redirect(tenant.is_approved ? "/tenant" : "/tenant/menunggu-persetujuan");
   return (

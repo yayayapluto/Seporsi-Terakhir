@@ -26,23 +26,30 @@ async function refreshSession(request: NextRequest) {
 }
 
 /**
- * Proxy refreshes the Supabase session on every request, then enforces
+ * Proxy refreshes the Supabase session once per request, then enforces
  * coarse route gates: auth pages bounce logged-in users home, protected
  * routes bounce anonymous users to /masuk.
  */
 export async function updateSession(request: NextRequest) {
   const response = await refreshSession(request);
-  const {
-    data: { user },
-  } = await createServerClient(
+  // Reuse the refreshed session cookie — no second getUser round-trip.
+  const supabase = createServerClient(
     getEnv().NEXT_PUBLIC_SUPABASE_URL,
     getEnv().NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
-      cookies: { getAll: () => request.cookies.getAll(), setAll: () => {} },
+      cookies: {
+        getAll: () => response.cookies.getAll(),
+        setAll: () => {},
+      },
     },
-  ).auth.getUser();
-  const path = request.nextUrl.pathname;
-  const isAuthPage = path === "/masuk" || path.startsWith("/auth/");
+  );
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const url = request.nextUrl.clone();
+  const path = url.pathname;
+  // /masuk bounces signed-in users home; /auth/* must run (code exchange).
+  const isAuthPage = path === "/masuk";
   const isProtected =
     path.startsWith("/katalog") ||
     path.startsWith("/pesanan") ||
@@ -55,7 +62,7 @@ export async function updateSession(request: NextRequest) {
   }
   if (isProtected && !user) {
     const login = new URL("/masuk", request.url);
-    login.searchParams.set("next", path);
+    login.searchParams.set("next", url.pathname + url.search);
     return NextResponse.redirect(login);
   }
   return response;

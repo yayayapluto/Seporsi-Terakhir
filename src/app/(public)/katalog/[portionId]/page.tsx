@@ -1,13 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { z } from "zod";
-import { getCurrentUser } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { OrderForm } from "./order-form";
 
-/** Detail satu porsi. Anon sudah ditolak proxy (/katalog*); role dibaca untuk CTA. */
+/** Detail satu porsi. Anon sudah ditolak proxy (/katalog*). */
 
 export interface PortionDetail {
   id: string;
@@ -70,8 +68,7 @@ function Info({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 
-async function DetailBody({ portionId }: { portionId: string }) {
-  const portion = await loadPortion(portionId);
+function DetailBody({ portion }: { portion: PortionDetail | null }) {
   if (!portion) {
     return (
       <>
@@ -158,30 +155,24 @@ export default async function PortionDetailPage({
 }) {
   const { portionId } = await params;
   if (!PortionId.safeParse(portionId).success) notFound();
-  await getCurrentUser();
+  const portion = await loadPortion(portionId);
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <div className="flex flex-col gap-2">
         <p className="text-xs font-bold tracking-widest text-primary">KATALOG PORSI TERAKHIR</p>
-        <DetailHeading portionId={portionId} />
+        {portion ? (
+          <>
+            <h1 className="text-3xl font-bold">{portion.menuName}</h1>
+            <p className="text-muted-foreground">
+              dari {portion.tenantName}
+              {portion.tenantLocation ? ` · ${portion.tenantLocation}` : ""}
+            </p>
+          </>
+        ) : (
+          <h1 className="text-3xl font-bold">Porsi tidak tersedia</h1>
+        )}
       </div>
-      <Suspense fallback={<p className="text-sm text-muted-foreground">Memuat porsi…</p>}>
-        <DetailBody portionId={portionId} />
-      </Suspense>
+      <DetailBody portion={portion} />
     </div>
-  );
-}
-
-async function DetailHeading({ portionId }: { portionId: string }) {
-  const portion = await loadPortion(portionId);
-  if (!portion) return <h1 className="text-3xl font-bold">Porsi tidak tersedia</h1>;
-  return (
-    <>
-      <h1 className="text-3xl font-bold">{portion.menuName}</h1>
-      <p className="text-muted-foreground">
-        dari {portion.tenantName}
-        {portion.tenantLocation ? ` · ${portion.tenantLocation}` : ""}
-      </p>
-    </>
   );
 }

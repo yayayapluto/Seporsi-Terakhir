@@ -11,7 +11,7 @@ export interface PendingTenant {
   createdAt: string;
 }
 
-async function loadPending(): Promise<PendingTenant[]> {
+async function loadPending(): Promise<{ tenants: PendingTenant[]; error: string | null }> {
   const supabase = await createClient();
   await connection();
   const { data, error } = await supabase
@@ -19,13 +19,17 @@ async function loadPending(): Promise<PendingTenant[]> {
     .select("id, name, location_note, created_at")
     .eq("is_approved", false)
     .order("created_at", { ascending: true });
-  if (error || !data) return [];
-  return data.map((t) => ({
-    id: t.id,
-    name: t.name,
-    locationNote: t.location_note,
-    createdAt: t.created_at,
-  }));
+  if (error) return { tenants: [], error: "Gagal memuat pendaftaran. Coba lagi." };
+  if (!data) return { tenants: [], error: null };
+  return {
+    tenants: data.map((t) => ({
+      id: t.id,
+      name: t.name,
+      locationNote: t.location_note,
+      createdAt: t.created_at,
+    })),
+    error: null,
+  };
 }
 
 export default function AdminTenantPage() {
@@ -47,6 +51,16 @@ export default function AdminTenantPage() {
 
 async function PendingBody() {
   await requireRole("/admin/tenant", "admin");
-  const pending = await loadPending();
-  return <ApproveList tenants={pending} />;
+  const { tenants, error } = await loadPending();
+  if (error) {
+    return (
+      <p
+        role="alert"
+        className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+      >
+        {error}
+      </p>
+    );
+  }
+  return <ApproveList tenants={tenants} />;
 }

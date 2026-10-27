@@ -23,9 +23,10 @@ export function SiteHeader() {
       supabase.auth.getUser().then(({ data }) => setSignedIn(!!data.user));
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
+      } = supabase.auth.onAuthStateChange((event, session) => {
         setSignedIn(!!session?.user);
-        router.refresh();
+        // TOKEN_REFRESHED/INITIAL_SESSION fire hourly/on load — no refetch needed.
+        if (event === "SIGNED_IN" || event === "SIGNED_OUT") router.refresh();
       });
       unsubscribe = () => subscription.unsubscribe();
     } catch {

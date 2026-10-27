@@ -66,10 +66,16 @@ export async function exportCsv(
     .single();
   if (profile?.role !== "admin") return { ok: false, error: "Khusus admin." };
 
-  // WIB day boundaries, sama dengan halaman /admin.
-  const fromUtc = from ? new Date(`${from}T00:00:00+07:00`).toISOString() : null;
-  const toExclusive = to
-    ? new Date(new Date(`${to}T00:00:00+07:00`).getTime() + 24 * 60 * 60 * 1000).toISOString()
+  // WIB day boundaries, sama dengan halaman /admin. Format YYYY-MM-DD tervalidasi —
+  // input sampah bikin Invalid Date → .toISOString() lempar 500.
+  const iso = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+  const fromOk = from && iso.test(from) ? from : null;
+  const toOk = to && iso.test(to) ? to : null;
+  if ((from && !fromOk) || (to && !toOk))
+    return { ok: false, error: "Rentang tanggal tidak valid." };
+  const fromUtc = fromOk ? new Date(`${fromOk}T00:00:00+07:00`).toISOString() : null;
+  const toExclusive = toOk
+    ? new Date(new Date(`${toOk}T00:00:00+07:00`).getTime() + 24 * 60 * 60 * 1000).toISOString()
     : null;
   const { data, error } = await supabase.rpc("admin_report", {
     p_from: fromUtc,

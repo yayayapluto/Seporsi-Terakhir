@@ -109,10 +109,20 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
     `/**` — rule Biome 2.2 `useBiomeIgnoreFolder`, safe-fix) → `bun run check`
     hijau penuh (lint + typecheck + 29 test).
 22. **Deviasi `cara-kerja` dari mockup (28 Okt)**: BR-2 "120–240 mnt pasca-
-    masak" (= "2–4 jam") menggantikan copy mockup "sebelum tutup"; klaim
-    santan/gulai 4 jam dihapus (tak ada enforcement di RPC/schema — klaim
-    berani tanpa kode = dilarang); FAQ "kuota kembali bila dibatalkan"
-    (cancel manual via `cancel_order`, bukan auto-release); struktur 3
-    langkah/false "nol rupiah" diubah agar selaras RPC (`place_order` gratis,
-    bayar tunai/QRIS di tenant, fee pilot 0). Hero reuse foto existing
-    `public/images/foto_kantin.webp` (tanpa aset baru).
+   masak" (= "2–4 jam") menggantikan copy mockup "sebelum tutup"; klaim
+   santan/gulai 4 jam dihapus (tak ada enforcement di RPC/schema — klaim
+   berani tanpa kode = dilarang); FAQ "kuota kembali bila dibatalkan"
+   (cancel manual via `cancel_order`, bukan auto-release); struktur 3
+   langkah/false "nol rupiah" diubah agar selaras RPC (`place_order` gratis,
+   bayar tunai/QRIS di tenant, fee pilot 0). Hero reuse foto existing
+   `public/images/foto_kantin.webp` (tanpa aset baru).
+23. **Bug hunt 28 Okt (14 temuan, P0–P3)**: auth singleton
+   (`client.ts`), proxy `/auth/*` dikecualikan dari bounce, header refresh
+   hanya SIGNED_IN/OUT, `impact_summary` sum+admin-guard + `update_portion`
+   menu-active/release-check di migrasi BARU `20261028000003` (edit langsung
+   000001 di-revert — migrasi applied tak boleh diubah), API `not_released`
+   → 409, CSV strip tab/CR, `exportCsv` validasi tanggal, detail porsi
+   single-fetch, pesanan/admin error state, sign-in pakai `resolveNext`,
+   datetime-local prefill `T+slice(0,16)`, pgTAP plan 16. Laporan penuh:
+   `docs/qa/bug-hunt-report.md`. Docker mati → RPC Baru unverified
+   di DB lokal; `check` + `build` hijau.

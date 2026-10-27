@@ -22,6 +22,12 @@ describe("escapeCsv", () => {
   it("prefixes formula char AND quotes when both apply", () => {
     expect(escapeCsv("=1,2")).toBe('"\'=1,2"');
   });
+
+  it("blocks tab- and CR-prefixed formula injection", () => {
+    expect(escapeCsv("\t=1+1")).toBe("'\t=1+1");
+    // \r triggers quote-wrapping too — prefix still neutralizes the formula.
+    expect(escapeCsv("\r=1+1")).toBe(`"'\r=1+1"`);
+  });
 });
 
 describe("buildTenantCsv", () => {

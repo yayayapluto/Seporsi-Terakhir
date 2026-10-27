@@ -35,8 +35,11 @@ export async function POST(req: Request) {
     if (msg.includes("sold_out")) {
       return NextResponse.json({ error: "Porsi habis terjual." }, { status: 409 });
     }
-    if (msg.includes("expired") || msg.includes("not_released")) {
+    if (msg.includes("expired")) {
       return NextResponse.json({ error: "Porsi sudah kedaluwarsa." }, { status: 410 });
+    }
+    if (msg.includes("not_released")) {
+      return NextResponse.json({ error: "Porsi belum mulai dijual." }, { status: 409 });
     }
     if (msg.includes("daily limit")) {
       return NextResponse.json(

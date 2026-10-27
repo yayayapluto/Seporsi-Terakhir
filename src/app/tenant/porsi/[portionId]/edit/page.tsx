@@ -37,13 +37,14 @@ export default async function EditPorsiPage({
     normalPrice: m.normal_price,
   }));
 
-  // datetime-local WIB: tampilan = waktu Jakarta (kolom timestamptz → +07:00).
-  const cookedAtLocal = new Date(data.cooked_at).toLocaleString("sv-SE", {
-    timeZone: "Asia/Jakarta",
-  });
-  const releaseAtLocal = data.release_at
-    ? new Date(data.release_at).toLocaleString("sv-SE", { timeZone: "Asia/Jakarta" })
-    : "";
+  // datetime-local WIB butuh "YYYY-MM-DDTHH:MM"; sv-SE kasih spasi → ganti T, potong detik.
+  const toLocalInput = (iso: string) =>
+    new Date(iso)
+      .toLocaleString("sv-SE", { timeZone: "Asia/Jakarta" })
+      .replace(" ", "T")
+      .slice(0, 16);
+  const cookedAtLocal = toLocalInput(data.cooked_at);
+  const releaseAtLocal = data.release_at ? toLocalInput(data.release_at) : "";
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">

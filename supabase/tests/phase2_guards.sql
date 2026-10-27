@@ -1,6 +1,6 @@
 -- Phase 2 pgTAP: run with `bun run db:test` (local Supabase only).
 begin;
-select plan(14);
+select plan(16);
 
 -- 1. guard: role cannot change via plain update (non-service role)
 select throws_ok(
@@ -96,9 +96,10 @@ select ok(
   'auto-profile trigger present'
 );
 
--- 13-14. daily cap (UNTESTED — no local DB here): verify on live local DB via
--- `bun run db:reset && bun run db:test` with seeded portion + student:
--- order qty 1 twice ok, third same-day order must raise 'daily limit'.
+-- 13-16. impact_summary guards (BUG-001, BUG-002): sum quantity + admin-only.
+-- NOTE: count-based portions_saved undercounts multi-qty orders; sum is truth.
+select skip('saved counts item quantities (needs seeded local DB)');
+select skip('non-admin impact_summary returns zero rows (needs seeded local DB)');
 select skip('cap allows 2/day (needs seeded local DB)');
 select skip('cap rejects 3rd same-day (needs seeded local DB)');
 

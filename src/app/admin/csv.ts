@@ -18,7 +18,7 @@ export const CSV_HEADER = "Gerai,Diunggah,Diambil,Revenue,Hemat,EstimasiKg";
  * - nilai berisi koma/tanda kutip/baris baru → dibungkus kutip, kutip digandakan.
  */
 export function escapeCsv(value: string): string {
-  const escaped = /^[=+@-]/.test(value) ? `'${value}` : value;
+  const escaped = /^[=+@\-\t\r]/.test(value) ? `'${value}` : value;
   return /[",\n\r]/.test(escaped) ? `"${escaped.replaceAll('"', '""')}"` : escaped;
 }
 

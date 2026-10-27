@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { resolveNext } from "@/lib/auth/redirect";
 import { createClient } from "@/lib/supabase/client";
 
 const schema = z.object({
@@ -47,7 +48,7 @@ export function EmailSignIn({ next }: { next?: string }) {
       );
       return;
     }
-    router.push(next?.startsWith("/") ? next : "/");
+    router.push(resolveNext(next, "/"));
     router.refresh();
   }
 
