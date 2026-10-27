@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -18,6 +19,7 @@ export function EmailSignIn({ next }: { next?: string }) {
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
   const [mode, setMode] = useState<"in" | "up">("in");
+  const [show, setShow] = useState(false);
   const {
     register,
     handleSubmit,
@@ -62,13 +64,24 @@ export function EmailSignIn({ next }: { next?: string }) {
         <label htmlFor="password" className="text-sm font-medium">
           Kata sandi
         </label>
-        <input
-          id="password"
-          type="password"
-          autoComplete={mode === "in" ? "current-password" : "new-password"}
-          {...register("password")}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
-        />
+        <div className="relative">
+          <input
+            id="password"
+            type={show ? "text" : "password"}
+            autoComplete={mode === "in" ? "current-password" : "new-password"}
+            {...register("password")}
+            className="h-11 w-full rounded-lg border bg-card px-3 pr-11 text-sm"
+          />
+          <button
+            type="button"
+            onClick={() => setShow(!show)}
+            aria-label={show ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
+            aria-pressed={show}
+            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-muted-foreground hover:text-foreground"
+          >
+            {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          </button>
+        </div>
         {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
       </div>
       {formError && (
