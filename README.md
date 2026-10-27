@@ -24,16 +24,19 @@ bun run db:stop    # stop
 
 ## Demo accounts (seed)
 
-| Role    | Email               |
-| ------- | ------------------- |
-| admin   | admin@kampus.ac.id  |
-| tenant  | warteg@kampus.ac.id  |
-| student | rafi@student.ac.id  |
+Password semua akun demo: `Porsi123!`
 
-Seed hanya isi `profiles` (tanpa password). Buat auth user dulu dengan email
-yang sama di Supabase dashboard/CLI (matikan confirm email untuk lokal), atau
-daftar via `/masuk` lalu samakan role via `docs/setup.md` §4. UUID seed
-placeholder — ganti dengan auth user id asli.
+| Role    | Email                 |
+| ------- | --------------------- |
+| admin   | admin@kampus.ac.id    |
+| tenant  | warteg@kampus.ac.id (+5 kantin lain) |
+| student | rafi@student.ac.id    |
+
+**Hosted** (tanpa Docker): Supabase dashboard → SQL Editor → tempel isi
+`supabase/seed-hosted.sql` → Run. Sekali jalan: 8 auth user + role + 6 tenant
++ 16 menu + 12 porsi. Ganti password setelah login pertama.
+
+**Lokal** (Docker): `bun run db:start`, lalu `bun run seed`.
 
 ## Commands
 

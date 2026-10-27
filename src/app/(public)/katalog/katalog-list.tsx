@@ -94,7 +94,10 @@ export function KatalogList({
           {filtered.map((p) => {
             const soldOut = p.quantityRemaining <= 0;
             return (
-              <li key={p.id} className="flex flex-col gap-2 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+              <li
+                key={p.id}
+                className="flex flex-col gap-2 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
+              >
                 <div className="min-w-0">
                   <h2 className="font-bold leading-snug">{p.menuName}</h2>
                   <p className="mt-0.5 text-xs text-muted-foreground">

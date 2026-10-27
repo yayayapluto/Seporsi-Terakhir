@@ -2,8 +2,8 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { KatalogList } from "./katalog-list";
- 
- /** Auth + live stock: per-request data, streamed inside Suspense. */
+
+/** Auth + live stock: per-request data, streamed inside Suspense. */
 
 export interface CatalogPortion {
   id: string;

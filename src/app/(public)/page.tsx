@@ -112,8 +112,8 @@ export default function Home() {
           </h1>
           <p className="max-w-xl text-base text-muted-foreground">
             Setiap sore, makanan layak makan di kantin kampus sering berakhir di tempat sampah.
-            Porsi Terakhir mempertemukan tenant yang menjual sisa dengan harga diskon, dan
-            mahasiswa yang butuh makan murah.
+            Porsi Terakhir mempertemukan tenant yang menjual sisa dengan harga diskon, dan mahasiswa
+            yang butuh makan murah.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link
@@ -141,7 +141,10 @@ export default function Home() {
               Slot foto suasana kantin — ganti dengan foto asli.
             </p>
           </div>
-          <section aria-label="Contoh papan porsi sore ini" className="border-t-2 border-foreground">
+          <section
+            aria-label="Contoh papan porsi sore ini"
+            className="border-t-2 border-foreground"
+          >
             <div className="flex items-baseline justify-between gap-2 border-b py-2 text-[11px] text-muted-foreground">
               <span>Contoh papan sore ini</span>
               <span>Pickup 16.30–18.00</span>
