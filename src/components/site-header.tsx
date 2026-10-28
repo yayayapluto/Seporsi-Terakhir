@@ -1,6 +1,6 @@
 "use client";
 
-import { Recycle } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -39,9 +39,13 @@ export function SiteHeader() {
     <header className="sticky top-0 z-10 border-b bg-card/90 backdrop-blur">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-2 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2 font-heading text-lg font-bold">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Recycle className="size-5" aria-hidden />
-          </span>
+          <Image
+            src="/images/Logo_UPNVJ.png"
+            alt="Logo UPN Veteran Jakarta"
+            width={32}
+            height={32}
+            className="size-8 object-contain"
+          />
           Porsi Terakhir
           <span className="hidden rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold text-primary sm:inline">
             Tahap Awal
