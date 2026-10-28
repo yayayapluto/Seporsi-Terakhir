@@ -29,13 +29,29 @@ Create an OAuth client (Web):
   `http://localhost:3000/auth/callback`, `https://seporsi-terakhir.my.id`,
 
 
-## 4. Roles without the admin UI (until Phase 6)
+## 4. Seed auth + roles
+
+Urutan sekali jalan (DB kosong → siap demo):
+
+```bash
+bun run db:reset        # migrasi + supabase/seed.sql (profil placeholder)
+bun run seed:auth "isi-password-dev-min-6"  # auth.users + remap owner_id + role
+bun run db:seed          # tenants, 16 menu, 16 porsi segar, 3 order contoh
+```
+
+9 akun seed: `admin1793198479@yopmail.com`, 6 tenant
+(`warteg/kopi/padang/soto/pecel/geprek1793198479@yopmail.com`), 2 student
+(`rafi/sinta1793198479@yopmail.com`). Sumber: `src/lib/domain/seed-accounts.ts`
+(akun) + `src/lib/domain/seed-catalog.ts` (katalog/order). Domain
+`@yopmail.com` = inbox publik tanpa login (buka `yopmail.com` → ketik nama →
+magic link ada di sana). Password `seed:auth` cuma syarat Admin API,
+tak dipakai login (login via magic link §6).
 
 ```sql
 -- approve a tenant application
 select approve_tenant('<tenant_id>');
 -- make a user admin (dev only)
-update public.profiles set role = 'admin' where email = 'you@campus.ac.id';
+update public.profiles set role = 'admin' where email = 'admin1793198479@yopmail.com';
 ```
 
 ## 5. Google login verification
@@ -45,10 +61,11 @@ then, Phase 3 reports login as "needs human verification".
 
 ## 6. Email: magic link tanpa kata sandi (wajib utk `/masuk`)
 
-Login email pakai `signInWithOtp` — tanpa `auth.users` buatan manual, tanpa
-password seed. User (termasuk 9 akun seed) cukup ketik email di `/masuk`,
-ketuk tautan di inbox. Signup/in pertama auto-bikin profil student via
-trigger `handle_new_user`.
+Login email pakai `signInWithOtp` — tanpa password. User (termasuk 9 akun seed)
+cukup ketik email di `/masuk`, ketuk tautan di inbox. Signup/in pertama
+auto-bikin profil student via trigger `handle_new_user` — karena itu
+`seed:auth` wajib jalan DULU sebelum login pertama (kalau tidak, role
+tenant/admin salah jadi student).
 
 Aktifkan di hosted project (Dashboard > Auth > Providers > Email):
 `Confirm email` + template **Magic Link** (subject `Tautan masuk Porsi
