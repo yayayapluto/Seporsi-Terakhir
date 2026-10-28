@@ -1,3 +1,5 @@
+import { Clock3, History, Leaf, PackageCheck, Store, UserRound, Wallet } from "lucide-react";
+import { Clock3, History, Leaf, PackageCheck, Store, UserRound, Wallet } from "lucide-react";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { requireRole } from "@/lib/auth";
@@ -65,7 +67,10 @@ export default async function ProfilPage() {
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <div className="flex flex-col gap-2">
         <p className="text-xs font-bold tracking-widest text-primary">PROFIL</p>
-        <h1 className="text-3xl font-bold">{p.fullName}</h1>
+        <h1 className="flex items-center gap-2 text-3xl font-bold">
+          <UserRound className="size-7 shrink-0 text-primary" aria-hidden />
+          {p.fullName}
+        </h1>
         {p.email && <p className="text-muted-foreground">{p.email}</p>}
       </div>
 
@@ -78,19 +83,22 @@ export default async function ProfilPage() {
         </p>
         <dl className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="rounded-xl border bg-card p-4">
-            <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <dt className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <PackageCheck className="size-4 shrink-0 text-primary" aria-hidden />
               Porsi terselamatkan
             </dt>
             <dd className="mt-1 text-2xl font-bold">{p.savedPortions}</dd>
           </div>
           <div className="rounded-xl border bg-card p-4">
-            <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <dt className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <Wallet className="size-4 shrink-0 text-primary" aria-hidden />
               Uang hemat
             </dt>
             <dd className="mt-1 text-2xl font-bold">{formatIDR(p.moneySavedIdr)}</dd>
           </div>
           <div className="rounded-xl border bg-card p-4">
-            <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <dt className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <Leaf className="size-4 shrink-0 text-primary" aria-hidden />
               Sampah makanan dicegah
             </dt>
             <dd className="mt-1 text-2xl font-bold">
@@ -104,9 +112,12 @@ export default async function ProfilPage() {
             </dd>
           </div>
         </dl>
-        <p className="mt-3 text-xs text-muted-foreground">
-          Berat = estimasi sampling tenant. Terakhir pickup:{" "}
-          {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
+        <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Clock3 className="size-3.5 shrink-0" aria-hidden />
+          <span>
+            Berat = estimasi sampling tenant. Terakhir pickup:{" "}
+            {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
+          </span>
         </p>
       </section>
 
@@ -122,7 +133,8 @@ export default async function ProfilPage() {
             ctaLabel="Daftar jadi tenant"
           />
         ) : (
-          <p className="text-sm">
+          <p className="flex items-center gap-1.5 text-sm">
+            <Store className="size-4 shrink-0 text-primary" aria-hidden />
             {p.tenantName} · {tenantStatus}
           </p>
         )}
@@ -139,7 +151,7 @@ export default async function ProfilPage() {
           href="/pesanan"
           className="mt-3 inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
         >
-          Buka pesanan saya
+          <History className="mr-2 size-4 shrink-0" aria-hidden />
         </Link>
       </section>
 
