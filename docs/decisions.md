@@ -126,3 +126,19 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
    datetime-local prefill `T+slice(0,16)`, pgTAP plan 16. Laporan penuh:
    `docs/qa/bug-hunt-report.md`. Docker mati → RPC Baru unverified
    di DB lokal; `check` + `build` hijau.
+24. **Akun seed email+password (BUG-2026-10-28, 28 Okt)**: `seed.sql` tak
+   pernah bikin `auth.users` (placeholder UUID + FK ke `auth.users.id`),
+   jadi login email gagal `Database error querying schema` sementara Google
+   work via trigger `handle_new_user`. Fix: `scripts/seed-auth.ts`
+   (dev-only, service-role key dari env tak ter-commit) bikin auth user via
+   Admin API + remap `tenants.owner_id` placeholder → id asli + set
+   role/`is_approved`; `SEED_ACCOUNTS` di `src/lib/domain/seed-accounts.ts`
+   jadi source of truth; password dev (`Porsi123!`) hanya di `docs/setup.md`
+   §6, tak di repo. Docker mati → `db:reset`/`db:test` aktual + verifikasi
+   login di tangan owner; `bun run check` + 32 unit test hijau.
+ 25. **Landing impeccable 5-command (28 Okt)**: `page.tsx` (hero `text-balance`/`font-heading`, trust row `min-h-11`, papan: sr-heading + tabular + WIB + baris Habis stempel miring, kickers hapus, section `scroll-mt-20`, CTA primer → `/katalog`). Detector `[]`, `check` (32 test) + `build` hijau. CSS keyframes awal lalu diganti `motion` (lihat 26).
+ 27. **Audit shadcn+motion penuh (28 Okt, perintah owner)**: 10 primitif baru via `shadcn add` (select/accordion/checkbox/textarea/radio-group/tabs/switch/slider/progress/toggle). 5 `<select>` native → shadcn Select (katalog/pesanan/qty/menu/window; RHF Select via watch+setValue). ~40 button/input/label native → Button/Input/Label/Checkbox (+buttonVariants utk Link). FAQ `<details>` → Accordion. Motion: Pressable (whileHover/whileTap, reduced-motion off) utk 4 CTA landing; accordion pakai animasi bawaan `animate-accordion-down`. Slider generated kena `biome-ignore noArrayIndexKey` (preseden label.tsx). Proof: `check` (32 test) + `build` hijau, FAQ 4 item expand, nol `<select>/<details>/<input>/<button>/<label>` native di app. Skipped skills: tak ada dep baru (base-ui sudah ada).
+
+28. **Masuk magic-link tanpa sandi (28 Okt, harden+shape+adapt `/masuk`, perintah owner)**: `email-sign-in.tsx` ditulis ulang — sandi/konfirmasi/toggle-daftar dibuang; ganti `signInWithOtp` (`emailRedirectTo` = `/auth/callback?next=` bila `isSafeNext`) + state terkirim + "Ganti email". Tanpa dep baru. Harden: error `aria-invalid`+`aria-describedby`+`role=alert`+ikon, rate-limit dibedakan, `inputMode="email"`, `min-w-0`. Adapt: `min-h-11` di input + kedua tombol (≥44px). Heading → "Masuk" + "Tanpa kata sandi…"; ajakan daftar + teks SOP dihapus. Butuh **email provider + template Magic Link aktif** di Supabase + redirect allowlist = origin app. `check` (35 test) + `build` hijau, detector `[]`.
+29. **Katalog view grid+list (28 Okt, perintah owner)**: toggle grid (default 2 kol mobile, 3 desktop) + list; kartu grid: gambar rasio 4:3, list: thumb 80px; tanpa kolom gambar di DB (`menu_items`/`portions` polos) → `CatalogPortion.imageUrl?` opsional (selalu null sampai migrasi+upload ada), kosong = placeholder `ImageOff` + caption "tidak ada gambar" via `next/image` (bukan `<img>`). Toggle = `fieldset`+`legend` sr-only + `aria-pressed`. `check` (35 test) + `build` hijau.
+30. **Katalog Detail sekunder + link QR (28 Okt, perintah owner)**: tombol "Detail" sekunder (border, h-11) di grid + list → `/katalog/[id]`; banner sukses ganti kata "terkunci" → "1 porsi dipesan" + link "Lihat QR pesanan" (`/pesanan/[orderId]` dari `POST /api/orders`, fallback `/pesanan` bila null). `check` (35 test) + `build` hijau.

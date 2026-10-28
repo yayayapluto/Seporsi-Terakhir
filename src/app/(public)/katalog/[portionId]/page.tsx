@@ -10,8 +10,6 @@ import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { OrderForm } from "./order-form";
 
-/** Detail satu porsi. Anon sudah ditolak proxy (/katalog*). */
-
 export interface PortionDetail {
   id: string;
   menuName: string;
@@ -89,9 +87,9 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
 
 function Info({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 py-2.5">
-      <dt className="text-sm text-muted-foreground">{label}</dt>
-      <dd className="text-right text-sm font-semibold">{children}</dd>
+    <div className="flex gap-3 py-2">
+      <dt className="w-40 shrink-0 text-sm text-muted-foreground">{label}</dt>
+      <dd className="min-w-0 text-sm font-medium">{children}</dd>
     </div>
   );
 }

@@ -16,9 +16,14 @@ export interface CatalogPortion {
   cookedAt: string;
   expiresAt: string;
   releaseAt: string;
+  imageUrl?: string | null;
 }
 
-async function loadCatalog(): Promise<{ portions: CatalogPortion[]; tenants: string[] }> {
+async function loadCatalog(): Promise<{
+  portions: CatalogPortion[];
+  tenants: string[];
+  dayTotal: number;
+}> {
   const supabase = await createClient();
   await connection();
   const now = new Date();
@@ -32,7 +37,29 @@ async function loadCatalog(): Promise<{ portions: CatalogPortion[]; tenants: str
     .lte("release_at", now.toISOString())
     .order("expires_at", { ascending: true })
     .limit(60);
-  if (error || !data) return { portions: [], tenants: [] };
+  // Batas hari ini Asia/Jakarta → UTC (pola sama kayak dasbor tenant).
+  const nowWib = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const todayLocal = `${nowWib.getFullYear()}-${pad(nowWib.getMonth() + 1)}-${pad(nowWib.getDate())}`;
+  const dayStartUtc = new Date(`${todayLocal}T00:00:00+07:00`).toISOString();
+  const dayEndIso = new Date(
+    new Date(`${todayLocal}T00:00:00+07:00`).getTime() + 86400000,
+  ).toISOString();
+  let dayTotal = 0;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    const { data: orders } = await supabase
+      .from("orders")
+      .select("quantity")
+      .eq("student_id", user.id)
+      .neq("status", "cancelled")
+      .gte("created_at", dayStartUtc)
+      .lt("created_at", dayEndIso);
+    dayTotal = ((orders ?? []) as { quantity: number }[]).reduce((s, o) => s + o.quantity, 0);
+  }
+  if (error || !data) return { portions: [], tenants: [], dayTotal };
   const portions: CatalogPortion[] = [];
   const tenantSet = new Set<string>();
   for (const row of data) {
@@ -52,7 +79,7 @@ async function loadCatalog(): Promise<{ portions: CatalogPortion[]; tenants: str
       releaseAt: row.release_at,
     });
   }
-  return { portions, tenants: [...tenantSet].sort() };
+  return { portions, tenants: [...tenantSet].sort(), dayTotal };
 }
 
 export default function KatalogPage() {
@@ -74,6 +101,6 @@ export default function KatalogPage() {
 }
 
 async function CatalogBody() {
-  const { portions, tenants } = await loadCatalog();
-  return <KatalogList portions={portions} tenants={tenants} />;
+  const { portions, tenants, dayTotal } = await loadCatalog();
+  return <KatalogList portions={portions} tenants={tenants} dayTotal={dayTotal} />;
 }
