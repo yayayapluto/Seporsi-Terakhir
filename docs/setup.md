@@ -59,9 +59,9 @@ Redirect allowlist: `http://localhost:3000/auth/callback` +
 `config.toml` `additional_redirect_urls`).
 
 Verifikasi sekali (dev): nyalakan dev, buka `/masuk`, masukkan email seed
-(mis. `rafi@student.ac.id`), cek inbox → ketuk tautan → mendarat di
-`/katalog` (student) sesuai role. Tautan kedaluwarsa/bekas pakai mendarat di
-`/masuk?error=magic-link` ("Tautan tidak valid atau kedaluwarsa…").
+(mis. `rafi1793198479@yopmail.com`), buka inbox di yopmail.com → ketuk tautan
+→ mendarat di `/katalog` (student) sesuai role. Tautan kedaluwarsa/bekas pakai
+mendarat di `/masuk?error=magic-link` ("Tautan tidak valid atau kedaluwarsa…").
 
 ## 7. Data demo semua tabel (`bun run db:seed`)
 

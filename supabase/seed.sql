@@ -2,15 +2,15 @@
 -- Auth users harus ada dulu; UUID ini placeholder — ganti dgn auth user id asli.
 
 insert into profiles (id, role, email, full_name) values
-  ('11111111-1111-1111-1111-111111111111', 'admin', 'admin@kampus.ac.id', 'Admin BEM'),
-  ('22222222-2222-2222-2222-222222222222', 'tenant', 'warteg@kampus.ac.id', 'Bu Warteg'),
-  ('33333333-3333-3333-3333-333333333333', 'tenant', 'kopi@kampus.ac.id', 'Bang Kopi'),
-  ('44444444-4444-4444-4444-444444444444', 'tenant', 'padang@kampus.ac.id', 'Uni Padang'),
-  ('55555555-5555-5555-5555-555555555555', 'tenant', 'soto@kampus.ac.id', 'Cak Soto'),
-  ('66666666-6666-6666-6666-666666666666', 'tenant', 'pecel@kampus.ac.id', 'Mbak Pecel'),
-  ('77777777-7777-7777-7777-777777777777', 'tenant', 'geprek@kampus.ac.id', 'Mas Geprek'),
-  ('88888888-8888-8888-8888-888888888888', 'student', 'rafi@student.ac.id', 'Rafi Anggara'),
-  ('99999999-9999-9999-9999-999999999999', 'student', 'sinta@student.ac.id', 'Sinta Dewi')
+  ('11111111-1111-1111-1111-111111111111', 'admin', 'admin1793198479@yopmail.com', 'Admin BEM'),
+  ('22222222-2222-2222-2222-222222222222', 'tenant', 'warteg1793198479@yopmail.com', 'Bu Warteg'),
+  ('33333333-3333-3333-3333-333333333333', 'tenant', 'kopi1793198479@yopmail.com', 'Bang Kopi'),
+  ('44444444-4444-4444-4444-444444444444', 'tenant', 'padang1793198479@yopmail.com', 'Uni Padang'),
+  ('55555555-5555-5555-5555-555555555555', 'tenant', 'soto1793198479@yopmail.com', 'Cak Soto'),
+  ('66666666-6666-6666-6666-666666666666', 'tenant', 'pecel1793198479@yopmail.com', 'Mbak Pecel'),
+  ('77777777-7777-7777-7777-777777777777', 'tenant', 'geprek1793198479@yopmail.com', 'Mas Geprek'),
+  ('88888888-8888-8888-8888-888888888888', 'student', 'rafi1793198479@yopmail.com', 'Rafi Anggara'),
+  ('99999999-9999-9999-9999-999999999999', 'student', 'sinta1793198479@yopmail.com', 'Sinta Dewi')
 on conflict (id) do update
   set role = excluded.role, email = excluded.email, full_name = excluded.full_name;
 

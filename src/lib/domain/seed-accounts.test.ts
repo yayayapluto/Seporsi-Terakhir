@@ -20,7 +20,7 @@ describe("seed-accounts", () => {
       seen[e] = true;
     }
     for (const a of SEED_ACCOUNTS) {
-      expect(a.email).toMatch(/@kampus\.ac\.id$|@student\.ac\.id$/);
+      expect(a.email).toMatch(/@yopmail.com$/);
       expect(a.placeholderId).toMatch(UUID_RE);
     }
   });

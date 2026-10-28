@@ -32,7 +32,7 @@ export interface SeedOrder {
 
 export const SEED_MENUS: SeedMenu[] = [
   {
-    tenantEmail: "warteg@kampus.ac.id",
+    tenantEmail: "warteg1793198479@yopmail.com",
     name: "Nasi ayam + sayur",
     normalPrice: 15000,
     weightGrams: 350,
@@ -40,7 +40,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: null,
   },
   {
-    tenantEmail: "warteg@kampus.ac.id",
+    tenantEmail: "warteg1793198479@yopmail.com",
     name: "Nasi telur + tempe",
     normalPrice: 12000,
     weightGrams: 300,
@@ -48,7 +48,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: "Mengandung telur, kedelai",
   },
   {
-    tenantEmail: "warteg@kampus.ac.id",
+    tenantEmail: "warteg1793198479@yopmail.com",
     name: "Mie goreng",
     normalPrice: 10000,
     weightGrams: 250,
@@ -56,7 +56,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: "Mengandung telur, gluten",
   },
   {
-    tenantEmail: "kopi@kampus.ac.id",
+    tenantEmail: "kopi1793198479@yopmail.com",
     name: "Roti bakar coklat",
     normalPrice: 8000,
     weightGrams: 120,
@@ -64,7 +64,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: "Mengandung susu, gluten",
   },
   {
-    tenantEmail: "kopi@kampus.ac.id",
+    tenantEmail: "kopi1793198479@yopmail.com",
     name: "Pisang goreng (isi 3)",
     normalPrice: 7000,
     weightGrams: 200,
@@ -72,7 +72,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: "Mengandung gluten",
   },
   {
-    tenantEmail: "kopi@kampus.ac.id",
+    tenantEmail: "kopi1793198479@yopmail.com",
     name: "Indomie telur kornet",
     normalPrice: 13000,
     weightGrams: 280,
@@ -80,7 +80,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: "Mengandung telur, gluten",
   },
   {
-    tenantEmail: "padang@kampus.ac.id",
+    tenantEmail: "padang1793198479@yopmail.com",
     name: "Nasi rendang + sayur",
     normalPrice: 18000,
     weightGrams: 400,
@@ -88,7 +88,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: "Mengandung santan",
   },
   {
-    tenantEmail: "padang@kampus.ac.id",
+    tenantEmail: "padang1793198479@yopmail.com",
     name: "Nasi ayam pop",
     normalPrice: 16000,
     weightGrams: 380,
@@ -96,7 +96,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: null,
   },
   {
-    tenantEmail: "padang@kampus.ac.id",
+    tenantEmail: "padang1793198479@yopmail.com",
     name: "Nasi telur balado",
     normalPrice: 12000,
     weightGrams: 320,
@@ -104,7 +104,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: "Mengandung telur",
   },
   {
-    tenantEmail: "soto@kampus.ac.id",
+    tenantEmail: "soto1793198479@yopmail.com",
     name: "Soto ayam + nasi",
     normalPrice: 13000,
     weightGrams: 350,
@@ -112,7 +112,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: "Mengandung telur",
   },
   {
-    tenantEmail: "soto@kampus.ac.id",
+    tenantEmail: "soto1793198479@yopmail.com",
     name: "Soto ayam tanpa nasi",
     normalPrice: 10000,
     weightGrams: 250,
@@ -120,7 +120,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: null,
   },
   {
-    tenantEmail: "pecel@kampus.ac.id",
+    tenantEmail: "pecel1793198479@yopmail.com",
     name: "Nasi pecel lengkap",
     normalPrice: 12000,
     weightGrams: 330,
@@ -128,7 +128,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: "Mengandung kacang, telur",
   },
   {
-    tenantEmail: "pecel@kampus.ac.id",
+    tenantEmail: "pecel1793198479@yopmail.com",
     name: "Nasi pecel + telur",
     normalPrice: 14000,
     weightGrams: 370,
@@ -136,7 +136,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: "Mengandung kacang, telur",
   },
   {
-    tenantEmail: "geprek@kampus.ac.id",
+    tenantEmail: "geprek1793198479@yopmail.com",
     name: "Nasi ayam geprek sambal matah",
     normalPrice: 15000,
     weightGrams: 350,
@@ -144,7 +144,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: null,
   },
   {
-    tenantEmail: "geprek@kampus.ac.id",
+    tenantEmail: "geprek1793198479@yopmail.com",
     name: "Nasi ayam geprek original",
     normalPrice: 13000,
     weightGrams: 340,
@@ -152,7 +152,7 @@ export const SEED_MENUS: SeedMenu[] = [
     allergenNote: null,
   },
   {
-    tenantEmail: "geprek@kampus.ac.id",
+    tenantEmail: "geprek1793198479@yopmail.com",
     name: "Mie geprek + telur",
     normalPrice: 11000,
     weightGrams: 300,
@@ -162,60 +162,120 @@ export const SEED_MENUS: SeedMenu[] = [
 ];
 
 export const SEED_PORTIONS: SeedPortion[] = [
-  { tenantEmail: "warteg@kampus.ac.id", menuName: "Nasi ayam + sayur", qty: 10, cookedMinAgo: 30 },
-  { tenantEmail: "warteg@kampus.ac.id", menuName: "Nasi telur + tempe", qty: 5, cookedMinAgo: 45 },
-  { tenantEmail: "warteg@kampus.ac.id", menuName: "Mie goreng", qty: 7, cookedMinAgo: 60 },
-  { tenantEmail: "kopi@kampus.ac.id", menuName: "Roti bakar coklat", qty: 8, cookedMinAgo: 100 },
-  { tenantEmail: "kopi@kampus.ac.id", menuName: "Pisang goreng (isi 3)", qty: 6, cookedMinAgo: 20 },
-  { tenantEmail: "kopi@kampus.ac.id", menuName: "Indomie telur kornet", qty: 9, cookedMinAgo: 25 },
   {
-    tenantEmail: "padang@kampus.ac.id",
+    tenantEmail: "warteg1793198479@yopmail.com",
+    menuName: "Nasi ayam + sayur",
+    qty: 10,
+    cookedMinAgo: 30,
+  },
+  {
+    tenantEmail: "warteg1793198479@yopmail.com",
+    menuName: "Nasi telur + tempe",
+    qty: 5,
+    cookedMinAgo: 45,
+  },
+  { tenantEmail: "warteg1793198479@yopmail.com", menuName: "Mie goreng", qty: 7, cookedMinAgo: 60 },
+  {
+    tenantEmail: "kopi1793198479@yopmail.com",
+    menuName: "Roti bakar coklat",
+    qty: 8,
+    cookedMinAgo: 100,
+  },
+  {
+    tenantEmail: "kopi1793198479@yopmail.com",
+    menuName: "Pisang goreng (isi 3)",
+    qty: 6,
+    cookedMinAgo: 20,
+  },
+  {
+    tenantEmail: "kopi1793198479@yopmail.com",
+    menuName: "Indomie telur kornet",
+    qty: 9,
+    cookedMinAgo: 25,
+  },
+  {
+    tenantEmail: "padang1793198479@yopmail.com",
     menuName: "Nasi rendang + sayur",
     qty: 12,
     cookedMinAgo: 40,
   },
-  { tenantEmail: "padang@kampus.ac.id", menuName: "Nasi ayam pop", qty: 10, cookedMinAgo: 55 },
-  { tenantEmail: "padang@kampus.ac.id", menuName: "Nasi telur balado", qty: 8, cookedMinAgo: 70 },
-  { tenantEmail: "soto@kampus.ac.id", menuName: "Soto ayam + nasi", qty: 15, cookedMinAgo: 15 },
-  { tenantEmail: "soto@kampus.ac.id", menuName: "Soto ayam tanpa nasi", qty: 6, cookedMinAgo: 90 },
-  { tenantEmail: "pecel@kampus.ac.id", menuName: "Nasi pecel lengkap", qty: 10, cookedMinAgo: 50 },
-  { tenantEmail: "pecel@kampus.ac.id", menuName: "Nasi pecel + telur", qty: 8, cookedMinAgo: 10 },
   {
-    tenantEmail: "geprek@kampus.ac.id",
+    tenantEmail: "padang1793198479@yopmail.com",
+    menuName: "Nasi ayam pop",
+    qty: 10,
+    cookedMinAgo: 55,
+  },
+  {
+    tenantEmail: "padang1793198479@yopmail.com",
+    menuName: "Nasi telur balado",
+    qty: 8,
+    cookedMinAgo: 70,
+  },
+  {
+    tenantEmail: "soto1793198479@yopmail.com",
+    menuName: "Soto ayam + nasi",
+    qty: 15,
+    cookedMinAgo: 15,
+  },
+  {
+    tenantEmail: "soto1793198479@yopmail.com",
+    menuName: "Soto ayam tanpa nasi",
+    qty: 6,
+    cookedMinAgo: 90,
+  },
+  {
+    tenantEmail: "pecel1793198479@yopmail.com",
+    menuName: "Nasi pecel lengkap",
+    qty: 10,
+    cookedMinAgo: 50,
+  },
+  {
+    tenantEmail: "pecel1793198479@yopmail.com",
+    menuName: "Nasi pecel + telur",
+    qty: 8,
+    cookedMinAgo: 10,
+  },
+  {
+    tenantEmail: "geprek1793198479@yopmail.com",
     menuName: "Nasi ayam geprek sambal matah",
     qty: 12,
     cookedMinAgo: 35,
   },
   {
-    tenantEmail: "geprek@kampus.ac.id",
+    tenantEmail: "geprek1793198479@yopmail.com",
     menuName: "Nasi ayam geprek original",
     qty: 10,
     cookedMinAgo: 25,
   },
-  { tenantEmail: "geprek@kampus.ac.id", menuName: "Mie geprek + telur", qty: 7, cookedMinAgo: 80 },
+  {
+    tenantEmail: "geprek1793198479@yopmail.com",
+    menuName: "Mie geprek + telur",
+    qty: 7,
+    cookedMinAgo: 80,
+  },
 ];
 
 /** Contoh riwayat: rafi pesan 2 (1 picked_up + 1 reserved), sinta 1 picked_up. */
 export const SEED_ORDERS: SeedOrder[] = [
   {
-    studentEmail: "rafi@student.ac.id",
-    tenantEmail: "soto@kampus.ac.id",
+    studentEmail: "rafi1793198479@yopmail.com",
+    tenantEmail: "soto1793198479@yopmail.com",
     menuName: "Soto ayam + nasi",
     qty: 1,
     status: "picked_up",
     slotMinAhead: 30,
   },
   {
-    studentEmail: "rafi@student.ac.id",
-    tenantEmail: "geprek@kampus.ac.id",
+    studentEmail: "rafi1793198479@yopmail.com",
+    tenantEmail: "geprek1793198479@yopmail.com",
     menuName: "Nasi ayam geprek original",
     qty: 1,
     status: "reserved",
     slotMinAhead: 60,
   },
   {
-    studentEmail: "sinta@student.ac.id",
-    tenantEmail: "padang@kampus.ac.id",
+    studentEmail: "sinta1793198479@yopmail.com",
+    tenantEmail: "padang1793198479@yopmail.com",
     menuName: "Nasi rendang + sayur",
     qty: 1,
     status: "picked_up",
@@ -223,10 +283,10 @@ export const SEED_ORDERS: SeedOrder[] = [
   },
 ];
 export const SEED_TENANT_EMAILS: string[] = [
-  "warteg@kampus.ac.id",
-  "kopi@kampus.ac.id",
-  "padang@kampus.ac.id",
-  "soto@kampus.ac.id",
-  "pecel@kampus.ac.id",
-  "geprek@kampus.ac.id",
+  "warteg1793198479@yopmail.com",
+  "kopi1793198479@yopmail.com",
+  "padang1793198479@yopmail.com",
+  "soto1793198479@yopmail.com",
+  "pecel1793198479@yopmail.com",
+  "geprek1793198479@yopmail.com",
 ];

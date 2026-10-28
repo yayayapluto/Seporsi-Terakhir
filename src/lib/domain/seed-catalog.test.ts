@@ -32,7 +32,7 @@ describe("seed-catalog", () => {
 
   it("orders rujuk student/menu valid, qty <= 2", () => {
     for (const o of SEED_ORDERS) {
-      expect(o.studentEmail).toMatch(/@student\.ac\.id$/);
+      expect(o.studentEmail).toMatch(/@yopmail.com$/);
       expect(
         SEED_PORTIONS.some((p) => p.tenantEmail === o.tenantEmail && p.menuName === o.menuName),
       ).toBe(true);

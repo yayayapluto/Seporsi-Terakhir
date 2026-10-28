@@ -18,14 +18,14 @@ select '00000000-0000-0000-0000-000000000000', gen_random_uuid(), 'authenticated
   '{"provider":"email","providers":["email"]}',
   jsonb_build_object('full_name', n), false
 from (values
-  ('admin@kampus.ac.id', 'Admin BEM'),
-  ('warteg@kampus.ac.id', 'Bu Warteg'),
-  ('kopi@kampus.ac.id', 'Bang Kopi'),
-  ('padang@kampus.ac.id', 'Uni Padang'),
-  ('soto@kampus.ac.id', 'Cak Soto'),
-  ('pecel@kampus.ac.id', 'Mbak Pecel'),
-  ('geprek@kampus.ac.id', 'Mas Geprek'),
-  ('rafi@student.ac.id', 'Rafi Anggara')
+  ('admin1793198479@yopmail.com', 'Admin BEM'),
+  ('warteg1793198479@yopmail.com', 'Bu Warteg'),
+  ('kopi1793198479@yopmail.com', 'Bang Kopi'),
+  ('padang1793198479@yopmail.com', 'Uni Padang'),
+  ('soto1793198479@yopmail.com', 'Cak Soto'),
+  ('pecel1793198479@yopmail.com', 'Mbak Pecel'),
+  ('geprek1793198479@yopmail.com', 'Mas Geprek'),
+  ('rafi1793198479@yopmail.com', 'Rafi Anggara')
 ) as v(e, n)
 where not exists (select 1 from auth.users u where u.email = v.e);
 
@@ -38,9 +38,9 @@ select gen_random_uuid(), u.id, u.id::text,
     'email_verified', true, 'phone_verified', false),
   'email', now(), now(), now()
 from auth.users u
-where u.email in ('admin@kampus.ac.id', 'warteg@kampus.ac.id',
-  'kopi@kampus.ac.id', 'padang@kampus.ac.id', 'soto@kampus.ac.id',
-  'pecel@kampus.ac.id', 'geprek@kampus.ac.id', 'rafi@student.ac.id')
+where u.email in ('admin1793198479@yopmail.com', 'warteg1793198479@yopmail.com',
+  'kopi1793198479@yopmail.com', 'padang1793198479@yopmail.com', 'soto1793198479@yopmail.com',
+  'pecel1793198479@yopmail.com', 'geprek1793198479@yopmail.com', 'rafi1793198479@yopmail.com')
   and not exists (select 1 from auth.identities i where i.user_id = u.id);
 
 -- perbaiki baris lama yg identity_data-nya tanpa flag verified (GoTrue
@@ -57,25 +57,25 @@ where i.user_id = u.id and i.provider = 'email'
 -- statement, jadi set_config transaction-local tak bertahan antar statement).
 alter table profiles disable trigger profiles_role_guard;
 update profiles p set role = 'admin', full_name = 'Admin BEM'
-from auth.users u where u.email = 'admin@kampus.ac.id' and p.id = u.id;
+from auth.users u where u.email = 'admin1793198479@yopmail.com' and p.id = u.id;
 update profiles p set role = 'tenant'
 from auth.users u where p.id = u.id and u.email in
-  ('warteg@kampus.ac.id', 'kopi@kampus.ac.id', 'padang@kampus.ac.id',
-   'soto@kampus.ac.id', 'pecel@kampus.ac.id', 'geprek@kampus.ac.id');
+  ('warteg1793198479@yopmail.com', 'kopi1793198479@yopmail.com', 'padang1793198479@yopmail.com',
+   'soto1793198479@yopmail.com', 'pecel1793198479@yopmail.com', 'geprek1793198479@yopmail.com');
 update profiles p set full_name = 'Rafi Anggara'
-from auth.users u where u.email = 'rafi@student.ac.id' and p.id = u.id;
+from auth.users u where u.email = 'rafi1793198479@yopmail.com' and p.id = u.id;
 alter table profiles enable trigger profiles_role_guard;
 
 -- 3. tenants (owner resolve via email, bukan UUID mati)
 insert into tenants (owner_id, name, location_note, is_approved)
 select u.id, v.t, v.l, true
 from (values
-  ('warteg@kampus.ac.id', 'Warteg Barokah', 'Kantin blok A no. 3'),
-  ('kopi@kampus.ac.id', 'Kopi Pojok', 'Selasar perpustakaan'),
-  ('padang@kampus.ac.id', 'Masakan Padang Uni', 'Pujasera utama'),
-  ('soto@kampus.ac.id', 'Soto Lamongan Cak No', 'Kantin gedung C'),
-  ('pecel@kampus.ac.id', 'Pecel Madiun Mbak Sri', 'Kantin vokasi'),
-  ('geprek@kampus.ac.id', 'Ayam Geprek Mas Boy', 'Kantin gedung B')
+  ('warteg1793198479@yopmail.com', 'Warteg Barokah', 'Kantin blok A no. 3'),
+  ('kopi1793198479@yopmail.com', 'Kopi Pojok', 'Selasar perpustakaan'),
+  ('padang1793198479@yopmail.com', 'Masakan Padang Uni', 'Pujasera utama'),
+  ('soto1793198479@yopmail.com', 'Soto Lamongan Cak No', 'Kantin gedung C'),
+  ('pecel1793198479@yopmail.com', 'Pecel Madiun Mbak Sri', 'Kantin vokasi'),
+  ('geprek1793198479@yopmail.com', 'Ayam Geprek Mas Boy', 'Kantin gedung B')
 ) as v(e, t, l)
 join auth.users u on u.email = v.e
 where not exists (select 1 from tenants t where t.owner_id = u.id);

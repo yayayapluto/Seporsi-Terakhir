@@ -7,12 +7,12 @@ import { createClient } from "@supabase/supabase-js";
 import { SEED_MENUS, SEED_ORDERS, SEED_PORTIONS } from "../src/lib/domain/seed-catalog";
 
 const NAMES: Record<string, { name: string; loc: string }> = {
-  "warteg@kampus.ac.id": { name: "Warteg Barokah", loc: "Kantin blok A no. 3" },
-  "kopi@kampus.ac.id": { name: "Kopi Pojok", loc: "Selasar perpustakaan" },
-  "padang@kampus.ac.id": { name: "Masakan Padang Uni", loc: "Pujasera utama" },
-  "soto@kampus.ac.id": { name: "Soto Lamongan Cak No", loc: "Kantin gedung C" },
-  "pecel@kampus.ac.id": { name: "Pecel Madiun Mbak Sri", loc: "Kantin vokasi" },
-  "geprek@kampus.ac.id": { name: "Ayam Geprek Mas Boy", loc: "Kantin gedung B" },
+  "warteg1793198479@yopmail.com": { name: "Warteg Barokah", loc: "Kantin blok A no. 3" },
+  "kopi1793198479@yopmail.com": { name: "Kopi Pojok", loc: "Selasar perpustakaan" },
+  "padang1793198479@yopmail.com": { name: "Masakan Padang Uni", loc: "Pujasera utama" },
+  "soto1793198479@yopmail.com": { name: "Soto Lamongan Cak No", loc: "Kantin gedung C" },
+  "pecel1793198479@yopmail.com": { name: "Pecel Madiun Mbak Sri", loc: "Kantin vokasi" },
+  "geprek1793198479@yopmail.com": { name: "Ayam Geprek Mas Boy", loc: "Kantin gedung B" },
 };
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -24,7 +24,11 @@ const disc = (n: number) => Math.round((n * 0.45) / 500) * 500;
 
 // email -> id (profiles + tenants + menus resolusi bertahap)
 const profId: Record<string, string> = {};
-for (const email of [...Object.keys(NAMES), "rafi@student.ac.id", "sinta@student.ac.id"]) {
+for (const email of [
+  ...Object.keys(NAMES),
+  "rafi1793198479@yopmail.com",
+  "sinta1793198479@yopmail.com",
+]) {
   const { data } = await db
     .from("profiles")
     .select("id")
