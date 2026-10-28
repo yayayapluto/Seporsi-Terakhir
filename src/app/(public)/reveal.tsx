@@ -32,7 +32,7 @@ export function Pressable({ children, className }: { children: ReactNode; classN
   const reduce = useReducedMotion();
   return (
     <motion.span
-      className={className}
+      className={className ? `inline-block ${className}` : "inline-block"}
       whileHover={reduce ? undefined : { scale: 1.02 }}
       whileTap={reduce ? undefined : { scale: 0.98 }}
       transition={{ type: "spring", stiffness: 400, damping: 22 }}
