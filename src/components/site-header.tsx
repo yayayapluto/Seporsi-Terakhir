@@ -47,10 +47,7 @@ export function SiteHeader() {
             height={32}
             className="size-8 object-contain"
           />
-          Porsi Terakhir
-          <span className="hidden rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold text-primary sm:inline">
-            Tahap Awal
-          </span>
+          Seporsi Terakhir
         </Link>
         <nav className="hidden items-center gap-1 text-sm lg:flex" aria-label="Navigasi utama">
           {NAV.map((n) => (

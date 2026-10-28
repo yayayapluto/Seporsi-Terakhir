@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+
 import {
   Accordion,
   AccordionContent,
@@ -114,10 +115,26 @@ export default function Home() {
           </h1>
           <p className="max-w-xl text-base text-muted-foreground">
             Setiap sore, makanan layak makan di kantin kampus sering berakhir di tempat sampah.
-            Porsi Terakhir mempertemukan tenant yang menjual sisa dengan harga diskon, dan mahasiswa
-            yang butuh makan murah.
+            Seporsi Terakhir mempertemukan tenant yang menjual sisa dengan harga diskon, dan
+            mahasiswa yang butuh makan murah.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Pressable>
+              <Link
+                href="/katalog"
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
+              >
+                Lihat Porsi Hari Ini
+              </Link>
+            </Pressable>
+            <Pressable>
+              <Link
+                href="/cara-kerja"
+                className="inline-flex items-center justify-center rounded-lg border px-6 py-3 font-semibold transition-colors hover:bg-muted"
+              >
+                Lihat Cara Kerja
+              </Link>
+            </Pressable>
             <Pressable>
               <Link
                 href="/katalog"
@@ -261,12 +278,12 @@ export default function Home() {
         <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
           Pertanyaan yang sering ditanyakan.
         </h2>
-        <Accordion>
+        <Accordion defaultValue={FAQS[0] ? [FAQS[0].q] : []} className="mt-1 border-b">
           {FAQS.map((f) => (
-            <AccordionItem key={f.q} className="border-t first:border-t-0">
-              <AccordionTrigger className="py-4 font-semibold">{f.q}</AccordionTrigger>
+            <AccordionItem key={f.q} value={f.q} className="border-t first:border-t-0">
+              <AccordionTrigger className="py-4 text-left font-semibold">{f.q}</AccordionTrigger>
               <AccordionContent>
-                <p className="pb-4 text-sm text-muted-foreground">{f.a}</p>
+                <p className="text-muted-foreground">{f.a}</p>
               </AccordionContent>
             </AccordionItem>
           ))}
@@ -283,6 +300,22 @@ export default function Home() {
           hemat.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
+          <Pressable>
+            <Link
+              href="/masuk"
+              className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
+            >
+              Masuk Sekarang
+            </Link>
+          </Pressable>
+          <Pressable>
+            <Link
+              href="/tenant/pendaftaran"
+              className="inline-flex items-center justify-center rounded-lg border px-6 py-3 font-semibold transition-colors hover:bg-muted"
+            >
+              Daftar sebagai Tenant
+            </Link>
+          </Pressable>
           <Pressable>
             <Link
               href="/masuk"

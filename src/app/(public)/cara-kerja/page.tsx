@@ -215,7 +215,7 @@ export default function CaraKerjaPage() {
             Aplikasi tidak memproses pembayaran
           </h2>
           <p className="text-muted-foreground">
-            Porsi Terakhir hanya mencatat kuota. Uang berpindah tangan di kasir fisik kantin.
+            Seporsi Terakhir hanya mencatat kuota. Uang berpindah tangan di kasir fisik kantin.
           </p>
           <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-3">
             <div className="flex flex-col gap-1">
@@ -349,7 +349,6 @@ export default function CaraKerjaPage() {
         </Reveal>
       </section>
 
-      {/* FAQ */}
       <section aria-labelledby="faq-heading">
         <Reveal className="flex flex-col gap-2">
           <h2 id="faq-heading" className="text-xl font-bold tracking-tight">

@@ -10,7 +10,7 @@ export function SiteFooter() {
             <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Recycle className="size-4" aria-hidden />
             </span>
-            Porsi Terakhir
+            Seporsi Terakhir
           </p>
           <p className="max-w-xs text-sm text-muted-foreground">
             Platform penyelamat surplus makanan kantin kampus. Makanan berkualitas tinggi, harga
@@ -44,7 +44,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t">
         <p className="mx-auto w-full max-w-6xl px-4 py-4 text-xs text-muted-foreground sm:px-6">
-          Dikelola bersama BEM dan unit sarana kampus © 2026 Porsi Terakhir (Project Infinity)
+          Dikelola bersama BEM dan unit sarana kampus © 2026 Seporsi Terakhir (Project Infinity)
         </p>
       </div>
     </footer>

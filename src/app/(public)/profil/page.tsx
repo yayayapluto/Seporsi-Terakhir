@@ -117,7 +117,7 @@ export default async function ProfilPage() {
         {tenantStatus == null ? (
           <EmptyState
             title="Belum mendaftar sebagai tenant"
-            hint="Jual sisa masakanmu lewat Porsi Terakhir — gratis untuk saat ini."
+            hint="Jual sisa masakanmu lewat Seporsi Terakhir — gratis untuk saat ini."
             ctaHref="/tenant/pendaftaran"
             ctaLabel="Daftar jadi tenant"
           />
