@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { homeForRole } from "@/lib/auth";
 import { getEnv } from "@/lib/env";
 
 async function refreshSession(request: NextRequest) {
@@ -59,7 +60,9 @@ export async function updateSession(request: NextRequest) {
     path.startsWith("/admin");
 
   if (isAuthPage && user) {
-    return NextResponse.redirect(new URL("/", request.url));
+    const { data } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+    const role = data?.role === "tenant" || data?.role === "admin" ? data.role : "student";
+    return NextResponse.redirect(new URL(homeForRole(role), request.url));
   }
   if (isProtected && !user) {
     const login = new URL("/masuk", request.url);

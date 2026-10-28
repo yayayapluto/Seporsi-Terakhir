@@ -36,4 +36,10 @@ describe("homeForRole", () => {
     expect(homeForRole("tenant")).toBe("/tenant");
     expect(homeForRole("admin")).toBe("/admin");
   });
+
+  it("resolves post-login targets through the role home", () => {
+    expect(resolveNext(null, homeForRole("tenant"))).toBe("/tenant");
+    expect(resolveNext("/pesanan", homeForRole("tenant"))).toBe("/pesanan");
+    expect(resolveNext("https://evil.test", homeForRole("admin"))).toBe("/admin");
+  });
 });

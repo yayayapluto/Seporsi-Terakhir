@@ -12,6 +12,7 @@ import { SignOutButton } from "./sign-out-button";
 interface ProfileData {
   fullName: string;
   email: string | null;
+  role: string | null;
   tenantName: string | null;
   tenantApproved: boolean | null;
   savedPortions: number;
@@ -24,7 +25,7 @@ interface ProfileData {
 async function loadProfile(userId: string): Promise<ProfileData> {
   const supabase = await createClient();
   const [{ data: profile }, { data: tenant }, { data: orders, error }] = await Promise.all([
-    supabase.from("profiles").select("full_name, email").eq("id", userId).single(),
+    supabase.from("profiles").select("full_name, email, role").eq("id", userId).single(),
     supabase.from("tenants").select("name, is_approved").eq("owner_id", userId).maybeSingle(),
     supabase.rpc("my_orders"),
   ]);
@@ -47,8 +48,12 @@ async function loadProfile(userId: string): Promise<ProfileData> {
     }
   }
   return {
-    fullName: (profile?.full_name as string | null) ?? "Mahasiswa",
+    fullName:
+      (profile?.full_name as string | null) ??
+      (profile?.email as string | null)?.split("@")[0] ??
+      "Pengguna",
     email: (profile?.email as string | null) ?? null,
+    role: (profile?.role as string | null) ?? null,
     tenantName: (tenant?.name as string | undefined) ?? null,
     tenantApproved: (tenant?.is_approved as boolean | undefined) ?? null,
     savedPortions: portionsSaved(savedPortions),
@@ -72,6 +77,19 @@ export default async function ProfilPage() {
           {p.fullName}
         </h1>
         {p.email && <p className="text-muted-foreground">{p.email}</p>}
+        {p.role != null && (
+          <p className="text-sm font-semibold text-muted-foreground">
+            {p.role === "admin"
+              ? "Admin"
+              : p.tenantName != null
+                ? p.tenantApproved
+                  ? "Tenant aktif"
+                  : "Menunggu persetujuan"
+                : p.role === "tenant"
+                  ? "Tenant"
+                  : "Mahasiswa"}
+          </p>
+        )}
       </div>
 
       <section aria-labelledby="dampak-heading" className="border-b pb-8">

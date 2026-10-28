@@ -42,6 +42,11 @@ async function resolveId(email: string, fullName: string): Promise<string> {
 
 for (const a of SEED_ACCOUNTS) {
   const id = await resolveId(a.email, a.fullName);
+  const { data: existing } = await admin
+    .from("profiles")
+    .select("role, full_name")
+    .eq("id", id)
+    .single();
   const { error: pErr } = await admin
     .from("profiles")
     .upsert({ id, email: a.email, full_name: a.fullName });
@@ -54,6 +59,10 @@ for (const a of SEED_ACCOUNTS) {
     .update({ owner_id: id, is_approved: a.role === "tenant" })
     .eq("owner_id", a.placeholderId);
   if (tErr) throw tErr;
-  console.log("ok", a.role, a.email);
+  if (existing && existing.role !== a.role) {
+    console.log(`repair ${a.email} ${existing.role} -> ${a.role}`);
+  } else {
+    console.log("ok", a.role, a.email);
+  }
 }
 console.log("seed:auth OK");
