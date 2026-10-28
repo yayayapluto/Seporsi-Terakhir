@@ -55,3 +55,12 @@ Ops di luar kode (bukan acceptance): jalankan migrasi kolom di hosted agar trafi
 ## Resolution
 
 <!-- filled in by validate-fix -->
+
+## Resolution
+
+**Fixed:** 2026-10-28
+**Root cause confirmed:** cabang fallback log `error?.message` saat `maybeSingle` nol-baris (error null) → `undefined`; kasus sah dicatat gagal.
+**Fix applied:** `src/lib/domain/portion-detail.ts` (isMissingColumnError, shouldLogPortionLoadError, attachMissingIngredientColumns) + wiring `page.tsx` fallback + guard log.
+**Hardening added:** helper murni + 5 uji; sweep maybeSingle lain bersih (profil/scan/tenant diam benar).
+**Evidence:** `bun run check` hijau 35 test; simulasi kasus user → diam, error nyata → log.
+**Commit:** `fix(katalog-detail): fallback kolom + log hanya error nyata`

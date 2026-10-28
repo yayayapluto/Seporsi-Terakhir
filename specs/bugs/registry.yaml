@@ -19,3 +19,11 @@
   scope: katalog/detail
   summary: detail kadang empty-state + log load gagal undefined (nol-baris maybeSingle dilog sebagai error)
   file: specs/bugs/BUG-2026-10-28T090000-katalog-detail-undefined.md
+  status: fixed
+  files_changed:
+    - src/lib/domain/portion-detail.ts
+    - src/lib/domain/portion-detail.test.ts
+    - src/app/(public)/katalog/[portionId]/page.tsx
+  approach: helper murni klasifikasi missing-column vs nol-baris + guard console.error + fallback select minimal
+  risk_level: low
+  commit_message: "fix(katalog-detail): fallback kolom + log hanya error nyata"
