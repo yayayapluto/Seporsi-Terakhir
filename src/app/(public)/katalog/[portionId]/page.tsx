@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import {
+  attachMissingIngredientColumns,
+  isMissingColumnError,
+  shouldLogPortionLoadError,
+} from "@/lib/domain/portion-detail";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { OrderForm } from "./order-form";
@@ -27,26 +32,49 @@ const PortionId = z.string().uuid();
 
 async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const base =
+    "id, quantity_posted, quantity_remaining, cooked_at, expires_at, release_at, discount_price, tenants!inner(name, location_note)";
+  const full = await supabase
     .from("portions")
-    .select(
-      "id, quantity_posted, quantity_remaining, cooked_at, expires_at, release_at, discount_price, menu_items!inner(name, normal_price, ingredients, allergen_note), tenants!inner(name, location_note)",
-    )
+    .select(`${base}, menu_items!inner(name, normal_price, ingredients, allergen_note)`)
     .eq("id", portionId)
     .maybeSingle();
-  if (error || !data) return null;
+  // ponytail: hosted ketinggalan migrasi kolom baru → fallback select minimal, bukan halaman mati.
+  // Nol baris maybeSingle (habis/kedaluwarsa/RLS) = sah: diam, tanpa log.
+  let row = full.data;
+  if (full.error && isMissingColumnError(full.error.message)) {
+    const retry = await supabase
+      .from("portions")
+      .select(`${base}, menu_items!inner(name, normal_price)`)
+      .eq("id", portionId)
+      .maybeSingle();
+    if (retry.error || !retry.data) {
+      if (shouldLogPortionLoadError(retry.error)) {
+        console.error("[katalog-detail] load gagal", portionId, retry.error?.message);
+      }
+      return null;
+    }
+    row = attachMissingIngredientColumns(retry.data) as unknown as typeof full.data;
+  } else if (full.error || !row) {
+    if (shouldLogPortionLoadError(full.error)) {
+      console.error("[katalog-detail] load gagal", portionId, full.error?.message);
+    }
+    return null;
+  }
+  if (!row) return null;
+  const data = row;
   const menu = data.menu_items as unknown as {
     name: string;
     normal_price: number;
-    ingredients: string | null;
-    allergen_note: string | null;
+    ingredients?: string | null;
+    allergen_note?: string | null;
   };
   const tenant = data.tenants as unknown as { name: string; location_note: string | null };
   return {
     id: data.id,
     menuName: menu.name,
-    ingredients: menu.ingredients,
-    allergenNote: menu.allergen_note,
+    ingredients: menu.ingredients ?? null,
+    allergenNote: menu.allergen_note ?? null,
     normalPrice: menu.normal_price,
     tenantName: tenant.name,
     tenantLocation: tenant.location_note,
@@ -61,9 +89,9 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
 
 function Info({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex gap-3 py-2">
-      <dt className="w-40 shrink-0 text-sm text-muted-foreground">{label}</dt>
-      <dd className="min-w-0 text-sm font-medium">{children}</dd>
+    <div className="flex items-baseline justify-between gap-4 py-2.5">
+      <dt className="text-sm text-muted-foreground">{label}</dt>
+      <dd className="text-right text-sm font-semibold">{children}</dd>
     </div>
   );
 }
