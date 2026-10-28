@@ -44,7 +44,7 @@ export function SiteHeader() {
           </span>
           Porsi Terakhir
           <span className="hidden rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold text-primary sm:inline">
-            Pilot Kampus
+            Tahap Awal
           </span>
         </Link>
         <nav className="hidden items-center gap-1 text-sm lg:flex" aria-label="Navigasi utama">

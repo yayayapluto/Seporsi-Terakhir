@@ -285,7 +285,7 @@ export default function Home() {
             Daftar sebagai Tenant
           </Link>
         </div>
-        <p className="text-xs text-muted-foreground">Pilot SDG 12 di lingkungan kampus</p>
+        <p className="text-xs text-muted-foreground">Tahap awal SDG 12 di lingkungan kampus</p>
       </section>
     </div>
   );

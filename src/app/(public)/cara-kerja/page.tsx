@@ -59,7 +59,7 @@ const STEPS = [
     body: "Mahasiswa datang sebelum batas waktu. Tenant memindai QR lalu menekan konfirmasi secara eksplisit — pembayaran tunai/QRIS langsung ke kasir kantin.",
     detail: [
       { icon: Banknote, text: "Tunai atau QRIS milik kantin" },
-      { icon: ReceiptText, text: "Tanpa potongan platform selama pilot" },
+      { icon: ReceiptText, text: "Tanpa potongan biaya untuk saat ini" },
     ],
     foot: { icon: BadgeCheck, text: "Tercatat setelah konfirmasi tenant" },
   },
@@ -136,7 +136,7 @@ const FAQS = [
   },
   {
     q: "Apakah tenant dipungut biaya?",
-    a: "Tidak. Partisipasi sukarela (opt-in) dan nol platform fee selama pilot. Tenant bisa berhenti kapan saja.",
+    a: "Tidak. Ikut serta sukarela dan tanpa potongan biaya untuk saat ini. Tenant bisa berhenti kapan saja.",
   },
 ] as const;
 
@@ -146,7 +146,7 @@ export default function CaraKerjaPage() {
       {/* Hero editorial */}
       <section className="grid items-center gap-8 md:grid-cols-2">
         <div className="flex flex-col items-start gap-4">
-          <Badge variant="secondary">Pilot kampus · Tanpa biaya layanan</Badge>
+          <Badge variant="secondary">Tahap awal di kampus · Tanpa biaya layanan</Badge>
           <h1 className="text-3xl font-bold md:text-4xl">Cara kerja penyelamatan porsi kampus</h1>
           <p className="text-muted-foreground">
             Makanan matang bermutu dari kantin yang diselamatkan menjelang tutup. Hemat untuk
@@ -218,7 +218,7 @@ export default function CaraKerjaPage() {
               </div>
               <div className="rounded-lg border px-3 py-2">
                 <dt className="text-muted-foreground">Potongan komisi</dt>
-                <dd className="font-bold text-primary">0% selama pilot</dd>
+                <dd className="font-bold text-primary">0% untuk saat ini</dd>
               </div>
             </dl>
           </CardContent>
