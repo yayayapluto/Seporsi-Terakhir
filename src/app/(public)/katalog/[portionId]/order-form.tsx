@@ -202,7 +202,7 @@ export function OrderForm({
           type="button"
           aria-expanded={showSlot}
           onClick={() => setShowSlot((v) => !v)}
-          className="inline-flex w-fit items-center gap-1 text-sm font-semibold transition-colors hover:text-primary"
+          className="inline-flex min-h-11 w-fit items-center gap-1 text-sm font-semibold transition-colors hover:text-primary"
         >
           Atur jam ambil (opsional)
           <ChevronDown
@@ -220,7 +220,7 @@ export function OrderForm({
                   return (
                     <Label
                       key={chip.start + chip.end}
-                      className={`flex h-9 cursor-pointer items-center rounded-full border px-3 text-xs font-semibold transition-colors has-disabled:opacity-40 ${
+                      className={`flex min-h-11 cursor-pointer items-center rounded-full border px-4 text-xs font-semibold transition-colors has-disabled:opacity-40 ${
                         selected
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border hover:border-primary/60"

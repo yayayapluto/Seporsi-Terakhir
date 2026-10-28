@@ -104,40 +104,59 @@ export default async function TenantDashboardPage() {
       <div className="flex flex-col gap-2">
         <p className="text-xs font-bold tracking-widest text-primary">DASBOR TENANT</p>
         <h1 className="text-3xl font-bold">Kantinmu hari ini</h1>
-        <p className="text-muted-foreground">
-          Pantau porsi aktif, reservasi masuk, dan pickup hari ini.
+        <p className="text-sm text-muted-foreground">
+          {activePortions.reduce((sum, p) => sum + p.quantityRemaining, 0)} porsi aktif ·{" "}
+          {pickupsToday} pickup · {formatIDR(revenueToday)} omzet hari ini
         </p>
       </div>
 
-      <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border bg-card p-4">
-          <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Porsi aktif
-          </dt>
-          <dd className="mt-1 text-2xl font-bold">
-            {activePortions.reduce((sum, p) => sum + p.quantityRemaining, 0)}
-          </dd>
+      <section aria-labelledby="reservasi-heading" className="border-b pb-6">
+        <div className="flex items-baseline justify-between gap-3">
+          <h2 id="reservasi-heading" className="text-lg font-bold">
+            Reservasi menunggu pickup {reservations.length > 0 && `(${reservations.length})`}
+          </h2>
+          <div className="flex shrink-0 items-center gap-3">
+            {reservations.length > 5 && (
+              <Link
+                href="/tenant/pesanan"
+                className="inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-primary hover:underline"
+              >
+                Lihat semua
+              </Link>
+            )}
+            <Link href="/tenant/scan" className={buttonVariants({ className: "min-h-11" })}>
+              Scan pickup
+            </Link>
+          </div>
         </div>
-        <div className="rounded-xl border bg-card p-4">
-          <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Pickup hari ini
-          </dt>
-          <dd className="mt-1 text-2xl font-bold">{pickupsToday}</dd>
-        </div>
-        <div className="rounded-xl border bg-card p-4">
-          <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Omzet hari ini
-          </dt>
-          <dd className="mt-1 text-2xl font-bold">{formatIDR(revenueToday)}</dd>
-        </div>
-      </dl>
+        {reservations.length === 0 ? (
+          <p className="mt-2 text-sm text-muted-foreground">Tidak ada reservasi aktif.</p>
+        ) : (
+          <ul className="mt-2 divide-y divide-border">
+            {reservations.slice(0, 5).map((r) => (
+              <li key={r.id} className="flex items-center justify-between gap-4 py-3">
+                <div className="min-w-0">
+                  <h3 className="font-bold leading-snug">
+                    {r.menuName}{" "}
+                    <span className="font-normal text-muted-foreground">×{r.quantity}</span>
+                  </h3>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    Dipesan {formatDateTimeWIB(new Date(r.createdAt))} WIB
+                  </p>
+                </div>
+                <OrderStatusBadge status="reserved" />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <section aria-labelledby="porsi-heading" className="border-b pb-6">
         <div className="flex items-baseline justify-between gap-3">
           <h2 id="porsi-heading" className="text-lg font-bold">
             Porsi aktif
           </h2>
-          <Link href="/tenant/porsi/baru" className={buttonVariants()}>
+          <Link href="/tenant/porsi/baru" className={buttonVariants({ className: "min-h-11" })}>
             + Tambah porsi
           </Link>
         </div>
@@ -165,8 +184,10 @@ export default async function TenantDashboardPage() {
                       </span>
                     </h3>
                     <p className="mt-0.5 text-xs text-muted-foreground">
-                      {formatIDR(p.discountPrice)} · Habis{" "}
-                      {formatDateTimeWIB(new Date(p.expiresAt))} WIB
+                      <strong className="text-sm font-bold text-primary">
+                        {formatIDR(p.discountPrice)}
+                      </strong>{" "}
+                      · Habis {formatDateTimeWIB(new Date(p.expiresAt))} WIB
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
@@ -177,7 +198,7 @@ export default async function TenantDashboardPage() {
                     )}
                     <Link
                       href={`/tenant/porsi/${p.id}/edit`}
-                      className={buttonVariants({ variant: "outline" })}
+                      className={buttonVariants({ variant: "outline", className: "min-h-11" })}
                     >
                       Edit
                     </Link>
@@ -185,40 +206,6 @@ export default async function TenantDashboardPage() {
                 </li>
               );
             })}
-          </ul>
-        )}
-      </section>
-
-      <section aria-labelledby="reservasi-heading" className="border-b pb-6">
-        <h2 id="reservasi-heading" className="text-lg font-bold">
-          Reservasi menunggu pickup {reservations.length > 0 && `(${reservations.length})`}
-        </h2>
-        {reservations.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">Tidak ada reservasi aktif.</p>
-        ) : (
-          <ul className="mt-2 divide-y divide-border">
-            {reservations.slice(0, 5).map((r) => (
-              <li
-                key={r.id}
-                className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-              >
-                <div className="min-w-0">
-                  <h3 className="font-bold leading-snug">
-                    {r.menuName}{" "}
-                    <span className="font-normal text-muted-foreground">×{r.quantity}</span>
-                  </h3>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    Dipesan {formatDateTimeWIB(new Date(r.createdAt))} WIB
-                  </p>
-                </div>
-                <div className="flex shrink-0 items-center gap-3">
-                  <OrderStatusBadge status="reserved" />
-                  <Link href="/tenant/scan" className={buttonVariants()}>
-                    Scan pickup
-                  </Link>
-                </div>
-              </li>
-            ))}
           </ul>
         )}
       </section>
@@ -234,7 +221,7 @@ export default async function TenantDashboardPage() {
 
 function ShortcutLink({ href, label }: { href: string; label: string }) {
   return (
-    <Link href={href} className={buttonVariants({ variant: "outline" })}>
+    <Link href={href} className={buttonVariants({ variant: "outline", className: "min-h-11" })}>
       {label}
     </Link>
   );

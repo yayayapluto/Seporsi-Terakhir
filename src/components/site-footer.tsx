@@ -26,16 +26,28 @@ export function SiteFooter() {
         </div>
         <nav className="flex flex-col gap-2 text-sm" aria-label="Eksplorasi">
           <p className="font-bold">Eksplorasi</p>
-          <Link href="/katalog" className="w-fit text-muted-foreground hover:text-foreground">
+          <Link
+            href="/katalog"
+            className="inline-flex min-h-11 w-fit items-center text-muted-foreground hover:text-foreground"
+          >
             Lihat Porsi Hari Ini
           </Link>
-          <Link href="/cara-kerja" className="w-fit text-muted-foreground hover:text-foreground">
+          <Link
+            href="/cara-kerja"
+            className="inline-flex min-h-11 w-fit items-center text-muted-foreground hover:text-foreground"
+          >
             Cara Kerja & Jadi Tenant
           </Link>
-          <Link href="/#keamanan" className="w-fit text-muted-foreground hover:text-foreground">
+          <Link
+            href="/#keamanan"
+            className="inline-flex min-h-11 w-fit items-center text-muted-foreground hover:text-foreground"
+          >
             Standar Keamanan
           </Link>
-          <Link href="/#faq" className="w-fit text-muted-foreground hover:text-foreground">
+          <Link
+            href="/#faq"
+            className="inline-flex min-h-11 w-fit items-center text-muted-foreground hover:text-foreground"
+          >
             Tanya Jawab (FAQ)
           </Link>
         </nav>

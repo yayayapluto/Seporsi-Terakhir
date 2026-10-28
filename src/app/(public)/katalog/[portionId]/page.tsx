@@ -1,7 +1,9 @@
+import { cn } from "cn";
 import { ArrowLeft, ImageOff, Store } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { buttonVariants } from "@/components/ui/button";
 import {
   attachMissingIngredientColumns,
   isMissingColumnError,
@@ -106,10 +108,7 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
             katalog untuk porsi lain yang masih tersedia.
           </p>
         </div>
-        <Link
-          href="/katalog"
-          className="inline-flex h-11 w-fit items-center self-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-        >
+        <Link href="/katalog" className={cn(buttonVariants(), "w-fit self-center")}>
           Kembali ke katalog
         </Link>
       </div>
@@ -218,7 +217,7 @@ export default async function PortionDetailPage({
       <div className="flex flex-col gap-2">
         <Link
           href="/katalog"
-          className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex min-h-11 w-fit items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" aria-hidden />
           Katalog

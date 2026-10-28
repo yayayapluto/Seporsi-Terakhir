@@ -6,6 +6,13 @@ import { useMemo, useState, useTransition } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -30,6 +37,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
   const [filter, setFilter] = useState<string>("semua");
   const [error, setError] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
   const filtered = useMemo(
@@ -38,9 +46,9 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
   );
 
   function cancel(orderId: string) {
-    if (!window.confirm("Batalkan pesanan ini? Stok porsi akan dikembalikan.")) return;
     setError(null);
     setCancelling(orderId);
+    setConfirmId(null);
     startTransition(async () => {
       const res = await cancelOrder(orderId);
       if (!res.ok) setError(res.error);
@@ -140,7 +148,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                       type="button"
                       variant="outline"
                       className="h-11 px-5 text-destructive"
-                      onClick={() => cancel(o.orderId)}
+                      onClick={() => setConfirmId(o.orderId)}
                       disabled={cancelling === o.orderId}
                     >
                       {cancelling === o.orderId ? "Membatalkan…" : "Batalkan"}
@@ -152,6 +160,31 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
           ))}
         </ul>
       )}
+      <Dialog open={confirmId !== null} onOpenChange={(open) => !open && setConfirmId(null)}>
+        <DialogContent>
+          <DialogTitle>Batalkan pesanan?</DialogTitle>
+          <DialogDescription>Stok porsi akan dikembalikan ke katalog.</DialogDescription>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-11"
+              onClick={() => setConfirmId(null)}
+            >
+              Kembali
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              className="min-h-11"
+              disabled={confirmId === null || cancelling !== null}
+              onClick={() => confirmId && cancel(confirmId)}
+            >
+              Ya, batalkan
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

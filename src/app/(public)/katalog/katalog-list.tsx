@@ -4,6 +4,7 @@ import { ImageOff, LayoutGrid, List } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -36,7 +37,7 @@ export function KatalogList({
   const [locked, setLocked] = useState(dayTotal);
   const [items, setItems] = useState<CatalogPortion[]>(portions);
   const [visible, setVisible] = useState(BATCH);
-  const moreRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLOutputElement>(null);
 
   const filtered = useMemo(
     () => (tenant === "semua" ? items : items.filter((p) => p.tenantName === tenant)),
@@ -158,12 +159,15 @@ export function KatalogList({
           {successOrderId ? (
             <Link
               href={`/pesanan/${successOrderId}`}
-              className="font-semibold underline underline-offset-4"
+              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
             >
               Lihat QR pesanan
             </Link>
           ) : (
-            <Link href="/pesanan" className="font-semibold underline underline-offset-4">
+            <Link
+              href="/pesanan"
+              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+            >
               Lihat pesanan
             </Link>
           )}
@@ -224,15 +228,15 @@ export function KatalogList({
                       </s>
                       <strong className="text-base sm:text-lg">{formatIDR(p.discountPrice)}</strong>
                     </p>
-                    <button
+                    <Button
                       type="button"
                       disabled={ordering === p.id || soldOut || locked >= 2}
                       onClick={() => order(p.id)}
                       aria-label={`Pesan ${p.menuName}`}
-                      className="relative z-10 mt-2 inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+                      className="relative z-10 mt-2"
                     >
                       {ordering === p.id ? "Memesan…" : soldOut ? "Habis" : "Pesan"}
-                    </button>
+                    </Button>
                   </div>
                 </Reveal>
               </li>
@@ -293,15 +297,15 @@ export function KatalogList({
                       </s>
                       <strong className="text-base sm:text-lg">{formatIDR(p.discountPrice)}</strong>
                     </p>
-                    <button
+                    <Button
                       type="button"
                       disabled={ordering === p.id || soldOut || locked >= 2}
                       onClick={() => order(p.id)}
                       aria-label={`Pesan ${p.menuName}`}
-                      className="relative z-10 inline-flex h-11 flex-1 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 sm:flex-none"
+                      className="relative z-10 flex-1 sm:flex-none"
                     >
                       {ordering === p.id ? "Memesan…" : soldOut ? "Habis" : "Pesan"}
-                    </button>
+                    </Button>
                   </div>
                 </Reveal>
               </li>
@@ -310,9 +314,13 @@ export function KatalogList({
         </ul>
       )}
       {visible < filtered.length && (
-        <div ref={moreRef} className="flex justify-center py-6" aria-hidden="true">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-primary" />
-        </div>
+        <output ref={moreRef} className="flex justify-center py-6" aria-live="polite">
+          <span className="sr-only">Memuat porsi berikutnya…</span>
+          <div
+            className="h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-primary"
+            aria-hidden="true"
+          />
+        </output>
       )}
       {visible >= filtered.length && filtered.length > BATCH && (
         <p className="pb-4 text-center text-xs text-muted-foreground">

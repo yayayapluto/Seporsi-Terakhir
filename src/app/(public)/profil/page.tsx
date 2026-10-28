@@ -1,6 +1,7 @@
 import { Clock3, History, Leaf, PackageCheck, Store, UserRound, Wallet } from "lucide-react";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
+import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
@@ -137,7 +138,10 @@ export default async function ProfilPage() {
             className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
           >
             Gagal memuat data dampak. Angka di bawah mungkin tidak akurat.{" "}
-            <Link href="/profil" className="font-semibold underline underline-offset-4">
+            <Link
+              href="/profil"
+              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+            >
               Coba lagi
             </Link>
           </p>
@@ -178,18 +182,12 @@ export default async function ProfilPage() {
           Lihat QR pickup, batalkan pesanan aktif, atau cek riwayat lengkap.
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
-          <Link
-            href="/pesanan"
-            className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-          >
+          <Link href="/pesanan" className={buttonVariants()}>
             <History className="mr-2 size-4 shrink-0" aria-hidden />
             Lihat riwayat pesanan
           </Link>
           {!p.loadFailed && p.savedPortions === 0 && (
-            <Link
-              href="/katalog"
-              className="inline-flex h-11 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-muted"
-            >
+            <Link href="/katalog" className={buttonVariants({ variant: "outline" })}>
               Cari porsi sore ini
             </Link>
           )}

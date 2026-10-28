@@ -89,15 +89,29 @@ export function ImpactClient({
           <Label htmlFor="from" className="font-semibold">
             Dari
           </Label>
-          <Input id="from" name="from" type="date" defaultValue={from} max={defaultTo} />
+          <Input
+            id="from"
+            name="from"
+            type="date"
+            defaultValue={from}
+            max={defaultTo}
+            className="min-h-11"
+          />
         </div>
         <div className="flex flex-col gap-1">
           <Label htmlFor="to" className="font-semibold">
             Sampai
           </Label>
-          <Input id="to" name="to" type="date" defaultValue={to} max={defaultTo} />
+          <Input
+            id="to"
+            name="to"
+            type="date"
+            defaultValue={to}
+            max={defaultTo}
+            className="min-h-11"
+          />
         </div>
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" disabled={pending} className="min-h-11">
           {pending ? "Memuat…" : "Terapkan"}
         </Button>
       </form>
@@ -186,7 +200,7 @@ export function ImpactClient({
       <Button
         type="button"
         variant="outline"
-        className="w-fit"
+        className="w-fit min-h-11"
         onClick={downloadCsv}
         disabled={exporting}
       >

@@ -1,6 +1,8 @@
+import { cn } from "cn";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
@@ -19,7 +21,7 @@ interface TenantOrderRow {
   slotEnd: string | null;
 }
 
-async function loadOrders(): Promise<TenantOrderRow[]> {
+async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean }> {
   const tenant = await requireOwnTenant("/tenant/pesanan");
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -30,28 +32,31 @@ async function loadOrders(): Promise<TenantOrderRow[]> {
     .eq("portions.tenant_id", tenant.id)
     .order("created_at", { ascending: false })
     .limit(200);
-  if (error || !data) return [];
-  return data.map((o) => {
-    const portion = o.portions as unknown as {
-      menu_items: { name: string } | { name: string }[];
-    } | null;
-    const menu = Array.isArray(portion?.menu_items) ? portion.menu_items[0] : portion?.menu_items;
-    return {
-      id: o.id,
-      status: o.status as TenantOrderRow["status"],
-      quantity: o.quantity,
-      createdAt: o.created_at,
-      pickedUpAt: (o.picked_up_at as string | null) ?? null,
-      discountPrice: o.discount_price_snapshot,
-      menuName: menu?.name ?? "Menu",
-      slotStart: (o.slot_start as string | null) ?? null,
-      slotEnd: (o.slot_end as string | null) ?? null,
-    };
-  });
+  if (error || !data) return { orders: [], failed: true };
+  return {
+    orders: data.map((o) => {
+      const portion = o.portions as unknown as {
+        menu_items: { name: string } | { name: string }[];
+      } | null;
+      const menu = Array.isArray(portion?.menu_items) ? portion.menu_items[0] : portion?.menu_items;
+      return {
+        id: o.id,
+        status: o.status as TenantOrderRow["status"],
+        quantity: o.quantity,
+        createdAt: o.created_at,
+        pickedUpAt: (o.picked_up_at as string | null) ?? null,
+        discountPrice: o.discount_price_snapshot,
+        menuName: menu?.name ?? "Menu",
+        slotStart: (o.slot_start as string | null) ?? null,
+        slotEnd: (o.slot_end as string | null) ?? null,
+      };
+    }),
+    failed: false,
+  };
 }
 
 export default async function TenantPesananPage() {
-  const orders = await loadOrders();
+  const { orders, failed } = await loadOrders();
   const waiting = orders.filter((o) => o.status === "reserved");
   const done = orders.filter((o) => o.status !== "reserved");
 
@@ -76,10 +81,7 @@ export default async function TenantPesananPage() {
         <div className="flex shrink-0 items-center gap-3">
           <OrderStatusBadge status={o.status} />
           {o.status === "reserved" && (
-            <Link
-              href="/tenant/scan"
-              className="inline-flex h-10 items-center rounded-lg bg-primary px-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-            >
+            <Link href="/tenant/scan" className={cn(buttonVariants({ size: "sm" }), "min-h-11")}>
               Scan pickup
             </Link>
           )}
@@ -98,7 +100,17 @@ export default async function TenantPesananPage() {
         </p>
       </div>
 
-      {orders.length === 0 ? (
+      {failed ? (
+        <div
+          role="alert"
+          className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3"
+        >
+          <p className="font-bold text-destructive">Gagal memuat pesanan</p>
+          <p className="mt-1 text-sm text-destructive">
+            Koneksi bermasalah. Muat ulang halaman untuk mencoba lagi — jangan posting ulang porsi.
+          </p>
+        </div>
+      ) : orders.length === 0 ? (
         <EmptyState
           title="Belum ada pesanan"
           hint="Posting porsi dulu supaya mahasiswa bisa memesan."

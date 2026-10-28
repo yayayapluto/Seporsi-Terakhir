@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -95,7 +96,7 @@ export default async function OrderDetailPage({
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <Link
         href="/pesanan"
-        className="text-sm font-medium text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 w-fit items-center text-sm font-medium text-muted-foreground hover:text-foreground"
       >
         ← Semua pesanan
       </Link>
@@ -194,20 +195,14 @@ export default async function OrderDetailPage({
       <div className="flex flex-wrap items-center gap-3">
         {order.status === "reserved" && (
           <>
-            <Link
-              href="/katalog"
-              className="inline-flex h-11 items-center rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/80"
-            >
+            <Link href="/katalog" className={buttonVariants()}>
               Lihat katalog
             </Link>
             <CancelButton orderId={order.orderId} />
           </>
         )}
         {order.status !== "reserved" && (
-          <Link
-            href="/katalog"
-            className="inline-flex h-11 items-center rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/80"
-          >
+          <Link href="/katalog" className={buttonVariants()}>
             Lihat katalog
           </Link>
         )}

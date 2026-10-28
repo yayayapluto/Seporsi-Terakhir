@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { approveTenant } from "../actions";
 import type { PendingTenant } from "./page";
 
@@ -65,14 +66,14 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                   </p>
                 </div>
                 <div className="shrink-0">
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
                     onClick={() => setOpenId(open ? null : t.id)}
                     aria-expanded={open}
-                    className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-muted"
                   >
                     {open ? "Tutup" : "Tinjau"}
-                  </button>
+                  </Button>
                 </div>
               </div>
               {open && (
@@ -92,22 +93,17 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                     katalog. Tindakan ini berlaku langsung.
                   </p>
                   <div className="mt-3 flex gap-2">
-                    <button
-                      type="button"
-                      disabled={confirming}
-                      onClick={() => approve(t.id)}
-                      className="inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
-                    >
+                    <Button type="button" disabled={confirming} onClick={() => approve(t.id)}>
                       {confirming ? "Menyetujui…" : "Setujui tenant"}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      variant="outline"
                       onClick={() => setOpenId(null)}
                       disabled={confirming}
-                      className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-muted"
                     >
                       Batal
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}

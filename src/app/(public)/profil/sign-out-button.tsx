@@ -13,7 +13,7 @@ export function SignOutButton() {
     <Button
       type="button"
       variant="ghost"
-      className="text-muted-foreground"
+      className="min-h-11 text-muted-foreground"
       disabled={busy}
       onClick={async () => {
         setBusy(true);

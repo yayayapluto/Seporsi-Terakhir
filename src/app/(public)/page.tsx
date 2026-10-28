@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { buttonVariants } from "@/components/ui/button";
 import { ChalkRow, Pressable, Reveal } from "./reveal";
 
 const BOARD = [
@@ -122,7 +122,10 @@ export default function Home() {
             <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
               <Link
                 href="/katalog"
-                className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-6 py-3.5 font-semibold text-primary-foreground transition-colors hover:bg-primary/80 sm:w-auto md:w-full lg:w-auto"
+                className={buttonVariants({
+                  size: "lg",
+                  className: "w-full sm:w-auto md:w-full lg:w-auto",
+                })}
               >
                 Lihat Porsi Hari Ini
               </Link>
@@ -130,7 +133,11 @@ export default function Home() {
             <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
               <Link
                 href="/cara-kerja"
-                className="inline-flex w-full items-center justify-center rounded-lg border px-6 py-3.5 font-semibold transition-colors hover:bg-muted sm:w-auto md:w-full lg:w-auto"
+                className={buttonVariants({
+                  variant: "outline",
+                  size: "lg",
+                  className: "w-full sm:w-auto md:w-full lg:w-auto",
+                })}
               >
                 Lihat Cara Kerja
               </Link>
@@ -287,7 +294,10 @@ export default function Home() {
           <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
             <Link
               href="/masuk"
-              className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-6 py-3.5 font-semibold text-primary-foreground transition-colors hover:bg-primary/80 sm:w-auto md:w-full lg:w-auto"
+              className={buttonVariants({
+                size: "lg",
+                className: "w-full sm:w-auto md:w-full lg:w-auto",
+              })}
             >
               Masuk Sekarang
             </Link>
@@ -295,7 +305,11 @@ export default function Home() {
           <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
             <Link
               href="/tenant/pendaftaran"
-              className="inline-flex w-full items-center justify-center rounded-lg border px-6 py-3.5 font-semibold transition-colors hover:bg-muted sm:w-auto md:w-full lg:w-auto"
+              className={buttonVariants({
+                variant: "outline",
+                size: "lg",
+                className: "w-full sm:w-auto md:w-full lg:w-auto",
+              })}
             >
               Daftar sebagai Tenant
             </Link>
