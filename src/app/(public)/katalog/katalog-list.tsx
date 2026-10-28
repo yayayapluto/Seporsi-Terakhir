@@ -104,7 +104,7 @@ export function KatalogList({
       <div className="flex flex-wrap items-center gap-3 border-b pb-4">
         <Label className="text-sm font-semibold">Tenant</Label>
         <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
-          <SelectTrigger className="h-11 w-fit min-w-40">
+          <SelectTrigger className="h-11 w-fit min-w-32 max-w-[55vw] sm:min-w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent align="start" alignItemWithTrigger={false}>
@@ -116,10 +116,6 @@ export function KatalogList({
             ))}
           </SelectContent>
         </Select>
-        <output className="text-sm text-muted-foreground">{filtered.length} porsi tersedia</output>
-        <output className="text-sm font-semibold text-muted-foreground">
-          Porsi terkunci {Math.min(locked, 2)}/2 hari ini
-        </output>
         <fieldset className="ml-auto flex items-center gap-1">
           <legend className="sr-only">Pilihan tampilan</legend>
           <button
@@ -143,6 +139,10 @@ export function KatalogList({
             <span className="sr-only">Tampilan daftar</span>
           </button>
         </fieldset>
+        <p className="flex basis-full flex-wrap gap-x-3 text-xs text-muted-foreground sm:text-sm">
+          <output>{filtered.length} porsi tersedia</output>
+          <output className="font-semibold">Porsi terkunci {Math.min(locked, 2)}/2 hari ini</output>
+        </p>
       </div>
       {error && (
         <p
@@ -177,12 +177,12 @@ export function KatalogList({
           </p>
         </div>
       ) : view === "grid" ? (
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
           {shown.map((p) => {
             const soldOut = p.quantityRemaining <= 0;
             return (
               <li key={p.id}>
-                <Reveal className="flex h-full flex-col overflow-hidden rounded-xl border bg-card">
+                <Reveal className="group relative flex h-full flex-col overflow-hidden rounded-xl border bg-card">
                   <div className="relative block aspect-[4/3] w-full bg-muted">
                     {p.imageUrl ? (
                       <Image
@@ -200,7 +200,7 @@ export function KatalogList({
                     )}
                   </div>
                   <div className="flex flex-1 flex-col gap-1 p-3">
-                    <h2 className="font-bold leading-snug">
+                    <h2 className="break-words text-[15px] font-bold leading-snug sm:text-base">
                       <Link
                         href={`/katalog/${p.id}`}
                         className="underline-offset-4 hover:underline group-hover:underline after:absolute after:inset-0 after:content-['']"
@@ -208,7 +208,7 @@ export function KatalogList({
                         {p.menuName}
                       </Link>
                     </h2>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="truncate text-xs text-muted-foreground">
                       {p.tenantName}
                       {p.tenantLocation ? ` • ${p.tenantLocation}` : ""}
                     </p>
@@ -218,18 +218,18 @@ export function KatalogList({
                     <p className="text-xs font-semibold text-muted-foreground">
                       {soldOut ? "Sudah habis" : `Sisa ${p.quantityRemaining} porsi`}
                     </p>
-                    <p className="mt-1 text-sm">
-                      <s className="mr-1.5 text-xs text-muted-foreground">
+                    <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-sm">
+                      <s className="text-[11px] text-muted-foreground sm:text-xs">
                         {formatIDR(p.normalPrice)}
                       </s>
-                      <strong className="text-lg">{formatIDR(p.discountPrice)}</strong>
+                      <strong className="text-base sm:text-lg">{formatIDR(p.discountPrice)}</strong>
                     </p>
                     <button
                       type="button"
                       disabled={ordering === p.id || soldOut || locked >= 2}
                       onClick={() => order(p.id)}
                       aria-label={`Pesan ${p.menuName}`}
-                      className="relative z-10 mt-2 inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-50"
+                      className="relative z-10 mt-2 inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
                     >
                       {ordering === p.id ? "Memesan…" : soldOut ? "Habis" : "Pesan"}
                     </button>
@@ -245,56 +245,60 @@ export function KatalogList({
             const soldOut = p.quantityRemaining <= 0;
             return (
               <li key={p.id}>
-                <Reveal className="group relative flex gap-3 py-4">
-                  <div className="relative block size-20 shrink-0 overflow-hidden rounded-lg bg-muted">
-                    {p.imageUrl ? (
-                      <Image
-                        src={p.imageUrl}
-                        alt={p.menuName}
-                        fill
-                        sizes="80px"
-                        className="object-cover"
-                      />
-                    ) : (
-                      <span className="flex size-full flex-col items-center justify-center gap-0.5 text-muted-foreground">
-                        <ImageOff className="size-5" aria-hidden />
-                        <span className="px-1 text-center text-[10px] leading-tight">
-                          tidak ada gambar
+                <Reveal className="group relative flex flex-col gap-3 py-4 sm:flex-row">
+                  <div className="flex gap-3">
+                    <div className="relative block size-20 shrink-0 overflow-hidden rounded-lg bg-muted">
+                      {p.imageUrl ? (
+                        <Image
+                          src={p.imageUrl}
+                          alt={p.menuName}
+                          fill
+                          sizes="80px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <span className="flex size-full flex-col items-center justify-center gap-0.5 text-muted-foreground">
+                          <ImageOff className="size-5" aria-hidden />
+                          <span className="px-1 text-center text-[10px] leading-tight">
+                            tidak ada gambar
+                          </span>
                         </span>
-                      </span>
-                    )}
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h2 className="break-words text-[15px] font-bold leading-snug sm:text-base">
+                        <Link
+                          href={`/katalog/${p.id}`}
+                          className="underline-offset-4 hover:underline group-hover:underline after:absolute after:inset-0 after:content-['']"
+                        >
+                          {p.menuName}
+                        </Link>
+                      </h2>
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                        {p.tenantName}
+                        {p.tenantLocation ? ` • ${p.tenantLocation}` : ""}
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
+                      </p>
+                      <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+                        {soldOut ? "Sudah habis" : `Sisa ${p.quantityRemaining} porsi`}
+                      </p>
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h2 className="font-bold leading-snug">
-                      <Link
-                        href={`/katalog/${p.id}`}
-                        className="underline-offset-4 hover:underline group-hover:underline after:absolute after:inset-0 after:content-['']"
-                      >
-                        {p.menuName}
-                      </Link>
-                    </h2>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {p.tenantName}
-                      {p.tenantLocation ? ` • ${p.tenantLocation}` : ""} • Dimasak{" "}
-                      {formatDateTimeWIB(new Date(p.cookedAt))}
-                    </p>
-                    <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
-                      {soldOut ? "Sudah habis" : `Sisa ${p.quantityRemaining} porsi`}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 flex-col items-end justify-between gap-2">
-                    <p className="text-sm">
-                      <s className="mr-1.5 text-xs text-muted-foreground">
+                  <div className="flex shrink-0 flex-row items-center justify-between gap-2 sm:ml-auto sm:flex-col sm:items-end sm:justify-between">
+                    <p className="flex flex-wrap items-baseline gap-x-1.5 text-sm">
+                      <s className="text-[11px] text-muted-foreground sm:text-xs">
                         {formatIDR(p.normalPrice)}
                       </s>
-                      <strong className="text-lg">{formatIDR(p.discountPrice)}</strong>
+                      <strong className="text-base sm:text-lg">{formatIDR(p.discountPrice)}</strong>
                     </p>
                     <button
                       type="button"
                       disabled={ordering === p.id || soldOut || locked >= 2}
                       onClick={() => order(p.id)}
                       aria-label={`Pesan ${p.menuName}`}
-                      className="relative z-10 inline-flex h-11 items-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-50"
+                      className="relative z-10 inline-flex h-11 flex-1 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 sm:flex-none"
                     >
                       {ordering === p.id ? "Memesan…" : soldOut ? "Habis" : "Pesan"}
                     </button>
