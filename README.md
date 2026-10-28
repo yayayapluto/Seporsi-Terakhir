@@ -1,5 +1,7 @@
 # Porsi Terakhir
 
+![Deploy](https://github.com/yayayapluto/Seporsi-Terakhir/actions/workflows/deploy.yml/badge.svg?branch=main)
+
 Hyper-local campus food-rescue web app (MVP pilot): canteen tenants sell
 end-of-day leftover cooked food at a discount; students order, pick up with a
 QR, pay on the spot. Every scanned pickup is recorded as SDG 12 impact data.
