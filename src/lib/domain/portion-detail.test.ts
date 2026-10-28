@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { isMissingColumnError, shouldLogPortionLoadError } from "@/lib/domain/portion-detail";
+import {
+  attachMissingIngredientColumns,
+  isMissingColumnError,
+  shouldLogPortionLoadError,
+} from "@/lib/domain/portion-detail";
 
 describe("isMissingColumnError", () => {
   it("matches missing-column messages", () => {
@@ -22,5 +26,20 @@ describe("shouldLogPortionLoadError", () => {
 
   it("logs real errors", () => {
     expect(shouldLogPortionLoadError({ message: "connection failed" })).toBe(true);
+  });
+});
+
+describe("attachMissingIngredientColumns", () => {
+  it("fills ingredients + allergen_note null, keeps other fields", () => {
+    const row = { id: "p1", menu_items: { name: "Nasi", normal_price: 15000 } };
+    expect(attachMissingIngredientColumns(row)).toEqual({
+      id: "p1",
+      menu_items: {
+        name: "Nasi",
+        normal_price: 15000,
+        ingredients: null,
+        allergen_note: null,
+      },
+    });
   });
 });
