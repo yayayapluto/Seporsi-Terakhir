@@ -57,8 +57,20 @@ SUPABASE_SERVICE_ROLE_KEY=<key> bun run seed:auth Porsi123!
 
 Atau simpan permanen di `.env.local` (file ini git-ignored, aman):
 `SUPABASE_SERVICE_ROLE_KEY=<key>`, lalu cukup `bun run seed:auth Porsi123!`.
-
 9 akun (`src/lib/domain/seed-accounts.ts`): `admin@kampus.ac.id`,
 `warteg|kopi|padang|soto|pecel|geprek@kampus.ac.id`,
 `rafi|sinta@student.ac.id` — semua password = argumen di atas.
 JANGAN pakai service-role key / password seed di production.
+
+## 7. Data demo semua tabel (`bun run db:seed`)
+
+Setelah `seed:auth`, satu perintah isi tenants, 16 menu, 16 porsi segar,
+dan 3 order contoh (riwayat rafi + sinta):
+
+```bash
+bun run db:seed
+```
+
+Idempoten, aman diulang (menu upsert by nama, porsi baru hanya bila belum
+ada yg aktif, order contoh dicek duplikat). Sumber data tunggal:
+`src/lib/domain/seed-catalog.ts`.

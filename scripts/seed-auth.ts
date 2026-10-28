@@ -35,6 +35,8 @@ async function resolveId(email: string, fullName: string): Promise<string> {
     .single()
     .throwOnError();
   if (!prof || typeof prof.id !== "string") throw new Error(`profil tak ketemu: ${email}`);
+  const { error: pwErr } = await admin.auth.admin.updateUserById(prof.id, { password });
+  if (pwErr) throw pwErr;
   return prof.id;
 }
 

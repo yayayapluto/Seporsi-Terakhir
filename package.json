@@ -22,6 +22,7 @@
     "seed:auth": "bun scripts/seed-auth.ts",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
+    "db:seed": "bun scripts/seed-demo.ts",
     "db:types": "supabase gen types typescript --local > src/types/database.ts"
   },
   "dependencies": {
