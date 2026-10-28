@@ -1,5 +1,4 @@
 import { Clock3, History, Leaf, PackageCheck, Store, UserRound, Wallet } from "lucide-react";
-import { Clock3, History, Leaf, PackageCheck, Store, UserRound, Wallet } from "lucide-react";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { requireRole } from "@/lib/auth";
