@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "cn";
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { EmptyState } from "@/components/empty-state";
@@ -16,6 +17,7 @@ import {
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { cancelOrder } from "./actions";
 import type { MyOrder } from "./page";
+import { QrModal } from "./qr-modal";
 
 const FILTERS = [
   { value: "semua", label: "Semua" },
@@ -28,7 +30,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
   const [filter, setFilter] = useState<string>("semua");
   const [error, setError] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   const filtered = useMemo(
     () => (filter === "semua" ? orders : orders.filter((o) => o.status === filter)),
@@ -126,14 +128,10 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                   {formatIDR(o.discountPriceSnapshot * o.quantity)}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {o.status === "reserved" && (
-                    <Link href={`/pesanan/${o.orderId}`} className={buttonVariants()}>
-                      Lihat QR pickup
-                    </Link>
-                  )}
+                  {o.status === "reserved" && <QrModal order={o} />}
                   <Link
                     href={`/pesanan/${o.orderId}`}
-                    className={buttonVariants({ variant: "outline" })}
+                    className={cn(buttonVariants({ variant: "outline" }), "h-11 px-5")}
                   >
                     Detail
                   </Link>
@@ -141,9 +139,9 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                     <Button
                       type="button"
                       variant="outline"
-                      className="text-destructive"
+                      className="h-11 px-5 text-destructive"
                       onClick={() => cancel(o.orderId)}
-                      disabled={cancelling !== null || pending}
+                      disabled={cancelling === o.orderId}
                     >
                       {cancelling === o.orderId ? "Membatalkan…" : "Batalkan"}
                     </Button>

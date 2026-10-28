@@ -31,3 +31,27 @@ export async function cancelOrder(
   revalidatePath("/pesanan");
   return { ok: true };
 }
+
+/**
+ * Token QR satu pesanan untuk modal di list. RLS orders_read membatasi ke
+ * row milik sendiri; token tak pernah masuk payload list (QR-value only).
+ */
+export async function getPickupToken(
+  orderId: string,
+): Promise<{ ok: true; token: string } | { ok: false }> {
+  const parsed = CancelSchema.safeParse({ orderId });
+  if (!parsed.success) return { ok: false };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false };
+  const { data } = await supabase
+    .from("orders")
+    .select("pickup_token")
+    .eq("id", parsed.data.orderId)
+    .single();
+  const token = data?.pickup_token as string | undefined;
+  if (!token) return { ok: false };
+  return { ok: true, token };
+}
