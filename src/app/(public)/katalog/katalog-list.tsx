@@ -183,11 +183,7 @@ export function KatalogList({
             return (
               <li key={p.id}>
                 <Reveal className="flex h-full flex-col overflow-hidden rounded-xl border bg-card">
-                  <Link
-                    href={`/katalog/${p.id}`}
-                    className="relative block aspect-[4/3] w-full bg-muted"
-                    aria-label={`Detail ${p.menuName}`}
-                  >
+                  <div className="relative block aspect-[4/3] w-full bg-muted">
                     {p.imageUrl ? (
                       <Image
                         src={p.imageUrl}
@@ -202,12 +198,12 @@ export function KatalogList({
                         <span className="text-xs">tidak ada gambar</span>
                       </span>
                     )}
-                  </Link>
+                  </div>
                   <div className="flex flex-1 flex-col gap-1 p-3">
                     <h2 className="font-bold leading-snug">
                       <Link
                         href={`/katalog/${p.id}`}
-                        className="underline-offset-4 hover:underline"
+                        className="underline-offset-4 hover:underline group-hover:underline after:absolute after:inset-0 after:content-['']"
                       >
                         {p.menuName}
                       </Link>
@@ -232,16 +228,11 @@ export function KatalogList({
                       type="button"
                       disabled={ordering === p.id || soldOut || locked >= 2}
                       onClick={() => order(p.id)}
-                      className="mt-2 inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-50"
+                      aria-label={`Pesan ${p.menuName}`}
+                      className="relative z-10 mt-2 inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-50"
                     >
                       {ordering === p.id ? "Memesan…" : soldOut ? "Habis" : "Pesan"}
                     </button>
-                    <Link
-                      href={`/katalog/${p.id}`}
-                      className="inline-flex h-11 items-center justify-center rounded-md border px-5 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    >
-                      Detail
-                    </Link>
                   </div>
                 </Reveal>
               </li>
@@ -254,12 +245,8 @@ export function KatalogList({
             const soldOut = p.quantityRemaining <= 0;
             return (
               <li key={p.id}>
-                <Reveal className="flex gap-3 py-4">
-                  <Link
-                    href={`/katalog/${p.id}`}
-                    className="relative block size-20 shrink-0 overflow-hidden rounded-lg bg-muted"
-                    aria-label={`Detail ${p.menuName}`}
-                  >
+                <Reveal className="group relative flex gap-3 py-4">
+                  <div className="relative block size-20 shrink-0 overflow-hidden rounded-lg bg-muted">
                     {p.imageUrl ? (
                       <Image
                         src={p.imageUrl}
@@ -276,12 +263,12 @@ export function KatalogList({
                         </span>
                       </span>
                     )}
-                  </Link>
+                  </div>
                   <div className="min-w-0 flex-1">
                     <h2 className="font-bold leading-snug">
                       <Link
                         href={`/katalog/${p.id}`}
-                        className="underline-offset-4 hover:underline"
+                        className="underline-offset-4 hover:underline group-hover:underline after:absolute after:inset-0 after:content-['']"
                       >
                         {p.menuName}
                       </Link>
@@ -302,22 +289,15 @@ export function KatalogList({
                       </s>
                       <strong className="text-lg">{formatIDR(p.discountPrice)}</strong>
                     </p>
-                    <div className="flex gap-2">
-                      <Link
-                        href={`/katalog/${p.id}`}
-                        className="inline-flex h-11 items-center rounded-md border px-4 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                      >
-                        Detail
-                      </Link>
-                      <button
-                        type="button"
-                        disabled={ordering === p.id || soldOut || locked >= 2}
-                        onClick={() => order(p.id)}
-                        className="inline-flex h-11 items-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-50"
-                      >
-                        {ordering === p.id ? "Memesan…" : soldOut ? "Habis" : "Pesan"}
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      disabled={ordering === p.id || soldOut || locked >= 2}
+                      onClick={() => order(p.id)}
+                      aria-label={`Pesan ${p.menuName}`}
+                      className="relative z-10 inline-flex h-11 items-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-50"
+                    >
+                      {ordering === p.id ? "Memesan…" : soldOut ? "Habis" : "Pesan"}
+                    </button>
                   </div>
                 </Reveal>
               </li>

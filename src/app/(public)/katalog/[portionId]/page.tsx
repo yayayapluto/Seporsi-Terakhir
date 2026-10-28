@@ -1,3 +1,4 @@
+import { ArrowLeft, ImageOff } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
@@ -87,8 +88,8 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
 
 function Info({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex gap-3 py-2">
-      <dt className="w-40 shrink-0 text-sm text-muted-foreground">{label}</dt>
+    <div className="flex flex-col gap-0.5 py-2 sm:flex-row sm:gap-3">
+      <dt className="shrink-0 text-sm text-muted-foreground sm:w-40">{label}</dt>
       <dd className="min-w-0 text-sm font-medium">{children}</dd>
     </div>
   );
@@ -116,61 +117,70 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
   }
 
   const remaining = portion.quantityRemaining;
-  const pct =
-    portion.quantityPosted > 0
-      ? Math.max(0, Math.min(100, Math.round((remaining / portion.quantityPosted) * 100)))
-      : 0;
   const low = remaining > 0 && remaining < 3;
 
   return (
-    <>
-      <div className="flex flex-col gap-1 border-b pb-6">
-        <div className="flex items-baseline gap-3">
+    <div className="mx-auto flex w-full max-w-md flex-col">
+      <div
+        className="flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-xl bg-muted text-muted-foreground"
+        role="img"
+        aria-label={`Foto ${portion.menuName} belum tersedia`}
+      >
+        <ImageOff className="size-8" aria-hidden />
+        <span className="text-sm">tidak ada gambar</span>
+      </div>
+      <div className="mt-5 flex flex-col items-center gap-1 border-b pb-6 text-center">
+        <div className="flex flex-wrap items-baseline justify-center gap-3">
           <p className="text-3xl font-bold">{formatIDR(portion.discountPrice)}</p>
           <s className="text-sm text-muted-foreground">{formatIDR(portion.normalPrice)}</s>
           <span className="text-sm font-semibold text-primary">
             Hemat {formatIDR(portion.normalPrice - portion.discountPrice)}
           </span>
         </div>
-        <div className="mt-2 flex flex-wrap items-center gap-3">
-          <span className="text-sm font-semibold">
-            Sisa {remaining} porsi
-            {low && <span className="ml-2 text-[#DE7819]">hampir habis</span>}
-          </span>
-          <div
-            className="h-2 w-40 overflow-hidden rounded-full bg-[#EAF4EC]"
-            role="img"
-            aria-label={`Sisa ${remaining} dari ${portion.quantityPosted} porsi`}
+        <p className="mt-2">
+          <span
+            className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${low ? "bg-[#F28C28]/10 text-[#DE7819]" : "bg-primary/10 text-primary"}`}
           >
-            <div
-              className={`h-full rounded-full ${low ? "bg-[#F28C28]" : "bg-[#2E7D4F]"}`}
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-        </div>
+            Sisa {remaining} porsi{low ? " · hampir habis" : ""}
+          </span>
+        </p>
       </div>
-
       <dl className="divide-y divide-border border-b">
         <Info label="Dimasak">{formatDateTimeWIB(new Date(portion.cookedAt))} WIB</Info>
         <Info label="Bisa diambil sampai">
           {formatDateTimeWIB(new Date(portion.expiresAt))} WIB
         </Info>
-        <Info label="Bahan">
-          {portion.ingredients ?? <span className="font-normal">Belum dicantumkan tenant</span>}
-        </Info>
-        <Info label="Alergen">
-          {portion.allergenNote ?? <span className="font-normal">Belum dicantumkan tenant</span>}
-        </Info>
+        {portion.ingredients == null && portion.allergenNote == null ? (
+          <Info label="Bahan & alergen">
+            <span className="font-normal text-muted-foreground">
+              Belum dicantumkan tenant — tanya tenant saat ambil bila ada alergi.
+            </span>
+          </Info>
+        ) : (
+          <>
+            <Info label="Bahan">
+              {portion.ingredients ?? (
+                <span className="font-normal text-muted-foreground">Belum dicantumkan tenant</span>
+              )}
+            </Info>
+            <Info label="Alergen">
+              {portion.allergenNote ?? (
+                <span className="font-normal text-muted-foreground">Belum dicantumkan tenant</span>
+              )}
+            </Info>
+          </>
+        )}
       </dl>
-
-      <div className="border-b pb-8 pt-6">
+      <div className="mt-6 rounded-xl border bg-card p-5">
         <OrderForm
           portionId={portion.id}
           discountPrice={portion.discountPrice}
           quantityRemaining={remaining}
+          releaseAt={portion.releaseAt}
+          expiresAt={portion.expiresAt}
         />
       </div>
-    </>
+    </div>
   );
 }
 
@@ -183,8 +193,15 @@ export default async function PortionDetailPage({
   if (!PortionId.safeParse(portionId).success) notFound();
   const portion = await loadPortion(portionId);
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
+    <div className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <Link
+          href="/katalog"
+          className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" aria-hidden />
+          Katalog
+        </Link>
         <p className="text-xs font-bold tracking-widest text-primary">KATALOG PORSI TERAKHIR</p>
         {portion ? (
           <>
