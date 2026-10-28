@@ -47,3 +47,10 @@ next-env.d.ts
 .wrangler
 .dev.vars*
 !.dev.vars.example
+
+# local agent/tooling (env-specific, reinstallable)
+.claude/
+.agents/
+.omp/
+.pi/
+.impeccable/
