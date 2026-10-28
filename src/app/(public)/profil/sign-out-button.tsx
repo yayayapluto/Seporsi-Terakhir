@@ -12,8 +12,8 @@ export function SignOutButton() {
   return (
     <Button
       type="button"
-      variant="outline"
-      className="text-destructive"
+      variant="ghost"
+      className="text-muted-foreground"
       disabled={busy}
       onClick={async () => {
         setBusy(true);
