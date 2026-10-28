@@ -11,19 +11,19 @@ async function MasukContent({
   return (
     <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-10">
       <div className="flex flex-col gap-2 border-b-2 border-foreground pb-6 text-center">
-        <h1 className="text-2xl font-extrabold tracking-tight">
-          Masuk ke akun mahasiswa, tenant, admin
-        </h1>
+        <h1 className="text-2xl font-extrabold tracking-tight">Masuk</h1>
         <p className="text-sm text-muted-foreground">
-          Satu akun untuk mahasiswa, tenant, dan admin. Pilih caramu masuk.
+          Tanpa kata sandi. Masukkan email, ketuk tautannya.
         </p>
       </div>
-      {error === "oauth" && (
+      {(error === "oauth" || error === "magic-link") && (
         <p
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive"
         >
-          Login Google gagal. Silakan coba lagi.
+          {error === "oauth"
+            ? "Login Google gagal. Silakan coba lagi."
+            : "Tautan tidak valid atau kedaluwarsa. Minta tautan baru di bawah."}
         </p>
       )}
       <EmailSignIn next={next} />

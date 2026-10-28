@@ -1,132 +1,172 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { CircleAlert, MailCheck } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { resolveNext } from "@/lib/auth/redirect";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { isSafeNext } from "@/lib/auth/redirect";
 import { createClient } from "@/lib/supabase/client";
 
 const schema = z.object({
   email: z.string().email("Email tidak valid."),
-  password: z.string().min(6, "Kata sandi minimal 6 karakter."),
-  confirm: z.string().optional(),
 });
 
 type Values = z.infer<typeof schema>;
 
+const RESEND_COOLDOWN_S = 30;
+
+function SentState({
+  email,
+  onChangeEmail,
+  sendLink,
+}: {
+  email: string;
+  onChangeEmail: () => void;
+  sendLink: (email: string) => Promise<void>;
+}) {
+  const [resendError, setResendError] = useState<string | null>(null);
+  const [resent, setResent] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  async function handleResend() {
+    if (sending || cooldown > 0) return;
+    setResendError(null);
+    setResent(false);
+    setSending(true);
+    try {
+      await sendLink(email);
+      setResent(true);
+      setCooldown(RESEND_COOLDOWN_S);
+    } catch (err) {
+      setResendError(err instanceof Error ? err.message : "Gagal mengirim ulang. Coba lagi.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="flex items-start gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
+        <MailCheck className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+        <span>
+          Tautan masuk terkirim ke <strong>{email}</strong>. Buka email lalu ketuk tautannya.
+        </span>
+      </p>
+      {resent && (
+        <output className="text-sm font-medium text-primary">Tautan baru terkirim.</output>
+      )}
+      {resendError && (
+        <p role="alert" className="flex items-start gap-1.5 text-sm font-medium text-destructive">
+          <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
+          {resendError}
+        </p>
+      )}
+      <Button
+        type="button"
+        disabled={sending || cooldown > 0}
+        className="min-h-11 w-full"
+        onClick={handleResend}
+      >
+        {sending ? "Mengirim…" : cooldown > 0 ? `Kirim ulang (${cooldown}d)` : "Kirim ulang"}
+      </Button>
+      <Button type="button" variant="outline" className="min-h-11 w-full" onClick={onChangeEmail}>
+        Ganti email
+      </Button>
+    </div>
+  );
+}
 export function EmailSignIn({ next }: { next?: string }) {
-  const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
-  const [mode, setMode] = useState<"in" | "up">("in");
-  const [show, setShow] = useState(false);
+  const [sentTo, setSentTo] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<Values>({ resolver: zodResolver(schema) });
 
+  async function sendLink(email: string) {
+    const supabase = createClient();
+    const callback = `${window.location.origin}/auth/callback`;
+    const redirectTo = isSafeNext(next) ? `${callback}?next=${encodeURIComponent(next)}` : callback;
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: redirectTo },
+    });
+    if (error) {
+      throw new Error(
+        /rate|security|too many/i.test(error.message)
+          ? "Terlalu sering. Tunggu sebentar lalu coba lagi."
+          : "Gagal mengirim tautan. Coba lagi.",
+      );
+    }
+  }
+
   async function onSubmit(values: Values) {
     setFormError(null);
-    if (mode === "up" && values.password !== (values.confirm ?? "")) {
-      setFormError("Konfirmasi kata sandi tidak cocok.");
-      return;
+    try {
+      await sendLink(values.email);
+      setSentTo(values.email);
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "Gagal mengirim tautan. Coba lagi.");
     }
-    const supabase = createClient();
-    const { error } =
-      mode === "in"
-        ? await supabase.auth.signInWithPassword(values)
-        : await supabase.auth.signUp({ email: values.email, password: values.password });
-    if (error) {
-      console.error("[masuk] sign-in gagal:", error.message);
-      setFormError(
-        error.message === "Invalid login credentials"
-          ? "Email atau kata sandi salah."
-          : `Gagal (${error.message}). Coba lagi.`,
-      );
-      return;
-    }
-    router.push(resolveNext(next, "/"));
-    router.refresh();
   }
+
+  if (sentTo) {
+    return <SentState email={sentTo} onChangeEmail={() => setSentTo(null)} sendLink={sendLink} />;
+  }
+
+  const emailError = errors.email?.message;
+  const describedBy = emailError ? "email-error" : formError ? "email-form-error" : undefined;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
-      <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm font-medium">
-          Email
-        </label>
-        <input
+      <div className="flex min-w-0 flex-col gap-1">
+        <Label htmlFor="email">Email</Label>
+        <Input
           id="email"
           type="email"
           autoComplete="email"
+          inputMode="email"
+          aria-invalid={emailError ? true : undefined}
+          aria-describedby={describedBy}
           {...register("email")}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
+          className="min-h-11"
         />
-        {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-      </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="password" className="text-sm font-medium">
-          Kata sandi
-        </label>
-        <div className="relative">
-          <input
-            id="password"
-            type={show ? "text" : "password"}
-            autoComplete={mode === "in" ? "current-password" : "new-password"}
-            {...register("password")}
-            className="h-11 w-full rounded-lg border bg-card px-3 pr-11 text-sm"
-          />
-          <button
-            type="button"
-            onClick={() => setShow(!show)}
-            aria-label={show ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
-            aria-pressed={show}
-            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-muted-foreground hover:text-foreground"
+        {emailError && (
+          <p
+            id="email-error"
+            role="alert"
+            className="flex items-start gap-1.5 text-sm font-medium text-destructive"
           >
-            {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-          </button>
-        </div>
-        {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+            <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
+            {emailError}
+          </p>
+        )}
       </div>
-      {mode === "up" && (
-        <div className="flex flex-col gap-1">
-          <label htmlFor="confirm" className="text-sm font-medium">
-            Konfirmasi kata sandi
-          </label>
-          <input
-            id="confirm"
-            type={show ? "text" : "password"}
-            autoComplete="new-password"
-            {...register("confirm")}
-            className="h-11 w-full rounded-lg border bg-card px-3 text-sm"
-          />
-        </div>
-      )}
       {formError && (
-        <p role="alert" className="text-sm text-destructive">
+        <p
+          id="email-form-error"
+          role="alert"
+          className="flex items-start gap-1.5 text-sm font-medium text-destructive"
+        >
+          <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
           {formError}
         </p>
       )}
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="h-11 rounded-lg bg-primary px-4 font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-70"
-      >
-        {isSubmitting ? "Memproses…" : mode === "in" ? "Masuk dengan Email" : "Daftar dengan Email"}
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          setMode(mode === "in" ? "up" : "in");
-          setFormError(null);
-        }}
-        className="text-center text-sm text-muted-foreground underline-offset-4 hover:underline"
-      >
-        {mode === "in" ? "Belum punya akun? Daftar" : "Sudah punya akun? Masuk"}
-      </button>
+      <Button type="submit" disabled={isSubmitting} className="min-h-11 w-full">
+        {isSubmitting ? "Mengirim…" : "Kirim tautan masuk"}
+      </Button>
     </form>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "./guard";
@@ -136,10 +137,7 @@ export default async function TenantDashboardPage() {
           <h2 id="porsi-heading" className="text-lg font-bold">
             Porsi aktif
           </h2>
-          <Link
-            href="/tenant/porsi/baru"
-            className="inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-          >
+          <Link href="/tenant/porsi/baru" className={buttonVariants()}>
             + Tambah porsi
           </Link>
         </div>
@@ -179,7 +177,7 @@ export default async function TenantDashboardPage() {
                     )}
                     <Link
                       href={`/tenant/porsi/${p.id}/edit`}
-                      className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-[#F3EFE6]"
+                      className={buttonVariants({ variant: "outline" })}
                     >
                       Edit
                     </Link>
@@ -215,10 +213,7 @@ export default async function TenantDashboardPage() {
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
                   <OrderStatusBadge status="reserved" />
-                  <Link
-                    href="/tenant/scan"
-                    className="inline-flex h-10 items-center rounded-lg bg-primary px-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-                  >
+                  <Link href="/tenant/scan" className={buttonVariants()}>
                     Scan pickup
                   </Link>
                 </div>
@@ -239,10 +234,7 @@ export default async function TenantDashboardPage() {
 
 function ShortcutLink({ href, label }: { href: string; label: string }) {
   return (
-    <Link
-      href={href}
-      className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-[#F3EFE6]"
-    >
+    <Link href={href} className={buttonVariants({ variant: "outline" })}>
       {label}
     </Link>
   );

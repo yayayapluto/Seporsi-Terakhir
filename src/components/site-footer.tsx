@@ -17,7 +17,7 @@ export function SiteFooter() {
             terjangkau mahasiswa, nol sisa mubazir.
           </p>
           <p className="text-xs font-semibold text-primary">
-            Pilot Inisiatif SDG 12: Konsumsi & Produksi Bertanggung Jawab
+            Inisiatif kampus SDG 12: Konsumsi & Produksi Bertanggung Jawab
           </p>
         </div>
         <nav className="flex flex-col gap-2 text-sm" aria-label="Eksplorasi">

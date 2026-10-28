@@ -2,6 +2,9 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { percentSold } from "@/lib/domain/metrics";
 import { formatIDR } from "@/lib/format";
 import { exportCsv } from "./actions";
@@ -83,38 +86,20 @@ export function ImpactClient({
         }}
       >
         <div className="flex flex-col gap-1">
-          <label htmlFor="from" className="text-sm font-semibold">
+          <Label htmlFor="from" className="font-semibold">
             Dari
-          </label>
-          <input
-            id="from"
-            name="from"
-            type="date"
-            defaultValue={from}
-            max={defaultTo}
-            className="h-11 rounded-md border bg-card px-3 text-sm"
-          />
+          </Label>
+          <Input id="from" name="from" type="date" defaultValue={from} max={defaultTo} />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="to" className="text-sm font-semibold">
+          <Label htmlFor="to" className="font-semibold">
             Sampai
-          </label>
-          <input
-            id="to"
-            name="to"
-            type="date"
-            defaultValue={to}
-            max={defaultTo}
-            className="h-11 rounded-md border bg-card px-3 text-sm"
-          />
+          </Label>
+          <Input id="to" name="to" type="date" defaultValue={to} max={defaultTo} />
         </div>
-        <button
-          type="submit"
-          disabled={pending}
-          className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-60"
-        >
+        <Button type="submit" disabled={pending}>
           {pending ? "Memuat…" : "Terapkan"}
-        </button>
+        </Button>
       </form>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -198,14 +183,15 @@ export function ImpactClient({
         </div>
       )}
 
-      <button
+      <Button
         type="button"
+        variant="outline"
+        className="w-fit"
         onClick={downloadCsv}
         disabled={exporting}
-        className="inline-flex h-11 w-fit items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-[#F3EFE6] disabled:opacity-60"
       >
         {exporting ? "Menyiapkan…" : "Unduh CSV"}
-      </button>
+      </Button>
     </div>
   );
 }

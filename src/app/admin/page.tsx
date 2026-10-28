@@ -81,7 +81,7 @@ export default async function AdminPage({
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <div className="flex flex-col gap-2">
         <p className="text-xs font-bold tracking-widest text-primary">DASBOR DAMPAK</p>
-        <h1 className="text-3xl font-bold">Dampak pilot</h1>
+        <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>
         <p className="text-muted-foreground">
           Halo {user.user.email ?? "Admin"}. Angka dari pickup yang discan — bukan estimasi. Berat =
           estimasi sampling per menu.

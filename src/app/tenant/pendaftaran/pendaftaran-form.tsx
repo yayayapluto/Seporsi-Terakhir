@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 
 const schema = z.object({
@@ -54,29 +57,27 @@ export function PendaftaranForm() {
         </p>
       )}
       <div className="flex flex-col gap-1">
-        <label htmlFor="tenant-name" className="text-sm font-semibold">
+        <Label htmlFor="tenant-name" className="font-semibold">
           Nama tenant <span aria-hidden="true">*</span>
-        </label>
-        <input
+        </Label>
+        <Input
           id="tenant-name"
           type="text"
           autoComplete="organization"
           required
           {...register("name")}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
         />
         {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="tenant-location" className="text-sm font-semibold">
+        <Label htmlFor="tenant-location" className="font-semibold">
           Catatan lokasi <span className="font-normal text-muted-foreground">(opsional)</span>
-        </label>
-        <input
+        </Label>
+        <Input
           id="tenant-location"
           type="text"
           placeholder="Misal: dekat gerbang utama, Kantin FEB lantai 2"
           {...register("locationNote")}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
         />
         {errors.locationNote && (
           <p className="text-sm text-destructive">{errors.locationNote.message}</p>
@@ -85,13 +86,9 @@ export function PendaftaranForm() {
           Membantu mahasiswa menemukan titik pickup-mu.
         </p>
       </div>
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-70"
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Mendaftarkan…" : "Kirim pendaftaran"}
-      </button>
+      </Button>
       <p className="text-xs text-muted-foreground">
         Setelah disetujui admin, kamu bisa mengunggah porsi sisa dan mengelola menu.
       </p>

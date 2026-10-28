@@ -1,5 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { ChalkRow, Pressable, Reveal } from "./reveal";
 
 const BOARD = [
   {
@@ -111,18 +118,22 @@ export default function Home() {
             yang butuh makan murah.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Link
-              href="/katalog"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-            >
-              Lihat Porsi Hari Ini
-            </Link>
-            <Link
-              href="/cara-kerja"
-              className="inline-flex items-center justify-center rounded-md border px-6 py-3 font-semibold transition-colors hover:bg-muted"
-            >
-              Lihat Cara Kerja
-            </Link>
+            <Pressable>
+              <Link
+                href="/katalog"
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
+              >
+                Lihat Porsi Hari Ini
+              </Link>
+            </Pressable>
+            <Pressable>
+              <Link
+                href="/cara-kerja"
+                className="inline-flex items-center justify-center rounded-lg border px-6 py-3 font-semibold transition-colors hover:bg-muted"
+              >
+                Lihat Cara Kerja
+              </Link>
+            </Pressable>
           </div>
           <p className="text-xs text-muted-foreground">
             Bayar di tempat • Jam masak tertera • Maks 2 porsi/hari
@@ -152,8 +163,12 @@ export default function Home() {
               <span>Pickup 16.30–18.00</span>
             </div>
             <ul className="divide-y divide-border">
-              {BOARD.map((item) => (
-                <li key={item.name} className="flex items-baseline justify-between gap-4 py-3">
+              {BOARD.map((item, i) => (
+                <ChalkRow
+                  key={item.name}
+                  className="flex items-baseline justify-between gap-4 py-3"
+                  delay={i * 0.09}
+                >
                   <div>
                     <h2 className="font-bold leading-snug">{item.name}</h2>
                     <p className="mt-0.5 text-xs text-muted-foreground">
@@ -164,7 +179,7 @@ export default function Home() {
                     <s className="mr-1.5 text-xs text-muted-foreground">{item.normal}</s>
                     <strong className="text-base">{item.price}</strong>
                   </p>
-                </li>
+                </ChalkRow>
               ))}
             </ul>
             <p className="border-b py-2 text-[11px] text-muted-foreground">
@@ -175,7 +190,7 @@ export default function Home() {
       </section>
 
       {/* MASALAH */}
-      <section className="flex flex-col gap-2 py-10">
+      <Reveal className="flex flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">MASALAH</p>
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Satu masalah, dua pihak butuh.
@@ -188,10 +203,10 @@ export default function Home() {
             </li>
           ))}
         </ul>
-      </section>
+      </Reveal>
 
       {/* CARA KERJA */}
-      <section className="flex flex-col gap-2 py-10">
+      <Reveal className="flex flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">CARA KERJA</p>
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Dari katalog sampai makan, 4 langkah.
@@ -215,10 +230,10 @@ export default function Home() {
         <p className="text-sm text-muted-foreground">
           Tanpa perantara dana: kamu membayar langsung ke tenant saat pickup.
         </p>
-      </section>
+      </Reveal>
 
       {/* KEAMANAN */}
-      <section id="keamanan" className="flex flex-col gap-2 py-10">
+      <Reveal id="keamanan" className="flex flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">KEAMANAN PANGAN</p>
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Aturan jelas supaya tetap aman.
@@ -238,28 +253,28 @@ export default function Home() {
           </Link>
           .
         </p>
-      </section>
+      </Reveal>
 
       {/* FAQ */}
-      <section id="faq" className="mx-auto flex w-full max-w-3xl flex-col gap-2 py-10">
+      <Reveal id="faq" className="mx-auto flex w-full max-w-3xl flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">TANYA JAWAB</p>
         <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
           Pertanyaan yang sering ditanyakan.
         </h2>
-        <div className="border-b">
+        <Accordion>
           {FAQS.map((f) => (
-            <details key={f.q} className="group border-t">
-              <summary className="cursor-pointer py-4 font-semibold marker:text-primary">
-                {f.q}
-              </summary>
-              <p className="pb-4 text-sm text-muted-foreground">{f.a}</p>
-            </details>
+            <AccordionItem key={f.q} className="border-t first:border-t-0">
+              <AccordionTrigger className="py-4 font-semibold">{f.q}</AccordionTrigger>
+              <AccordionContent>
+                <p className="pb-4 text-sm text-muted-foreground">{f.a}</p>
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
-      </section>
+        </Accordion>
+      </Reveal>
 
       {/* CTA */}
-      <section className="mb-12 flex flex-col items-center gap-4 border-t-2 border-foreground px-6 py-12 text-center">
+      <Reveal className="mb-12 flex flex-col items-center gap-4 border-t-2 border-foreground px-6 py-12 text-center">
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Jangan biarkan porsi terakhir terbuang.
         </h2>
@@ -268,21 +283,25 @@ export default function Home() {
           hemat.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link
-            href="/masuk"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-          >
-            Masuk Sekarang
-          </Link>
-          <Link
-            href="/tenant/pendaftaran"
-            className="inline-flex items-center justify-center rounded-md border px-6 py-3 font-semibold transition-colors hover:bg-muted"
-          >
-            Daftar sebagai Tenant
-          </Link>
+          <Pressable>
+            <Link
+              href="/masuk"
+              className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
+            >
+              Masuk Sekarang
+            </Link>
+          </Pressable>
+          <Pressable>
+            <Link
+              href="/tenant/pendaftaran"
+              className="inline-flex items-center justify-center rounded-lg border px-6 py-3 font-semibold transition-colors hover:bg-muted"
+            >
+              Daftar sebagai Tenant
+            </Link>
+          </Pressable>
         </div>
-        <p className="text-xs text-muted-foreground">Pilot SDG 12 di lingkungan kampus</p>
-      </section>
+        <p className="text-xs text-muted-foreground">Tahap awal SDG 12 di lingkungan kampus</p>
+      </Reveal>
     </div>
   );
 }
