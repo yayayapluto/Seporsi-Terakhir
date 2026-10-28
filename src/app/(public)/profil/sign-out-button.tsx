@@ -17,9 +17,13 @@ export function SignOutButton() {
       disabled={busy}
       onClick={async () => {
         setBusy(true);
-        await createClient().auth.signOut();
-        router.push("/");
-        router.refresh();
+        try {
+          await fetch("/auth/sign-out", { method: "POST" });
+          await createClient().auth.signOut();
+        } finally {
+          router.push("/");
+          router.refresh();
+        }
       }}
     >
       {busy ? (
