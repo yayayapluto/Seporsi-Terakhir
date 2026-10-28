@@ -5,3 +5,10 @@
   scope: auth/seed
   summary: akun seed tak bisa login email+password, Google OK
   file: specs/bugs/BUG-2026-10-28T120000-seed-email-login.md
+- bug_id: BUG-2026-10-28T122802
+  date: 2026-10-28
+  severity: high
+  priority: high
+  scope: auth/seed
+  summary: 8 email seed 500 di semua jalur Auth (state korup server-side), sinta OK
+  file: specs/bugs/BUG-2026-10-28T122802-seed-auth-500.md
