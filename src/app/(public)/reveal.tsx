@@ -27,6 +27,21 @@ export function Reveal({
   );
 }
 
+// Wrapper tekan: CTA <Link> tetap server-side, efek press di span luar.
+export function Pressable({ children, className }: { children: ReactNode; className?: string }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.span
+      className={className}
+      whileHover={reduce ? undefined : { scale: 1.02 }}
+      whileTap={reduce ? undefined : { scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 400, damping: 22 }}
+    >
+      {children}
+    </motion.span>
+  );
+}
+
 // Baris papan tulis: masuk kiri + blur tajam, stagger via delay prop.
 export function ChalkRow({
   children,

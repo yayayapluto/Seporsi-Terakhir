@@ -4,6 +4,15 @@ import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { cancelOrder } from "./actions";
 import type { MyOrder } from "./page";
@@ -40,21 +49,19 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3 border-b pb-4">
-        <label htmlFor="status-filter" className="text-sm font-semibold">
-          Status
-        </label>
-        <select
-          id="status-filter"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="h-11 rounded-md border bg-card px-3 text-sm"
-        >
-          {FILTERS.map((f) => (
-            <option key={f.value} value={f.value}>
-              {f.label}
-            </option>
-          ))}
-        </select>
+        <Label className="text-sm font-semibold">Status</Label>
+        <Select value={filter} onValueChange={(v) => setFilter(String(v))}>
+          <SelectTrigger className="h-11 w-fit min-w-44">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {FILTERS.map((f) => (
+              <SelectItem key={f.value} value={f.value}>
+                {f.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <output className="text-sm text-muted-foreground">{filtered.length} pesanan</output>
       </div>
 
@@ -120,28 +127,26 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {o.status === "reserved" && (
-                    <Link
-                      href={`/pesanan/${o.orderId}`}
-                      className="inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-                    >
+                    <Link href={`/pesanan/${o.orderId}`} className={buttonVariants()}>
                       Lihat QR pickup
                     </Link>
                   )}
                   <Link
                     href={`/pesanan/${o.orderId}`}
-                    className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-[#F3EFE6]"
+                    className={buttonVariants({ variant: "outline" })}
                   >
                     Detail
                   </Link>
                   {o.status === "reserved" && (
-                    <button
+                    <Button
                       type="button"
+                      variant="outline"
+                      className="text-destructive"
                       onClick={() => cancel(o.orderId)}
                       disabled={cancelling !== null || pending}
-                      className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-60"
                     >
                       {cancelling === o.orderId ? "Membatalkan…" : "Batalkan"}
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>

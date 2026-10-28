@@ -2,14 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
 export function SignOutButton() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   return (
-    <button
+    <Button
       type="button"
+      variant="outline"
+      className="text-destructive"
       disabled={busy}
       onClick={async () => {
         setBusy(true);
@@ -17,9 +20,8 @@ export function SignOutButton() {
         router.push("/");
         router.refresh();
       }}
-      className="inline-flex h-11 items-center rounded-lg border px-4 text-sm font-semibold text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-60"
     >
       {busy ? "Keluar…" : "Keluar dari akun"}
-    </button>
+    </Button>
   );
 }

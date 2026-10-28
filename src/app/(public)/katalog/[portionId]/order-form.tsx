@@ -2,6 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { MAX_QUANTITY_PER_ORDER } from "@/lib/domain/constants";
 import { formatIDR } from "@/lib/format";
 
@@ -92,22 +102,19 @@ export function OrderForm({
         </p>
       )}
       <div className="flex flex-wrap items-center gap-3">
-        <label htmlFor="qty" className="text-sm font-semibold">
-          Jumlah porsi
-        </label>
-        <select
-          id="qty"
-          value={qty}
-          onChange={(e) => setQty(Number(e.target.value))}
-          className="h-11 rounded-md border bg-card px-3 text-sm"
-          disabled={soldOut}
-        >
-          {[1, MAX_QUANTITY_PER_ORDER].map((n) => (
-            <option key={n} value={n} disabled={n > quantityRemaining}>
-              {n} porsi{n > quantityRemaining ? " (sisa tidak cukup)" : ""}
-            </option>
-          ))}
-        </select>
+        <Label className="font-semibold">Jumlah porsi</Label>
+        <Select value={String(qty)} onValueChange={(v) => setQty(Number(v))} disabled={soldOut}>
+          <SelectTrigger className="h-11 w-fit min-w-36">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {[1, MAX_QUANTITY_PER_ORDER].map((n) => (
+              <SelectItem key={n} value={String(n)} disabled={n > quantityRemaining}>
+                {n} porsi{n > quantityRemaining ? " (sisa tidak cukup)" : ""}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <output className="text-sm text-muted-foreground">
           Total {formatIDR(discountPrice * qty)}
         </output>
@@ -116,28 +123,26 @@ export function OrderForm({
         <legend className="text-sm font-semibold">Slot pickup (opsional)</legend>
         <div className="flex flex-wrap gap-3">
           <div className="flex flex-col gap-1">
-            <label htmlFor="slot-start" className="text-xs text-muted-foreground">
+            <Label htmlFor="slot-start" className="text-xs font-normal text-muted-foreground">
               Jam mulai
-            </label>
-            <input
+            </Label>
+            <Input
               id="slot-start"
               type="datetime-local"
               value={slotStart}
               onChange={(e) => setSlotStart(e.target.value)}
-              className="h-11 rounded-md border bg-card px-3 text-sm"
               disabled={soldOut}
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="slot-end" className="text-xs text-muted-foreground">
+            <Label htmlFor="slot-end" className="text-xs font-normal text-muted-foreground">
               Jam selesai
-            </label>
-            <input
+            </Label>
+            <Input
               id="slot-end"
               type="datetime-local"
               value={slotEnd}
               onChange={(e) => setSlotEnd(e.target.value)}
-              className="h-11 rounded-md border bg-card px-3 text-sm"
               disabled={soldOut}
             />
           </div>
@@ -149,13 +154,9 @@ export function OrderForm({
       {soldOut ? (
         <p className="text-sm font-semibold text-[#DE7819]">Porsi ini sudah habis terjual.</p>
       ) : (
-        <button
-          type="submit"
-          disabled={submitting}
-          className="inline-flex h-11 w-fit items-center rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-60"
-        >
+        <Button type="submit" disabled={submitting} className="w-fit">
           {submitting ? "Memproses…" : "Pesan dan dapatkan QR"}
-        </button>
+        </Button>
       )}
     </form>
   );

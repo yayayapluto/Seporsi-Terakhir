@@ -5,6 +5,16 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   SELL_WINDOW_DEFAULT_MINUTES,
   SELL_WINDOW_MAX_MINUTES,
@@ -124,29 +134,32 @@ export function PortionForm({
         </p>
       )}
       <div className="flex flex-col gap-1">
-        <label htmlFor="portion-menu" className="text-sm font-semibold">
+        <Label className="font-semibold">
           Menu <span aria-hidden="true">*</span>
-        </label>
-        <select
-          id="portion-menu"
-          {...register("menuItemId", {
-            onChange: (e) => {
-              const m = menus.find((x) => x.id === e.target.value);
-              if (m) {
-                const s = suggestDiscountPrice(m.normalPrice);
-                if (s != null) setValue("discountPrice", String(s));
-              }
-            },
-          })}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
+        </Label>
+        <Select
+          value={selectedId || ""}
+          onValueChange={(v) => {
+            const id = String(v);
+            setValue("menuItemId", id, { shouldDirty: true, shouldValidate: true });
+            const m = menus.find((x) => x.id === id);
+            if (m) {
+              const s = suggestDiscountPrice(m.normalPrice);
+              if (s != null) setValue("discountPrice", String(s));
+            }
+          }}
         >
-          <option value="">Pilih menu</option>
-          {menus.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.name} — {formatIDR(m.normalPrice)}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-11 w-full">
+            <SelectValue placeholder="Pilih menu" />
+          </SelectTrigger>
+          <SelectContent>
+            {menus.map((m) => (
+              <SelectItem key={m.id} value={m.id}>
+                {m.name} — {formatIDR(m.normalPrice)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {errors.menuItemId && (
           <p className="text-sm text-destructive">{errors.menuItemId.message}</p>
         )}
@@ -158,52 +171,47 @@ export function PortionForm({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="portion-qty" className="text-sm font-semibold">
+        <Label htmlFor="portion-qty" className="font-semibold">
           Jumlah porsi <span aria-hidden="true">*</span>
-        </label>
-        <input
-          id="portion-qty"
-          type="text"
-          inputMode="numeric"
-          {...register("quantity")}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
-        />
+        </Label>
+        <Input id="portion-qty" type="text" inputMode="numeric" {...register("quantity")} />
         {errors.quantity && <p className="text-sm text-destructive">{errors.quantity.message}</p>}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="portion-cooked" className="text-sm font-semibold">
+        <Label htmlFor="portion-cooked" className="font-semibold">
           Jam masak <span aria-hidden="true">*</span>
-        </label>
-        <input
-          id="portion-cooked"
-          type="datetime-local"
-          {...register("cookedAtLocal")}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
-        />
+        </Label>
+        <Input id="portion-cooked" type="datetime-local" {...register("cookedAtLocal")} />
         {errors.cookedAtLocal && (
           <p className="text-sm text-destructive">{errors.cookedAtLocal.message}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="portion-window" className="text-sm font-semibold">
+        <Label className="font-semibold">
           Jendela jual (menit setelah jam masak) <span aria-hidden="true">*</span>
-        </label>
-        <select
-          id="portion-window"
-          {...register("sellWindowMinutes")}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
+        </Label>
+        <Select
+          value={watch("sellWindowMinutes")}
+          onValueChange={(v) =>
+            setValue("sellWindowMinutes", String(v), { shouldDirty: true, shouldValidate: true })
+          }
         >
-          {Array.from(
-            { length: (SELL_WINDOW_MAX_MINUTES - SELL_WINDOW_MIN_MINUTES) / 30 + 1 },
-            (_, i) => SELL_WINDOW_MIN_MINUTES + i * 30,
-          ).map((m) => (
-            <option key={m} value={m}>
-              {m} menit{m === SELL_WINDOW_DEFAULT_MINUTES ? " (disarankan)" : ""}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-11 w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {Array.from(
+              { length: (SELL_WINDOW_MAX_MINUTES - SELL_WINDOW_MIN_MINUTES) / 30 + 1 },
+              (_, i) => SELL_WINDOW_MIN_MINUTES + i * 30,
+            ).map((m) => (
+              <SelectItem key={m} value={String(m)}>
+                {m} menit{m === SELL_WINDOW_DEFAULT_MINUTES ? " (disarankan)" : ""}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {errors.sellWindowMinutes && (
           <p className="text-sm text-destructive">{errors.sellWindowMinutes.message}</p>
         )}
@@ -213,15 +221,10 @@ export function PortionForm({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="portion-release" className="text-sm font-semibold">
+        <Label htmlFor="portion-release" className="font-semibold">
           Jam mulai jual <span className="font-normal text-muted-foreground">(opsional)</span>
-        </label>
-        <input
-          id="portion-release"
-          type="datetime-local"
-          {...register("releaseAtLocal")}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
-        />
+        </Label>
+        <Input id="portion-release" type="datetime-local" {...register("releaseAtLocal")} />
         {errors.releaseAtLocal && (
           <p className="text-sm text-destructive">{errors.releaseAtLocal.message}</p>
         )}
@@ -231,15 +234,14 @@ export function PortionForm({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="portion-discount" className="text-sm font-semibold">
+        <Label htmlFor="portion-discount" className="font-semibold">
           Harga diskon (Rp) <span aria-hidden="true">*</span>
-        </label>
-        <input
+        </Label>
+        <Input
           id="portion-discount"
           type="text"
           inputMode="numeric"
           {...register("discountPrice")}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
           aria-invalid={invalidDiscount ? true : undefined}
         />
         {errors.discountPrice && (
@@ -266,20 +268,12 @@ export function PortionForm({
       )}
 
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="inline-flex h-11 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-[#F3EFE6]"
-        >
+        <Button type="button" variant="outline" onClick={() => router.back()}>
           Batal
-        </button>
-        <button
-          type="submit"
-          disabled={isSubmitting || menus.length === 0}
-          className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-70"
-        >
+        </Button>
+        <Button type="submit" disabled={isSubmitting || menus.length === 0}>
           {isSubmitting ? "Menyimpan…" : initial.portionId ? "Simpan perubahan" : "Posting porsi"}
-        </button>
+        </Button>
       </div>
     </form>
   );

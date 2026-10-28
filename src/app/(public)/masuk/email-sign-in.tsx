@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { resolveNext } from "@/lib/auth/redirect";
 import { createClient } from "@/lib/supabase/client";
 
@@ -55,29 +58,19 @@ export function EmailSignIn({ next }: { next?: string }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm font-medium">
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          autoComplete="email"
-          {...register("email")}
-          className="h-11 rounded-lg border bg-card px-3 text-sm"
-        />
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" autoComplete="email" {...register("email")} />
         {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="password" className="text-sm font-medium">
-          Kata sandi
-        </label>
+        <Label htmlFor="password">Kata sandi</Label>
         <div className="relative">
-          <input
+          <Input
             id="password"
             type={show ? "text" : "password"}
             autoComplete={mode === "in" ? "current-password" : "new-password"}
             {...register("password")}
-            className="h-11 w-full rounded-lg border bg-card px-3 pr-11 text-sm"
+            className="pr-11"
           />
           <button
             type="button"
@@ -93,15 +86,12 @@ export function EmailSignIn({ next }: { next?: string }) {
       </div>
       {mode === "up" && (
         <div className="flex flex-col gap-1">
-          <label htmlFor="confirm" className="text-sm font-medium">
-            Konfirmasi kata sandi
-          </label>
-          <input
+          <Label htmlFor="confirm">Konfirmasi kata sandi</Label>
+          <Input
             id="confirm"
             type={show ? "text" : "password"}
             autoComplete="new-password"
             {...register("confirm")}
-            className="h-11 w-full rounded-lg border bg-card px-3 text-sm"
           />
         </div>
       )}
@@ -110,23 +100,20 @@ export function EmailSignIn({ next }: { next?: string }) {
           {formError}
         </p>
       )}
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="h-11 rounded-lg bg-primary px-4 font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-70"
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Memproses…" : mode === "in" ? "Masuk dengan Email" : "Daftar dengan Email"}
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
+        variant="link"
+        className="h-auto text-muted-foreground"
         onClick={() => {
           setMode(mode === "in" ? "up" : "in");
           setFormError(null);
         }}
-        className="text-center text-sm text-muted-foreground underline-offset-4 hover:underline"
       >
         {mode === "in" ? "Belum punya akun? Daftar" : "Sudah punya akun? Masuk"}
-      </button>
+      </Button>
     </form>
   );
 }

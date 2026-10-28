@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
 function GoogleMark() {
@@ -57,15 +58,10 @@ export function GoogleSignIn({ next }: { next?: string }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <button
-        type="button"
-        onClick={signIn}
-        disabled={busy}
-        className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-70"
-      >
+      <Button type="button" onClick={signIn} disabled={busy} className="w-full">
         <GoogleMark />
         {busy ? "Membuka Google…" : "Masuk dengan Google"}
-      </button>
+      </Button>
       {failed && (
         <p role="alert" className="text-sm text-destructive">
           Gagal memulai login Google. Coba lagi.

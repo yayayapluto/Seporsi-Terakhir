@@ -1,6 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import type { CatalogPortion } from "./page";
 
@@ -51,22 +59,20 @@ export function KatalogList({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3 border-b pb-4">
-        <label htmlFor="tenant-filter" className="text-sm font-semibold">
-          Tenant
-        </label>
-        <select
-          id="tenant-filter"
-          value={tenant}
-          onChange={(e) => setTenant(e.target.value)}
-          className="h-11 rounded-md border bg-card px-3 text-sm"
-        >
-          <option value="semua">Semua tenant</option>
-          {tenants.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
+        <Label className="text-sm font-semibold">Tenant</Label>
+        <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
+          <SelectTrigger className="h-11 w-fit min-w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="semua">Semua tenant</SelectItem>
+            {tenants.map((t) => (
+              <SelectItem key={t} value={t}>
+                {t}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <output className="text-sm text-muted-foreground">{filtered.length} porsi tersedia</output>
       </div>
       {error && (

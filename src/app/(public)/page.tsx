@@ -1,6 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ChalkRow, Reveal } from "./reveal";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { ChalkRow, Pressable, Reveal } from "./reveal";
 
 const BOARD = [
   {
@@ -112,18 +118,22 @@ export default function Home() {
             yang butuh makan murah.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Link
-              href="/katalog"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-            >
-              Lihat Porsi Hari Ini
-            </Link>
-            <Link
-              href="/cara-kerja"
-              className="inline-flex items-center justify-center rounded-md border px-6 py-3 font-semibold transition-colors hover:bg-muted"
-            >
-              Lihat Cara Kerja
-            </Link>
+            <Pressable>
+              <Link
+                href="/katalog"
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
+              >
+                Lihat Porsi Hari Ini
+              </Link>
+            </Pressable>
+            <Pressable>
+              <Link
+                href="/cara-kerja"
+                className="inline-flex items-center justify-center rounded-lg border px-6 py-3 font-semibold transition-colors hover:bg-muted"
+              >
+                Lihat Cara Kerja
+              </Link>
+            </Pressable>
           </div>
           <p className="text-xs text-muted-foreground">
             Bayar di tempat • Jam masak tertera • Maks 2 porsi/hari
@@ -251,16 +261,16 @@ export default function Home() {
         <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
           Pertanyaan yang sering ditanyakan.
         </h2>
-        <div className="border-b">
+        <Accordion>
           {FAQS.map((f) => (
-            <details key={f.q} className="group border-t">
-              <summary className="cursor-pointer py-4 font-semibold marker:text-primary">
-                {f.q}
-              </summary>
-              <p className="pb-4 text-sm text-muted-foreground">{f.a}</p>
-            </details>
+            <AccordionItem key={f.q} className="border-t first:border-t-0">
+              <AccordionTrigger className="py-4 font-semibold">{f.q}</AccordionTrigger>
+              <AccordionContent>
+                <p className="pb-4 text-sm text-muted-foreground">{f.a}</p>
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       </Reveal>
 
       {/* CTA */}
@@ -273,18 +283,22 @@ export default function Home() {
           hemat.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link
-            href="/masuk"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-          >
-            Masuk Sekarang
-          </Link>
-          <Link
-            href="/tenant/pendaftaran"
-            className="inline-flex items-center justify-center rounded-md border px-6 py-3 font-semibold transition-colors hover:bg-muted"
-          >
-            Daftar sebagai Tenant
-          </Link>
+          <Pressable>
+            <Link
+              href="/masuk"
+              className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
+            >
+              Masuk Sekarang
+            </Link>
+          </Pressable>
+          <Pressable>
+            <Link
+              href="/tenant/pendaftaran"
+              className="inline-flex items-center justify-center rounded-lg border px-6 py-3 font-semibold transition-colors hover:bg-muted"
+            >
+              Daftar sebagai Tenant
+            </Link>
+          </Pressable>
         </div>
         <p className="text-xs text-muted-foreground">Tahap awal SDG 12 di lingkungan kampus</p>
       </Reveal>

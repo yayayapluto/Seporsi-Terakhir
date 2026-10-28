@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
 const NAV = [
@@ -71,17 +72,16 @@ export function SiteHeader() {
               >
                 Profil
               </Link>
-              <button
-                type="button"
+              <Button
+                variant="ghost"
                 onClick={async () => {
                   await createClient().auth.signOut();
                   router.push("/");
                   router.refresh();
                 }}
-                className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
                 Keluar
-              </button>
+              </Button>
             </>
           ) : (
             <>
@@ -91,10 +91,7 @@ export function SiteHeader() {
               >
                 Jadi Tenant
               </Link>
-              <Link
-                href="/masuk"
-                className="rounded-lg bg-primary px-4 py-2 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-              >
+              <Link href="/masuk" className={buttonVariants()}>
                 Masuk
               </Link>
             </>

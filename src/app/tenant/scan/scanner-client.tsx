@@ -3,6 +3,7 @@
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { confirmPickup, lookupOrderByToken } from "./actions";
 
 export interface ScannedOrder {
@@ -127,21 +128,12 @@ export function ScannerClient() {
             Terima pembayaran di tempat sesuai harga diskon, lalu konfirmasi.
           </p>
           <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <button
-              type="button"
-              onClick={reset}
-              className="inline-flex h-11 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-[#F3EFE6]"
-            >
+            <Button type="button" variant="outline" onClick={reset}>
               Batal
-            </button>
-            <button
-              type="button"
-              onClick={onConfirm}
-              disabled={confirming}
-              className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-70"
-            >
+            </Button>
+            <Button type="button" onClick={onConfirm} disabled={confirming}>
               {confirming ? "Mengonfirmasi…" : "Konfirmasi pickup"}
-            </button>
+            </Button>
           </div>
         </section>
       )}
@@ -153,13 +145,9 @@ export function ScannerClient() {
           <p className="mt-1 text-sm text-muted-foreground">
             Pesanan tercatat selesai. Pembayaran diterima di tempat.
           </p>
-          <button
-            type="button"
-            onClick={reset}
-            className="mt-4 inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-          >
+          <Button type="button" className="mt-4" onClick={reset}>
             Scan berikutnya
-          </button>
+          </Button>
         </output>
       )}
 
@@ -170,13 +158,9 @@ export function ScannerClient() {
         >
           <p className="font-bold text-destructive">Gagal</p>
           <p className="mt-1 text-sm text-destructive">{phase.message}</p>
-          <button
-            type="button"
-            onClick={reset}
-            className="mt-4 inline-flex h-11 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-[#F3EFE6]"
-          >
+          <Button type="button" variant="outline" className="mt-4" onClick={reset}>
             Scan ulang
-          </button>
+          </Button>
         </section>
       )}
     </div>
