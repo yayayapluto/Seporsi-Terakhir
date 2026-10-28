@@ -77,3 +77,38 @@
     @apply font-heading tracking-tight;
   }
 }
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes chalk-in {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .chalk-in {
+    animation: chalk-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 25%;
+    }
+  }
+}

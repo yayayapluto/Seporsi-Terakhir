@@ -152,8 +152,12 @@ export default function Home() {
               <span>Pickup 16.30–18.00</span>
             </div>
             <ul className="divide-y divide-border">
-              {BOARD.map((item) => (
-                <li key={item.name} className="flex items-baseline justify-between gap-4 py-3">
+              {BOARD.map((item, i) => (
+                <li
+                  key={item.name}
+                  className="chalk-in flex items-baseline justify-between gap-4 py-3"
+                  style={{ animationDelay: `${i * 90}ms` }}
+                >
                   <div>
                     <h2 className="font-bold leading-snug">{item.name}</h2>
                     <p className="mt-0.5 text-xs text-muted-foreground">
@@ -175,7 +179,7 @@ export default function Home() {
       </section>
 
       {/* MASALAH */}
-      <section className="flex flex-col gap-2 py-10">
+      <section className="reveal flex flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">MASALAH</p>
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Satu masalah, dua pihak butuh.
@@ -191,7 +195,7 @@ export default function Home() {
       </section>
 
       {/* CARA KERJA */}
-      <section className="flex flex-col gap-2 py-10">
+      <section className="reveal flex flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">CARA KERJA</p>
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Dari katalog sampai makan, 4 langkah.
@@ -218,7 +222,7 @@ export default function Home() {
       </section>
 
       {/* KEAMANAN */}
-      <section id="keamanan" className="flex flex-col gap-2 py-10">
+      <section id="keamanan" className="reveal flex flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">KEAMANAN PANGAN</p>
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Aturan jelas supaya tetap aman.
@@ -241,7 +245,7 @@ export default function Home() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="mx-auto flex w-full max-w-3xl flex-col gap-2 py-10">
+      <section id="faq" className="reveal mx-auto flex w-full max-w-3xl flex-col gap-2 py-10">
         <p className="text-xs font-bold tracking-[0.2em] text-primary">TANYA JAWAB</p>
         <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
           Pertanyaan yang sering ditanyakan.
@@ -259,7 +263,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="mb-12 flex flex-col items-center gap-4 border-t-2 border-foreground px-6 py-12 text-center">
+      <section className="reveal mb-12 flex flex-col items-center gap-4 border-t-2 border-foreground px-6 py-12 text-center">
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Jangan biarkan porsi terakhir terbuang.
         </h2>
