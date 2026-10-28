@@ -16,7 +16,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Seporsi Terakhir",
+  title: "Porsi Terakhir",
   description:
     "Selamatkan porsi terakhir hari ini: makanan enak harga miring, kurangi sampah makanan kampus.",
 };

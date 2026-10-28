@@ -18,7 +18,7 @@ export default async function PendaftaranPage() {
         <p className="text-xs font-bold tracking-widest text-primary">MITRA KANTIN</p>
         <h1 className="text-3xl font-bold">Daftar jadi tenant</h1>
         <p className="text-muted-foreground">
-          Jual sisa masakanmu lewat Seporsi Terakhir — gratis untuk saat ini. Pendaftaran perlu
+          Jual sisa masakanmu lewat Porsi Terakhir — gratis untuk saat ini. Pendaftaran perlu
           persetujuan admin sebelum porsi bisa diposting.
         </p>
       </div>

@@ -18,6 +18,7 @@ interface ProfileData {
   moneySavedIdr: number;
   wasteKg: number | null;
   lastPickup: string | null;
+  loadFailed: boolean;
 }
 
 async function loadProfile(userId: string): Promise<ProfileData> {
@@ -54,6 +55,7 @@ async function loadProfile(userId: string): Promise<ProfileData> {
     moneySavedIdr,
     wasteKg: hasWeight ? wasteGrams / 1000 : null,
     lastPickup,
+    loadFailed: error != null,
   };
 }
 
@@ -65,7 +67,6 @@ export default async function ProfilPage() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">PROFIL</p>
         <h1 className="flex items-center gap-2 text-3xl font-bold">
           <UserRound className="size-7 shrink-0 text-primary" aria-hidden />
           {p.fullName}
@@ -78,7 +79,8 @@ export default async function ProfilPage() {
           Dampak kamu sejauh ini
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Dihitung dari pesanan yang sudah diambil (status selesai).
+          Dihitung dari pesanan yang sudah diambil (status selesai): porsi yang sudah dikonfirmasi
+          tenant lewat QR saat serah terima.
         </p>
         <dl className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="rounded-xl border bg-card p-4">
@@ -111,6 +113,17 @@ export default async function ProfilPage() {
             </dd>
           </div>
         </dl>
+        {p.loadFailed && (
+          <p
+            role="alert"
+            className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          >
+            Gagal memuat data dampak. Angka di bawah mungkin tidak akurat.{" "}
+            <Link href="/profil" className="font-semibold underline underline-offset-4">
+              Coba lagi
+            </Link>
+          </p>
+        )}
         <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
           <Clock3 className="size-3.5 shrink-0" aria-hidden />
           <span>
@@ -127,7 +140,7 @@ export default async function ProfilPage() {
         {tenantStatus == null ? (
           <EmptyState
             title="Belum mendaftar sebagai tenant"
-            hint="Jual sisa masakanmu lewat Seporsi Terakhir — gratis untuk saat ini."
+            hint="Jual sisa masakanmu lewat Porsi Terakhir — gratis untuk saat ini."
             ctaHref="/tenant/pendaftaran"
             ctaLabel="Daftar jadi tenant"
           />
@@ -146,12 +159,23 @@ export default async function ProfilPage() {
         <p className="mt-1 text-sm text-muted-foreground">
           Lihat QR pickup, batalkan pesanan aktif, atau cek riwayat lengkap.
         </p>
-        <Link
-          href="/pesanan"
-          className="mt-3 inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-        >
-          <History className="mr-2 size-4 shrink-0" aria-hidden />
-        </Link>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Link
+            href="/pesanan"
+            className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <History className="mr-2 size-4 shrink-0" aria-hidden />
+            Lihat riwayat pesanan
+          </Link>
+          {!p.loadFailed && p.savedPortions === 0 && (
+            <Link
+              href="/katalog"
+              className="inline-flex h-11 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-muted"
+            >
+              Cari porsi sore ini
+            </Link>
+          )}
+        </div>
       </section>
 
       <div className="border-t pt-6">

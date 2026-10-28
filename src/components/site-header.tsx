@@ -47,7 +47,7 @@ export function SiteHeader() {
             height={32}
             className="size-8 object-contain"
           />
-          Seporsi Terakhir
+          Porsi Terakhir
         </Link>
         <nav className="hidden items-center gap-1 text-sm lg:flex" aria-label="Navigasi utama">
           {NAV.map((n) => (

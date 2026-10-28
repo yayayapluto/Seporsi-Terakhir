@@ -108,29 +108,29 @@ export default function Home() {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 sm:px-6">
       {/* HERO */}
-      <section className="grid gap-8 py-10 sm:py-14 lg:grid-cols-[1.05fr_1fr]">
+      <section className="grid gap-8 py-10 sm:py-14 md:grid-cols-2 md:items-center lg:grid-cols-[1.05fr_1fr]">
         <div className="flex flex-col gap-5">
-          <h1 className="max-w-xl text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="max-w-xl text-4xl font-extrabold leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
             Porsi terakhir hari ini di kantin kampus.
           </h1>
           <p className="max-w-xl text-base text-muted-foreground">
             Setiap sore, makanan layak makan di kantin kampus sering berakhir di tempat sampah.
-            Seporsi Terakhir mempertemukan tenant yang menjual sisa dengan harga diskon, dan
-            mahasiswa yang butuh makan murah.
+            Porsi Terakhir mempertemukan tenant yang menjual sisa dengan harga diskon, dan mahasiswa
+            yang butuh makan murah.
           </p>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Pressable>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center md:flex-col md:items-stretch lg:flex-row lg:items-center">
+            <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
               <Link
                 href="/katalog"
-                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
+                className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-6 py-3.5 font-semibold text-primary-foreground transition-colors hover:bg-primary/80 sm:w-auto md:w-full lg:w-auto"
               >
                 Lihat Porsi Hari Ini
               </Link>
             </Pressable>
-            <Pressable>
+            <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
               <Link
                 href="/cara-kerja"
-                className="inline-flex items-center justify-center rounded-lg border px-6 py-3 font-semibold transition-colors hover:bg-muted"
+                className="inline-flex w-full items-center justify-center rounded-lg border px-6 py-3.5 font-semibold transition-colors hover:bg-muted sm:w-auto md:w-full lg:w-auto"
               >
                 Lihat Cara Kerja
               </Link>
@@ -149,7 +149,7 @@ export default function Home() {
               width={520}
               height={346}
               className="h-auto w-full rounded-md border object-cover"
-              sizes="(max-width: 1024px) 100vw, 50vw"
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
             <figcaption className="mt-1 text-[11px] text-muted-foreground">
               Suasana kantin kampus sore hari.
@@ -212,9 +212,9 @@ export default function Home() {
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Dari katalog sampai makan, 4 langkah.
         </h2>
-        <ol className="divide-y divide-border border-b">
+        <ol className="divide-y divide-border border-b lg:grid lg:grid-cols-4 lg:gap-x-8 lg:divide-y-0 lg:border-b-0">
           {LANGKAH.map((s, i) => (
-            <li key={s.title} className="flex gap-4 py-4">
+            <li key={s.title} className="flex gap-4 py-4 lg:flex-col lg:gap-2">
               <span
                 aria-hidden
                 className="w-8 shrink-0 font-heading text-xl font-extrabold text-primary"
@@ -283,19 +283,19 @@ export default function Home() {
           Satu porsi terjual berarti satu porsi tidak jadi sampah dan satu mahasiswa makan lebih
           hemat.
         </p>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Pressable>
+        <div className="flex w-full max-w-md flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row md:flex-col md:items-stretch lg:flex-row lg:items-center">
+          <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
             <Link
               href="/masuk"
-              className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
+              className="inline-flex w-full items-center justify-center rounded-lg bg-primary px-6 py-3.5 font-semibold text-primary-foreground transition-colors hover:bg-primary/80 sm:w-auto md:w-full lg:w-auto"
             >
               Masuk Sekarang
             </Link>
           </Pressable>
-          <Pressable>
+          <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
             <Link
               href="/tenant/pendaftaran"
-              className="inline-flex items-center justify-center rounded-lg border px-6 py-3 font-semibold transition-colors hover:bg-muted"
+              className="inline-flex w-full items-center justify-center rounded-lg border px-6 py-3.5 font-semibold transition-colors hover:bg-muted sm:w-auto md:w-full lg:w-auto"
             >
               Daftar sebagai Tenant
             </Link>
