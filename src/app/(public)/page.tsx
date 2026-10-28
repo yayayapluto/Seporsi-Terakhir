@@ -135,22 +135,6 @@ export default function Home() {
                 Lihat Cara Kerja
               </Link>
             </Pressable>
-            <Pressable>
-              <Link
-                href="/katalog"
-                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-              >
-                Lihat Porsi Hari Ini
-              </Link>
-            </Pressable>
-            <Pressable>
-              <Link
-                href="/cara-kerja"
-                className="inline-flex items-center justify-center rounded-lg border px-6 py-3 font-semibold transition-colors hover:bg-muted"
-              >
-                Lihat Cara Kerja
-              </Link>
-            </Pressable>
           </div>
           <p className="text-xs text-muted-foreground">
             Bayar di tempat • Jam masak tertera • Maks 2 porsi/hari
@@ -300,22 +284,6 @@ export default function Home() {
           hemat.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Pressable>
-            <Link
-              href="/masuk"
-              className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
-            >
-              Masuk Sekarang
-            </Link>
-          </Pressable>
-          <Pressable>
-            <Link
-              href="/tenant/pendaftaran"
-              className="inline-flex items-center justify-center rounded-lg border px-6 py-3 font-semibold transition-colors hover:bg-muted"
-            >
-              Daftar sebagai Tenant
-            </Link>
-          </Pressable>
           <Pressable>
             <Link
               href="/masuk"
