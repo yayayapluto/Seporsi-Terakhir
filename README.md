@@ -17,26 +17,30 @@ bun run dev                  # http://localhost:3000
 Local Supabase (needs Docker):
 
 ```bash
-bun run db:start   # start
-bun run seed       # reset + seed demo (6 tenants, 16 menus, 12 portions)
-bun run db:stop    # stop
+bun run db:start    # start
+bun run db:reset    # migrasi + seed.sql (profil placeholder)
+bun run seed:auth "isi-password-dev-min-6"  # auth.users + role (password cuma syarat Admin API)
+bun run db:seed     # 6 tenant, 16 menu, 16 porsi, 3 order contoh
+bun run db:stop     # stop
 ```
 
 ## Demo accounts (seed)
 
-Password semua akun demo: `Porsi123!`
+Login via **magic link** (tanpa password): ketik email di `/masuk`, ketuk
+tautan di inbox. Password `seed:auth` tak dipakai login.
 
-| Role    | Email                 |
-| ------- | --------------------- |
-| admin   | admin@kampus.ac.id    |
-| tenant  | warteg@kampus.ac.id (+5 kantin lain) |
-| student | rafi@student.ac.id    |
+Akun `@yopmail.com` = inbox publik tanpa login (buka `yopmail.com`, ketik
+nama, magic link ada di sana). Hanya untuk dev — jangan pakai data asli.
 
-**Hosted** (tanpa Docker): Supabase dashboard → SQL Editor → tempel isi
-`supabase/seed-hosted.sql` → Run. Sekali jalan: 8 auth user + role + 6 tenant
-+ 16 menu + 12 porsi. Ganti password setelah login pertama.
+| Role    | Email                                  |
+| ------- | -------------------------------------- |
+| admin   | admin1793198479@yopmail.com            |
+| tenant  | warteg/kopi/padang/soto/pecel/geprek1793198479@yopmail.com |
+| student | rafi/sinta1793198479@yopmail.com       |
 
-**Lokal** (Docker): `bun run db:start`, lalu `bun run seed`.
+Urutan wajib: `seed:auth` **sebelum** login pertama (kalau tidak, trigger
+`handle_new_user` bikin profil student untuk semua role). Detail:
+`docs/setup.md` §4–§6.
 
 ## Commands
 
@@ -44,12 +48,20 @@ Password semua akun demo: `Porsi123!`
 | ------------------ | --------------------------------- |
 | `bun run dev`      | Next.js dev server                |
 | `bun run check`    | lint + typecheck + tests (gate)   |
-| `bun run build`    | production build                  |
+| `bun run build`    | `next build` (CF: ubah ke opennext, lihat bawah) |
 | `bun run test`     | Vitest (unit tests, domain logic) |
 | `bun run db:*`     | Supabase local lifecycle          |
-| `bun run seed`     | reset + seed demo data            |
+| `bun run db:seed`  | tenants + menu + porsi + order contoh |
+| `bun run deploy`   | opennext build + deploy ke Cloudflare |
+
+## Deploy (Cloudflare)
+
+Build command di dashboard CF wajib panggil adapter:
+`bunx opennextjs-cloudflare build` (atau satu perintah `bun run deploy`),
+deploy command `bunx opennextjs-cloudflare deploy`.
+`bun run build` polos (`next build`) tak hasilkan `.open-next/` → deploy gagal.
 
 ## Manual steps
 
-See `docs/setup.md` (Google OAuth, Supabase, roles). Demo login: tabel akun di
-atas + Email provider aktif; Google perlu kredensial OAuth manusia.
+See `docs/setup.md` (Google OAuth, Supabase, redirect allowlist). Login email:
+magic link + Email provider aktif; Google perlu kredensial OAuth manusia.
