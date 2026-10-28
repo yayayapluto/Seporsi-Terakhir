@@ -27,3 +27,10 @@
   approach: helper murni klasifikasi missing-column vs nol-baris + guard console.error + fallback select minimal
   risk_level: low
   commit_message: "fix(katalog-detail): fallback kolom + log hanya error nyata"
+- bug_id: BUG-2026-10-28T134000
+  date: 2026-10-28
+  severity: high
+  priority: high
+  scope: build/css
+  summary: Cloudflare build gagal - @import shadcn/tailwind.css tak ter-resolve (stray lokal)
+  file: specs/bugs/BUG-2026-10-28T134000-cloudflare-shadcn-import.md
