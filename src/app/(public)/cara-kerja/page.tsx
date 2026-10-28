@@ -152,47 +152,53 @@ const FAQS = [
 
 export default function CaraKerjaPage() {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-12 px-4 py-8 sm:px-6 md:gap-16 md:py-12">
+    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-12 px-4 py-8 sm:px-6 md:gap-16 md:py-12">
       {/* Hero */}
-      <section className="flex flex-col gap-5">
-        <Badge variant="secondary" className="w-fit">
-          Panduan transparansi · Tanpa biaya layanan
-        </Badge>
-        <h1 className="text-3xl font-bold tracking-tight text-balance md:text-4xl">
-          Cara kerja penyelamatan porsi kampus
-        </h1>
-        <p className="max-w-prose text-muted-foreground">
-          Makanan matang bermutu dari kantin yang diselamatkan menjelang tutup. Hemat untuk
-          mahasiswa, bernilai bagi tenant, terukur tanpa klaim berlebihan.
-        </p>
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-          <Link href="/katalog" className={buttonVariants()}>
-            Lihat porsi hari ini
-          </Link>
-          <Link
-            href="#metodologi"
-            className={buttonVariants({ variant: "link", className: "px-0" })}
-          >
-            Lihat metodologi dampak
-            <ChevronDown className="size-4" aria-hidden />
-          </Link>
+      <section className="grid gap-8 md:grid-cols-2 md:items-center">
+        <div className="flex min-w-0 flex-col gap-5">
+          <Badge variant="secondary" className="w-fit">
+            Panduan transparansi · Tanpa biaya layanan
+          </Badge>
+          <h1 className="text-3xl font-bold tracking-tight text-balance md:text-4xl">
+            Cara kerja penyelamatan porsi kampus
+          </h1>
+          <p className="max-w-prose text-muted-foreground">
+            Makanan matang bermutu dari kantin yang diselamatkan menjelang tutup. Hemat untuk
+            mahasiswa, bernilai bagi tenant, terukur tanpa klaim berlebihan.
+          </p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <Link href="/katalog" className={buttonVariants()}>
+              Lihat porsi hari ini
+            </Link>
+            <Link
+              href="#metodologi"
+              className={buttonVariants({ variant: "link", className: "px-0" })}
+            >
+              Lihat metodologi dampak
+              <ChevronDown className="size-4" aria-hidden />
+            </Link>
+          </div>
+          <dl className="grid grid-cols-3 gap-2 border-y py-4 sm:gap-4">
+            <div className="flex min-w-0 flex-col">
+              <dt className="order-2 text-xs text-muted-foreground sm:text-sm">Bayar di tempat</dt>
+              <dd className="order-1 text-lg font-bold text-primary tabular-nums sm:text-xl">
+                100%
+              </dd>
+            </div>
+            <div className="flex min-w-0 flex-col">
+              <dt className="order-2 text-xs text-muted-foreground sm:text-sm">Jendela jual</dt>
+              <dd className="order-1 text-lg font-bold text-primary tabular-nums sm:text-xl">
+                2–4 jam
+              </dd>
+            </div>
+            <div className="flex min-w-0 flex-col">
+              <dt className="order-2 text-xs text-muted-foreground sm:text-sm">Fee platform</dt>
+              <dd className="order-1 text-lg font-bold text-primary tabular-nums sm:text-xl">
+                Rp0
+              </dd>
+            </div>
+          </dl>
         </div>
-        <dl className="grid grid-cols-3 gap-2 border-y py-4 sm:gap-4">
-          <div className="flex min-w-0 flex-col">
-            <dt className="order-2 text-xs text-muted-foreground sm:text-sm">Bayar di tempat</dt>
-            <dd className="order-1 text-lg font-bold text-primary tabular-nums sm:text-xl">100%</dd>
-          </div>
-          <div className="flex min-w-0 flex-col">
-            <dt className="order-2 text-xs text-muted-foreground sm:text-sm">Jendela jual</dt>
-            <dd className="order-1 text-lg font-bold text-primary tabular-nums sm:text-xl">
-              2–4 jam
-            </dd>
-          </div>
-          <div className="flex min-w-0 flex-col">
-            <dt className="order-2 text-xs text-muted-foreground sm:text-sm">Fee platform</dt>
-            <dd className="order-1 text-lg font-bold text-primary tabular-nums sm:text-xl">Rp0</dd>
-          </div>
-        </dl>
         <figure className="overflow-hidden rounded-xl border bg-card shadow-sm">
           <Image
             src="/images/foto_kantin.webp"
@@ -200,6 +206,7 @@ export default function CaraKerjaPage() {
             width={800}
             height={600}
             className="aspect-[16/9] w-full object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
             priority
           />
           <figcaption className="px-4 py-3 text-sm text-muted-foreground">
@@ -215,7 +222,7 @@ export default function CaraKerjaPage() {
             Aplikasi tidak memproses pembayaran
           </h2>
           <p className="text-muted-foreground">
-            Seporsi Terakhir hanya mencatat kuota. Uang berpindah tangan di kasir fisik kantin.
+            Porsi Terakhir hanya mencatat kuota. Uang berpindah tangan di kasir fisik kantin.
           </p>
           <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-3">
             <div className="flex flex-col gap-1">
@@ -243,18 +250,18 @@ export default function CaraKerjaPage() {
           <p className="text-muted-foreground">
             Tanpa isi ulang dompet digital, tanpa kurir — mahasiswa datang langsung ke gerai.
           </p>
-          <ol className="mt-4 flex flex-col gap-8 border-t pt-8">
+          <ol className="mt-4 grid gap-8 border-t pt-8 md:grid-cols-3">
             {STEPS.map((s) => (
-              <li key={s.no} className="flex flex-col gap-3">
+              <li key={s.no} className="flex min-w-0 flex-col gap-3">
                 <div className="flex items-center justify-between gap-3">
                   <p className="rounded-md border border-dashed border-primary/50 bg-primary/5 px-2.5 py-1 font-mono text-xs font-bold tracking-wide text-primary uppercase tabular-nums">
                     {s.no}
                   </p>
                   <Badge variant="secondary">{s.chip}</Badge>
                 </div>
-                <h3 className="flex items-start gap-2 font-heading text-lg font-semibold">
+                <h3 className="flex min-w-0 items-start gap-2 font-heading text-lg font-semibold">
                   <s.icon className="mt-1 size-5 shrink-0 text-primary" aria-hidden />
-                  {s.title}
+                  <span className="min-w-0">{s.title}</span>
                 </h3>
                 <p className="max-w-prose text-sm text-muted-foreground">{s.body}</p>
                 <ul className="flex flex-col gap-1.5 text-sm text-muted-foreground">
@@ -303,18 +310,21 @@ export default function CaraKerjaPage() {
         <Reveal className="flex flex-col gap-2">
           <h2
             id="metodologi-heading"
-            className="flex items-center gap-2 text-xl font-bold tracking-tight"
+            className="flex min-w-0 items-start gap-2 text-xl font-bold tracking-tight"
           >
-            <Calculator className="size-5 text-primary" aria-hidden />
-            Rumus dampak: nyata, bukan klaim kosong
+            <Calculator className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
+            <span className="min-w-0 text-balance">Rumus dampak: nyata, bukan klaim kosong</span>
           </h2>
           <p className="text-muted-foreground">
             Semua angka publik diturunkan dari transaksi tercatat. Tanpa klaim karbon atau pohon
             yang tak terverifikasi di kantin.
           </p>
-          <dl className="grid gap-3 sm:grid-cols-2">
+          <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {FORMULAS.map((f) => (
-              <div key={f.name} className="flex flex-col gap-2 rounded-xl border bg-card p-4">
+              <div
+                key={f.name}
+                className="flex min-w-0 flex-col gap-2 rounded-xl border bg-card p-4"
+              >
                 <dt className="flex flex-wrap items-center justify-between gap-2 font-semibold">
                   {f.name}
                   <Badge
@@ -330,7 +340,7 @@ export default function CaraKerjaPage() {
                   </Badge>
                 </dt>
                 <dd className="text-sm">{f.plain}</dd>
-                <dd className="rounded-lg bg-muted/60 px-3 py-2 font-mono text-xs font-semibold text-primary">
+                <dd className="rounded-lg bg-muted/60 px-3 py-2 font-mono text-xs font-semibold text-primary break-words">
                   {f.formula}
                 </dd>
                 <dd className="text-sm text-muted-foreground">{f.note}</dd>
@@ -378,8 +388,15 @@ export default function CaraKerjaPage() {
               Jendela rilis sore biasanya 15.30–18.00 WIB. Selama kuota masih ada, porsi menunggumu.
             </p>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <Link href="/katalog" className={buttonVariants({ variant: "secondary", size: "lg" })}>
+          <div className="flex w-full flex-col gap-2 md:flex-row md:items-center lg:w-auto">
+            <Link
+              href="/katalog"
+              className={buttonVariants({
+                variant: "secondary",
+                size: "lg",
+                className: "w-full md:w-auto",
+              })}
+            >
               Katalog porsi
             </Link>
             <Link
@@ -387,7 +404,7 @@ export default function CaraKerjaPage() {
               className={buttonVariants({
                 size: "lg",
                 className:
-                  "border border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground",
+                  "w-full border border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground md:w-auto",
               })}
             >
               Masuk / daftar
