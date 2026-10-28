@@ -17,7 +17,7 @@ export function EmptyState({
       <p className="mt-1 text-sm text-muted-foreground">{hint}</p>
       <Link
         href={ctaHref}
-        className="mt-4 inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-[#F3EFE6]"
+        className="mt-4 inline-flex h-11 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-muted"
       >
         {ctaLabel}
       </Link>

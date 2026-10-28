@@ -16,7 +16,7 @@ export function PeriksaStatus() {
         router.refresh();
         setTimeout(() => setChecking(false), 600);
       }}
-      className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-70"
+      className="inline-flex h-11 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-70"
     >
       {checking ? "Memeriksa…" : "Periksa status"}
     </button>

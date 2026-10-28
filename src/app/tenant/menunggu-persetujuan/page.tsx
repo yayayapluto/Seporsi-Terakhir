@@ -50,7 +50,7 @@ export default async function MenungguPersetujuanPage() {
           <div className="flex gap-3 py-2">
             <dt className="w-36 shrink-0 text-sm text-muted-foreground">Status</dt>
             <dd className="min-w-0">
-              <span className="inline-flex items-center rounded-full border border-[#FAD8B3] bg-[#FEF3E7] px-2.5 py-0.5 text-xs font-semibold text-[#DE7819]">
+              <span className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent-strong">
                 Menunggu persetujuan admin
               </span>
             </dd>

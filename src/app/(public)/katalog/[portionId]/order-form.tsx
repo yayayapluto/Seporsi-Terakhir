@@ -285,7 +285,7 @@ export function OrderForm({
         )}
       </div>
       {soldOut ? (
-        <p className="text-sm font-semibold text-[#DE7819]">Porsi ini sudah habis terjual.</p>
+        <p className="text-sm font-semibold text-accent-strong">Porsi ini sudah habis terjual.</p>
       ) : (
         <Button type="submit" disabled={submitting} className="h-12 w-full text-base">
           {submitting ? "Memproses…" : `Pesan ${qty} porsi · ${formatIDR(discountPrice * qty)}`}

@@ -78,7 +78,7 @@ export default async function TenantPesananPage() {
           {o.status === "reserved" && (
             <Link
               href="/tenant/scan"
-              className="inline-flex h-10 items-center rounded-lg bg-primary px-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640]"
+              className="inline-flex h-10 items-center rounded-lg bg-primary px-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Scan pickup
             </Link>

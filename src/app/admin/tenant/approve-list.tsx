@@ -69,7 +69,7 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                     type="button"
                     onClick={() => setOpenId(open ? null : t.id)}
                     aria-expanded={open}
-                    className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-[#F3EFE6]"
+                    className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-muted"
                   >
                     {open ? "Tutup" : "Tinjau"}
                   </button>
@@ -96,7 +96,7 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                       type="button"
                       disabled={confirming}
                       onClick={() => approve(t.id)}
-                      className="inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#256640] disabled:opacity-60"
+                      className="inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
                     >
                       {confirming ? "Menyetujui…" : "Setujui tenant"}
                     </button>
@@ -104,7 +104,7 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                       type="button"
                       onClick={() => setOpenId(null)}
                       disabled={confirming}
-                      className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-[#F3EFE6]"
+                      className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold transition-colors hover:bg-muted"
                     >
                       Batal
                     </button>
