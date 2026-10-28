@@ -1,5 +1,6 @@
 "use client";
 
+import { CircleAlert } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -58,12 +59,13 @@ export function GoogleSignIn({ next }: { next?: string }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <Button type="button" onClick={signIn} disabled={busy} className="w-full">
+      <Button type="button" onClick={signIn} disabled={busy} className="min-h-11 w-full">
         <GoogleMark />
         {busy ? "Membuka Google…" : "Masuk dengan Google"}
       </Button>
       {failed && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="flex items-start gap-1.5 text-sm font-medium text-destructive">
+          <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
           Gagal memulai login Google. Coba lagi.
         </p>
       )}
