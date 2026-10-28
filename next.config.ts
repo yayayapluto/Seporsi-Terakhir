@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* foto hero lokal: /images/foto_kantin.webp, tanpa remote host */
-  allowedDevOrigins: ["seporsi-terakhir.my.id"],
+  allowedDevOrigins: ["seporsi-terakhir.my.id", "dev.seporsi-terakhir.my.id"],
   turbopack: {
     rules: {
       "*.css": {
@@ -14,3 +14,5 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+import("@opennextjs/cloudflare").then((m) => m.initOpenNextCloudflareForDev());
