@@ -6,10 +6,9 @@ import { resolveNext } from "@/lib/auth/redirect";
 import { getEnv } from "@/lib/env";
 
 /**
- * OAuth callback: exchange code for session, then redirect by role.
- * The `next` param survives the provider round-trip and is honored only
- * when it is a safe internal path; otherwise the user lands on their
- * role home.
+ * Auth callback: exchange code for session (Google OAuth + email magic
+ * link), then redirect by role. `next` survives the round-trip and is
+ * honored only when a safe internal path; otherwise role home.
  */
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
@@ -55,5 +54,5 @@ export async function GET(request: NextRequest) {
       return response;
     }
   }
-  redirect("/masuk?error=oauth");
+  redirect("/masuk?error=magic-link");
 }

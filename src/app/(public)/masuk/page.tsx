@@ -16,12 +16,14 @@ async function MasukContent({
           Tanpa kata sandi. Masukkan email, ketuk tautannya.
         </p>
       </div>
-      {error === "oauth" && (
+      {(error === "oauth" || error === "magic-link") && (
         <p
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive"
         >
-          Login Google gagal. Silakan coba lagi.
+          {error === "oauth"
+            ? "Login Google gagal. Silakan coba lagi."
+            : "Tautan tidak valid atau kedaluwarsa. Minta tautan baru di bawah."}
         </p>
       )}
       <EmailSignIn next={next} />

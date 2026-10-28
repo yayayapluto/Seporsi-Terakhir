@@ -43,24 +43,25 @@ update public.profiles set role = 'admin' where email = 'you@campus.ac.id';
 Real Google sign-in needs the human-provided OAuth credentials above. Until
 then, Phase 3 reports login as "needs human verification".
 
-## 6. Akun seed email+password (dev only)
+## 6. Email: magic link tanpa kata sandi (wajib utk `/masuk`)
 
-`supabase/seed.sql` hanya isi `profiles`/katalog — tanpa `auth.users`, jadi
-login email gagal (`Database error querying schema`), Google tetap work.
-`NEXT_PUBLIC_SUPABASE_URL` sudah ada di `.env.local` (Bun auto-load).
-Tinggal tambah service-role key sekali pakai (Project Settings > API),
-lalu:
+Login email pakai `signInWithOtp` — tanpa `auth.users` buatan manual, tanpa
+password seed. User (termasuk 9 akun seed) cukup ketik email di `/masuk`,
+ketuk tautan di inbox. Signup/in pertama auto-bikin profil student via
+trigger `handle_new_user`.
 
-```bash
-SUPABASE_SERVICE_ROLE_KEY=<key> bun run seed:auth Porsi123!
-```
+Aktifkan di hosted project (Dashboard > Auth > Providers > Email):
+`Confirm email` + template **Magic Link** (subject `Tautan masuk Porsi
+Terakhir`, body `supabase/templates/magic-link.html`, terdaftar di
+`supabase/config.toml` sbg `[auth.email.template.magic_link]`).
+Redirect allowlist: `http://localhost:3000/auth/callback` +
+`https://seporsi-terakhir.my.id/auth/callback` (sudah di `setup.md` §3 dan
+`config.toml` `additional_redirect_urls`).
 
-Atau simpan permanen di `.env.local` (file ini git-ignored, aman):
-`SUPABASE_SERVICE_ROLE_KEY=<key>`, lalu cukup `bun run seed:auth Porsi123!`.
-9 akun (`src/lib/domain/seed-accounts.ts`): `admin@kampus.ac.id`,
-`warteg|kopi|padang|soto|pecel|geprek@kampus.ac.id`,
-`rafi|sinta@student.ac.id` — semua password = argumen di atas.
-JANGAN pakai service-role key / password seed di production.
+Verifikasi sekali (dev): nyalakan dev, buka `/masuk`, masukkan email seed
+(mis. `rafi@student.ac.id`), cek inbox → ketuk tautan → mendarat di
+`/katalog` (student) sesuai role. Tautan kedaluwarsa/bekas pakai mendarat di
+`/masuk?error=magic-link` ("Tautan tidak valid atau kedaluwarsa…").
 
 ## 7. Data demo semua tabel (`bun run db:seed`)
 
