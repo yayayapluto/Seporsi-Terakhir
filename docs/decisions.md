@@ -126,3 +126,15 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
    datetime-local prefill `T+slice(0,16)`, pgTAP plan 16. Laporan penuh:
    `docs/qa/bug-hunt-report.md`. Docker mati → RPC Baru unverified
    di DB lokal; `check` + `build` hijau.
+24. **Akun seed email+password (BUG-2026-10-28, 28 Okt)**: `seed.sql` tak
+   pernah bikin `auth.users` (placeholder UUID + FK ke `auth.users.id`),
+   jadi login email gagal `Database error querying schema` sementara Google
+   work via trigger `handle_new_user`. Fix: `scripts/seed-auth.ts`
+   (dev-only, service-role key dari env tak ter-commit) bikin auth user via
+   Admin API + remap `tenants.owner_id` placeholder → id asli + set
+   role/`is_approved`; `SEED_ACCOUNTS` di `src/lib/domain/seed-accounts.ts`
+   jadi source of truth; password dev (`Porsi123!`) hanya di `docs/setup.md`
+   §6, tak di repo. Docker mati → `db:reset`/`db:test` aktual + verifikasi
+   login di tangan owner; `bun run check` + 32 unit test hijau.
+
+25. **Landing impeccable 5-command (28 Okt)**: `motion` 14.7.1 sempat di-install untuk focal board entrance, lalu dibatalkan — CSS `@keyframes chalk-in` + `prefers-reduced-motion` cukup (stagger via `animation-delay`, visible-by-default, tanpa JS). Lock di-prune via `bun install`. Perubahan `page.tsx` (hero `text-balance`/`font-heading`, trust row `min-h-11`, papan: sr-heading + tabular + WIB + baris Habis stempel miring, kickers hapus, section `scroll-mt-20`, CTA primer → `/katalog`) + `globals.css` (keyframes). Detector `[]`, `check` (32 test) + `build` hijau.

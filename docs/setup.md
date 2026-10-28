@@ -27,8 +27,7 @@ Create an OAuth client (Web):
   the Google client id/secret in the hosted project's Auth settings.
 - Add app redirect URLs to Supabase allowed redirects: `http://localhost:3000`,
   `http://localhost:3000/auth/callback`, `https://seporsi-terakhir.my.id`,
-  `https://seporsi-terakhir.my.id/auth/callback`.
-- If you connect the Supabase MCP to the agent, point it **only at the dev project**.
+
 
 ## 4. Roles without the admin UI (until Phase 6)
 
@@ -43,3 +42,23 @@ update public.profiles set role = 'admin' where email = 'you@campus.ac.id';
 
 Real Google sign-in needs the human-provided OAuth credentials above. Until
 then, Phase 3 reports login as "needs human verification".
+
+## 6. Akun seed email+password (dev only)
+
+`supabase/seed.sql` hanya isi `profiles`/katalog — tanpa `auth.users`, jadi
+login email gagal (`Database error querying schema`), Google tetap work.
+`NEXT_PUBLIC_SUPABASE_URL` sudah ada di `.env.local` (Bun auto-load).
+Tinggal tambah service-role key sekali pakai (Project Settings > API),
+lalu:
+
+```bash
+SUPABASE_SERVICE_ROLE_KEY=<key> bun run seed:auth Porsi123!
+```
+
+Atau simpan permanen di `.env.local` (file ini git-ignored, aman):
+`SUPABASE_SERVICE_ROLE_KEY=<key>`, lalu cukup `bun run seed:auth Porsi123!`.
+
+9 akun (`src/lib/domain/seed-accounts.ts`): `admin@kampus.ac.id`,
+`warteg|kopi|padang|soto|pecel|geprek@kampus.ac.id`,
+`rafi|sinta@student.ac.id` — semua password = argumen di atas.
+JANGAN pakai service-role key / password seed di production.

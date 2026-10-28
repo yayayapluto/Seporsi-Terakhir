@@ -1,0 +1,7 @@
+- bug_id: BUG-2026-10-28T120000
+  date: 2026-10-28
+  severity: medium
+  priority: high
+  scope: auth/seed
+  summary: akun seed tak bisa login email+password, Google OK
+  file: specs/bugs/BUG-2026-10-28T120000-seed-email-login.md
