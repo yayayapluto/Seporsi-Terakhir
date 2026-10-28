@@ -1,0 +1,21 @@
+- bug_id: BUG-2026-10-28T120000
+  date: 2026-10-28
+  severity: medium
+  priority: high
+  scope: auth/seed
+  summary: akun seed tak bisa login email+password, Google OK
+  file: specs/bugs/BUG-2026-10-28T120000-seed-email-login.md
+- bug_id: BUG-2026-10-28T122802
+  date: 2026-10-28
+  severity: high
+  priority: high
+  scope: auth/seed
+  summary: 8 email seed 500 di semua jalur Auth (state korup server-side), sinta OK
+  file: specs/bugs/BUG-2026-10-28T122802-seed-auth-500.md
+- bug_id: BUG-2026-10-28T090000
+  date: 2026-10-28
+  severity: low
+  priority: medium
+  scope: katalog/detail
+  summary: detail kadang empty-state + log load gagal undefined (nol-baris maybeSingle dilog sebagai error)
+  file: specs/bugs/BUG-2026-10-28T090000-katalog-detail-undefined.md
