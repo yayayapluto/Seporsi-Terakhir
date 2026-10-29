@@ -4,17 +4,15 @@ import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "@/components/spinner";
-import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
+/** Danger Action Card — satu-satunya tempat aksi Keluar (Siera §5.3). */
 export function SignOutButton() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   return (
-    <Button
+    <button
       type="button"
-      variant="ghost"
-      className="min-h-11 text-muted-foreground"
       disabled={busy}
       onClick={async () => {
         setBusy(true);
@@ -26,18 +24,24 @@ export function SignOutButton() {
           router.refresh();
         }
       }}
+      className="flex min-h-11 w-full items-center gap-3 rounded-[20px] border border-[#E8ECE9] bg-card p-4 text-left shadow-[0_1px_2px_rgba(16,24,40,.04)] transition-opacity active:opacity-70 disabled:opacity-60"
     >
-      {busy ? (
-        <>
-          <Spinner />
-          Keluar…
-        </>
-      ) : (
-        <>
-          <LogOut className="mr-2 size-4 shrink-0" aria-hidden />
-          Keluar dari akun
-        </>
-      )}
-    </Button>
+      <span
+        aria-hidden
+        className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FEE2E2] text-[#BA1A1A]"
+      >
+        <LogOut className="size-5" />
+      </span>
+      <span className="flex-1 text-sm font-bold text-[#BA1A1A]">
+        {busy ? (
+          <span className="flex items-center gap-2">
+            <Spinner />
+            Keluar…
+          </span>
+        ) : (
+          "Keluar"
+        )}
+      </span>
+    </button>
   );
 }
