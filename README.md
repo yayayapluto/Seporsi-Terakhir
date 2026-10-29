@@ -2,68 +2,140 @@
 
 ![Deploy](https://github.com/yayayapluto/Seporsi-Terakhir/actions/workflows/deploy.yml/badge.svg?branch=main)
 
-Hyper-local campus food-rescue web app (MVP pilot): canteen tenants sell
-end-of-day leftover cooked food at a discount; students order, pick up with a
-QR, pay on the spot. Every scanned pickup is recorded as SDG 12 impact data.
+**Porsi Terakhir** adalah aplikasi *food rescue* kampus: kantin menjual sisa makanan matang layak konsumsi dengan harga diskon (±45% dari harga normal), mahasiswa memesan lalu mengambil dengan QR dan membayar di tempat. Setiap pengambilan tercatat sebagai data dampak SDG 12 (makanan terselamatkan).
 
-Indonesian UI copy only (casual-friendly). Code, identifiers, comments in English.
+> Copy antarmuka berbahasa Indonesia. Kode, identifier, dan komentar dalam bahasa Inggris.
 
-## Quick start
+## Fitur utama
+
+- **Katalog porsi selamat** — hanya porsi dalam jendela jual (120–240 menit pasca-matang, default 180) yang tampil; yang kedaluwarsa otomatis tidak bisa dipesan.
+- **Pemesanan 3 langkah** — pilih porsi → buat pesanan → tunjukkan QR saat ambil, bayar di tempat.
+- **Dashboard tenant** — kelola menu, posting porsi, kelola pesanan, pindai QR pengambilan.
+- **Dashboard admin** — metrik dampak (porsi terselamatkan, tingkat penjualan) + persetujuan tenant + ekspor CSV.
+- **Keamanan berlapis** — proteksi route per peran di server + Row Level Security (RLS) di Postgres.
+
+## Daftar halaman
+
+### Publik (tanpa login)
+
+| Rute | Deskripsi |
+| --- | --- |
+| `/` | Landing page |
+| `/katalog` | Daftar porsi tersedia |
+| `/katalog/[portionId]` | Detail porsi (waktu masak, alergen, harga) |
+| `/cara-kerja` | Alur cara kerja aplikasi |
+| `/masuk` | Login (magic link / Google) |
+
+### Mahasiswa (`student`)
+
+| Rute | Deskripsi |
+| --- | --- |
+| `/pesanan` | Riwayat pesanan saya |
+| `/pesanan/[orderId]` | Detail pesanan + QR pengambilan + status live |
+| `/profil` | Profil + statistik kontribusi |
+
+### Tenant (`tenant`)
+
+| Rute | Deskripsi |
+| --- | --- |
+| `/tenant` | Dashboard tenant |
+| `/tenant/menu` | Kelola menu (harga normal diset sekali per item) |
+| `/tenant/porsi/baru` | Posting porsi baru (waktu masak wajib) |
+| `/tenant/porsi/[portionId]/edit` | Ubah porsi |
+| `/tenant/pesanan` | Daftar pesanan masuk |
+| `/tenant/pesanan/[id]` | Detail pesanan |
+| `/tenant/scan` | Pindai QR pengambilan |
+| `/tenant/pendaftaran` | Formulir pendaftaran tenant |
+| `/tenant/menunggu-persetujuan` | Status menunggu persetujuan admin |
+
+### Admin (`admin`)
+
+| Rute | Deskripsi |
+| --- | --- |
+| `/admin` | Dashboard dampak + ekspor CSV |
+| `/admin/tenant` | Persetujuan tenant baru |
+
+## RBAC (Role-Based Access Control)
+
+Tiga peran tersimpan di `profiles.role`: `student`, `tenant`, `admin`.
+
+| Mekanisme | Lokasi | Perilaku |
+| --- | --- | --- |
+| `getCurrentUser()` | `src/lib/auth/index.ts` | Ambil user Supabase Auth + role dari `profiles`; `null` bila anonim/profil belum ada |
+| `requireRole(next, ...roles)` | `src/lib/auth/index.ts` | Anonim → redirect `/masuk?next=...`; peran salah → redirect ke home perannya |
+| `requireOwnTenant(next)` | `src/app/tenant/guard.ts` | Tenant wajib punya baris tenant milik sendiri; belum daftar → `/tenant/pendaftaran`, belum disetujui → `/tenant/menunggu-persetujuan` (admin lolos guard peran, tetap diarahkan bila tak punya tenant) |
+| RLS Postgres | `supabase/migrations/` | Penegakan otorisasi di level database, bukan hanya di UI |
+
+Home per peran (`homeForRole`): `admin` → `/admin`, `tenant` → `/tenant`, `student` → `/katalog`.
+
+## Teknologi
+
+| Lapisan | Stack |
+| --- | --- |
+| Framework | Next.js 16.4.3 (App Router), React 19 |
+| Styling | Tailwind CSS v4, shadcn/ui, `lucide-react`, `motion` |
+| Backend | Supabase (Postgres + Auth + RLS), Google sign-in via Supabase Auth |
+| Validasi | Zod + react-hook-form |
+| QR | `react-qr-code` (render), `@yudiel/react-qr-scanner` (pindai) |
+| Kualitas | Biome (lint+format), TypeScript strict, Vitest |
+| Toolchain | Bun (lockfile `bun.lock`), Node 24, deploy Cloudflare via OpenNext |
+
+Aturan domain inti: hanya makanan matang yang bisa disimpan (BR-1), jendela jual 120–240 menit (BR-2), waktu masak wajib tampil (BR-3), diskon saran ±45% ke kelipatan Rp500 (BR-6), tanpa biaya platform di pilot (BR-7).
+
+## Cara menjalankan
+
+### 1. Prasyarat
+
+- Bun ≥ 1.3.0, Node 24
+- Project Supabase hosted yang sudah di-link (`supabase link`)
+
+### 2. Instalasi
 
 ```bash
 bun install
-cp .env.example .env.local   # fill in Supabase URL + anon key
-bun run dev                  # http://localhost:3000
+cp .env.example .env.local   # isi Supabase URL + anon key
 ```
 
-Local Supabase (needs Docker):
+### 3. Database + seed demo
 
 ```bash
-bun run db:start    # start
-bun run db:reset    # migrasi + seed.sql (profil placeholder)
-bun run seed:auth "isi-password-dev-min-6"  # auth.users + role (password cuma syarat Admin API)
-bun run db:seed     # 6 tenant, 16 menu, 16 porsi, 3 order contoh
-bun run db:stop     # stop
+bun run db:push       # migrasi ke Supabase hosted
+bun run seed:auth "isi-password-dev-min-6"  # auth.users + role (password hanya syarat Admin API)
+bun run db:seed       # 6 tenant, 16 menu, 16 porsi, 3 order contoh
 ```
 
-## Demo accounts (seed)
+> Urutan wajib: `seed:auth` **sebelum** login pertama — jika tidak, trigger `handle_new_user` membuat profil `student` untuk semua role.
 
-Login via **magic link** (tanpa password): ketik email di `/masuk`, ketuk
-tautan di inbox. Password `seed:auth` tak dipakai login.
+### 4. Jalankan
 
-Akun `@yopmail.com` = inbox publik tanpa login (buka `yopmail.com`, ketik
-nama, magic link ada di sana). Hanya untuk dev — jangan pakai data asli.
+```bash
+bun run dev   # http://localhost:3000
+```
 
-| Role    | Email                                  |
-| ------- | -------------------------------------- |
-| admin   | admin1793198479@yopmail.com            |
-| tenant  | warteg/kopi/padang/soto/pecel/geprek1793198479@yopmail.com |
-| student | rafi/sinta1793198479@yopmail.com       |
+### 5. Perintah lain
 
-Urutan wajib: `seed:auth` **sebelum** login pertama (kalau tidak, trigger
-`handle_new_user` bikin profil student untuk semua role). Detail:
-`docs/setup.md` §4–§6.
+| Command | Fungsi |
+| --- | --- |
+| `bun run check` | lint + typecheck + test (gate tiap fase) |
+| `bun run build` | `next build` |
+| `bun run test` | Vitest (unit, logika domain) |
+| `bun run db:types` | Regenerasi `src/types/database.ts` (jangan edit manual) |
+| `bun run deploy` | Build + deploy ke Cloudflare (wajib lewat adapter OpenNext) |
 
-## Commands
+## Akun demo (seed, dev saja)
 
-| Command            | Runs                              |
-| ------------------ | --------------------------------- |
-| `bun run dev`      | Next.js dev server                |
-| `bun run check`    | lint + typecheck + tests (gate)   |
-| `bun run build`    | `next build` (CF: ubah ke opennext, lihat bawah) |
-| `bun run test`     | Vitest (unit tests, domain logic) |
-| `bun run db:*`     | Supabase local lifecycle          |
-| `bun run db:seed`  | tenants + menu + porsi + order contoh |
-| `bun run deploy`   | opennext build + deploy ke Cloudflare |
+Login via **magic link**: ketik email di `/masuk`, klik tautan di inbox. Akun `@yopmail.com` memakai inbox publik (buka `yopmail.com`, ketik nama) — hanya untuk dev, jangan pakai data asli.
+
+| Role | Email |
+| --- | --- |
+| admin | `admin1793198479@yopmail.com` |
+| tenant | `warteg/kopi/padang/soto/pecel/geprek1793198479@yopmail.com` |
+| student | `rafi/sinta1793198479@yopmail.com` |
 
 ## Deploy (Cloudflare)
 
-Build command di dashboard CF wajib panggil adapter:
-`bunx opennextjs-cloudflare build` (atau satu perintah `bun run deploy`),
-deploy command `bunx opennextjs-cloudflare deploy`.
-`bun run build` polos (`next build`) tak hasilkan `.open-next/` → deploy gagal.
+Build di dashboard CF wajib memanggil adapter (`bunx opennextjs-cloudflare build`, atau cukup `bun run deploy`); command deploy `bunx opennextjs-cloudflare deploy`. `bun run build` polos (`next build`) tidak menghasilkan `.open-next/` → deploy gagal.
 
-## Manual steps
+## Langkah manual
 
-See `docs/setup.md` (Google OAuth, Supabase, redirect allowlist). Login email:
-magic link + Email provider aktif; Google perlu kredensial OAuth manusia.
+Lihat `docs/setup.md` (Google OAuth, Supabase, redirect allowlist). Login email butuh provider Email + magic link aktif; Google butuh kredensial OAuth manusia.
