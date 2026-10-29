@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
-import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { SmoothProvider } from "@/components/smooth-provider";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -23,11 +23,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="id" className={`${jakarta.variable} ${inter.variable} h-full antialiased`}>
+    <html
+      lang="id"
+      data-scroll-behavior="smooth"
+      className={`${jakarta.variable} ${inter.variable} h-full antialiased`}
+    >
       <body className="flex min-h-full flex-col">
         <SiteHeader />
-        <main className="flex flex-1 flex-col">{children}</main>
-        <SiteFooter />
+        <main className="flex flex-1 flex-col">
+          <SmoothProvider>{children}</SmoothProvider>
+        </main>
       </body>
     </html>
   );
