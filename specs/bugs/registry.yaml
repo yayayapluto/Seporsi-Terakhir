@@ -34,3 +34,30 @@
   scope: build/css
   summary: Cloudflare build gagal - @import shadcn/tailwind.css tak ter-resolve (stray lokal)
   file: specs/bugs/BUG-2026-10-28T134000-cloudflare-shadcn-import.md
+- bug_id: BUG-2026-10-29T120000
+  date: 2026-10-29
+  severity: medium
+  priority: high
+  scope: nav/ux
+  summary: link tombol diam saat navigasi, tanpa umpan balik pending
+  file: specs/bugs/BUG-2026-10-29T120000-nav-tanpa-feedback.md
+- bug_id: BUG-2026-10-29T133000
+  date: 2026-10-29
+  severity: medium
+  priority: high
+  scope: pesanan/realtime
+  summary: status pembeli tak realtime setelah tenant konfirmasi pickup
+  file: specs/bugs/BUG-2026-10-29T133000-pickup-tak-realtime.md
+- bug_id: BUG-2026-10-29T192700
+  date: 2026-10-29
+  severity: medium
+  priority: high
+  scope: tenant/porsi
+  summary: hydration mismatch TimeField di /tenant/porsi/baru (stale cache + new Date di render)
+  file: specs/bugs/BUG-2026-10-29T192700-porsi-baru-timefield-hydration.md
+  status: fixed
+  files_changed:
+    - src/app/tenant/porsi/portion-form.tsx
+  approach: todayStr dari prop server, tanpa new Date di render
+  risk_level: low
+  commit_message: "fix(porsi): todayStr dari prop server cegah hydration mismatch"
