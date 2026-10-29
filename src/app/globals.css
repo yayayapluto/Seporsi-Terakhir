@@ -94,6 +94,11 @@
   html.lenis body {
     height: auto;
   }
+  /* ponytail: full-bleed aman — potong overflow-X sisa 100vw rounding tanpa sembunyikan konten. */
+  html,
+  body {
+    overflow-x: clip;
+  }
   .lenis.lenis-smooth {
     scroll-behavior: auto;
   }

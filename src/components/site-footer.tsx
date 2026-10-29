@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-card [box-shadow:0_0_0_100vmax_var(--card)] [clip-path:inset(0_-100vmax)]">
-      <div aria-hidden="true" className="h-px bg-border [box-shadow:0_0_0_100vmax_var(--border)] [clip-path:inset(0_-100vmax)]" />
+    <footer className="relative left-1/2 w-screen max-w-none -translate-x-1/2 bg-card">
+      <div aria-hidden="true" className="h-px bg-border" />
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3">
         <div className="flex flex-col gap-2">
           <p className="flex items-center gap-2 font-heading text-base font-bold">
