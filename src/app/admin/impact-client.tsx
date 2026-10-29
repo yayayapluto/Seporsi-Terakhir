@@ -126,7 +126,7 @@ export function ImpactClient({
             <caption className="sr-only">Rekap per gerai pada rentang terpilih</caption>
             <thead>
               <tr className="border-b text-left text-xs font-semibold text-muted-foreground">
-                <th scope="col" className="py-2 pr-3">
+                <th scope="col" className="sticky left-0 bg-card py-2 pr-3">
                   Gerai
                 </th>
                 <th scope="col" className="py-2 pr-3">
@@ -152,7 +152,7 @@ export function ImpactClient({
             <tbody className="divide-y divide-border">
               {rows.map((r) => (
                 <tr key={r.tenantName}>
-                  <td className="py-3 pr-3 font-semibold">{r.tenantName}</td>
+                  <td className="sticky left-0 bg-card py-3 pr-3 font-semibold">{r.tenantName}</td>
                   <td className="py-3 pr-3">{r.portionsPosted}</td>
                   <td className="py-3 pr-3">{r.portionsPickedUp}</td>
                   <td className="py-3 pr-3">

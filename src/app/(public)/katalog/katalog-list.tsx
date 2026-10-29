@@ -144,20 +144,15 @@ export function KatalogList({
                       ) : (
                         <span className="flex size-full flex-col items-center justify-center gap-0.5 text-muted-foreground">
                           <ImageOff className="size-5" aria-hidden />
-                          <span className="px-1 text-center text-[10px] leading-tight">
+                          <span className="px-1 text-center text-xs leading-tight">
                             tidak ada gambar
                           </span>
                         </span>
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h2 className="line-clamp-2 min-h-10 break-words text-[15px] font-bold leading-snug sm:text-base">
-                        <Link
-                          href={`/katalog/${p.id}`}
-                          className="underline-offset-4 hover:underline group-hover:underline after:absolute after:inset-0 after:content-['']"
-                        >
-                          {p.menuName}
-                        </Link>
+                      <h2 className="line-clamp-2 min-h-10 break-words text-sm font-bold leading-snug sm:text-base">
+                        {p.menuName}
                       </h2>
                       <p className="mt-0.5 truncate text-xs text-muted-foreground">
                         {p.tenantName} · Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
@@ -167,7 +162,7 @@ export function KatalogList({
                   </div>
                   <div className="flex shrink-0 flex-row items-center justify-between gap-2 sm:ml-auto sm:flex-col sm:items-end sm:justify-between">
                     <p className="flex flex-wrap items-baseline gap-x-1.5 text-sm">
-                      <del className="text-[11px] text-muted-foreground sm:text-xs">
+                      <del className="text-xs text-muted-foreground">
                         <span className="sr-only">Harga awal: </span>
                         {formatIDR(p.normalPrice)}
                       </del>
@@ -214,7 +209,7 @@ export function KatalogList({
             body: "Pilih tenant atau urutan hampir habis.",
           },
           {
-            target: "ul li:first-child",
+            target: "ul li:first-child a, ul li:first-child button",
             title: "Kunci porsimu",
             body: "Ketuk Lihat & Pesan, atur jumlah, ambil dengan QR, bayar di tempat.",
           },

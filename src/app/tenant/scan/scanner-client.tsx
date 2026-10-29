@@ -52,10 +52,18 @@ export function ScannerClient() {
       setPhase({ kind: "error", message: res.error });
       return;
     }
+    if (res.order.status === "picked_up") {
+      setPhase({ kind: "error", message: "Pesanan ini sudah diambil." });
+      return;
+    }
+    if (res.order.status === "cancelled") {
+      setPhase({ kind: "error", message: "Pesanan ini sudah dibatalkan." });
+      return;
+    }
     if (res.order.status !== "reserved") {
       setPhase({
         kind: "error",
-        message: `Pesanan sudah ${orderStatusLine(res.order.status).toLowerCase()}.`,
+        message: `Pesanan berstatus ${orderStatusLine(res.order.status).toLowerCase()}.`,
       });
       return;
     }
@@ -69,10 +77,18 @@ export function ScannerClient() {
       setPhase({ kind: "error", message: res.error });
       return;
     }
+    if (res.order.status === "picked_up") {
+      setPhase({ kind: "error", message: "Pesanan ini sudah diambil." });
+      return;
+    }
+    if (res.order.status === "cancelled") {
+      setPhase({ kind: "error", message: "Pesanan ini sudah dibatalkan." });
+      return;
+    }
     if (res.order.status !== "reserved") {
       setPhase({
         kind: "error",
-        message: `Pesanan sudah ${orderStatusLine(res.order.status).toLowerCase()}.`,
+        message: `Pesanan berstatus ${orderStatusLine(res.order.status).toLowerCase()}.`,
       });
       return;
     }

@@ -31,8 +31,12 @@ export async function lookupOrderByToken(token: string): Promise<
     .select("status, quantity, portions!inner(tenant_id, menu_items!inner(name))")
     .eq("pickup_token", parsed.data)
     .maybeSingle();
-  if (error || !data)
-    return { ok: false, error: "QR tidak dikenali atau bukan pesanan tenant ini." };
+  if (error) return { ok: false, error: "Gagal membaca QR. Coba lagi." };
+  if (!data)
+    return {
+      ok: false,
+      error: "QR tidak dikenali. Pastikan kode dari layar pesanan mahasiswa.",
+    };
   const portion = data.portions as unknown as {
     tenant_id: string;
     menu_items: { name: string };
