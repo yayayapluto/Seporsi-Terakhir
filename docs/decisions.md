@@ -97,15 +97,14 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
     (impeccable/scripts); typecheck + test hijau, scope `src`/`supabase` bersih.
 19. **Advisories audit (28 Okt, weighed)**: `is_active` fix dipindah ke
     migrasi `20261028000002` (000001 dikembalikan utuh — belum pernah apply,
-    aman). `scripts` `db:test`/`db:types` ditambah. `getOwnTenant` tanpa
+    aman). `scripts` `db:types` ditambah (`db:test` wacana pgTAP tak jadi). `getOwnTenant` tanpa
     redirect di dalam; semua RPC snake_case; QR import valid; policy
     replay-safe; grants explicit ke `authenticated`.
-20. **DB debt eksplisit**: Docker daemon down → `db:reset`/`db:test`/
-    `db:types` belum bisa jalan. `src/types/` dibuat + `.gitattributes`
-    (`eol=lf`) agar state nempel. pgTAP policy count dibetulkan 5→6
+ 20. **DB debt eksplisit [retired — era Docker, kini hosted-only]**: Docker daemon down → perintah lokal
+    `db:reset`/`db:test`/`db:types` belum bisa jalan saat itu. Kini: `db:push`, `db:migrations`,
+    `db:types` ke hosted linked; `seed:auth` → `db:seed` untuk data demo. `src/types/` dibuat +
+    `.gitattributes` (`eol=lf`) agar state nempel. pgTAP policy count dibetulkan 5→6
     (akibat `tenants_admin_read`) + cek 12 RPC; daily-cap skip bertahan.
-    Gate sebelum screen baru: Docker hidup → `db:reset` → `db:test` →
-    `db:types`. Bukan silent.
 21. **Lint truth (28 Okt)**: `biome.json` exclude `.claude/.omp/.pi` (tanpa
     `/**` — rule Biome 2.2 `useBiomeIgnoreFolder`, safe-fix) → `bun run check`
     hijau penuh (lint + typecheck + 29 test).
@@ -135,8 +134,8 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
    Admin API + remap `tenants.owner_id` placeholder → id asli + set
    role/`is_approved`; `SEED_ACCOUNTS` di `src/lib/domain/seed-accounts.ts`
    jadi source of truth; password dev (`Porsi123!`) hanya di `docs/setup.md`
-   §6, tak di repo. Docker mati → `db:reset`/`db:test` aktual + verifikasi
-   login di tangan owner; `bun run check` + 32 unit test hijau.
+   §6, tak di repo. Saat itu Docker mati → verifikasi aktual di tangan owner via hosted
+   `db:push` + login; `bun run check` + 32 unit test hijau.
 25. **Landing impeccable 5-command (28 Okt)**: `page.tsx` (hero `text-balance`/`font-heading`, trust row `min-h-11`, papan: sr-heading + tabular + WIB + baris Habis stempel miring, kickers hapus, section `scroll-mt-20`, CTA primer → `/katalog`). Detector `[]`, `check` (32 test) + `build` hijau. CSS keyframes awal lalu diganti `motion` (`Pressable` whileHover/whileTap, reduced-motion off — lihat #26).
 26. **Audit shadcn+motion penuh (28 Okt, perintah owner)**: 10 primitif baru via `shadcn add` (select/accordion/checkbox/textarea/radio-group/tabs/switch/slider/progress/toggle). 5 `<select>` native → shadcn Select (katalog/pesanan/qty/menu/window; RHF Select via watch+setValue). ~40 button/input/label native → Button/Input/Label/Checkbox (+buttonVariants utk Link). FAQ `<details>` → Accordion. Motion: Pressable (whileHover/whileTap, reduced-motion off) utk 4 CTA landing; accordion pakai animasi bawaan `animate-accordion-down`. Slider generated kena `biome-ignore noArrayIndexKey` (preseden label.tsx). Proof: `check` (32 test) + `build` hijau, FAQ 4 item expand, nol `<select>/<details>/<input>/<button>/<label>` native di app. Skipped skills: tak ada dep baru (base-ui sudah ada).
 

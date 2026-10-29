@@ -39,22 +39,21 @@
    **GREEN**: `scripts/seed-auth.ts` (bun, service-role key dari env lokal,
    dev-only): createUser via Admin API + upsert profiles/tenant linkage
    by email; password seed dev didokumen di `docs/setup.md`.
-   **verify**: `bun run seed:auth && supabase test db`
+   **verify**: `bun run seed:auth` lalu `bun run db:push` ke hosted dev (pgTAP wacana tak jadi — `supabase/tests/` tak ada)
 2. **RED**: pgTAP assert tiap `tenants.owner_id` → profile role tenant
    dengan email seed yang benar.
    **GREEN**: script promosikan role via path `approve_tenant` (bukan
    update mentah — `guard_profile_role` tolak).
-   **verify**: `supabase test db`
-3. **REFACTOR**: `supabase/seed.sql` idempoten tanpa UUID placeholder
-   (resolve id by email); wire `seed:auth` di `package.json`
-   (`scripts/seed.ts` klaim `bun run seed` tapi script tak ada);
-   catat di `docs/decisions.md`.
+   **verify**: verifikasi link `owner_id` di hosted dev (pgTAP wacana tak jadi)
+ 3. **REFACTOR**: `supabase/seed.sql` idempoten tanpa UUID placeholder
+    (resolve id by email); `seed:auth` sudah di `package.json`;
+    catat di `docs/decisions.md`.
 
 ## Acceptance Criteria
 
 - [ ] 9 akun seed login email+password sukses, role benar
 - [ ] `/katalog` tampil data seed untuk akun student
-- [ ] Google login tetap work; `bun run check` hijau; pgTAP hijau
+ - [ ] Google login tetap work; `bun run check` hijau
 
 ## Resolution
 
