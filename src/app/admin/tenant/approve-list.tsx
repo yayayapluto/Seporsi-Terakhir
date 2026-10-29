@@ -4,21 +4,21 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
-import { approveTenant } from "../actions";
+import { approveTenant, rejectTenant } from "../actions";
 import type { PendingTenant } from "./page";
 
 /** Daftar pendaftar tenant + panel inline persetujuan (confirm step). */
 export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
   const router = useRouter();
   const [openId, setOpenId] = useState<string | null>(null);
-  const [confirming, setConfirming] = useState(false);
+  const [confirming, setConfirming] = useState<"approve" | "reject" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function approve(id: string) {
-    setConfirming(true);
+  async function act(id: string, kind: "approve" | "reject") {
+    setConfirming(kind);
     setError(null);
-    const result = await approveTenant(id);
-    setConfirming(false);
+    const result = kind === "approve" ? await approveTenant(id) : await rejectTenant(id);
+    setConfirming(null);
     if (!result.ok) {
       setError(result.error);
       return;
@@ -93,9 +93,13 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                     Menyetujui akan mengaktifkan akun tenant ini dan menampilkan gerainya di
                     katalog. Tindakan ini berlaku langsung.
                   </p>
-                  <div className="mt-3 flex gap-2">
-                    <Button type="button" disabled={confirming} onClick={() => approve(t.id)}>
-                      {confirming ? (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      disabled={confirming !== null}
+                      onClick={() => act(t.id, "approve")}
+                    >
+                      {confirming === "approve" ? (
                         <>
                           <Spinner />
                           Menyetujui…
@@ -106,9 +110,24 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                     </Button>
                     <Button
                       type="button"
+                      variant="destructive"
+                      disabled={confirming !== null}
+                      onClick={() => act(t.id, "reject")}
+                    >
+                      {confirming === "reject" ? (
+                        <>
+                          <Spinner />
+                          Menolak…
+                        </>
+                      ) : (
+                        "Tolak pendaftar"
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
                       variant="outline"
                       onClick={() => setOpenId(null)}
-                      disabled={confirming}
+                      disabled={confirming !== null}
                     >
                       Batal
                     </Button>

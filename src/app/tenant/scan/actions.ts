@@ -14,6 +14,7 @@ export async function lookupOrderByToken(token: string): Promise<
         menuName: string;
         quantity: number;
         status: string;
+        totalPrice: number;
       };
     }
   | { ok: false; error: string }
@@ -28,7 +29,9 @@ export async function lookupOrderByToken(token: string): Promise<
   // Token opaque → server cari order; student identity disamarkan.
   const { data, error } = await supabase
     .from("orders")
-    .select("status, quantity, portions!inner(tenant_id, menu_items!inner(name))")
+    .select(
+      "status, quantity, discount_price_snapshot, portions!inner(tenant_id, menu_items!inner(name))",
+    )
     .eq("pickup_token", parsed.data)
     .maybeSingle();
   if (error) return { ok: false, error: "Gagal membaca QR. Coba lagi." };
@@ -57,6 +60,7 @@ export async function lookupOrderByToken(token: string): Promise<
       menuName: menu?.name ?? "Menu",
       quantity: data.quantity,
       status: data.status,
+      totalPrice: data.quantity * Number(data.discount_price_snapshot ?? 0),
     },
   };
 }

@@ -7,6 +7,7 @@ import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../../guard";
 import { TenantCancelButton } from "./cancel-button";
+import { CopyTokenButton } from "./copy-token-button";
 
 /** Detail satu pesanan milik tenant: isi order + siapa pemesan + riwayatnya. */
 
@@ -102,13 +103,12 @@ export default async function TenantOrderDetailPage({
       {o.pickupToken && (
         <section aria-labelledby="pickup-heading" className="rounded-xl border bg-card p-5">
           <h2 id="pickup-heading" className="text-lg font-bold">
-            Kode pickup:{" "}
-            <span className="font-mono">{o.pickupToken.slice(0, 8).toUpperCase()}</span>
+            Kode pickup: <span className="font-mono break-all">{o.pickupToken}</span>
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Cocokkan dengan layar mahasiswa bila kamera bermasalah. Kode lengkap ada di QR
-            mahasiswa.
+            Tempel di kolom kode manual halaman Scan pickup bila kamera bermasalah.
           </p>
+          <CopyTokenButton token={o.pickupToken} />
           {o.expiresAt && (
             <p className="mt-2 text-sm">
               Ambil sebelum {formatDateTimeWIB(new Date(o.expiresAt))} WIB

@@ -32,6 +32,31 @@ export async function approveTenant(
   return { ok: true };
 }
 
+/** Admin tolak pendaftaran tenant: hapus baris, pendaftar bisa ajukan ulang. */
+export async function rejectTenant(
+  tenantId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const parsed = IdSchema.safeParse({ tenantId });
+  if (!parsed.success) return { ok: false, error: "Data tenant tidak valid." };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Masuk dulu sebagai admin." };
+  const { error } = await supabase.rpc("reject_tenant", {
+    p_tenant_id: parsed.data.tenantId,
+  });
+  if (error) {
+    const msg = error.message.toLowerCase();
+    if (msg.includes("admin only")) return { ok: false, error: "Khusus admin." };
+    if (msg.includes("not found")) return { ok: false, error: "Tenant tidak ditemukan." };
+    return { ok: false, error: "Gagal menolak tenant. Coba lagi." };
+  }
+  revalidatePath("/admin/tenant");
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
 export interface ExportRow {
   tenantName: string;
   portionsPosted: number;

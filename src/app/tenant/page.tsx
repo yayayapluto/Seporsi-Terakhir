@@ -37,14 +37,16 @@ async function loadData() {
   const dayEndUtc = new Date(`${todayLocal}T00:00:00+07:00`).getTime() + 24 * 60 * 60 * 1000;
   const dayEndIso = new Date(dayEndUtc).toISOString();
 
-  const [portionsRes, ordersRes] = await Promise.all([
+  const nowIso = new Date().toISOString();
+  const hourAgoIso = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const [portionsRes, ordersRes, expiredRes] = await Promise.all([
     supabase
       .from("portions")
       .select(
         "id, quantity_posted, quantity_remaining, discount_price, expires_at, menu_items!inner(name), tenant_id",
       )
       .eq("tenant_id", tenant.id)
-      .gt("expires_at", new Date().toISOString())
+      .gt("expires_at", nowIso)
       .order("expires_at", { ascending: true })
       .limit(20),
     supabase
@@ -56,6 +58,14 @@ async function loadData() {
       .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
       .order("created_at", { ascending: false })
       .limit(50),
+    supabase
+      .from("portions")
+      .select("id, expires_at, menu_items!inner(name)")
+      .eq("tenant_id", tenant.id)
+      .gte("expires_at", hourAgoIso)
+      .lt("expires_at", nowIso)
+      .order("expires_at", { ascending: false })
+      .limit(5),
   ]);
 
   const activePortions: ActivePortion[] = (
@@ -96,11 +106,20 @@ async function loadData() {
     }
   }
 
-  return { activePortions, reservations, pickupsToday, revenueToday, todayLocal };
+  const justExpired: { menuName: string; expiresAt: string }[] = (
+    (expiredRes.data ?? []) as unknown as Array<Record<string, unknown>>
+  ).map((p) => {
+    const mi = p.menu_items as { name: string } | { name: string }[] | null;
+    const menu = Array.isArray(mi) ? mi[0] : mi;
+    return { menuName: menu?.name ?? "Menu", expiresAt: String(p.expires_at) };
+  });
+
+  return { activePortions, reservations, pickupsToday, revenueToday, todayLocal, justExpired };
 }
 
 export default async function TenantDashboardPage() {
-  const { activePortions, reservations, pickupsToday, revenueToday } = await loadData();
+  const { activePortions, reservations, pickupsToday, revenueToday, justExpired } =
+    await loadData();
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <div className="flex flex-col gap-2">
@@ -182,8 +201,9 @@ export default async function TenantDashboardPage() {
         ) : (
           <ul className="mt-2 divide-y divide-border border-b">
             {activePortions.map((p) => {
-              const minutesLeft = Math.round(
-                (new Date(p.expiresAt).getTime() - Date.now()) / 60000,
+              const minutesLeft = Math.max(
+                0,
+                Math.round((new Date(p.expiresAt).getTime() - Date.now()) / 60000),
               );
               const nearExpiry = minutesLeft < 60;
               return (
@@ -222,6 +242,15 @@ export default async function TenantDashboardPage() {
               );
             })}
           </ul>
+        )}
+        {justExpired.length > 0 && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            Baru saja kedaluwarsa (≤1 jam):{" "}
+            {justExpired
+              .map((j) => `${j.menuName} (${formatDateTimeWIB(new Date(j.expiresAt))})`)
+              .join(" · ")}{" "}
+            — posting ulang bila masih layak.
+          </p>
         )}
       </section>
 

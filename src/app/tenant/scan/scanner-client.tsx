@@ -7,6 +7,15 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { formatIDR } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { confirmPickup, lookupOrderByToken } from "./actions";
 
@@ -14,6 +23,7 @@ export interface ScannedOrder {
   menuName: string;
   quantity: number;
   status: string;
+  totalPrice: number;
 }
 
 type Phase =
@@ -36,6 +46,7 @@ export function ScannerClient() {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>({ kind: "scanning" });
   const [confirming, setConfirming] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [manualToken, setManualToken] = useState("");
   const [manualBusy, setManualBusy] = useState(false);
@@ -97,6 +108,7 @@ export function ScannerClient() {
 
   async function onConfirm() {
     if (phase.kind !== "preview") return;
+    setConfirmOpen(false);
     setConfirming(true);
     const res = await confirmPickup(phase.token);
     setConfirming(false);
@@ -236,16 +248,46 @@ export function ScannerClient() {
             <Button type="button" variant="outline" className="min-h-11" onClick={() => reset()}>
               Batal
             </Button>
-            <Button type="button" className="min-h-11" onClick={onConfirm} disabled={confirming}>
-              {confirming ? (
-                <>
-                  <Spinner />
-                  Mengonfirmasi…
-                </>
-              ) : (
-                "Konfirmasi pickup"
-              )}
-            </Button>
+            <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+              <DialogTrigger
+                render={<Button type="button" className="min-h-11" disabled={confirming} />}
+              >
+                {confirming ? (
+                  <>
+                    <Spinner />
+                    Mengonfirmasi…
+                  </>
+                ) : (
+                  "Konfirmasi pickup"
+                )}
+              </DialogTrigger>
+              <DialogContent>
+                <DialogTitle>
+                  Konfirmasi pickup {phase.order.menuName} × {phase.order.quantity}?
+                </DialogTitle>
+                <DialogDescription>
+                  Pastikan pembayaran tunai sudah diterima. Tindakan ini tidak bisa dibatalkan.
+                </DialogDescription>
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="min-h-11"
+                    onClick={() => setConfirmOpen(false)}
+                  >
+                    Kembali
+                  </Button>
+                  <Button
+                    type="button"
+                    className="min-h-11"
+                    onClick={onConfirm}
+                    disabled={confirming}
+                  >
+                    Ya, konfirmasi
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </section>
       )}
@@ -259,6 +301,7 @@ export function ScannerClient() {
           <p className="mt-1 text-sm font-medium">
             {phase.order.menuName} — {phase.order.quantity} porsi
           </p>
+          <p className="mt-1 text-2xl font-bold">{formatIDR(phase.order.totalPrice)} diterima</p>
           <p className="mt-1 text-sm text-muted-foreground">
             Pesanan tercatat selesai. Pembayaran diterima di tempat.
           </p>
