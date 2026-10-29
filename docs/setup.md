@@ -18,9 +18,8 @@ Do these yourself; the agent must not attempt them.
 
  - Put the hosted project URL + anon key in `.env.local`, and
    the Google client id/secret in the hosted project's Auth settings.
- - Migrasi: `bun run db:push` (linked). Cek: `bun run db:migrations`
+ - Migrasi: `bun run db:push` (hosted linked, no Docker). Cek: `bun run db:migrations`
    (Local==Remote).
- - Types: `bun run db:types` (regenerasi `src/types/database.ts` dari hosted).
  - Add app redirect URLs to Supabase allowed redirects: `http://localhost:3000`,
    `http://localhost:3000/auth/callback`, `https://seporsi-terakhir.my.id`,
 

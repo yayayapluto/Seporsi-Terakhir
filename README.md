@@ -114,13 +114,17 @@ bun run dev   # http://localhost:3000
 
 ### 5. Perintah lain
 
-| Command | Fungsi |
-| --- | --- |
-| `bun run check` | lint + typecheck + test (gate tiap fase) |
-| `bun run build` | `next build` |
-| `bun run test` | Vitest (unit, logika domain) |
-| `bun run db:types` | Regenerasi `src/types/database.ts` (jangan edit manual) |
-| `bun run deploy` | Build + deploy ke Cloudflare (wajib lewat adapter OpenNext) |
+ | Command | Fungsi |
+ | --- | --- |
+ | `bun run check` | lint + typecheck + test (gate tiap fase) |
+ | `bun run build` | `next build` |
+ | `bun run test` | Vitest (unit, logika domain) |
+ | `bun run db:push` | Migrasi ke Supabase hosted (linked) |
+ | `bun run db:migrations` | Cek migrasi Local==Remote (linked) |
+ | `bun run seed:auth "pw-min-6"` | auth.users + role (password hanya syarat Admin API) |
+ | `bun run db:seed` | Tenants, 16 menu, 16 porsi segar, 3 order contoh |
+ | `bun run db:types` | Regenerasi `src/types/database.ts` (jangan edit manual) |
+ | `bun run deploy` | Build + deploy ke Cloudflare (wajib lewat adapter OpenNext) |
 
 ## Akun demo (seed, dev saja)
 

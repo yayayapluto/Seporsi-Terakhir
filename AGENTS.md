@@ -14,7 +14,7 @@ react-hook-form (+ `@hookform/resolvers`), Vitest via `bun run test` (never bare
 - `bun run lint` (`biome check .`), `format` (`biome check --write .`)
 - `bun run typecheck` (`tsc --noEmit`), `bun run test` (`vitest run`)
 - `bun run check` = lint + typecheck + test, fails on first error (phase gate)
- - `bun run db:push|migrations|types` (hosted linked; `db:types` regenerates `src/types/database.ts`)
+ - `bun run db:push`, `db:migrations`, `db:types`, `db:seed`, `seed:auth` (hosted linked, no Docker; `db:types` regenerates `src/types/database.ts`)
 
 Toolchain: Bun (`bun.lock` committed; no npm/pnpm/yarn locks), Node v24.21.0
 (`.nvmrc` + `engines`), plain `next dev`/`next build` on Node.
