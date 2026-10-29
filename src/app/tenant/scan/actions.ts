@@ -14,8 +14,6 @@ export async function lookupOrderByToken(token: string): Promise<
         menuName: string;
         quantity: number;
         status: string;
-        slotStart: string | null;
-        slotEnd: string | null;
       };
     }
   | { ok: false; error: string }
@@ -30,9 +28,7 @@ export async function lookupOrderByToken(token: string): Promise<
   // Token opaque → server cari order; student identity disamarkan.
   const { data, error } = await supabase
     .from("orders")
-    .select(
-      "status, quantity, slot_start, slot_end, portions!inner(tenant_id, menu_items!inner(name))",
-    )
+    .select("status, quantity, portions!inner(tenant_id, menu_items!inner(name))")
     .eq("pickup_token", parsed.data)
     .maybeSingle();
   if (error || !data)
@@ -57,8 +53,6 @@ export async function lookupOrderByToken(token: string): Promise<
       menuName: menu?.name ?? "Menu",
       quantity: data.quantity,
       status: data.status,
-      slotStart: (data.slot_start as string | null) ?? null,
-      slotEnd: (data.slot_end as string | null) ?? null,
     },
   };
 }

@@ -14,7 +14,7 @@ react-hook-form (+ `@hookform/resolvers`), Vitest via `bun run test` (never bare
 - `bun run lint` (`biome check .`), `format` (`biome check --write .`)
 - `bun run typecheck` (`tsc --noEmit`), `bun run test` (`vitest run`)
 - `bun run check` = lint + typecheck + test, fails on first error (phase gate)
-- `bun run db:start|stop|reset|types` (`db:types` regenerates `src/types/database.ts`)
+ - `bun run db:push|migrations|types` (hosted linked; `db:types` regenerates `src/types/database.ts`)
 
 Toolchain: Bun (`bun.lock` committed; no npm/pnpm/yarn locks), Node v24.21.0
 (`.nvmrc` + `engines`), plain `next dev`/`next build` on Node.
@@ -29,7 +29,7 @@ Toolchain: Bun (`bun.lock` committed; no npm/pnpm/yarn locks), Node v24.21.0
 - `src/lib/auth/` `getCurrentUser`, `requireRole`
 - `src/lib/` `env.ts` (Zod-validated), `format.ts` (IDR + WIB helpers)
 - `src/types/database.ts` GENERATED — never hand-edit
-- `supabase/` `config.toml`, `migrations/`, `seed.sql`, `tests/` (pgTAP)
+ - `supabase/` `config.toml` (redirect + mail template), `migrations/` (push via `db:push`)
 - `docs/` `product-brief.md`, `decisions.md`, `setup.md`, `design/` (Stitch)
 
 ## Coding conventions
@@ -76,36 +76,5 @@ what was NOT verified, pending manual steps.
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-## Iconography & Motion
-
-### Icons
-- Use `lucide-react` as the only icon library.
-- Never use emoji as UI icons or mix multiple icon libraries.
-- Prefer familiar, semantically correct icons with consistent sizing and stroke weight.
-- Default sizes: `size-4` for inline metadata, `size-5` for buttons and navigation, `size-6` for prominent actions.
-- Align icons optically with their text. Avoid decorative icon tiles and unnecessary icons.
-- Use accessible labels for icon-only buttons and provide visible focus states.
-
-### Motion
-- Use the `motion` package (Motion for React, imported from `motion/react`) for purposeful, subtle UI animation.
-- Add `motion` to the approved dependencies and install it during Phase 1.
-- Prefer CSS transitions for simple hover, focus, and color changes. Use Motion for animations that benefit from orchestration or state awareness.
-- Define a consistent motion system:
-  - Micro-interactions: approximately 120–180ms.
-  - Component transitions: approximately 180–280ms.
-  - Larger page transitions: approximately 250–400ms, only when they improve orientation.
-  - Use subtle opacity and transform changes; avoid exaggerated bounce, elastic effects, and unnecessary parallax.
-- Apply motion selectively to page entrances, dropdowns, dialogs, sheets, catalog item transitions, loading states, and meaningful feedback after user actions.
-- Avoid animating every card independently or adding animation solely for visual decoration.
-- Respect `prefers-reduced-motion`. Disable or simplify non-essential animations when reduced motion is requested.
-- Avoid layout shifts and ensure animations never delay essential interactions.
-- Use `AnimatePresence` only when exit animations are needed. Keep animation logic out of Server Components unless a small dedicated Client Component is appropriate.
-- Keep the initial page render fast and avoid turning entire pages into Client Components just to animate them.
-
-### Design quality gate
-- Icons and motion must reinforce the product's visual identity and usability, not compensate for generic layouts.
-- Before completion, review animations for consistency, restraint, accessibility, and performance.
-- Keep Tailwind CSS v4 and shadcn/ui as the styling and component foundation. Motion supplements them; it does not replace them.
 
 <!-- END:nextjs-agent-rules -->

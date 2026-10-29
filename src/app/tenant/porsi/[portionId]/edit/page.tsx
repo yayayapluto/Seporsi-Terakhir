@@ -27,14 +27,15 @@ export default async function EditPorsiPage({
 
   const menusRes = await supabase
     .from("menu_items")
-    .select("id, name, normal_price")
+    .select("id, name, normal_price, is_active")
     .eq("tenant_id", tenant.id)
-    .eq("is_active", true)
+    .or(`is_active.eq.true,id.eq.${data.menu_item_id}`)
     .order("name", { ascending: true });
   const menus: PortionFormMenu[] = (menusRes.data ?? []).map((m) => ({
     id: m.id,
     name: m.name,
     normalPrice: m.normal_price,
+    isActive: m.is_active,
   }));
 
   // datetime-local WIB butuh "YYYY-MM-DDTHH:MM"; sv-SE kasih spasi → ganti T, potong detik.
@@ -47,7 +48,7 @@ export default async function EditPorsiPage({
   const releaseAtLocal = data.release_at ? toLocalInput(data.release_at) : "";
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <div className="flex flex-col gap-2">
         <p className="text-xs font-bold tracking-widest text-primary">POSTING PORSI</p>
         <h1 className="text-3xl font-bold">Edit porsi</h1>
@@ -56,6 +57,7 @@ export default async function EditPorsiPage({
         </p>
       </div>
       <PortionForm
+        tenantName={tenant.name}
         menus={menus}
         initial={{
           portionId: data.id,

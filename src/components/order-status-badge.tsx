@@ -5,7 +5,7 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 const STATUS_CLASS: Record<string, string> = {
-  reserved: "bg-accent/10 text-accent-strong border-accent/30",
+  reserved: "bg-secondary text-secondary-foreground border-secondary",
   picked_up: "bg-primary/10 text-primary border-primary/30",
   cancelled: "bg-muted text-muted-foreground border-border",
 };

@@ -29,11 +29,26 @@ export default async function PorsiBaruPage() {
     name: m.name,
     normalPrice: m.normal_price,
   }));
-
   const cookedAtLocal = defaultCookedLocal();
   const firstPrice = menus[0]?.normalPrice ?? 0;
+  const { data: last } = await supabase
+    .from("portions")
+    .select("menu_item_id, quantity_posted, sell_window_minutes, discount_price")
+    .eq("tenant_id", tenant.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const yesterday =
+    last != null
+      ? {
+          menuItemId: last.menu_item_id,
+          quantity: last.quantity_posted,
+          sellWindowMinutes: last.sell_window_minutes,
+          discountPrice: last.discount_price,
+        }
+      : null;
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <div className="flex flex-col gap-2">
         <p className="text-xs font-bold tracking-widest text-primary">POSTING PORSI</p>
         <h1 className="text-3xl font-bold">Tambah porsi</h1>
@@ -42,7 +57,9 @@ export default async function PorsiBaruPage() {
         </p>
       </div>
       <PortionForm
+        tenantName={tenant.name}
         menus={menus}
+        yesterday={yesterday}
         initial={{
           menuItemId: "",
           quantity: 1,

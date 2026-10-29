@@ -9,8 +9,6 @@ export interface MyOrder {
   status: string;
   quantity: number;
   createdAt: string;
-  slotStart: string | null;
-  slotEnd: string | null;
   pickedUpAt: string | null;
   normalPriceSnapshot: number;
   discountPriceSnapshot: number;
@@ -32,8 +30,6 @@ async function loadOrders(): Promise<{ orders: MyOrder[]; error: string | null }
       status: String(o.status),
       quantity: Number(o.quantity),
       createdAt: String(o.created_at),
-      slotStart: (o.slot_start as string | null) ?? null,
-      slotEnd: (o.slot_end as string | null) ?? null,
       pickedUpAt: (o.picked_up_at as string | null) ?? null,
       normalPriceSnapshot: Number(o.normal_price_snapshot),
       discountPriceSnapshot: Number(o.discount_price_snapshot),

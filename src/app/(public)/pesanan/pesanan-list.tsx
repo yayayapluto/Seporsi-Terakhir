@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { cancelOrder } from "./actions";
+import { OrderLiveStatus } from "./order-live-status";
 import type { MyOrder } from "./page";
 import { QrModal } from "./qr-modal";
 
@@ -59,9 +61,11 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3 border-b pb-4">
-        <Label className="text-sm font-semibold">Status</Label>
+        <Label htmlFor="status-filter" className="text-sm font-semibold">
+          Status
+        </Label>
         <Select value={filter} onValueChange={(v) => setFilter(String(v))}>
-          <SelectTrigger className="h-11 w-fit min-w-44">
+          <SelectTrigger id="status-filter" className="h-11 w-fit min-w-44">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -104,61 +108,67 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
           ctaLabel="Lihat katalog"
         />
       ) : (
-        <ul className="divide-y divide-border border-b">
-          {filtered.map((o) => (
-            <li key={o.orderId} className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-4">
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="font-bold leading-snug">
-                    {o.menuName} <span className="font-normal">× {o.quantity}</span>
-                  </h2>
-                  <OrderStatusBadge status={o.status} />
-                </div>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {o.tenantName}
-                  {o.tenantLocation ? ` · ${o.tenantLocation}` : ""} · dipesan{" "}
-                  {formatDateTimeWIB(new Date(o.createdAt))} WIB
-                </p>
-                {o.slotStart && o.slotEnd && (
+        <>
+          <OrderLiveStatus
+            orderIds={filtered.filter((o) => o.status === "reserved").map((o) => o.orderId)}
+          />
+          <ul className="divide-y divide-border border-b">
+            {filtered.map((o) => (
+              <li key={o.orderId} className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-4">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="font-bold leading-snug">
+                      {o.menuName} <span className="font-normal">× {o.quantity}</span>
+                    </h2>
+                    <OrderStatusBadge status={o.status} />
+                  </div>
                   <p className="mt-0.5 text-xs text-muted-foreground">
-                    Slot pickup: {formatDateTimeWIB(new Date(o.slotStart))} –{" "}
-                    {formatDateTimeWIB(new Date(o.slotEnd))} WIB
+                    {o.tenantName}
+                    {o.tenantLocation ? ` · ${o.tenantLocation}` : ""} · dipesan{" "}
+                    {formatDateTimeWIB(new Date(o.createdAt))} WIB
                   </p>
-                )}
-                {o.pickedUpAt && (
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
-                  </p>
-                )}
-              </div>
-              <div className="flex flex-col items-start gap-2 sm:items-end">
-                <p className="text-sm font-bold">
-                  {formatIDR(o.discountPriceSnapshot * o.quantity)}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {o.status === "reserved" && <QrModal order={o} />}
-                  <Link
-                    href={`/pesanan/${o.orderId}`}
-                    className={cn(buttonVariants({ variant: "outline" }), "h-11 px-5")}
-                  >
-                    Detail
-                  </Link>
-                  {o.status === "reserved" && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="h-11 px-5 text-destructive"
-                      onClick={() => setConfirmId(o.orderId)}
-                      disabled={cancelling === o.orderId}
-                    >
-                      {cancelling === o.orderId ? "Membatalkan…" : "Batalkan"}
-                    </Button>
+                  {o.pickedUpAt && (
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
+                    </p>
                   )}
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+                <div className="flex flex-col items-start gap-2 sm:items-end">
+                  <p className="text-sm font-bold">
+                    {formatIDR(o.discountPriceSnapshot * o.quantity)}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {o.status === "reserved" && <QrModal order={o} />}
+                    <Link
+                      href={`/pesanan/${o.orderId}`}
+                      className={cn(buttonVariants({ variant: "outline" }), "h-11 px-5")}
+                    >
+                      Detail
+                    </Link>
+                    {o.status === "reserved" && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="h-11 px-5 text-destructive"
+                        onClick={() => setConfirmId(o.orderId)}
+                        disabled={cancelling === o.orderId}
+                      >
+                        {cancelling === o.orderId ? (
+                          <>
+                            <Spinner />
+                            Membatalkan…
+                          </>
+                        ) : (
+                          "Batalkan"
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
       <Dialog open={confirmId !== null} onOpenChange={(open) => !open && setConfirmId(null)}>
         <DialogContent>

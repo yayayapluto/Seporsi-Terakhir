@@ -16,8 +16,6 @@ interface TenantOrderDetail {
   quantity: number;
   createdAt: string;
   pickedUpAt: string | null;
-  slotStart: string | null;
-  slotEnd: string | null;
   cookedAt: string | null;
   normalPriceSnapshot: number;
   discountPriceSnapshot: number;
@@ -25,6 +23,8 @@ interface TenantOrderDetail {
   buyerName: string;
   buyerPickups: number;
   buyerCancelled: number;
+  pickupToken: string | null;
+  expiresAt: string | null;
 }
 
 async function loadDetail(orderId: string): Promise<TenantOrderDetail> {
@@ -41,8 +41,6 @@ async function loadDetail(orderId: string): Promise<TenantOrderDetail> {
     quantity: Number(r.quantity),
     createdAt: String(r.created_at),
     pickedUpAt: r.picked_up_at == null ? null : String(r.picked_up_at),
-    slotStart: r.slot_start == null ? null : String(r.slot_start),
-    slotEnd: r.slot_end == null ? null : String(r.slot_end),
     cookedAt: r.cooked_at == null ? null : String(r.cooked_at),
     normalPriceSnapshot: Number(r.normal_price_snapshot),
     discountPriceSnapshot: Number(r.discount_price_snapshot),
@@ -50,6 +48,8 @@ async function loadDetail(orderId: string): Promise<TenantOrderDetail> {
     buyerName: String(r.buyer_name),
     buyerPickups: Number(r.buyer_pickups),
     buyerCancelled: Number(r.buyer_cancelled),
+    pickupToken: r.pickup_token == null ? null : String(r.pickup_token),
+    expiresAt: r.expires_at == null ? null : String(r.expires_at),
   };
 }
 
@@ -99,9 +99,27 @@ export default async function TenantOrderDetailPage({
         )}
       </div>
 
+      {o.pickupToken && (
+        <section aria-labelledby="pickup-heading" className="rounded-xl border bg-card p-5">
+          <h2 id="pickup-heading" className="text-lg font-bold">
+            Kode pickup:{" "}
+            <span className="font-mono">{o.pickupToken.slice(0, 8).toUpperCase()}</span>
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Cocokkan dengan layar mahasiswa bila kamera bermasalah. Kode lengkap ada di QR
+            mahasiswa.
+          </p>
+          {o.expiresAt && (
+            <p className="mt-2 text-sm">
+              Ambil sebelum {formatDateTimeWIB(new Date(o.expiresAt))} WIB
+            </p>
+          )}
+        </section>
+      )}
+
       <section aria-labelledby="pemesan-heading" className="rounded-xl border bg-card p-5">
-        <h2 id="pemesan-heading" className="text-lg font-bold">
-          Pemesan: {o.buyerName}
+        <h2 id="pemesan-heading" className="text-2xl font-bold">
+          {o.buyerName}
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
           {o.buyerPickups === 0 && o.buyerCancelled === 0 ? (
@@ -118,12 +136,14 @@ export default async function TenantOrderDetailPage({
 
       <dl className="divide-y divide-border border-b">
         {o.cookedAt && <Row label="Dimasak">{formatDateTimeWIB(new Date(o.cookedAt))} WIB</Row>}
-        {o.slotStart && o.slotEnd && (
-          <Row label="Slot pickup">
-            {formatDateTimeWIB(new Date(o.slotStart))} – {formatDateTimeWIB(new Date(o.slotEnd))}{" "}
-            WIB
-          </Row>
-        )}
+        <Row label="Harga/porsi">
+          <span>
+            <s className="mr-2 font-normal text-muted-foreground">
+              {formatIDR(o.normalPriceSnapshot)}
+            </s>
+            {formatIDR(o.discountPriceSnapshot)}
+          </span>
+        </Row>
         <Row label="Harga normal">
           <s className="font-normal text-muted-foreground">
             {formatIDR(o.normalPriceSnapshot * o.quantity)}
@@ -141,7 +161,12 @@ export default async function TenantOrderDetailPage({
           <Link href="/tenant/scan" className={buttonVariants({ className: "min-h-11" })}>
             Scan pickup
           </Link>
-          <TenantCancelButton orderId={o.orderId} />
+          <TenantCancelButton
+            orderId={o.orderId}
+            menuName={o.menuName}
+            quantity={o.quantity}
+            buyerName={o.buyerName}
+          />
         </div>
       )}
       {o.status !== "reserved" && (

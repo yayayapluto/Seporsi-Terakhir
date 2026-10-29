@@ -2,42 +2,38 @@
 
 Do these yourself; the agent must not attempt them.
 
-## 1. Tooling
+ ## 1. Tooling
 
-- **Bun** installed; **Node** matching `.nvmrc` (`v24.21.0`).
-- **Docker** (only needed if you want local Supabase; migrations otherwise
-  remain unexecuted — see Phase 2 report).
+ - **Bun** installed; **Node** matching `.nvmrc` (`v24.21.0`).
+ - Tanpa Docker — Supabase hosted only (project linked `czvrxkzxgvjfmmbbfdrv`).
 
-## 2. Google Cloud Console
+ ## 2. Google Cloud Console
 
-Create an OAuth client (Web):
+ Create an OAuth client (Web):
 
-1. Authorized redirect URI for **local** Supabase:
-   `http://127.0.0.1:54321/auth/v1/callback`
-2. Authorized redirect URI for a **hosted** project:
-   `https://<project-ref>.supabase.co/auth/v1/callback`
+ 1. Authorized redirect URI (hosted):
+    `https://<project-ref>.supabase.co/auth/v1/callback`
 
-## 3. Supabase
+ ## 3. Supabase
 
-- **Local (via CLI)**: copy `.env.example` to `.env.local`, fill in the anon
-  key from `bun run db:start`. Configure the Google provider in
-  `supabase/config.toml` from `GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID` /
-  `GOTRUE_EXTERNAL_GOOGLE_SECRET`.
-- **Hosted dev project**: put the project URL + anon key in `.env.local`, and
-  the Google client id/secret in the hosted project's Auth settings.
-- Add app redirect URLs to Supabase allowed redirects: `http://localhost:3000`,
-  `http://localhost:3000/auth/callback`, `https://seporsi-terakhir.my.id`,
+ - Put the hosted project URL + anon key in `.env.local`, and
+   the Google client id/secret in the hosted project's Auth settings.
+ - Migrasi: `bun run db:push` (linked). Cek: `bun run db:migrations`
+   (Local==Remote).
+ - Types: `bun run db:types` (regenerasi `src/types/database.ts` dari hosted).
+ - Add app redirect URLs to Supabase allowed redirects: `http://localhost:3000`,
+   `http://localhost:3000/auth/callback`, `https://seporsi-terakhir.my.id`,
 
 
-## 4. Seed auth + roles
+ ## 4. Seed auth + roles
 
-Urutan sekali jalan (DB kosong → siap demo):
+ Urutan sekali jalan (hosted kosong → siap demo):
 
-```bash
-bun run db:reset        # migrasi + supabase/seed.sql (profil placeholder)
-bun run seed:auth "isi-password-dev-min-6"  # auth.users + remap owner_id + role
-bun run db:seed          # tenants, 16 menu, 16 porsi segar, 3 order contoh
-```
+ ```bash
+ bun run db:push        # migrasi ke hosted (linked project)
+ bun run seed:auth "isi-password-dev-min-6"  # auth.users + remap owner_id + role
+ bun run db:seed          # tenants, 16 menu, 16 porsi segar, 3 order contoh
+ ```
 
 9 akun seed: `admin1793198479@yopmail.com`, 6 tenant
 (`warteg/kopi/padang/soto/pecel/geprek1793198479@yopmail.com`), 2 student

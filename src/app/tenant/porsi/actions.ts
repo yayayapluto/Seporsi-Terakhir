@@ -125,6 +125,11 @@ export async function updatePortion(
       return { ok: false, error: "Jumlah porsi harus lebih dari 0." };
     if (msg.includes("invalid sell window"))
       return { ok: false, error: "Jendela jual harus 120–240 menit." };
+    if (msg.includes("menu not active"))
+      return {
+        ok: false,
+        error: "Menu porsi ini nonaktif. Aktifkan dulu di halaman Menu, atau ganti ke menu aktif.",
+      };
     if (msg.includes("forbidden"))
       return { ok: false, error: "Kamu tidak punya akses ke porsi ini." };
     return { ok: false, error: "Gagal menyimpan porsi. Coba lagi." };

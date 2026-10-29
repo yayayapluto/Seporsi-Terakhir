@@ -1,5 +1,6 @@
 "use client";
 
+import { LogIn, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -54,7 +55,7 @@ export function SiteHeader() {
             <Link
               key={n.href}
               href={n.href}
-              className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               {n.label}
             </Link>
@@ -64,22 +65,20 @@ export function SiteHeader() {
           {signedIn ? (
             <Link
               href="/profil"
-              className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 py-2 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
+              <UserRound className="size-5" aria-hidden />
               Profil
             </Link>
           ) : (
-            <>
-              <Link
-                href="/cara-kerja"
-                className="hidden rounded-lg px-3 py-2 font-medium transition-colors hover:bg-muted md:inline"
-              >
-                Jadi Tenant
-              </Link>
-              <Link href="/masuk" className={buttonVariants()}>
-                Masuk
-              </Link>
-            </>
+            <Link
+              href="/masuk"
+              aria-label="Masuk ke akun"
+              className={buttonVariants({ size: "sm", className: "min-h-11 gap-1.5" })}
+            >
+              Masuk
+              <LogIn className="size-4" aria-hidden />
+            </Link>
           )}
         </nav>
       </div>

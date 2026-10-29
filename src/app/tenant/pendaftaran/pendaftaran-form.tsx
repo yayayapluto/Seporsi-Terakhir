@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -136,7 +137,14 @@ export function PendaftaranForm() {
         </li>
       </ol>
       <Button type="submit" disabled={isSubmitting} size="lg" className="min-h-11 w-full">
-        {isSubmitting ? "Mengirim…" : "Kirim & tunggu persetujuan"}
+        {isSubmitting ? (
+          <>
+            <Spinner />
+            Mengirim…
+          </>
+        ) : (
+          "Kirim & tunggu persetujuan"
+        )}
       </Button>
       <p className="text-xs text-muted-foreground">Gratis selama pilot kampus.</p>
     </form>

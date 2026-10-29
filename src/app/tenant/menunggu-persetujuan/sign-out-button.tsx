@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
@@ -12,7 +13,7 @@ export function SignOutButton() {
     <Button
       type="button"
       variant="outline"
-      className="text-destructive"
+      className="min-h-11 text-destructive"
       disabled={busy}
       onClick={async () => {
         setBusy(true);
@@ -25,7 +26,14 @@ export function SignOutButton() {
         }
       }}
     >
-      {busy ? "Keluar…" : "Keluar dari akun"}
+      {busy ? (
+        <>
+          <Spinner />
+          Keluar…
+        </>
+      ) : (
+        "Keluar dari akun"
+      )}
     </Button>
   );
 }

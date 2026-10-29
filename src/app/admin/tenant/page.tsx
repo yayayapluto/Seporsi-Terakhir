@@ -1,5 +1,6 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ApproveList } from "./approve-list";
@@ -42,7 +43,7 @@ export default function AdminTenantPage() {
           Periksa pendaftaran, lalu setujui. Tenant baru bisa posting porsi setelah disetujui.
         </p>
       </div>
-      <Suspense fallback={<p className="text-sm text-muted-foreground">Memuat pendaftaran…</p>}>
+      <Suspense fallback={<LoadingSkeleton />}>
         <PendingBody />
       </Suspense>
     </div>

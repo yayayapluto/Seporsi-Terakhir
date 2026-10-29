@@ -1,3 +1,4 @@
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
@@ -6,7 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
-
+import { OrderLiveStatus } from "../order-live-status";
 import { CancelButton } from "./cancel-button";
 import { QrPanel } from "./qr-panel";
 
@@ -22,8 +23,6 @@ export interface OrderDetail {
   quantity: number;
   createdAt: string;
   cookedAt: string | null;
-  slotStart: string | null;
-  slotEnd: string | null;
   pickedUpAt: string | null;
   normalPriceSnapshot: number;
   discountPriceSnapshot: number;
@@ -49,8 +48,6 @@ async function loadOrder(orderId: string) {
     quantity: Number(row.quantity),
     createdAt: String(row.created_at),
     cookedAt: (row.cooked_at as string | null) ?? null,
-    slotStart: (row.slot_start as string | null) ?? null,
-    slotEnd: (row.slot_end as string | null) ?? null,
     pickedUpAt: (row.picked_up_at as string | null) ?? null,
     normalPriceSnapshot: Number(row.normal_price_snapshot),
     discountPriceSnapshot: Number(row.discount_price_snapshot),
@@ -94,20 +91,22 @@ export default async function OrderDetailPage({
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+      {order.status === "reserved" && <OrderLiveStatus orderIds={[order.orderId]} />}
       <Link
         href="/pesanan"
-        className="inline-flex min-h-11 w-fit items-center text-sm font-medium text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 w-fit items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
       >
-        ← Semua pesanan
+        <ArrowLeft className="size-4" aria-hidden />
+        Semua pesanan
       </Link>
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">PESANANKU</p>
         <h1 className="text-3xl font-bold">
           {order.menuName} <span className="text-muted-foreground">× {order.quantity}</span>
         </h1>
         <p className="text-muted-foreground">
           {order.tenantName}
           {order.tenantLocation ? ` · ${order.tenantLocation}` : ""}
+          {order.avgWeightSnapshot != null && ` · ±${order.avgWeightSnapshot} g/porsi`}
         </p>
       </div>
 
@@ -115,52 +114,52 @@ export default async function OrderDetailPage({
         <OrderStatusBadge status={order.status} />
         {order.pickedUpAt && (
           <span className="text-sm text-muted-foreground">
-            Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB
+            Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB · {order.quantity} porsi
+            diselamatkan
           </span>
         )}
       </div>
-
       {order.status === "reserved" && (
         <QrPanel
           menuName={order.menuName}
           tenantName={order.tenantName}
           totalPrice={order.discountPriceSnapshot * order.quantity}
           tenantLocation={order.tenantLocation}
-          slotStart={order.slotStart}
-          slotEnd={order.slotEnd}
           pickupToken={pickupToken}
         />
       )}
-      {order.status !== "reserved" && (
-        <div
-          className={
-            order.status === "picked_up"
-              ? "flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/10 p-5"
-              : "rounded-lg border bg-muted/40 p-5 text-sm"
-          }
-        >
-          {order.status === "picked_up" ? (
-            <>
-              <span
-                aria-hidden="true"
-                className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground"
-              >
-                ✓
-              </span>
-              <div>
-                <p className="font-bold">Pesanan selesai — selamat menikmati!</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Terima kasih sudah menyelamatkan porsi ini — total{" "}
-                  <span className="font-semibold text-foreground">
-                    {formatIDR(order.discountPriceSnapshot * order.quantity)}
-                  </span>{" "}
-                  dibayar di tempat saat pickup.
-                </p>
-              </div>
-            </>
-          ) : (
-            <p className="text-sm">Pesanan dibatalkan. Stok porsi dikembalikan ke katalog.</p>
-          )}
+      {order.status === "picked_up" && (
+        <output className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/10 p-4">
+          <span
+            aria-hidden="true"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground"
+          >
+            ✓
+          </span>
+          <div>
+            <p className="font-bold">Pesanan selesai — selamat menikmati!</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Total{" "}
+              <span className="font-semibold text-foreground">
+                {formatIDR(order.discountPriceSnapshot * order.quantity)}
+              </span>{" "}
+              dibayar tunai di tempat saat pickup.
+            </p>
+          </div>
+        </output>
+      )}
+      {order.status === "cancelled" && (
+        <div className="rounded-lg border bg-muted/40 p-5 text-sm">
+          <p>
+            Pesanan dibatalkan. Stok porsi dikembalikan ke katalog.{" "}
+            <Link
+              href="/katalog"
+              className="font-semibold text-primary underline underline-offset-4"
+            >
+              Cari porsi lain
+            </Link>
+            .
+          </p>
         </div>
       )}
 
@@ -168,26 +167,16 @@ export default async function OrderDetailPage({
         {order.cookedAt && (
           <Row label="Dimasak">{formatDateTimeWIB(new Date(order.cookedAt))} WIB</Row>
         )}
-        {order.status !== "reserved" && order.slotStart && order.slotEnd && (
-          <Row label="Slot pickup">
-            {formatDateTimeWIB(new Date(order.slotStart))} –{" "}
-            {formatDateTimeWIB(new Date(order.slotEnd))} WIB
-          </Row>
-        )}
         <Row label="Harga normal">
-          <s className="font-normal text-muted-foreground">
+          <del className="font-normal text-muted-foreground">
+            <span className="sr-only">Harga awal: </span>
             {formatIDR(order.normalPriceSnapshot * order.quantity)}
-          </s>
+          </del>
         </Row>
         <Row label="Total bayar di tempat">
           <span className="text-lg font-bold">
             {formatIDR(order.discountPriceSnapshot * order.quantity)}
           </span>
-          {order.avgWeightSnapshot != null && (
-            <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
-              ±{order.avgWeightSnapshot} g/porsi
-            </span>
-          )}
         </Row>
         <Row label="Waktu pesan">{formatDateTimeWIB(new Date(order.createdAt))} WIB</Row>
       </dl>
@@ -201,7 +190,17 @@ export default async function OrderDetailPage({
             <CancelButton orderId={order.orderId} />
           </>
         )}
-        {order.status !== "reserved" && (
+        {order.status === "picked_up" && (
+          <>
+            <Link href={`/katalog/${order.portionId}`} className={buttonVariants()}>
+              Pesan lagi
+            </Link>
+            <Link href="/katalog" className={buttonVariants({ variant: "outline" })}>
+              Lihat katalog
+            </Link>
+          </>
+        )}
+        {order.status === "cancelled" && (
           <Link href="/katalog" className={buttonVariants()}>
             Lihat katalog
           </Link>

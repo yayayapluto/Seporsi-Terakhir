@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
+import { DateField } from "@/components/date-field";
+import { GuidedTour } from "@/components/guided-tour";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { percentSold } from "@/lib/domain/metrics";
 import { formatIDR } from "@/lib/format";
 import { exportCsv } from "./actions";
@@ -30,15 +31,9 @@ export function ImpactClient({
 }) {
   const router = useRouter();
   const params = useSearchParams();
-  const [pending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [csvError, setCsvError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
-
-  const defaultFrom = useMemo(() => {
-    const d = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    return d.toISOString().slice(0, 10);
-  }, []);
-  const defaultTo = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   function applyRange(fd: string, td: string) {
     const next = new URLSearchParams(params);
@@ -77,44 +72,22 @@ export function ImpactClient({
 
   return (
     <div className="flex flex-col gap-6">
-      <form
-        className="flex flex-wrap items-end gap-3"
-        onSubmit={(e) => {
-          e.preventDefault();
-          const form = new FormData(e.currentTarget);
-          applyRange(String(form.get("from") ?? defaultFrom), String(form.get("to") ?? defaultTo));
-        }}
-      >
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="from" className="font-semibold">
-            Dari
-          </Label>
-          <Input
-            id="from"
-            name="from"
-            type="date"
-            defaultValue={from}
-            max={defaultTo}
-            className="min-h-11"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="to" className="font-semibold">
-            Sampai
-          </Label>
-          <Input
-            id="to"
-            name="to"
-            type="date"
-            defaultValue={to}
-            max={defaultTo}
-            className="min-h-11"
-          />
-        </div>
-        <Button type="submit" disabled={pending} className="min-h-11">
-          {pending ? "Memuat…" : "Terapkan"}
-        </Button>
-      </form>
+      <div data-tour="rentang" className="flex flex-wrap items-end gap-3">
+        <DateField
+          id="from"
+          label="Dari"
+          value={from}
+          onChange={(v) => applyRange(v, to)}
+          max={to}
+        />
+        <DateField
+          id="to"
+          label="Sampai"
+          value={to}
+          onChange={(v) => applyRange(from, v)}
+          min={from}
+        />
+      </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {cards.map((c) => (
@@ -148,7 +121,7 @@ export function ImpactClient({
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" data-tour="tabel-dampak">
           <table className="w-full min-w-[640px] text-sm">
             <caption className="sr-only">Rekap per gerai pada rentang terpilih</caption>
             <thead>
@@ -200,12 +173,40 @@ export function ImpactClient({
       <Button
         type="button"
         variant="outline"
+        data-tour="unduh"
         className="w-fit min-h-11"
         onClick={downloadCsv}
         disabled={exporting}
       >
-        {exporting ? "Menyiapkan…" : "Unduh CSV"}
+        {exporting ? (
+          <>
+            <Spinner />
+            Menyiapkan…
+          </>
+        ) : (
+          "Unduh CSV"
+        )}
       </Button>
+      <GuidedTour
+        tourKey="admin"
+        steps={[
+          {
+            target: '[data-tour="rentang"]',
+            title: "Atur rentang",
+            body: "Default 30 hari. Terapkan untuk muat ulang laporan.",
+          },
+          {
+            target: '[data-tour="tabel-dampak"]',
+            title: "Baca per gerai",
+            body: "Sell-through dan kg per gerai.",
+          },
+          {
+            target: '[data-tour="unduh"]',
+            title: "Unduh bukti",
+            body: "CSV per gerai untuk laporan BEM/unit kampus.",
+          },
+        ]}
+      />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "./guard";
 import { SignOutButton } from "./menunggu-persetujuan/sign-out-button";
+import { TenantTour } from "./tenant-tour";
 
 /** Dashboard tenant: porsi aktif, reservasi, pickup & omzet hari ini (WIB). */
 
@@ -111,7 +112,7 @@ export default async function TenantDashboardPage() {
         </p>
       </div>
 
-      <section aria-labelledby="reservasi-heading" className="border-b pb-6">
+      <section aria-labelledby="reservasi-heading" data-tour="reservasi" className="border-b pb-6">
         <div className="flex items-baseline justify-between gap-3">
           <h2 id="reservasi-heading" className="text-lg font-bold">
             Reservasi menunggu pickup {reservations.length > 0 && `(${reservations.length})`}
@@ -125,7 +126,11 @@ export default async function TenantDashboardPage() {
                 Lihat semua
               </Link>
             )}
-            <Link href="/tenant/scan" className={buttonVariants({ className: "min-h-11" })}>
+            <Link
+              href="/tenant/scan"
+              data-tour="scan"
+              className={buttonVariants({ className: "min-h-11" })}
+            >
               Scan pickup
             </Link>
           </div>
@@ -162,7 +167,11 @@ export default async function TenantDashboardPage() {
           <h2 id="porsi-heading" className="text-lg font-bold">
             Porsi aktif
           </h2>
-          <Link href="/tenant/porsi/baru" className={buttonVariants({ className: "min-h-11" })}>
+          <Link
+            href="/tenant/porsi/baru"
+            data-tour="tambah-porsi"
+            className={buttonVariants({ className: "min-h-11" })}
+          >
             + Tambah porsi
           </Link>
         </div>
@@ -216,14 +225,14 @@ export default async function TenantDashboardPage() {
         )}
       </section>
 
-      <nav aria-label="Pintasan" className="flex flex-wrap gap-3 border-t pt-6">
+      <nav aria-label="Pintasan" className="flex flex-wrap gap-x-5 gap-y-2 border-t pt-6">
         <ShortcutLink href="/tenant/menu" label="Kelola menu" />
         <ShortcutLink href="/tenant/pesanan" label="Pesanan masuk" />
-        <ShortcutLink href="/tenant/scan" label="Scanner pickup" />
       </nav>
       <div className="border-t pt-6">
         <SignOutButton />
       </div>
+      <TenantTour />
     </div>
   );
 }

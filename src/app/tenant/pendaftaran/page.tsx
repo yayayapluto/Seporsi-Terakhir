@@ -14,12 +14,11 @@ export default async function PendaftaranPage() {
   if (tenant) redirect(tenant.is_approved ? "/tenant" : "/tenant/menunggu-persetujuan");
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">MITRA KANTIN</p>
-        <h1 className="text-3xl font-bold">Daftar jadi tenant</h1>
+      <div className="flex flex-col gap-2 border-b-2 border-foreground pb-6">
+        <h1 className="font-heading text-3xl font-extrabold tracking-tight">Daftar jadi tenant</h1>
         <p className="text-muted-foreground">
-          Jual sisa masakanmu lewat Porsi Terakhir — gratis untuk saat ini. Pendaftaran perlu
-          persetujuan admin sebelum porsi bisa diposting.
+          Jual sisa masakanmu lewat Porsi Terakhir — gratis selama pilot kampus. Admin meninjau
+          pendaftaranmu sebelum porsi bisa diposting.
         </p>
       </div>
       <PendaftaranForm />

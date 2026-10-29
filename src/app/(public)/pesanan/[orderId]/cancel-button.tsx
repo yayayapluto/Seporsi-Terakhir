@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -43,7 +44,14 @@ export function CancelButton({ orderId }: { orderId: string }) {
         <DialogTrigger
           render={<Button type="button" variant="outline" className="px-6 text-destructive" />}
         >
-          {pending ? "Membatalkan…" : "Batalkan pesanan"}
+          {pending ? (
+            <>
+              <Spinner />
+              Membatalkan…
+            </>
+          ) : (
+            "Batalkan pesanan"
+          )}
         </DialogTrigger>
         <DialogContent>
           <DialogTitle>Batalkan pesanan?</DialogTitle>

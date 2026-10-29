@@ -2,7 +2,9 @@
 
 import { CircleAlert } from "lucide-react";
 import { useState } from "react";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
+import { isSafeNext } from "@/lib/auth/redirect";
 import { createClient } from "@/lib/supabase/client";
 
 function GoogleMark() {
@@ -39,7 +41,9 @@ export function GoogleSignIn({ next }: { next?: string }) {
     try {
       const supabase = createClient();
       const callback = `${window.location.origin}/auth/callback`;
-      const redirectTo = next ? `${callback}?next=${encodeURIComponent(next)}` : callback;
+      const redirectTo = isSafeNext(next)
+        ? `${callback}?next=${encodeURIComponent(next)}`
+        : callback;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -61,7 +65,14 @@ export function GoogleSignIn({ next }: { next?: string }) {
     <div className="flex flex-col gap-2">
       <Button type="button" onClick={signIn} disabled={busy} className="min-h-11 w-full">
         <GoogleMark />
-        {busy ? "Membuka Google…" : "Masuk dengan Google"}
+        {busy ? (
+          <>
+            <Spinner />
+            Membuka Google…
+          </>
+        ) : (
+          "Masuk dengan Google"
+        )}
       </Button>
       {failed && (
         <p role="alert" className="flex items-start gap-1.5 text-sm font-medium text-destructive">

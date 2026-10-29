@@ -24,15 +24,7 @@ Satu-satunya mekanisme yang tidak bisa ditiru tetangga: jendela jual 120–240 m
 
 Kantin kampus sore hari (jendela ambil ~16.30–18.30 WIB), satu tangan memegang HP, koneksi kampus yang kadang lambat. Bahasa antarmuka Indonesia. Mode terang saja. Waktu dalam WIB, mata uang IDR integer.
 
-## Capabilities and Constraints
-
-- Katalog: porsi aktif (menu, harga diskon, sisa kuota, jam masak), filter tenant, detail bahan/alergen.
-- Order: kuota berkurang, QR pickup + slot + status, bayar di tempat, riwayat + badge.
-- Tenant: form 3 input, sugesti harga 45% dari harga normal (dibulatkan Rp500), jadwal rilis, pindai QR.
-- Admin: dashboard dampak + unduh CSV. P1 (push, leaderboard, tren) tidak dibangun.
-- Aturan BR-1..BR-8 ditegakkan server-side/RLS/RPC, tidak pernah hanya di UI.
-- Batas teknis: Next.js App Router + TS + Tailwind v4 + shadcn (primitif saja); tanpa dependensi baru tanpa justifikasi; rute, logika bisnis, dan skema form tidak berubah dalam rebuild visual ini.
-- Aset: tidak ada foto makanan di repo (Stitch memakai hotlink eksternal — dilarang). Slot foto memakai blok skeleton netral sampai foto asli disediakan.
+**Mobile-first (keputusan 2026-10-29):** layout dirancang dari 360px ke atas, bukan desktop yang dikecilkan. Semua alur inti (mahasiswa: katalog → pesan → QR; tenant: posting → pindai; admin: pantau) wajib selesai satu tangan — CTA primer dalam jangkauan jempol (sticky bottom bar bila perlu), target sentuh ≥48px di aksi primer, tanpa hover sebagai satu-satunya affordance. Perangkat campur (Android murah–iPhone, data lambat–WiFi): gambar lazy + skeleton netral, tanpa dependensi berat baru. Sinyal hilang di tengah aksi: cegah pesan ganda (disable saat `ordering`, idempoten server-side) dan tampilkan status jelas (loading/error/empty eksplisit, bukan layar diam).
 
 ## Brand Commitments
 
@@ -52,4 +44,4 @@ Tidak ada foto, testimoni, atau data nyata. Semua angka porsi/pengguna dalam des
 
 ## Accessibility & Inclusion
 
-WCAG AA: kontras teks ≥4.5:1, navigasi keyboard penuh, hierarki heading benar, hormati `prefers-reduced-motion`, target sentuh ≥44px di alur utama.
+WCAG AA: kontras teks ≥4.5:1, navigasi keyboard penuh, hierarki heading benar, hormati `prefers-reduced-motion`, target sentuh ≥44px umum dan ≥48px di aksi primer mobile (keputusan 2026-10-29).

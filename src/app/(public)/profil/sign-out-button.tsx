@@ -3,6 +3,7 @@
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
@@ -27,7 +28,10 @@ export function SignOutButton() {
       }}
     >
       {busy ? (
-        "Keluar…"
+        <>
+          <Spinner />
+          Keluar…
+        </>
       ) : (
         <>
           <LogOut className="mr-2 size-4 shrink-0" aria-hidden />

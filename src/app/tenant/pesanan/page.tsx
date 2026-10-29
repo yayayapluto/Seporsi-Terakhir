@@ -18,8 +18,6 @@ interface TenantOrderRow {
   discountPrice: number;
   menuName: string;
   buyerName: string;
-  slotStart: string | null;
-  slotEnd: string | null;
 }
 
 /** Bentuk mentah join supabase (buyer + portion nested). */
@@ -30,8 +28,6 @@ interface RawTenantOrder {
   created_at: string;
   picked_up_at: string | null;
   discount_price_snapshot: number;
-  slot_start: string | null;
-  slot_end: string | null;
   buyer?: { full_name?: string | null; email?: string | null } | null;
   portions?: { menu_items?: { name: string } | { name: string }[] | null } | null;
 }
@@ -42,7 +38,7 @@ async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, status, quantity, created_at, picked_up_at, discount_price_snapshot, slot_start, slot_end, buyer:profiles!orders_student_id_fkey(full_name, email), portions!inner(menu_item_id, menu_items!inner(name), tenant_id)",
+      "id, status, quantity, created_at, picked_up_at, discount_price_snapshot, buyer:profiles!orders_student_id_fkey(full_name, email), portions!inner(menu_item_id, menu_items!inner(name), tenant_id)",
     )
     .eq("portions.tenant_id", tenant.id)
     .order("created_at", { ascending: false })
@@ -62,8 +58,6 @@ async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean
         discountPrice: o.discount_price_snapshot,
         menuName: menu?.name ?? "Menu",
         buyerName: o.buyer?.full_name?.trim() || o.buyer?.email?.split("@")[0] || "Mahasiswa",
-        slotStart: o.slot_start ?? null,
-        slotEnd: o.slot_end ?? null,
       };
     }),
     failed: false,
@@ -90,9 +84,6 @@ export default async function TenantPesananPage() {
           <p className="mt-0.5 text-xs text-muted-foreground">
             {o.buyerName} · Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
             {formatIDR(o.discountPrice * o.quantity)}
-            {o.slotStart && o.slotEnd
-              ? ` · Slot ${formatDateTimeWIB(new Date(o.slotStart))}–${new Date(o.slotEnd).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" })}`
-              : ""}
             {o.status === "picked_up" && o.pickedUpAt
               ? ` · Diambil ${formatDateTimeWIB(new Date(o.pickedUpAt))} WIB`
               : ""}

@@ -1,8 +1,9 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
 import { KatalogList } from "./katalog-list";
-
 /** Auth + live stock: per-request data, streamed inside Suspense. */
 
 export interface CatalogPortion {
@@ -30,9 +31,8 @@ async function loadCatalog(): Promise<{
   const { data, error } = await supabase
     .from("portions")
     .select(
-      "id, quantity_remaining, cooked_at, expires_at, release_at, discount_price, menu_items!inner(name, normal_price), tenants!inner(name, location_note)",
+      "id, quantity_remaining, cooked_at, expires_at, release_at, discount_price, menu_items!inner(name, normal_price, image_path), tenants!inner(name, location_note)",
     )
-    .gt("quantity_remaining", 0)
     .gt("expires_at", now.toISOString())
     .lte("release_at", now.toISOString())
     .order("expires_at", { ascending: true })
@@ -63,7 +63,11 @@ async function loadCatalog(): Promise<{
   const portions: CatalogPortion[] = [];
   const tenantSet = new Set<string>();
   for (const row of data) {
-    const menu = row.menu_items as unknown as { name: string; normal_price: number };
+    const menu = row.menu_items as unknown as {
+      name: string;
+      normal_price: number;
+      image_path: string | null;
+    };
     const tenant = row.tenants as unknown as { name: string; location_note: string | null };
     tenantSet.add(tenant.name);
     portions.push({
@@ -77,6 +81,7 @@ async function loadCatalog(): Promise<{
       cookedAt: row.cooked_at,
       expiresAt: row.expires_at,
       releaseAt: row.release_at,
+      imageUrl: menu.image_path ? publicMenuImageUrl(menu.image_path) : null,
     });
   }
   return { portions, tenants: [...tenantSet].sort(), dayTotal };
@@ -93,7 +98,7 @@ export default function KatalogPage() {
           mahasiswa per hari.
         </p>
       </div>
-      <Suspense fallback={<p className="text-sm text-muted-foreground">Memuat porsi…</p>}>
+      <Suspense fallback={<LoadingSkeleton variant="cards" />}>
         <CatalogBody />
       </Suspense>
     </div>

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 
 /** "Periksa status" = refresh ulang server component (bukan fake progress). */
@@ -18,7 +19,14 @@ export function PeriksaStatus() {
         setTimeout(() => setChecking(false), 600);
       }}
     >
-      {checking ? "Memeriksa…" : "Periksa status"}
+      {checking ? (
+        <>
+          <Spinner />
+          Memeriksa…
+        </>
+      ) : (
+        "Periksa status"
+      )}
     </Button>
   );
 }

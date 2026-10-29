@@ -55,6 +55,25 @@
   --radius: 0.5rem;
 }
 
+/* ponytail: sonner tak punya API animasi; satu keyframe untuk semua toast. */
+.cn-toast {
+  animation: toast-in 200ms ease-out;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cn-toast {
+    animation: none;
+  }
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -71,10 +90,41 @@
       scroll-behavior: auto;
     }
   }
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
   h1,
   h2,
   h3,
   h4 {
     @apply font-heading tracking-tight;
+  }
+}
+
+/* Base UI accordion: tw-animate keyframes tak kenal --accordion-panel-height → snap. */
+@keyframes porsi-accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--accordion-panel-height, auto);
+  }
+}
+@keyframes porsi-accordion-up {
+  from {
+    height: var(--accordion-panel-height, auto);
+  }
+  to {
+    height: 0;
   }
 }

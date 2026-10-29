@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,7 +14,17 @@ import {
 } from "@/components/ui/dialog";
 import { tenantCancelOrder } from "./actions";
 
-export function TenantCancelButton({ orderId }: { orderId: string }) {
+export function TenantCancelButton({
+  orderId,
+  menuName,
+  quantity,
+  buyerName,
+}: {
+  orderId: string;
+  menuName: string;
+  quantity: number;
+  buyerName: string;
+}) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -48,12 +59,21 @@ export function TenantCancelButton({ orderId }: { orderId: string }) {
             <Button type="button" variant="outline" className="min-h-11 px-6 text-destructive" />
           }
         >
-          {pending ? "Membatalkan…" : "Batalkan pesanan"}
+          {pending ? (
+            <>
+              <Spinner />
+              Membatalkan…
+            </>
+          ) : (
+            "Batalkan pesanan"
+          )}
         </DialogTrigger>
         <DialogContent>
-          <DialogTitle>Batalkan pesanan ini?</DialogTitle>
+          <DialogTitle>
+            Batalkan {menuName} × {quantity} milik {buyerName}?
+          </DialogTitle>
           <DialogDescription>
-            Mahasiswa yang memesan akan melihat status batal. Stok porsi dikembalikan ke katalog.
+            {buyerName} akan melihat status batal. Stok {quantity} porsi dikembalikan ke katalog.
           </DialogDescription>
           <DialogFooter>
             <Button
@@ -71,7 +91,14 @@ export function TenantCancelButton({ orderId }: { orderId: string }) {
               onClick={onConfirm}
               disabled={pending}
             >
-              Ya, batalkan
+              {pending ? (
+                <>
+                  <Spinner />
+                  Membatalkan…
+                </>
+              ) : (
+                "Ya, batalkan"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

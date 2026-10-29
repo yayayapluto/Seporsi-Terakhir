@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { approveTenant } from "../actions";
 import type { PendingTenant } from "./page";
@@ -94,7 +95,14 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                   </p>
                   <div className="mt-3 flex gap-2">
                     <Button type="button" disabled={confirming} onClick={() => approve(t.id)}>
-                      {confirming ? "Menyetujui…" : "Setujui tenant"}
+                      {confirming ? (
+                        <>
+                          <Spinner />
+                          Menyetujui…
+                        </>
+                      ) : (
+                        "Setujui tenant"
+                      )}
                     </Button>
                     <Button
                       type="button"

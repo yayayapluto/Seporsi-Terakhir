@@ -5,6 +5,7 @@ import { CircleAlert, MailCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -78,7 +79,16 @@ function SentState({
         className="min-h-11 w-full"
         onClick={handleResend}
       >
-        {sending ? "Mengirim…" : cooldown > 0 ? `Kirim ulang (${cooldown}d)` : "Kirim ulang"}
+        {sending ? (
+          <>
+            <Spinner />
+            Mengirim…
+          </>
+        ) : cooldown > 0 ? (
+          `Kirim ulang (${cooldown}d)`
+        ) : (
+          "Kirim ulang"
+        )}
       </Button>
       <Button type="button" variant="outline" className="min-h-11 w-full" onClick={onChangeEmail}>
         Ganti email
@@ -165,7 +175,14 @@ export function EmailSignIn({ next }: { next?: string }) {
         </p>
       )}
       <Button type="submit" disabled={isSubmitting} className="min-h-11 w-full">
-        {isSubmitting ? "Mengirim…" : "Kirim tautan masuk"}
+        {isSubmitting ? (
+          <>
+            <Spinner />
+            Mengirim…
+          </>
+        ) : (
+          "Kirim tautan masuk"
+        )}
       </Button>
     </form>
   );

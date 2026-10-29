@@ -5,6 +5,7 @@ import { CheckIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { confirmPickup, lookupOrderByToken } from "./actions";
@@ -13,8 +14,6 @@ export interface ScannedOrder {
   menuName: string;
   quantity: number;
   status: string;
-  slotStart: string | null;
-  slotEnd: string | null;
 }
 
 type Phase =
@@ -152,7 +151,7 @@ export function ScannerClient() {
             styles={{ container: { width: "100%", maxWidth: 420, marginInline: "auto" } }}
           />
           <p className="text-center text-sm text-muted-foreground">
-            Konfirmasi terjadi setelah kamu menekan tombol.
+            QR hanya pratinjau. Tekan Konfirmasi setelah terima bayar.
           </p>
           <div className="flex flex-col gap-2">
             <Button
@@ -184,7 +183,14 @@ export function ScannerClient() {
                   className="min-h-11"
                   disabled={manualBusy || !manualToken.trim()}
                 >
-                  {manualBusy ? "Mencari…" : "Cari pesanan"}
+                  {manualBusy ? (
+                    <>
+                      <Spinner />
+                      Mencari…
+                    </>
+                  ) : (
+                    "Cari pesanan"
+                  )}
                 </Button>
               </form>
             )}
@@ -206,33 +212,6 @@ export function ScannerClient() {
               <dt className="w-28 shrink-0 text-sm text-muted-foreground">Jumlah</dt>
               <dd className="min-w-0 text-sm font-medium">{phase.order.quantity} porsi</dd>
             </div>
-            {phase.order.slotStart && phase.order.slotEnd && (
-              <div className="flex gap-3 py-2">
-                <dt className="w-28 shrink-0 text-sm text-muted-foreground">Slot</dt>
-                <dd
-                  className={
-                    new Date(phase.order.slotEnd).getTime() < Date.now()
-                      ? "min-w-0 text-sm font-medium text-accent-strong"
-                      : "min-w-0 text-sm font-medium"
-                  }
-                >
-                  {new Date(phase.order.slotEnd).getTime() < Date.now()
-                    ? "Slot lewat — konfirmasi bila porsi masih diambil. "
-                    : null}
-                  {new Date(phase.order.slotStart).toLocaleString("id-ID", {
-                    timeZone: "Asia/Jakarta",
-                    dateStyle: "short",
-                    timeStyle: "short",
-                  })}
-                  {" – "}
-                  {new Date(phase.order.slotEnd).toLocaleTimeString("id-ID", {
-                    timeZone: "Asia/Jakarta",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </dd>
-              </div>
-            )}
           </dl>
           <p className="mt-2 text-xs text-muted-foreground">
             Terima pembayaran di tempat sesuai harga diskon, lalu konfirmasi.
@@ -242,7 +221,14 @@ export function ScannerClient() {
               Batal
             </Button>
             <Button type="button" className="min-h-11" onClick={onConfirm} disabled={confirming}>
-              {confirming ? "Mengonfirmasi…" : "Konfirmasi pickup"}
+              {confirming ? (
+                <>
+                  <Spinner />
+                  Mengonfirmasi…
+                </>
+              ) : (
+                "Konfirmasi pickup"
+              )}
             </Button>
           </div>
         </section>
