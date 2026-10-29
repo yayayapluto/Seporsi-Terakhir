@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { buttonVariants } from "@/components/ui/button";
+import { getCurrentUser, homeForRole } from "@/lib/auth";
 import { ChalkRow, Pressable, Reveal } from "./reveal";
 
 const BOARD = [
@@ -105,7 +106,16 @@ const FAQS = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const current = await getCurrentUser();
+  const primaryHref =
+    current?.role === "tenant" || current?.role === "admin"
+      ? homeForRole(current.role)
+      : "/katalog";
+  const primaryLabel =
+    current?.role === "tenant" || current?.role === "admin"
+      ? "Buka Dasbor"
+      : "Lihat Porsi Hari Ini";
   return (
     <>
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 sm:px-6">
@@ -123,13 +133,13 @@ export default function Home() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center md:flex-col md:items-stretch lg:flex-row lg:items-center">
               <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
                 <Link
-                  href="/katalog"
+                  href={primaryHref}
                   className={buttonVariants({
                     size: "lg",
                     className: "w-full sm:w-auto md:w-full lg:w-auto",
                   })}
                 >
-                  Lihat Porsi Hari Ini
+                  {primaryLabel}
                 </Link>
               </Pressable>
               <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
