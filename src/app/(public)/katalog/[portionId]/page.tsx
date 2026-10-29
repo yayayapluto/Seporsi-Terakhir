@@ -1,5 +1,6 @@
 import { cn } from "cn";
 import { ArrowLeft, ImageOff, Store } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
@@ -10,6 +11,7 @@ import {
   shouldLogPortionLoadError,
 } from "@/lib/domain/portion-detail";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
 import { OrderForm } from "./order-form";
 
@@ -27,6 +29,7 @@ export interface PortionDetail {
   expiresAt: string;
   releaseAt: string;
   discountPrice: number;
+  imageUrl: string | null;
 }
 
 const PortionId = z.string().uuid();
@@ -37,7 +40,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
     "id, quantity_posted, quantity_remaining, cooked_at, expires_at, release_at, discount_price, tenants!inner(name, location_note)";
   const full = await supabase
     .from("portions")
-    .select(`${base}, menu_items!inner(name, normal_price, ingredients, allergen_note)`)
+    .select(`${base}, menu_items!inner(name, normal_price, ingredients, allergen_note, image_path)`)
     .eq("id", portionId)
     .maybeSingle();
   // ponytail: hosted ketinggalan migrasi kolom baru → fallback select minimal, bukan halaman mati.
@@ -46,7 +49,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   if (full.error && isMissingColumnError(full.error.message)) {
     const retry = await supabase
       .from("portions")
-      .select(`${base}, menu_items!inner(name, normal_price)`)
+      .select(`${base}, menu_items!inner(name, normal_price, image_path)`)
       .eq("id", portionId)
       .maybeSingle();
     if (retry.error || !retry.data) {
@@ -69,6 +72,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
     normal_price: number;
     ingredients?: string | null;
     allergen_note?: string | null;
+    image_path?: string | null;
   };
   const tenant = data.tenants as unknown as { name: string; location_note: string | null };
   return {
@@ -85,6 +89,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
     expiresAt: data.expires_at,
     releaseAt: data.release_at,
     discountPrice: data.discount_price,
+    imageUrl: menu.image_path ? publicMenuImageUrl(menu.image_path) : null,
   };
 }
 
@@ -120,29 +125,38 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,4fr)_minmax(0,6fr)_minmax(0,5fr)] lg:gap-8">
-      <div
-        className="flex aspect-square w-full flex-col items-center justify-center gap-2 self-start rounded-xl bg-muted text-muted-foreground"
-        role="img"
-        aria-label={`Foto ${portion.menuName} belum tersedia`}
-      >
-        <ImageOff className="size-8" aria-hidden />
-        <span className="text-sm">tidak ada gambar</span>
-      </div>
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <p className="text-3xl font-bold">{formatIDR(portion.discountPrice)}</p>
-          <s className="text-sm text-muted-foreground">{formatIDR(portion.normalPrice)}</s>
-          {portion.normalPrice > portion.discountPrice && (
-            <span className="text-sm font-semibold text-primary">
-              Hemat {formatIDR(portion.normalPrice - portion.discountPrice)}
-            </span>
-          )}
+      {portion.imageUrl ? (
+        <Image
+          src={portion.imageUrl}
+          alt={`Foto ${portion.menuName}`}
+          width={800}
+          height={600}
+          className="aspect-[4/3] w-full self-start rounded-xl object-cover"
+          sizes="(max-width: 1024px) 100vw, 33vw"
+        />
+      ) : (
+        <div
+          className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 self-start rounded-xl bg-muted text-muted-foreground"
+          role="img"
+          aria-label={`Foto ${portion.menuName} belum tersedia`}
+        >
+          <ImageOff className="size-8" aria-hidden />
+          <span className="text-xs">tidak ada gambar</span>
         </div>
+      )}
+      <div className="min-w-0">
+        <p className="flex flex-wrap items-baseline gap-x-1.5">
+          <del className="text-xs text-muted-foreground">
+            <span className="sr-only">Harga awal: </span>
+            {formatIDR(portion.normalPrice)}
+          </del>
+          <strong className="text-2xl font-bold">{formatIDR(portion.discountPrice)}</strong>
+        </p>
         <p className="mt-2">
           <span
-            className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${low ? "bg-accent/15 text-accent-strong" : "bg-secondary text-secondary-foreground"}`}
+            className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${remaining <= 0 ? "bg-secondary text-secondary-foreground" : low ? "bg-accent/15 text-accent-strong" : "bg-secondary text-secondary-foreground"}`}
           >
-            Sisa {remaining} porsi{low ? " · hampir habis" : ""}
+            {remaining <= 0 ? "Habis" : `Sisa ${remaining} porsi${low ? " · hampir habis" : ""}`}
           </span>
         </p>
         <dl className="mt-4 divide-y divide-border border-y">
@@ -188,14 +202,13 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
         </div>
       </div>
       <aside className="h-fit rounded-xl border bg-card p-4 lg:sticky lg:top-20">
-        <h2 className="text-sm font-bold">Atur jumlah dan jam ambil</h2>
+        <h2 className="text-sm font-bold">Atur jumlah</h2>
         <p className="mt-1 text-sm text-muted-foreground">Stok tersisa: {remaining}</p>
         <div className="mt-4">
           <OrderForm
             portionId={portion.id}
             discountPrice={portion.discountPrice}
             quantityRemaining={remaining}
-            releaseAt={portion.releaseAt}
             expiresAt={portion.expiresAt}
           />
         </div>

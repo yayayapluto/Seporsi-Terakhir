@@ -196,7 +196,10 @@ export default async function Home() {
                       </p>
                     </div>
                     <p className="shrink-0 text-right text-sm">
-                      <s className="mr-1.5 text-xs text-muted-foreground">{item.normal}</s>
+                      <del className="mr-1.5 text-xs text-muted-foreground">
+                        <span className="sr-only">Harga awal: </span>
+                        {item.normal}
+                      </del>
                       <strong className="text-base">{item.price}</strong>
                     </p>
                   </ChalkRow>

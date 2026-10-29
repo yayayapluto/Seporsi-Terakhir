@@ -1,7 +1,7 @@
 "use client";
 
 import { QRCode } from "react-qr-code";
-import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { formatIDR } from "@/lib/format";
 
 /**
  * QR pickup besar. pickup_token hanya hidup di sini sebagai QR value —
@@ -12,16 +12,12 @@ export function QrPanel({
   tenantName,
   tenantLocation,
   totalPrice,
-  slotStart,
-  slotEnd,
   pickupToken,
 }: {
   menuName: string;
   tenantName: string;
   tenantLocation: string | null;
   totalPrice: number;
-  slotStart: string | null;
-  slotEnd: string | null;
   pickupToken: string | null;
 }) {
   if (!pickupToken) {
@@ -34,31 +30,25 @@ export function QrPanel({
       </p>
     );
   }
-  return (
-    <section aria-labelledby="qr-heading" className="flex flex-col gap-4 border-b pb-8">
-      <h2 id="qr-heading" className="text-lg font-bold">
-        QR pickup
+  <section aria-labelledby="qr-heading" className="flex flex-col gap-4 border-b pb-8">
+    <div>
+      <p className="text-xs font-bold tracking-widest text-primary uppercase">
+        Tunjukkan layar ini
+      </p>
+      <h2 id="qr-heading" className="mt-1 text-2xl font-bold text-balance">
+        {tenantName}
       </h2>
-      <p className="text-sm text-muted-foreground">Tunjukkan ke tenant, bayar di tempat.</p>
-      <div className="flex flex-col items-center gap-4 rounded-lg border bg-card p-6 sm:p-8">
-        <p className="text-center text-sm font-bold">{tenantName}</p>
-        <QRCode value={pickupToken} size={256} title={`QR pickup pesanan ${menuName}`} />
-        <p className="text-center">
-          <span className="block text-xs text-muted-foreground">Total bayar di tempat</span>
-          <span className="text-xl font-bold">{formatIDR(totalPrice)}</span>
-        </p>
-        {slotStart && slotEnd && (
-          <p className="text-center text-sm">
-            Slot pickup:{" "}
-            <span className="font-semibold">
-              {formatDateTimeWIB(new Date(slotStart))} – {formatDateTimeWIB(new Date(slotEnd))} WIB
-            </span>
-          </p>
-        )}
-        {tenantLocation && (
-          <p className="text-center text-sm font-semibold">Lokasi: {tenantLocation}</p>
-        )}
-      </div>
-    </section>
-  );
+      {tenantLocation && <p className="mt-0.5 text-sm font-semibold">Lokasi: {tenantLocation}</p>}
+    </div>
+    <div className="flex flex-col items-center gap-4 rounded-lg border bg-card p-6 sm:p-8">
+      <QRCode value={pickupToken} size={256} title={`QR pickup pesanan ${menuName}`} />
+      <p className="text-center text-sm font-semibold">
+        Tunjukkan ke {tenantName}, bayar {formatIDR(totalPrice)} tunai di tempat.
+      </p>
+      <p className="text-center">
+        <span className="block text-xs text-muted-foreground">Total bayar tunai</span>
+        <span className="text-3xl font-bold">{formatIDR(totalPrice)}</span>
+      </p>
+    </div>
+  </section>;
 }
