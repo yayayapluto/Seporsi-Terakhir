@@ -61,3 +61,16 @@
   approach: todayStr dari prop server, tanpa new Date di render
   risk_level: low
   commit_message: "fix(porsi): todayStr dari prop server cegah hydration mismatch"
+- bug_id: BUG-2026-10-30T024200
+  date: 2026-10-30
+  severity: medium
+  priority: high
+  scope: auth/not-found
+  summary: /dattebayo reload terus saat login (cek auth) — cache .next korup
+  file: specs/bugs/BUG-2026-10-30T024200-dattebayo-reload-loop.md
+  status: fixed
+  files_changed:
+    - package.json
+  approach: predev wipe .next + prestart guard BUILD_ID
+  risk_level: low
+  commit_message: "fix(dev): predev wipe cache + prestart guard cegah serve dev-cache"
