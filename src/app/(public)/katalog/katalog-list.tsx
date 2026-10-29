@@ -4,6 +4,8 @@ import { ImageOff, LayoutGrid, List } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { GuidedTour } from "@/components/guided-tour";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -102,10 +104,12 @@ export function KatalogList({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-3 border-b pb-4">
-        <Label className="text-sm font-semibold">Tenant</Label>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b pb-4" data-tour="filter">
+        <Label htmlFor="tenant-filter" className="text-sm font-semibold">
+          Tenant
+        </Label>
         <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
-          <SelectTrigger className="h-11 w-fit min-w-32 max-w-[55vw] sm:min-w-40">
+          <SelectTrigger id="tenant-filter" className="h-11 w-fit min-w-32 max-w-[50vw]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent align="start" alignItemWithTrigger={false}>
@@ -117,14 +121,13 @@ export function KatalogList({
             ))}
           </SelectContent>
         </Select>
-        <fieldset className="ml-auto flex items-center gap-1">
-          <legend className="sr-only">Pilihan tampilan</legend>
+        <fieldset className="ml-auto flex items-center gap-1" aria-label="Pilihan tampilan">
           <button
             type="button"
             onClick={() => setView("grid")}
             aria-pressed={view === "grid"}
             title="Tampilan grid"
-            className={`inline-flex h-11 w-11 items-center justify-center rounded-md border ${view === "grid" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}
+            className={`inline-flex h-11 w-11 items-center justify-center rounded-md border transition-all duration-150 active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100 ${view === "grid" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}
           >
             <LayoutGrid className="size-5" aria-hidden />
             <span className="sr-only">Tampilan grid</span>
@@ -134,15 +137,16 @@ export function KatalogList({
             onClick={() => setView("list")}
             aria-pressed={view === "list"}
             title="Tampilan daftar"
-            className={`inline-flex h-11 w-11 items-center justify-center rounded-md border ${view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}
+            className={`inline-flex h-11 w-11 items-center justify-center rounded-md border transition-all duration-150 active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100 ${view === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}
           >
             <List className="size-5" aria-hidden />
             <span className="sr-only">Tampilan daftar</span>
           </button>
         </fieldset>
-        <p className="flex basis-full flex-wrap gap-x-3 text-xs text-muted-foreground sm:text-sm">
-          <output>{filtered.length} porsi tersedia</output>
-          <output className="font-semibold">Porsi terkunci {Math.min(locked, 2)}/2 hari ini</output>
+        <p className="flex basis-full text-xs text-muted-foreground">
+          <output>
+            {filtered.length} porsi{locked >= 2 ? " · batas 2/hari tercapai" : ""}
+          </output>
         </p>
       </div>
       {error && (
@@ -154,24 +158,22 @@ export function KatalogList({
         </p>
       )}
       {success && (
-        <output className="block rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
-          {success}{" "}
-          {successOrderId ? (
-            <Link
-              href={`/pesanan/${successOrderId}`}
-              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
-            >
-              Lihat QR pesanan
-            </Link>
-          ) : (
-            <Link
-              href="/pesanan"
-              className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
-            >
-              Lihat pesanan
-            </Link>
-          )}
-        </output>
+        <div
+          role="status"
+          className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-foreground bg-card px-4 pt-3 sm:left-auto sm:right-4 sm:w-full sm:max-w-sm sm:rounded-t-xl sm:border-2 sm:border-b-0"
+          style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+        >
+          <p className="text-sm font-bold">{success}</p>
+          <Button
+            type="button"
+            onClick={() =>
+              (window.location.href = successOrderId ? `/pesanan/${successOrderId}` : "/pesanan")
+            }
+            className="mt-2 min-h-11 w-full"
+          >
+            Lihat QR pesanan
+          </Button>
+        </div>
       )}
       {filtered.length === 0 ? (
         <div className="border-b py-10 text-center">
@@ -186,7 +188,7 @@ export function KatalogList({
             const soldOut = p.quantityRemaining <= 0;
             return (
               <li key={p.id}>
-                <Reveal className="group relative flex h-full flex-col overflow-hidden rounded-xl border bg-card">
+                <Reveal className="group relative isolate flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0">
                   <div className="relative block aspect-[4/3] w-full bg-muted">
                     {p.imageUrl ? (
                       <Image
@@ -204,7 +206,7 @@ export function KatalogList({
                     )}
                   </div>
                   <div className="flex flex-1 flex-col gap-1 p-3">
-                    <h2 className="break-words text-[15px] font-bold leading-snug sm:text-base">
+                    <h2 className="line-clamp-2 min-h-10 break-words text-[15px] font-bold leading-snug sm:text-base">
                       <Link
                         href={`/katalog/${p.id}`}
                         className="underline-offset-4 hover:underline group-hover:underline after:absolute after:inset-0 after:content-['']"
@@ -213,14 +215,8 @@ export function KatalogList({
                       </Link>
                     </h2>
                     <p className="truncate text-xs text-muted-foreground">
-                      {p.tenantName}
-                      {p.tenantLocation ? ` • ${p.tenantLocation}` : ""}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
-                    </p>
-                    <p className="text-xs font-semibold text-muted-foreground">
-                      {soldOut ? "Sudah habis" : `Sisa ${p.quantityRemaining} porsi`}
+                      {p.tenantName} · Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
+                      {soldOut ? " · Habis" : ` · Sisa ${p.quantityRemaining}`}
                     </p>
                     <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-sm">
                       <s className="text-[11px] text-muted-foreground sm:text-xs">
@@ -233,9 +229,18 @@ export function KatalogList({
                       disabled={ordering === p.id || soldOut || locked >= 2}
                       onClick={() => order(p.id)}
                       aria-label={`Pesan ${p.menuName}`}
-                      className="relative z-10 mt-2"
+                      className="relative z-10 mt-2 min-h-11 w-full"
                     >
-                      {ordering === p.id ? "Memesan…" : soldOut ? "Habis" : "Pesan"}
+                      {ordering === p.id ? (
+                        <>
+                          <Spinner />
+                          Memesan…
+                        </>
+                      ) : soldOut ? (
+                        "Habis"
+                      ) : (
+                        "Pesan"
+                      )}
                     </Button>
                   </div>
                 </Reveal>
@@ -249,7 +254,7 @@ export function KatalogList({
             const soldOut = p.quantityRemaining <= 0;
             return (
               <li key={p.id}>
-                <Reveal className="group relative flex flex-col gap-3 py-4 sm:flex-row">
+                <Reveal className="group relative isolate flex flex-col gap-3 py-4 transition-colors duration-150 hover:bg-muted/40 motion-reduce:transition-none sm:flex-row">
                   <div className="flex gap-3">
                     <div className="relative block size-20 shrink-0 overflow-hidden rounded-lg bg-muted">
                       {p.imageUrl ? (
@@ -270,7 +275,7 @@ export function KatalogList({
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h2 className="break-words text-[15px] font-bold leading-snug sm:text-base">
+                      <h2 className="line-clamp-2 min-h-10 break-words text-[15px] font-bold leading-snug sm:text-base">
                         <Link
                           href={`/katalog/${p.id}`}
                           className="underline-offset-4 hover:underline group-hover:underline after:absolute after:inset-0 after:content-['']"
@@ -279,14 +284,8 @@ export function KatalogList({
                         </Link>
                       </h2>
                       <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                        {p.tenantName}
-                        {p.tenantLocation ? ` • ${p.tenantLocation}` : ""}
-                      </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
-                      </p>
-                      <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
-                        {soldOut ? "Sudah habis" : `Sisa ${p.quantityRemaining} porsi`}
+                        {p.tenantName} · Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
+                        {soldOut ? " · Habis" : ` · Sisa ${p.quantityRemaining}`}
                       </p>
                     </div>
                   </div>
@@ -302,9 +301,18 @@ export function KatalogList({
                       disabled={ordering === p.id || soldOut || locked >= 2}
                       onClick={() => order(p.id)}
                       aria-label={`Pesan ${p.menuName}`}
-                      className="relative z-10 flex-1 sm:flex-none"
+                      className="relative z-10 min-h-11 flex-1 sm:flex-none"
                     >
-                      {ordering === p.id ? "Memesan…" : soldOut ? "Habis" : "Pesan"}
+                      {ordering === p.id ? (
+                        <>
+                          <Spinner />
+                          Memesan…
+                        </>
+                      ) : soldOut ? (
+                        "Habis"
+                      ) : (
+                        "Pesan"
+                      )}
                     </Button>
                   </div>
                 </Reveal>
@@ -327,6 +335,21 @@ export function KatalogList({
           Menampilkan {filtered.length} dari {filtered.length} porsi
         </p>
       )}
+      <GuidedTour
+        tourKey="katalog"
+        steps={[
+          {
+            target: '[data-tour="filter"]',
+            title: "Saring porsi",
+            body: "Pilih tenant atau ganti tampilan grid/daftar.",
+          },
+          {
+            target: "ul li:first-child",
+            title: "Kunci porsimu",
+            body: "Ketuk Pesan, ambil dengan QR, bayar di tempat.",
+          },
+        ]}
+      />
     </div>
   );
 }
