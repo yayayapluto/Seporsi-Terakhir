@@ -1,16 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* foto hero lokal: /images/foto_kantin.webp, tanpa remote host */
-  allowedDevOrigins: ["seporsi-terakhir.my.id", "dev.seporsi-terakhir.my.id"],
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+        pathname: "/storage/v1/object/public/menu-images/**",
       },
-    },
+    ],
   },
+  allowedDevOrigins: ["dev.seporsi-terakhir.my.id", "seporsi-terakhir.my.id", "localhost:3000"],
 };
 
 export default nextConfig;
