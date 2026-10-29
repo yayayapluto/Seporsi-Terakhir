@@ -138,8 +138,13 @@ export default async function TenantDashboardPage() {
               <li key={r.id} className="flex items-center justify-between gap-4 py-3">
                 <div className="min-w-0">
                   <h3 className="font-bold leading-snug">
-                    {r.menuName}{" "}
-                    <span className="font-normal text-muted-foreground">×{r.quantity}</span>
+                    <Link
+                      href={`/tenant/pesanan/${r.id}`}
+                      className="underline-offset-4 hover:underline"
+                    >
+                      {r.menuName}{" "}
+                      <span className="font-normal text-muted-foreground">×{r.quantity}</span>
+                    </Link>
                   </h3>
                   <p className="mt-0.5 text-xs text-muted-foreground">
                     Dipesan {formatDateTimeWIB(new Date(r.createdAt))} WIB
