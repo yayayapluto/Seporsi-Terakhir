@@ -17,8 +17,23 @@ interface TenantOrderRow {
   pickedUpAt: string | null;
   discountPrice: number;
   menuName: string;
+  buyerName: string;
   slotStart: string | null;
   slotEnd: string | null;
+}
+
+/** Bentuk mentah join supabase (buyer + portion nested). */
+interface RawTenantOrder {
+  id: string;
+  status: string;
+  quantity: number;
+  created_at: string;
+  picked_up_at: string | null;
+  discount_price_snapshot: number;
+  slot_start: string | null;
+  slot_end: string | null;
+  buyer?: { full_name?: string | null; email?: string | null } | null;
+  portions?: { menu_items?: { name: string } | { name: string }[] | null } | null;
 }
 
 async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean }> {
@@ -27,28 +42,28 @@ async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, status, quantity, created_at, picked_up_at, discount_price_snapshot, slot_start, slot_end, portions!inner(menu_item_id, menu_items!inner(name), tenant_id)",
+      "id, status, quantity, created_at, picked_up_at, discount_price_snapshot, slot_start, slot_end, buyer:profiles!orders_student_id_fkey(full_name, email), portions!inner(menu_item_id, menu_items!inner(name), tenant_id)",
     )
     .eq("portions.tenant_id", tenant.id)
     .order("created_at", { ascending: false })
     .limit(200);
   if (error || !data) return { orders: [], failed: true };
   return {
-    orders: data.map((o) => {
-      const portion = o.portions as unknown as {
-        menu_items: { name: string } | { name: string }[];
-      } | null;
-      const menu = Array.isArray(portion?.menu_items) ? portion.menu_items[0] : portion?.menu_items;
+    orders: (data as unknown as RawTenantOrder[]).map((o) => {
+      const menu = Array.isArray(o.portions?.menu_items)
+        ? o.portions.menu_items[0]
+        : o.portions?.menu_items;
       return {
         id: o.id,
         status: o.status as TenantOrderRow["status"],
         quantity: o.quantity,
         createdAt: o.created_at,
-        pickedUpAt: (o.picked_up_at as string | null) ?? null,
+        pickedUpAt: o.picked_up_at ?? null,
         discountPrice: o.discount_price_snapshot,
         menuName: menu?.name ?? "Menu",
-        slotStart: (o.slot_start as string | null) ?? null,
-        slotEnd: (o.slot_end as string | null) ?? null,
+        buyerName: o.buyer?.full_name?.trim() || o.buyer?.email?.split("@")[0] || "Mahasiswa",
+        slotStart: o.slot_start ?? null,
+        slotEnd: o.slot_end ?? null,
       };
     }),
     failed: false,
@@ -65,10 +80,15 @@ export default async function TenantPesananPage() {
       <li className="flex flex-col gap-2 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <h2 className="font-bold leading-snug">
-            {o.menuName} <span className="font-normal text-muted-foreground">×{o.quantity}</span>
+            <Link
+              href={`/tenant/pesanan/${o.id}`}
+              className="inline-flex min-h-11 items-center underline-offset-4 hover:underline"
+            >
+              {o.menuName} <span className="font-normal text-muted-foreground">×{o.quantity}</span>
+            </Link>
           </h2>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
+            {o.buyerName} · Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
             {formatIDR(o.discountPrice * o.quantity)}
             {o.slotStart && o.slotEnd
               ? ` · Slot ${formatDateTimeWIB(new Date(o.slotStart))}–${new Date(o.slotEnd).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" })}`

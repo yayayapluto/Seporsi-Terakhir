@@ -1,0 +1,81 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { tenantCancelOrder } from "./actions";
+
+export function TenantCancelButton({ orderId }: { orderId: string }) {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  const [open, setOpen] = useState(false);
+  function onConfirm() {
+    setError(null);
+    setOpen(false);
+    startTransition(async () => {
+      const res = await tenantCancelOrder(orderId);
+      if (!res.ok) setError(res.error);
+      else {
+        router.refresh();
+        router.push("/tenant/pesanan");
+      }
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      {error && (
+        <p
+          role="alert"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+        >
+          {error}
+        </p>
+      )}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger
+          render={
+            <Button type="button" variant="outline" className="min-h-11 px-6 text-destructive" />
+          }
+        >
+          {pending ? "Membatalkan…" : "Batalkan pesanan"}
+        </DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Batalkan pesanan ini?</DialogTitle>
+          <DialogDescription>
+            Mahasiswa yang memesan akan melihat status batal. Stok porsi dikembalikan ke katalog.
+          </DialogDescription>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-11"
+              onClick={() => setOpen(false)}
+            >
+              Kembali
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              className="min-h-11"
+              onClick={onConfirm}
+              disabled={pending}
+            >
+              Ya, batalkan
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
