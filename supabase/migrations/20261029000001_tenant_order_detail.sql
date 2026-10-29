@@ -79,3 +79,6 @@ begin
    where id = v_order.portion_id;
   return v_order;
 end $$;
+
+grant execute on function tenant_order_detail(uuid) to authenticated;
+grant execute on function tenant_cancel_order(uuid) to authenticated;

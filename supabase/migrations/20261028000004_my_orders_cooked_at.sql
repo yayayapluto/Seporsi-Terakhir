@@ -1,6 +1,8 @@
 -- my_orders now exposes portions.cooked_at (BR-3: cook time mandatory + visible).
 -- Buyers already see cook time on katalog/portion detail; exposing it for own
--- order history is consistent. CREATE OR REPLACE keeps existing grants.
+-- order history is consistent. Return type changes -> DROP first (OR REPLACE
+-- cannot change OUT params). Grants re-issued below.
+drop function if exists my_orders();
 create or replace function my_orders()
 returns table (
   order_id uuid, status order_status, quantity integer, created_at timestamptz,
@@ -24,3 +26,5 @@ language sql security definer set search_path = public stable as $$
   where o.student_id = auth.uid()
   order by o.created_at desc;
 $$;
+
+grant execute on function my_orders() to authenticated;
