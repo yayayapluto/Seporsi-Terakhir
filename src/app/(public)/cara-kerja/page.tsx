@@ -97,7 +97,7 @@ export default function CaraKerjaPage() {
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
           />
-          <figcaption className="mt-1 text-[11px] text-muted-foreground">
+          <figcaption className="mt-1 text-xs text-muted-foreground">
             Kantin sore hari — sisa layak simpan didata sebelum tutup.
           </figcaption>
         </figure>
@@ -122,7 +122,7 @@ export default function CaraKerjaPage() {
             </ChalkRow>
           ))}
         </ol>
-        <p className="py-2 text-[11px] text-muted-foreground">
+        <p className="py-2 text-xs text-muted-foreground">
           Hanya makanan matang layak simpan • Jam masak selalu tampil • Tenant tanggung jawab mutu.
         </p>
       </Reveal>
@@ -141,7 +141,7 @@ export default function CaraKerjaPage() {
             </li>
           ))}
         </ul>
-        <p className="py-2 text-[11px] text-muted-foreground">
+        <p className="py-2 text-xs text-muted-foreground">
           Berat pakai rata-rata sampel berkala. Tanpa klaim karbon.
         </p>
       </Reveal>

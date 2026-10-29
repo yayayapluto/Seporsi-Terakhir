@@ -519,7 +519,7 @@ export function PortionForm({
             <span className="text-xs">tidak ada gambar</span>
           </div>
           <div className="flex flex-1 flex-col gap-1 p-3">
-            <p className="line-clamp-2 min-h-10 break-words text-[15px] font-bold leading-snug">
+            <p className="line-clamp-2 min-h-10 break-words text-sm font-bold leading-snug">
               {selected != null ? selected.name : "Pilih menu dulu"}
             </p>
             <p className="truncate text-xs text-muted-foreground">
@@ -528,7 +528,7 @@ export function PortionForm({
                 : "Nama tenant · jam masak · sisa tampil di sini"}
             </p>
             <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-sm">
-              <s className="text-[11px] text-muted-foreground">
+              <s className="text-xs text-muted-foreground">
                 {selected != null ? formatIDR(selected.normalPrice) : "–"}
               </s>
               <strong className="text-base">

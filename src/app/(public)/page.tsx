@@ -170,7 +170,7 @@ export default async function Home() {
                 className="h-auto w-full rounded-md border object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-              <figcaption className="mt-1 text-[11px] text-muted-foreground">
+              <figcaption className="mt-1 text-xs text-muted-foreground">
                 Suasana kantin kampus sore hari.
               </figcaption>
             </figure>
@@ -178,7 +178,7 @@ export default async function Home() {
               aria-label="Contoh papan porsi sore ini"
               className="border-t-2 border-foreground"
             >
-              <div className="flex items-baseline justify-between gap-2 border-b py-2 text-[11px] text-muted-foreground">
+              <div className="flex items-baseline justify-between gap-2 border-b py-2 text-xs text-muted-foreground">
                 <span>Contoh papan sore ini</span>
                 <span>Pickup 16.30–18.00</span>
               </div>
@@ -205,7 +205,7 @@ export default async function Home() {
                   </ChalkRow>
                 ))}
               </ul>
-              <p className="border-b py-2 text-[11px] text-muted-foreground">
+              <p className="border-b py-2 text-xs text-muted-foreground">
                 Stok live ada di katalog.
               </p>
             </section>
