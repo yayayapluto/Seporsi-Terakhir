@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "./guard";
+import { SignOutButton } from "./menunggu-persetujuan/sign-out-button";
 
 /** Dashboard tenant: porsi aktif, reservasi, pickup & omzet hari ini (WIB). */
 
@@ -215,6 +216,9 @@ export default async function TenantDashboardPage() {
         <ShortcutLink href="/tenant/pesanan" label="Pesanan masuk" />
         <ShortcutLink href="/tenant/scan" label="Scanner pickup" />
       </nav>
+      <div className="border-t pt-6">
+        <SignOutButton />
+      </div>
     </div>
   );
 }
