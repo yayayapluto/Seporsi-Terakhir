@@ -158,9 +158,8 @@ export function KatalogList({
         </p>
       )}
       {success && (
-        <div
-          role="status"
-          className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-foreground bg-card px-4 pt-3 sm:left-auto sm:right-4 sm:w-full sm:max-w-sm sm:rounded-t-xl sm:border-2 sm:border-b-0"
+        <output
+          className="fixed inset-x-0 bottom-0 z-40 block border-t-2 border-foreground bg-card px-4 pt-3 sm:left-auto sm:right-4 sm:w-full sm:max-w-sm sm:rounded-t-xl sm:border-2 sm:border-b-0"
           style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
         >
           <p className="text-sm font-bold">{success}</p>
@@ -173,7 +172,7 @@ export function KatalogList({
           >
             Lihat QR pesanan
           </Button>
-        </div>
+        </output>
       )}
       {filtered.length === 0 ? (
         <div className="border-b py-10 text-center">
