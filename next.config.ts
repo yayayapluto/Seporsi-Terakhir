@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  allowedDevOrigins: ["dev.seporsi-terakhir.my.id", "seporsi-terakhir.my.id", "localhost:3000"],
+  allowedDevOrigins: ["dev.seporsi-terakhir.my.id", "re.seporsi-terakhir.my.id", "seporsi-terakhir.my.id", "localhost:3000"],
 };
 
 export default nextConfig;
