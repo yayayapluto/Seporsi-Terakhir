@@ -1,12 +1,14 @@
 import { cn } from "cn";
+import { ChevronRight, History, ReceiptText } from "lucide-react";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { OrderStatusBadge } from "@/components/order-status-badge";
-import { SieraTenantHeader } from "@/components/siera";
+import { SieraCard, SieraSectionTitle, SieraTenantHeader, SieraTile } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
+import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 
 /** Daftar reservasi porsi tenant: menunggu pickup → selesai. Tanpa token. */
@@ -69,36 +71,50 @@ async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean
 export default async function TenantPesananPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string }>;
+  searchParams?: Promise<{
+    mode?: string;
+    tour?: string;
+    panduan?: string;
+    langkah?: string;
+    fresh?: string;
+  }>;
 }) {
   const { orders, failed } = await loadOrders();
   const sp = (await searchParams) ?? {};
-  const tourForced = sp.mode === "onboarding";
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   const waiting = orders.filter((o) => o.status === "reserved");
   const done = orders.filter((o) => o.status !== "reserved");
 
-  function Row({ o }: { o: TenantOrderRow }) {
+  function Row({ o, showBadge }: { o: TenantOrderRow; showBadge: boolean }) {
     return (
-      <li className="flex flex-col gap-2 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-        <div className="min-w-0">
-          <h2 className="font-bold leading-snug">
-            <Link
-              href={`/tenant/pesanan/${o.id}`}
-              className="inline-flex min-h-11 items-center underline-offset-4 hover:underline"
-            >
-              {o.menuName} <span className="font-normal text-muted-foreground">×{o.quantity}</span>
-            </Link>
-          </h2>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            {o.buyerName} · Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
-            {formatIDR(o.discountPrice * o.quantity)}
-            {o.status === "picked_up" && o.pickedUpAt
-              ? ` · Diambil ${formatDateTimeWIB(new Date(o.pickedUpAt))} WIB`
-              : ""}
-          </p>
-        </div>
+      <li className="flex items-center gap-3 py-3">
+        <Link
+          href={`/tenant/pesanan/${o.id}`}
+          className="flex min-h-11 min-w-0 flex-1 items-center gap-3"
+        >
+          <SieraTile>
+            {showBadge ? (
+              <History className="size-5" strokeWidth={1.75} aria-hidden />
+            ) : (
+              <ReceiptText className="size-5" strokeWidth={1.75} aria-hidden />
+            )}
+          </SieraTile>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[15px] font-semibold">
+              {o.menuName} <span className="font-normal text-[#64746B]">×{o.quantity}</span>
+            </span>
+            <span className="block truncate text-[12px] text-[#64746B]">
+              {o.buyerName} · Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
+              {formatIDR(o.discountPrice * o.quantity)}
+              {o.status === "picked_up" && o.pickedUpAt
+                ? ` · Diambil ${formatDateTimeWIB(new Date(o.pickedUpAt))} WIB`
+                : ""}
+            </span>
+          </span>
+          <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+        </Link>
         <div className="flex shrink-0 items-center gap-3">
-          <OrderStatusBadge status={o.status} />
+          {showBadge && <OrderStatusBadge status={o.status} />}
           {o.status === "reserved" && (
             <Link href="/tenant/scan" className={cn(buttonVariants({ size: "sm" }), "min-h-11")}>
               Scan pickup
@@ -118,7 +134,7 @@ export default async function TenantPesananPage({
       {failed ? (
         <div
           role="alert"
-          className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3"
+          className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3"
         >
           <p className="font-bold text-destructive">Gagal memuat pesanan</p>
           <p className="mt-1 text-sm text-destructive">
@@ -134,35 +150,39 @@ export default async function TenantPesananPage({
         />
       ) : (
         <>
-          <section aria-labelledby="menunggu-heading" className="border-b pb-6">
-            <h2 id="menunggu-heading" className="text-lg font-bold">
-              Menunggu pickup {waiting.length > 0 && `(${waiting.length})`}
-            </h2>
+          <section aria-labelledby="menunggu-heading" className="flex flex-col gap-3">
+            <SieraSectionTitle id="menunggu-heading">
+              Menunggu pickup{waiting.length > 0 ? ` (${waiting.length})` : ""}
+            </SieraSectionTitle>
             {waiting.length === 0 ? (
-              <p className="mt-2 text-sm text-muted-foreground">
-                Tidak ada reservasi aktif saat ini.
-              </p>
+              <div className="rounded-[20px] border border-dashed border-[#E8ECE9] bg-white p-6 text-center">
+                <p className="text-sm text-[#64746B]">Tidak ada reservasi aktif saat ini.</p>
+              </div>
             ) : (
-              <ul className="mt-2 divide-y divide-border">
-                {waiting.map((o) => (
-                  <Row key={o.id} o={o} />
-                ))}
-              </ul>
+              <SieraCard>
+                <ul className="divide-y divide-dashed divide-[#E8ECE9]">
+                  {waiting.map((o) => (
+                    <Row key={o.id} o={o} showBadge={false} />
+                  ))}
+                </ul>
+              </SieraCard>
             )}
           </section>
 
-          <section aria-labelledby="selesai-heading">
-            <h2 id="selesai-heading" className="text-lg font-bold">
-              Selesai & dibatalkan
-            </h2>
+          <section aria-labelledby="selesai-heading" className="flex flex-col gap-3">
+            <SieraSectionTitle id="selesai-heading">Selesai & dibatalkan</SieraSectionTitle>
             {done.length === 0 ? (
-              <p className="mt-2 text-sm text-muted-foreground">Belum ada riwayat.</p>
+              <div className="rounded-[20px] border border-dashed border-[#E8ECE9] bg-white p-6 text-center">
+                <p className="text-sm text-[#64746B]">Belum ada riwayat.</p>
+              </div>
             ) : (
-              <ul className="mt-2 divide-y divide-border border-b">
-                {done.map((o) => (
-                  <Row key={o.id} o={o} />
-                ))}
-              </ul>
+              <SieraCard>
+                <ul className="divide-y divide-dashed divide-[#E8ECE9]">
+                  {done.map((o) => (
+                    <Row key={o.id} o={o} showBadge />
+                  ))}
+                </ul>
+              </SieraCard>
             )}
           </section>
         </>
@@ -170,6 +190,11 @@ export default async function TenantPesananPage({
       <GuidedTour
         tourKey="tenant-pesanan"
         forced={tourForced}
+        journey={tourJourney}
+        next={tourJourney ? (getJourneyNext("/tenant/pesanan") ?? undefined) : undefined}
+        journeyLabel="Bagian 4 dari 5 · Pesanan"
+        entryStep={tourEntry}
+        fresh={sp.fresh === "1"}
         intro={{
           title: "Pesanan masuk?",
           body: "Reservasi mahasiswa yang menunggu pickup dan riwayatnya — semua di sini.",

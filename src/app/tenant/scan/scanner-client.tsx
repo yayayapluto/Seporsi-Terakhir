@@ -5,7 +5,7 @@ import { CheckIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SieraTenantHeader } from "@/components/siera";
+import { SieraTenantHeader, sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -227,7 +227,7 @@ export function ScannerClient() {
       )}
 
       {phase.kind === "preview" && (
-        <section aria-labelledby="preview-heading" className="rounded-xl border bg-card p-5">
+        <section aria-labelledby="preview-heading" className={cn(sieraCardClass, "p-5")}>
           <h2 id="preview-heading" className="text-lg font-bold">
             Konfirmasi pickup
           </h2>
@@ -271,20 +271,20 @@ export function ScannerClient() {
                 <DialogFooter>
                   <Button
                     type="button"
-                    autoFocus
-                    className="min-h-11"
-                    onClick={() => setConfirmOpen(false)}
-                  >
-                    Kembali
-                  </Button>
-                  <Button
-                    type="button"
                     variant="outline"
-                    className="min-h-11 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    className="min-h-11 flex-1 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
                     onClick={onConfirm}
                     disabled={confirming}
                   >
                     Ya, konfirmasi
+                  </Button>
+                  <Button
+                    type="button"
+                    autoFocus
+                    className="min-h-11 flex-1"
+                    onClick={() => setConfirmOpen(false)}
+                  >
+                    Kembali
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -294,7 +294,7 @@ export function ScannerClient() {
       )}
 
       {phase.kind === "success" && (
-        <output aria-live="polite" className="block rounded-xl border bg-card p-8 text-center">
+        <output aria-live="polite" className={cn(sieraCardClass, "block p-8 text-center")}>
           <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
             <CheckIcon className="size-6" aria-hidden="true" />
           </span>
@@ -323,7 +323,7 @@ export function ScannerClient() {
       {phase.kind === "error" && (
         <section
           role="alert"
-          className="rounded-xl border border-destructive/30 bg-destructive/10 p-5 text-center"
+          className="rounded-[20px] border border-destructive/30 bg-destructive/10 p-5 text-center"
         >
           <p className="font-bold text-destructive">{phase.message}</p>
           {phase.hint && <p className="mt-1 text-sm text-destructive">{phase.hint}</p>}

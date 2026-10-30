@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { DateField } from "@/components/date-field";
+import { sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { TimeField } from "@/components/time-field";
 import {
@@ -269,13 +270,13 @@ export function PortionForm({
         {formError && (
           <p
             role="alert"
-            className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
           >
             {formError}
           </p>
         )}
         {draftRestored && isNew && (
-          <p className="flex min-h-11 items-center justify-between gap-2 rounded-md border border-input px-4 py-2 text-sm text-muted-foreground">
+          <p className="flex min-h-11 items-center justify-between gap-2 rounded-2xl border border-input px-4 py-2 text-sm text-muted-foreground">
             Draf terakhir dipulihkan.
             <button type="button" className="underline" onClick={clearDraft}>
               Buang draf
@@ -513,7 +514,7 @@ export function PortionForm({
       </form>
       <aside aria-label="Pratinjau katalog" className="min-w-0 md:sticky md:top-20">
         <p className="text-xs font-bold tracking-widest text-primary">PRATINJAU</p>
-        <div className="mt-2 flex flex-col overflow-hidden rounded-xl border bg-card">
+        <div className={`${sieraCardClass} mt-2 flex flex-col overflow-hidden`}>
           <div className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 bg-muted text-muted-foreground">
             <ImageOff className="size-8" aria-hidden />
             <span className="text-xs">tidak ada gambar</span>

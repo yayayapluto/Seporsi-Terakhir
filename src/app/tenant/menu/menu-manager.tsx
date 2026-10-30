@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { SieraCard, SieraSectionTitle } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -181,67 +182,74 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
   const busy = isSubmitting || uploading;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-4">
-        <output className="text-sm text-muted-foreground">{items.length} menu</output>
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <SieraSectionTitle>
+          Menu terdaftar{items.length > 0 ? ` (${items.length})` : ""}
+        </SieraSectionTitle>
         <Button type="button" data-tour="tambah-menu" className="min-h-11" onClick={openNew}>
           + Tambah menu
         </Button>
       </div>
 
       {items.length === 0 ? (
-        <div className="border-b py-10 text-center">
+        <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-[#E8ECE9] bg-white p-6 text-center">
           <p className="font-semibold">Belum ada menu</p>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="-mt-2 text-sm text-[#64746B]">
             Tambahkan menu dulu sebelum memposting porsi sisa.
           </p>
+          <Button type="button" variant="outline" className="min-h-11" onClick={openNew}>
+            + Tambah menu pertama
+          </Button>
         </div>
       ) : (
-        <ul data-tour="menu-list" className="divide-y divide-border border-b">
-          {items.map((m) => (
-            <li
-              key={m.id}
-              className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:gap-4"
-            >
-              {m.imagePath ? (
-                <Image
-                  src={publicMenuImageUrl(m.imagePath)}
-                  alt=""
-                  width={64}
-                  height={64}
-                  className="size-16 shrink-0 rounded-lg object-cover"
-                />
-              ) : (
-                <div
-                  aria-hidden="true"
-                  className="flex size-16 shrink-0 items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground"
-                >
-                  Tanpa foto
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <h2 className="font-bold leading-snug">{m.name}</h2>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  Harga normal {formatIDR(m.normalPrice)}
-                  {m.avgWeightGrams ? ` · ±${m.avgWeightGrams} g/porsi` : ""}
-                </p>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {m.isActive ? "Aktif" : "Nonaktif"}
-                  {m.ingredients ? ` · Bahan: ${m.ingredients}` : " · Bahan belum dicantumkan"}
-                  {m.allergenNote ? ` · Alergen: ${m.allergenNote}` : ""}
-                </p>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                className="min-h-11 shrink-0"
-                onClick={() => openEdit(m)}
+        <SieraCard>
+          <ul data-tour="menu-list" className="divide-y divide-dashed divide-[#E8ECE9]">
+            {items.map((m) => (
+              <li
+                key={m.id}
+                className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:gap-4"
               >
-                Edit
-              </Button>
-            </li>
-          ))}
-        </ul>
+                {m.imagePath ? (
+                  <Image
+                    src={publicMenuImageUrl(m.imagePath)}
+                    alt=""
+                    width={64}
+                    height={64}
+                    className="size-16 shrink-0 rounded-lg object-cover"
+                  />
+                ) : (
+                  <div
+                    aria-hidden="true"
+                    className="flex size-16 shrink-0 items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground"
+                  >
+                    Tanpa foto
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <h2 className="font-bold leading-snug">{m.name}</h2>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    Harga normal {formatIDR(m.normalPrice)}
+                    {m.avgWeightGrams ? ` · ±${m.avgWeightGrams} g/porsi` : ""}
+                  </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {m.isActive ? "Aktif" : "Nonaktif"}
+                    {m.ingredients ? ` · Bahan: ${m.ingredients}` : " · Bahan belum dicantumkan"}
+                    {m.allergenNote ? ` · Alergen: ${m.allergenNote}` : ""}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="min-h-11 shrink-0"
+                  onClick={() => openEdit(m)}
+                >
+                  Edit
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </SieraCard>
       )}
 
       <Dialog

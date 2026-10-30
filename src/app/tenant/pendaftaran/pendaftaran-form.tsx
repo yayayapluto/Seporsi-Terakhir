@@ -1,11 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "cn";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,12 +57,12 @@ export function PendaftaranForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-5 rounded-lg border border-border bg-card p-5 sm:p-6"
+      className={cn(sieraCardClass, "flex flex-col gap-5 p-5 sm:p-6")}
     >
       {formError && (
         <p
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
         >
           {formError}{" "}
           {alreadyApplied && (

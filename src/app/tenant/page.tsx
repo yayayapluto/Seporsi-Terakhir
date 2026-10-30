@@ -1,11 +1,11 @@
+import { ChevronRight, CircleHelp, Package, ReceiptText, ScanLine, Wallet } from "lucide-react";
 import Link from "next/link";
-import { OrderStatusBadge } from "@/components/order-status-badge";
-import { SieraTenantHeader } from "@/components/siera";
+import { SieraCard, SieraSectionTitle, SieraTenantHeader, SieraTile } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
+import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { requireOwnTenant } from "./guard";
-import { SignOutButton } from "./menunggu-persetujuan/sign-out-button";
 import { TenantTour } from "./tenant-tour";
 
 /** Dashboard tenant: porsi aktif, reservasi, pickup & omzet hari ini (WIB). */
@@ -40,7 +40,7 @@ async function loadData() {
 
   const nowIso = new Date().toISOString();
   const hourAgoIso = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  const [portionsRes, ordersRes, expiredRes] = await Promise.all([
+  const [portionsRes, ordersRes, expiredRes, menuCountRes] = await Promise.all([
     supabase
       .from("portions")
       .select(
@@ -67,6 +67,10 @@ async function loadData() {
       .lt("expires_at", nowIso)
       .order("expires_at", { ascending: false })
       .limit(5),
+    supabase
+      .from("menu_items")
+      .select("id", { count: "exact", head: true })
+      .eq("tenant_id", tenant.id),
   ]);
 
   const activePortions: ActivePortion[] = (
@@ -123,166 +127,256 @@ async function loadData() {
     todayLocal,
     justExpired,
     tenantId: tenant.id,
+    menuCount: menuCountRes.count ?? 0,
   };
 }
 
 export default async function TenantDashboardPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string }>;
+  searchParams?: Promise<{
+    mode?: string;
+    tour?: string;
+    panduan?: string;
+    langkah?: string;
+    fresh?: string;
+  }>;
 }) {
   const sp = (await searchParams) ?? {};
-  const tourForced = sp.mode === "onboarding";
-  const { activePortions, reservations, pickupsToday, revenueToday, justExpired, tenantId } =
-    await loadData();
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
+  const {
+    activePortions,
+    reservations,
+    pickupsToday,
+    revenueToday,
+    justExpired,
+    tenantId,
+    menuCount,
+  } = await loadData();
+  // Pintu masuk rantai tenant: belum punya menu + URL bersih.
+  const autoChain = shouldAutoChain(menuCount === 0, tourForced || tourJourney);
+  const totalRemaining = activePortions.reduce((sum, p) => sum + p.quantityRemaining, 0);
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <SieraTenantHeader kicker="DASBOR TENANT" title="Kantinmu hari ini">
         <p className="text-sm">
-          {activePortions.reduce((sum, p) => sum + p.quantityRemaining, 0)} porsi aktif ·{" "}
-          {pickupsToday} pickup · {formatIDR(revenueToday)} omzet hari ini
+          {totalRemaining} porsi aktif · {pickupsToday} pickup · {formatIDR(revenueToday)} omzet
+          hari ini
         </p>
       </SieraTenantHeader>
 
-      <section aria-labelledby="reservasi-heading" data-tour="reservasi" className="border-b pb-6">
-        <div className="flex items-baseline justify-between gap-3">
-          <h2 id="reservasi-heading" className="text-lg font-bold">
-            Reservasi menunggu pickup {reservations.length > 0 && `(${reservations.length})`}
-          </h2>
-          <div className="flex shrink-0 items-center gap-3">
-            {reservations.length > 5 && (
-              <Link
-                href="/tenant/pesanan"
-                className="inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-primary hover:underline"
-              >
-                Lihat semua
-              </Link>
-            )}
-            <Link
-              href="/tenant/scan"
-              data-tour="scan"
-              className={buttonVariants({ className: "min-h-11" })}
-            >
-              Scan pickup
-            </Link>
+      <SieraCard className="grid grid-cols-3 divide-x divide-dashed divide-[#E8ECE9] p-4">
+        <div className="flex items-center gap-3 pr-2">
+          <SieraTile>
+            <Package className="size-5" strokeWidth={1.75} aria-hidden />
+          </SieraTile>
+          <div className="min-w-0">
+            <p className="text-lg leading-none font-extrabold">{totalRemaining}</p>
+            <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Porsi aktif</p>
           </div>
         </div>
+        <div className="flex items-center gap-3 px-4">
+          <SieraTile>
+            <ScanLine className="size-5" strokeWidth={1.75} aria-hidden />
+          </SieraTile>
+          <div className="min-w-0">
+            <p className="text-lg leading-none font-extrabold">{pickupsToday}</p>
+            <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Pickup</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 pl-4">
+          <SieraTile>
+            <Wallet className="size-5" strokeWidth={1.75} aria-hidden />
+          </SieraTile>
+          <div className="min-w-0">
+            <p className="truncate text-lg leading-none font-extrabold">
+              {formatIDR(revenueToday)}
+            </p>
+            <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Omzet</p>
+          </div>
+        </div>
+      </SieraCard>
+
+      <Link
+        href="/tenant/scan"
+        data-tour="scan"
+        className={buttonVariants({ className: "min-h-12 w-full text-[15px]" })}
+      >
+        Scan pickup
+      </Link>
+
+      <section
+        aria-labelledby="reservasi-heading"
+        data-tour="reservasi"
+        className="flex flex-col gap-3"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <SieraSectionTitle id="reservasi-heading">
+            Menunggu pickup{reservations.length > 0 ? ` (${reservations.length})` : ""}
+          </SieraSectionTitle>
+          {reservations.length > 5 && (
+            <Link
+              href="/tenant/pesanan"
+              className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
+            >
+              Lihat Semua
+            </Link>
+          )}
+        </div>
         {reservations.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">Tidak ada reservasi aktif.</p>
+          <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-[#E8ECE9] bg-white p-6 text-center">
+            <p className="text-sm text-[#64746B]">Tidak ada reservasi aktif.</p>
+            <Link
+              href="/tenant/scan"
+              className={buttonVariants({ variant: "outline", className: "min-h-11" })}
+            >
+              Buka scanner
+            </Link>
+          </div>
         ) : (
-          <ul className="mt-2 divide-y divide-border">
-            {reservations.slice(0, 5).map((r) => (
-              <li key={r.id} className="flex items-center justify-between gap-4 py-3">
-                <div className="min-w-0">
-                  <h3 className="font-bold leading-snug">
-                    <Link
-                      href={`/tenant/pesanan/${r.id}`}
-                      className="underline-offset-4 hover:underline"
-                    >
-                      {r.menuName}{" "}
-                      <span className="font-normal text-muted-foreground">×{r.quantity}</span>
-                    </Link>
-                  </h3>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    Dipesan {formatDateTimeWIB(new Date(r.createdAt))} WIB
-                  </p>
-                </div>
-                <OrderStatusBadge status="reserved" />
-              </li>
-            ))}
-          </ul>
+          <SieraCard>
+            <ul className="divide-y divide-dashed divide-[#E8ECE9]">
+              {reservations.slice(0, 5).map((r) => (
+                <li key={r.id}>
+                  <Link
+                    href={`/tenant/pesanan/${r.id}`}
+                    className="flex min-h-11 items-center gap-3 py-3"
+                  >
+                    <SieraTile>
+                      <ReceiptText className="size-5" strokeWidth={1.75} aria-hidden />
+                    </SieraTile>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[15px] font-semibold">
+                        {r.menuName}{" "}
+                        <span className="font-normal text-[#64746B]">×{r.quantity}</span>
+                      </span>
+                      <span className="block text-[12px] text-[#64746B]">
+                        Dipesan {formatDateTimeWIB(new Date(r.createdAt))} WIB
+                      </span>
+                    </span>
+                    <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </SieraCard>
         )}
       </section>
 
-      <section aria-labelledby="porsi-heading" className="border-b pb-6">
-        <div className="flex items-baseline justify-between gap-3">
-          <h2 id="porsi-heading" className="text-lg font-bold">
-            Porsi aktif
-          </h2>
+      <section aria-labelledby="porsi-heading" className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-3">
+          <SieraSectionTitle id="porsi-heading">Porsi aktif</SieraSectionTitle>
           <Link
             href="/tenant/porsi/baru"
             data-tour="tambah-porsi"
-            className={buttonVariants({ className: "min-h-11" })}
+            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
           >
-            + Tambah porsi
+            + Tambah
           </Link>
         </div>
         {activePortions.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">
-            Belum ada porsi aktif. Posting sisa masakan hari ini.
-          </p>
+          <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-[#E8ECE9] bg-white p-6 text-center">
+            <p className="text-sm text-[#64746B]">
+              Belum ada porsi aktif. Posting sisa masakan hari ini.
+            </p>
+            <Link
+              href="/tenant/porsi/baru"
+              className={buttonVariants({ variant: "outline", className: "min-h-11" })}
+            >
+              + Tambah porsi
+            </Link>
+          </div>
         ) : (
-          <ul className="mt-2 divide-y divide-border border-b">
-            {activePortions.map((p) => {
-              const minutesLeft = Math.max(
-                0,
-                Math.round((new Date(p.expiresAt).getTime() - Date.now()) / 60000),
-              );
-              const nearExpiry = minutesLeft < 60;
-              return (
-                <li
-                  key={p.id}
-                  className="flex flex-col gap-2 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
-                >
-                  <div className="min-w-0">
-                    <h3 className="font-bold leading-snug">
-                      {p.menuName}{" "}
-                      <span className="font-normal text-muted-foreground">
-                        sisa {p.quantityRemaining}/{p.quantityPosted}
-                      </span>
-                    </h3>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      <strong className="text-sm font-bold text-primary">
-                        {formatIDR(p.discountPrice)}
-                      </strong>{" "}
-                      · Habis {formatDateTimeWIB(new Date(p.expiresAt))} WIB
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-3">
-                    {nearExpiry && (
-                      <span className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent-strong">
-                        Batas ambil {minutesLeft} mnt lagi
-                      </span>
-                    )}
-                    <Link
-                      href={`/tenant/porsi/${p.id}/edit`}
-                      className={buttonVariants({ variant: "outline", className: "min-h-11" })}
-                    >
-                      Edit
-                    </Link>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-        {justExpired.length > 0 && (
-          <p className="mt-2 text-xs text-muted-foreground">
-            Baru saja kedaluwarsa (≤1 jam):{" "}
-            {justExpired
-              .map((j) => `${j.menuName} (${formatDateTimeWIB(new Date(j.expiresAt))})`)
-              .join(" · ")}{" "}
-            — posting ulang bila masih layak.
-          </p>
+          <SieraCard>
+            <ul className="divide-y divide-dashed divide-[#E8ECE9]">
+              {activePortions.map((p) => {
+                const minutesLeft = Math.max(
+                  0,
+                  Math.round((new Date(p.expiresAt).getTime() - Date.now()) / 60000),
+                );
+                const nearExpiry = minutesLeft < 60;
+                return (
+                  <li
+                    key={p.id}
+                    className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                  >
+                    <div className="min-w-0">
+                      <h3 className="truncate font-bold leading-snug">
+                        {p.menuName}{" "}
+                        <span className="font-normal text-[#64746B]">
+                          sisa {p.quantityRemaining}/{p.quantityPosted}
+                        </span>
+                      </h3>
+                      <p className="mt-0.5 text-xs text-[#64746B]">
+                        <strong className="text-sm font-bold text-primary">
+                          {formatIDR(p.discountPrice)}
+                        </strong>{" "}
+                        · Habis {formatDateTimeWIB(new Date(p.expiresAt))} WIB
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-3">
+                      {nearExpiry && (
+                        <span className="inline-flex items-center rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-semibold text-[#B45309]">
+                          Batas ambil {minutesLeft} mnt lagi
+                        </span>
+                      )}
+                      <Link
+                        href={`/tenant/porsi/${p.id}/edit`}
+                        className={buttonVariants({ variant: "outline", className: "min-h-11" })}
+                      >
+                        Edit
+                      </Link>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            {justExpired.length > 0 && (
+              <p className="border-t border-dashed border-[#E8ECE9] pt-3 text-xs text-muted-foreground">
+                Baru saja kedaluwarsa (≤1 jam):{" "}
+                {justExpired
+                  .map((j) => `${j.menuName} (${formatDateTimeWIB(new Date(j.expiresAt))})`)
+                  .join(" · ")}{" "}
+                — posting ulang bila masih layak.
+              </p>
+            )}
+          </SieraCard>
         )}
       </section>
 
-      <nav aria-label="Pintasan" className="flex flex-wrap gap-x-5 gap-y-2 border-t pt-6">
-        <ShortcutLink href="/tenant/menu" label="Kelola menu" />
-        <ShortcutLink href="/tenant/pesanan" label="Pesanan masuk" />
-      </nav>
-      <div className="border-t pt-6">
-        <SignOutButton />
-      </div>
-      <TenantTour forced={tourForced} userId={tenantId} />
-    </div>
-  );
-}
+      <section aria-labelledby="bantuan-heading" className="flex flex-col gap-3">
+        <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
+        <SieraCard>
+          <nav aria-label="Bantuan">
+            <Link
+              href="/tenant?panduan=rantai&fresh=1"
+              className="flex min-h-11 items-center gap-3 py-1"
+            >
+              <SieraTile>
+                <CircleHelp className="size-5" strokeWidth={1.75} aria-hidden />
+              </SieraTile>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-semibold">Panduan kelola</span>
+                <span className="block text-[12px] text-[#64746B]">
+                  Tur singkat dasbor sampai scan
+                </span>
+              </span>
+              <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+            </Link>
+          </nav>
+        </SieraCard>
+      </section>
 
-function ShortcutLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link href={href} className={buttonVariants({ variant: "outline", className: "min-h-11" })}>
-      {label}
-    </Link>
+      <TenantTour
+        forced={tourForced}
+        auto={autoChain}
+        userId={tenantId}
+        journey={tourJourney || autoChain}
+        next={tourJourney || autoChain ? (getJourneyNext("/tenant") ?? undefined) : undefined}
+        journeyLabel="Bagian 1 dari 5 · Dasbor"
+        entryStep={tourEntry}
+        fresh={sp.fresh === "1"}
+      />
+    </div>
   );
 }

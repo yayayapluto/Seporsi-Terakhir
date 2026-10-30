@@ -48,14 +48,12 @@ function tabsFor(role: string | null, unread: number): NavTab[] {
       { href: "/tenant", label: "Dasbor", icon: "dashboard" },
       { href: "/tenant/scan", label: "Pindai", icon: "scan" },
       { href: "/tenant/pesanan", label: "Pesanan", icon: "orders", badge },
-      { href: "/notifikasi", label: "Notifikasi", icon: "bell" },
       { href: "/profil", label: "Akun", icon: "account" },
     ];
   if (role === "admin")
     return [
       { href: "/admin", label: "Dampak", icon: "dashboard" },
       { href: "/admin/tenant", label: "Tenant", icon: "shield", badge },
-      { href: "/notifikasi", label: "Notifikasi", icon: "bell" },
       { href: "/katalog", label: "Katalog", icon: "store" },
       { href: "/profil", label: "Akun", icon: "account" },
     ];

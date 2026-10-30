@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { SieraTenantHeader, sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -81,15 +82,9 @@ export default async function TenantOrderDetailPage({
       >
         ← Semua pesanan
       </Link>
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">RESERVASI</p>
-        <h1 className="text-3xl font-bold">
-          {o.menuName} <span className="text-muted-foreground">× {o.quantity}</span>
-        </h1>
-        <p className="text-muted-foreground">
-          Dipesan {o.buyerName} · {formatDateTimeWIB(new Date(o.createdAt))} WIB
-        </p>
-      </div>
+      <SieraTenantHeader kicker="RESERVASI" title={`${o.menuName} × ${o.quantity}`}>
+        Dipesan {o.buyerName} · {formatDateTimeWIB(new Date(o.createdAt))} WIB
+      </SieraTenantHeader>
 
       <div className="flex flex-wrap items-center gap-3 border-b pb-4">
         <OrderStatusBadge status={o.status} />
@@ -101,7 +96,7 @@ export default async function TenantOrderDetailPage({
       </div>
 
       {o.pickupToken && (
-        <section aria-labelledby="pickup-heading" className="rounded-xl border bg-card p-5">
+        <section aria-labelledby="pickup-heading" className={`${sieraCardClass} p-5`}>
           <h2 id="pickup-heading" className="text-lg font-bold">
             Kode pickup: <span className="font-mono break-all">{o.pickupToken}</span>
           </h2>
@@ -117,7 +112,7 @@ export default async function TenantOrderDetailPage({
         </section>
       )}
 
-      <section aria-labelledby="pemesan-heading" className="rounded-xl border bg-card p-5">
+      <section aria-labelledby="pemesan-heading" className={`${sieraCardClass} p-5`}>
         <h2 id="pemesan-heading" className="text-2xl font-bold">
           {o.buyerName}
         </h2>
