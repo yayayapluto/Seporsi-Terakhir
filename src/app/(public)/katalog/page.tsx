@@ -5,6 +5,7 @@ import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { SieraHero } from "@/components/siera";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
+import { parseTourParams } from "@/lib/tour-journey";
 import { KatalogList } from "./katalog-list";
 
 export interface CatalogPortion {
@@ -91,14 +92,14 @@ async function loadCatalog(): Promise<{
 export default function KatalogPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string }>;
+  searchParams?: Promise<{ mode?: string; tour?: string }>;
 }) {
   return KatalogPageBody(searchParams);
 }
 
-async function KatalogPageBody(searchParams?: Promise<{ mode?: string }>) {
+async function KatalogPageBody(searchParams?: Promise<{ mode?: string; tour?: string }>) {
   const sp = (await searchParams) ?? {};
-  const tourForced = sp.mode === "onboarding";
+  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
   return (
     <>
       <AppHeader title="Katalog" />
@@ -108,14 +109,20 @@ async function KatalogPageBody(searchParams?: Promise<{ mode?: string }>) {
           tempat. Maksimal 2 porsi per hari.
         </SieraHero>
         <Suspense fallback={<LoadingSkeleton variant="catalog-list" />}>
-          <CatalogBody tourForced={tourForced} />
+          <CatalogBody tourForced={tourForced} tourJourney={tourJourney} />
         </Suspense>
       </div>
     </>
   );
 }
 
-async function CatalogBody({ tourForced }: { tourForced: boolean }) {
+async function CatalogBody({
+  tourForced,
+  tourJourney,
+}: {
+  tourForced: boolean;
+  tourJourney: boolean;
+}) {
   const { portions, tenants, dayTotal } = await loadCatalog();
   return (
     <KatalogList
@@ -123,6 +130,7 @@ async function CatalogBody({ tourForced }: { tourForced: boolean }) {
       tenants={tenants}
       dayTotal={dayTotal}
       tourForced={tourForced}
+      tourJourney={tourJourney}
     />
   );
 }

@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { getJourneyNext } from "@/lib/tour-journey";
 import type { CatalogPortion } from "./page";
 
 const BATCH = 12;
@@ -36,11 +37,13 @@ export function KatalogList({
   tenants,
   dayTotal,
   tourForced,
+  tourJourney,
 }: {
   portions: CatalogPortion[];
   tenants: string[];
   dayTotal: number;
   tourForced: boolean;
+  tourJourney: boolean;
 }) {
   const [tenant, setTenant] = useState<string>("semua");
   const [sort, setSort] = useState<SortValue>("hampir-habis");
@@ -408,6 +411,9 @@ export function KatalogList({
       <GuidedTour
         tourKey="katalog"
         forced={tourForced}
+        auto={false}
+        journey={tourJourney}
+        next={tourJourney ? (getJourneyNext("/katalog") ?? undefined) : undefined}
         intro={{
           title: "Cara baca katalog?",
           body: "Saring tenant, urutkan yang hampir habis, ketuk kartunya buat pesan. Bisa dilewati, dan diulang kapan saja.",

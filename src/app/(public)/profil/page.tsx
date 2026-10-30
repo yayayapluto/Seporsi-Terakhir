@@ -20,6 +20,7 @@ import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
+import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 
 /** Profil student: identitas, aplikasi tenant, dampak dari pesanan picked_up. */
 
@@ -91,11 +92,11 @@ function roleLabel(p: ProfileData): string | null {
 export default async function ProfilPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string }>;
+  searchParams?: Promise<{ mode?: string; tour?: string }>;
 }) {
   const { user } = await requireRole("/profil", "student");
   const sp = (await searchParams) ?? {};
-  const tourForced = sp.mode === "onboarding";
+  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
   const p = await loadProfile(user.id);
   const label = roleLabel(p);
   const tenantStatus =
@@ -303,6 +304,9 @@ export default async function ProfilPage({
       <GuidedTour
         tourKey="profil"
         forced={tourForced}
+        auto={false}
+        journey={tourJourney}
+        next={tourJourney ? (getJourneyNext("/profil") ?? undefined) : undefined}
         intro={{
           title: "Ada apa di akun?",
           body: "Dampakmu, jalan jadi tenant, dan semua pengaturan — sekilas saja.",

@@ -3,6 +3,7 @@ import { GuidedTour } from "@/components/guided-tour";
 import { SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { OrdersList } from "./pesanan-list";
 
 export interface MyOrder {
@@ -45,12 +46,12 @@ async function loadOrders(): Promise<{ orders: MyOrder[]; error: string | null }
 export default async function PesananPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string }>;
+  searchParams?: Promise<{ mode?: string; tour?: string }>;
 }) {
   await requireRole("/pesanan", "student");
   const { orders, error } = await loadOrders();
   const sp = (await searchParams) ?? {};
-  const tourForced = sp.mode === "onboarding";
+  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
   return (
     <>
       <AppHeader title="Pesanan" />
@@ -63,6 +64,9 @@ export default async function PesananPage({
       <GuidedTour
         tourKey="pesanan"
         forced={tourForced}
+        auto={false}
+        journey={tourJourney}
+        next={tourJourney ? (getJourneyNext("/pesanan") ?? undefined) : undefined}
         intro={{
           title: "Lacak pesananmu?",
           body: "Semua porsi yang kamu kunci ada di sini. Saring status, buka QR, atau batalkan bila berubah pikiran.",

@@ -23,12 +23,19 @@ export function OnboardBanner() {
     >
       <p className="text-sm font-bold text-[#1C2826]">Baru pertama kali ke sini?</p>
       <p className="text-[13px] leading-relaxed text-[#1E5A36]">
-        Pilih porsinya, kunci buat kamu, lalu ambil dan bayar di kantin. Tanpa ongkir.{" "}
+        Pilih porsinya, simpan buat kamu, lalu ambil dan bayar langsung di kantin. Tanpa ongkir.{" "}
+        <Link
+          href="/beranda?tour=journey"
+          className="font-bold text-[#1E5A36] underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+        >
+          Ikuti panduan
+        </Link>{" "}
+        atau{" "}
         <Link
           href="/cara-kerja"
           className="font-bold text-[#1E5A36] underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
         >
-          Lihat cara kerja
+          lihat cara kerja
         </Link>
       </p>
       <button
