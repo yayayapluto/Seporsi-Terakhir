@@ -172,7 +172,8 @@ export function GuidedTour({
       /* abaikan */
     }
     if (next) {
-      router.push(next);
+      // Assign penuh (bukan router.push): dijamin pindah halaman + render ulang server.
+      window.location.assign(next);
     } else {
       setPhase(null);
       if (journey) router.replace(pathname);
