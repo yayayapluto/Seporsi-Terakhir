@@ -90,7 +90,6 @@ export function GuidedTour({
   const [order, setOrder] = useState<TourStep[]>([]);
   const [totalSteps, setTotalSteps] = useState(0);
   const [idx, setIdx] = useState(0);
-  const [desktop, setDesktop] = useState(false);
   const [anchor, setAnchor] = useState<{
     top: number;
     left: number;
@@ -112,14 +111,6 @@ export function GuidedTour({
   const settledRef = useRef(false);
 
   const progress = useTourProgress({ tourKey, tourId: tourKey, userId });
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const sync = () => setDesktop(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
 
   // Mulai: tunggu progres siap (tanpa kedip langkah 1), lalu putuskan.
   useEffect(() => {
@@ -341,17 +332,14 @@ export function GuidedTour({
       const parsed = Number.parseFloat(rawRx);
       const rx = Number.isFinite(parsed) ? Math.min(parsed + 4, 28) : 20;
       setHole({ top, left, w: Math.max(w, 8), h: Math.max(h, 8), rx });
-      if (vw < 1024) {
-        setAnchor(null);
-        return;
-      }
       const card = document.querySelector(`[data-tour-card="${tourKey}"]`);
       const cardH = card instanceof HTMLElement && card.offsetHeight > 0 ? card.offsetHeight : 360;
+      const cardW = Math.min(340, vw - 32);
       setAnchor(
         placeTooltip({
           target: { top, left, width: w, height: h },
           cardH,
-          cardW: 340,
+          cardW,
           viewport: { w: vw, h: vh },
         }),
       );
@@ -697,8 +685,10 @@ export function GuidedTour({
             role="dialog"
             aria-modal="true"
             aria-label={`Panduan ${idx + 1} dari ${total}: ${step.title}`}
-            className="fixed inset-x-4 bottom-4 z-[70] max-h-[70dvh] overflow-y-auto rounded-2xl border border-[#E8ECE9] bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] lg:inset-auto lg:max-h-none lg:w-[340px] lg:pb-5"
-            style={desktop && anchor ? { top: anchor.top, left: anchor.left } : undefined}
+            className="fixed z-[70] max-h-[70dvh] w-[min(340px,calc(100vw-32px))] overflow-y-auto rounded-2xl border border-[#E8ECE9] bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] lg:max-h-none lg:pb-5"
+            style={
+              anchor ? { top: anchor.top, left: anchor.left } : { left: 16, right: 16, bottom: 16 }
+            }
             {...(reduce
               ? {}
               : {
@@ -706,13 +696,13 @@ export function GuidedTour({
                   animate: {
                     opacity: 1,
                     y: 0,
-                    ...(desktop && anchor ? { top: anchor.top, left: anchor.left } : {}),
+                    ...(anchor ? { top: anchor.top, left: anchor.left } : {}),
                   },
                   exit: { opacity: 0, y: 8 },
                   transition: { duration: 0.22, ease: "easeOut" as const },
                 })}
           >
-            {desktop && anchor && (
+            {anchor && (
               <span
                 aria-hidden
                 className={`absolute size-3.5 rotate-45 border-[#E8ECE9] bg-white ${

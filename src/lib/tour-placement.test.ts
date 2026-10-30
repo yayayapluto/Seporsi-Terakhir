@@ -51,4 +51,24 @@ describe("placeTooltip", () => {
     expect(r.arrowX).toBeLessThanOrEqual(340 - 16);
     expect(r.arrowX).toBe(100 + 150 - r.left);
   });
+
+  it("viewport kecil: target di bawah -> kartu di atas target, tanpa irisan", () => {
+    const vp = { w: 430, h: 932 };
+    const cardW = Math.min(340, vp.w - 32);
+    const target = { top: 700, left: 16, width: 398, height: 120 };
+    const r = placeTooltip({ target, cardH: 300, cardW, viewport: vp });
+    expect(r.side).toBe("above");
+    expect(r.top + 300).toBeLessThanOrEqual(target.top - 12 + 1);
+    expect(intersects({ ...r, width: cardW, height: 300 }, target)).toBe(false);
+  });
+
+  it("viewport kecil: target di atas -> kartu di bawah target, tanpa irisan", () => {
+    const vp = { w: 430, h: 932 };
+    const cardW = Math.min(340, vp.w - 32);
+    const target = { top: 120, left: 16, width: 398, height: 100 };
+    const r = placeTooltip({ target, cardH: 300, cardW, viewport: vp });
+    expect(r.side).toBe("below");
+    expect(r.top).toBeGreaterThanOrEqual(target.top + target.height + 12 - 1);
+    expect(intersects({ ...r, width: cardW, height: 300 }, target)).toBe(false);
+  });
 });
