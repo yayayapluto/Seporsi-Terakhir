@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { requireRole } from "@/lib/auth";
 import { percentSold } from "@/lib/domain/metrics";
+import { wibDayRangeUtc } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { ImpactClient } from "./impact-client";
 
@@ -45,10 +46,7 @@ async function loadReport(from: string, to: string) {
   const supabase = await createClient();
   await connection();
   // WIB day boundaries: [from 00:00, to+1d 00:00) in Jakarta → UTC.
-  const fromUtc = new Date(`${from}T00:00:00+07:00`).toISOString();
-  const toExclusive = new Date(
-    new Date(`${to}T00:00:00+07:00`).getTime() + 24 * 60 * 60 * 1000,
-  ).toISOString();
+  const { fromUtc, toExclusive } = wibDayRangeUtc(from, to);
 
   const [summaryRes, reportRes, dailyRes] = await Promise.all([
     supabase.rpc("impact_summary", { p_from: fromUtc, p_to: toExclusive }),

@@ -9,7 +9,7 @@ import {
   SieraTile,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
-import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { formatDateTimeWIB, formatIDR, wibTodayRange } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { requireOwnTenant } from "./guard";
@@ -38,12 +38,7 @@ async function loadData() {
   const supabase = await createClient();
 
   // Batas hari ini Asia/Jakarta → UTC untuk filter picked_up_at.
-  const nowWib = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const todayLocal = `${nowWib.getFullYear()}-${pad(nowWib.getMonth() + 1)}-${pad(nowWib.getDate())}`;
-  const dayStartUtc = new Date(`${todayLocal}T00:00:00+07:00`).toISOString();
-  const dayEndUtc = new Date(`${todayLocal}T00:00:00+07:00`).getTime() + 24 * 60 * 60 * 1000;
-  const dayEndIso = new Date(dayEndUtc).toISOString();
+  const { todayLocal, dayStartUtc, dayEndIso } = wibTodayRange();
 
   const nowIso = new Date().toISOString();
   const hourAgoIso = new Date(Date.now() - 60 * 60 * 1000).toISOString();

@@ -2,7 +2,9 @@ import { GuidedTour } from "@/components/guided-tour";
 import { SieraTenantHeader } from "@/components/siera";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
+import { nowInWib } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
+import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../../guard";
 import { PortionForm, type PortionFormMenu } from "../portion-form";
 
@@ -10,7 +12,7 @@ import { PortionForm, type PortionFormMenu } from "../portion-form";
 
 function defaultCookedLocal(): string {
   // Sekarang WIB, dibulatkan ke 5 menit; datetime-local tanpa offset (WIB).
-  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
+  const now = nowInWib();
   now.setSeconds(0, 0);
   now.setMinutes(Math.floor(now.getMinutes() / 5) * 5);
   const pad = (n: number) => String(n).padStart(2, "0");
@@ -20,11 +22,17 @@ function defaultCookedLocal(): string {
 export default async function PorsiBaruPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string }>;
+  searchParams?: Promise<{
+    mode?: string;
+    tour?: string;
+    panduan?: string;
+    langkah?: string;
+    fresh?: string;
+  }>;
 }) {
   const tenant = await requireOwnTenant("/tenant/porsi/baru");
   const sp = (await searchParams) ?? {};
-  const tourForced = sp.mode === "onboarding";
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   const supabase = await createClient();
   const { data } = await supabase
     .from("menu_items")
@@ -77,6 +85,12 @@ export default async function PorsiBaruPage({
       <GuidedTour
         tourKey="tenant-porsi"
         forced={tourForced}
+        journey={tourJourney}
+        next={tourJourney ? (getJourneyNext("/tenant/porsi/baru") ?? undefined) : undefined}
+        journeyLabel="Bagian 3 dari 5 · Porsi"
+        entryStep={tourEntry}
+        fresh={sp.fresh === "1"}
+        userId={tenant.id}
         intro={{
           title: "Posting porsi?",
           body: "Tiga langkah: pilih menu, isi jumlah dan jam masak, harga diskon tersugesti otomatis.",

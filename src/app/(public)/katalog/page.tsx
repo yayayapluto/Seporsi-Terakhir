@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { SieraHero } from "@/components/siera";
+import { wibTodayRange } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
@@ -41,13 +42,7 @@ async function loadCatalog(): Promise<{
     .order("expires_at", { ascending: true })
     .limit(60);
   // Batas hari ini Asia/Jakarta → UTC (pola sama kayak dasbor tenant).
-  const nowWib = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const todayLocal = `${nowWib.getFullYear()}-${pad(nowWib.getMonth() + 1)}-${pad(nowWib.getDate())}`;
-  const dayStartUtc = new Date(`${todayLocal}T00:00:00+07:00`).toISOString();
-  const dayEndIso = new Date(
-    new Date(`${todayLocal}T00:00:00+07:00`).getTime() + 86400000,
-  ).toISOString();
+  const { dayStartUtc, dayEndIso } = wibTodayRange();
   let dayTotal = 0;
   const {
     data: { user },
