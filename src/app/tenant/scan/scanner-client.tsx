@@ -5,6 +5,7 @@ import { CheckIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { SieraTenantHeader } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -163,13 +164,11 @@ export function ScannerClient() {
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">SCANNER TENANT</p>
-        <h1 className="text-3xl font-bold">Scan pickup</h1>
-        <p className="text-sm text-muted-foreground">Arahkan kamera ke QR pickup mahasiswa.</p>
-      </div>
+      <SieraTenantHeader kicker="SCANNER TENANT" title="Scan pickup">
+        <p className="text-sm">Arahkan kamera ke QR pickup mahasiswa.</p>
+      </SieraTenantHeader>
       {phase.kind === "scanning" && (
-        <div className="flex flex-col gap-3">
+        <div data-tour="scanner" className="flex flex-col gap-3">
           <Scanner
             onScan={(codes) => {
               const value = codes[0]?.rawValue;
@@ -185,6 +184,7 @@ export function ScannerClient() {
             <Button
               type="button"
               variant="ghost"
+              data-tour="manual"
               className="min-h-11 self-center px-3 text-sm underline"
               onClick={() => setManualOpen((v) => !v)}
               aria-expanded={manualOpen}
@@ -271,7 +271,7 @@ export function ScannerClient() {
                 <DialogFooter>
                   <Button
                     type="button"
-                    variant="outline"
+                    autoFocus
                     className="min-h-11"
                     onClick={() => setConfirmOpen(false)}
                   >
@@ -279,7 +279,8 @@ export function ScannerClient() {
                   </Button>
                   <Button
                     type="button"
-                    className="min-h-11"
+                    variant="outline"
+                    className="min-h-11 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
                     onClick={onConfirm}
                     disabled={confirming}
                   >

@@ -93,7 +93,7 @@ export function SieraTenantHeader({
     <div className="flex flex-col gap-2">
       <p className="text-xs font-bold tracking-widest text-primary">{kicker}</p>
       <h1 className="text-3xl font-bold">{title}</h1>
-      <div className="text-sm text-muted-foreground">{children}</div>
+      <div className="text-muted-foreground">{children}</div>
     </div>
   );
 }

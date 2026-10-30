@@ -1,3 +1,5 @@
+import { GuidedTour } from "@/components/guided-tour";
+import { SieraTenantHeader } from "@/components/siera";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 import { MenuManager } from "./menu-manager";
@@ -38,20 +40,42 @@ async function loadMenu(tenantId: string): Promise<MenuItemRow[]> {
   }));
 }
 
-export default async function MenuPage() {
+export default async function MenuPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
   const tenant = await requireOwnTenant("/tenant/menu");
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
   const items = await loadMenu(tenant.id);
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">MENU KANTIN</p>
-        <h1 className="text-3xl font-bold">Menu saya</h1>
-        <p className="text-muted-foreground">
-          Daftar menu yang bisa diposting sebagai porsi sisa. Harga diskon disarankan otomatis saat
-          posting.
-        </p>
-      </div>
+      <SieraTenantHeader kicker="MENU KANTIN" title="Menu saya">
+        Daftar menu yang bisa diposting sebagai porsi sisa. Harga diskon disarankan otomatis saat
+        posting.
+      </SieraTenantHeader>
       <MenuManager items={items} tenantId={tenant.id} />
+      <GuidedTour
+        tourKey="tenant-menu"
+        forced={tourForced}
+        intro={{
+          title: "Kelola menu?",
+          body: "Daftarkan menu sekali, pakai berkali-kali tiap posting porsi.",
+        }}
+        steps={[
+          {
+            target: '[data-tour="tambah-menu"]',
+            title: "Tambah menu",
+            body: "Nama, harga normal, bahan, dan alergen. Harga diskon disarankan otomatis.",
+          },
+          {
+            target: '[data-tour="menu-list"] li:first-child',
+            title: "Daftar menumu",
+            body: "Ketuk Edit buat ubah harga atau nonaktifkan menu yang lagi libur.",
+          },
+        ]}
+      />
     </div>
   );
 }

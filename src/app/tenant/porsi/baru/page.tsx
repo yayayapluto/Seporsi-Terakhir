@@ -1,3 +1,5 @@
+import { GuidedTour } from "@/components/guided-tour";
+import { SieraTenantHeader } from "@/components/siera";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
 import { createClient } from "@/lib/supabase/server";
@@ -15,8 +17,14 @@ function defaultCookedLocal(): string {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
 }
 
-export default async function PorsiBaruPage() {
+export default async function PorsiBaruPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
   const tenant = await requireOwnTenant("/tenant/porsi/baru");
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
   const supabase = await createClient();
   const { data } = await supabase
     .from("menu_items")
@@ -49,13 +57,9 @@ export default async function PorsiBaruPage() {
       : null;
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">POSTING PORSI</p>
-        <h1 className="text-3xl font-bold">Tambah porsi</h1>
-        <p className="text-muted-foreground">
-          Unggah sisa masakan hari ini. Porsi kedaluwarsa otomatis keluar dari katalog.
-        </p>
-      </div>
+      <SieraTenantHeader kicker="POSTING PORSI" title="Tambah porsi">
+        Unggah sisa masakan hari ini. Porsi kedaluwarsa otomatis keluar dari katalog.
+      </SieraTenantHeader>
       <PortionForm
         tenantName={tenant.name}
         menus={menus}
@@ -69,6 +73,31 @@ export default async function PorsiBaruPage() {
           discountPrice: firstPrice > 1 ? (suggestDiscountPrice(firstPrice) ?? 0) : 0,
           normalPrice: firstPrice,
         }}
+      />
+      <GuidedTour
+        tourKey="tenant-porsi"
+        forced={tourForced}
+        intro={{
+          title: "Posting porsi?",
+          body: "Tiga langkah: pilih menu, isi jumlah dan jam masak, harga diskon tersugesti otomatis.",
+        }}
+        steps={[
+          {
+            target: "#portion-menu",
+            title: "Pilih menu",
+            body: "Dari daftar yang sudah kamu daftarkan. Belum ada? Daftarkan dulu di halaman Menu.",
+          },
+          {
+            target: "#portion-qty",
+            title: "Jumlah dan jam",
+            body: "Berapa porsi sisa dan kapan dimasak — jendela jual dihitung dari jam ini.",
+          },
+          {
+            target: 'button[type="submit"]',
+            title: "Terbitkan",
+            body: "Porsi tayang di katalog. Yang kedaluwarsa keluar sendiri, tanpa perlu dihapus.",
+          },
+        ]}
       />
     </div>
   );

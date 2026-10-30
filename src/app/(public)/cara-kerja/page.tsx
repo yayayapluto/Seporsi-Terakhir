@@ -1,8 +1,11 @@
+import { cn } from "cn";
+import { ChartColumn, CircleHelp, PackageCheck, Scale, Store, Wallet } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { SieraTile, sieraCardClass } from "@/components/siera";
 import { SiteFooter } from "@/components/site-footer";
 import { buttonVariants } from "@/components/ui/button";
-import { ChalkRow, Pressable, Reveal } from "../reveal";
+import { Pressable, Reveal } from "../reveal";
 
 const STEPS = [
   {
@@ -30,6 +33,8 @@ const DAMPAK = [
   { name: "Porsi laku", plain: "Diambil dibagi diunggah hari itu." },
 ] as const;
 
+const DAMPAK_ICONS = [PackageCheck, Scale, Wallet, Store, ChartColumn] as const;
+
 const FAQS = [
   {
     q: "Terlambat ambil?",
@@ -51,9 +56,9 @@ const FAQS = [
 
 export default function CaraKerjaPage() {
   return (
-    <>
+    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 sm:px-6">
       {/* HERO — struktur sama dengan landing */}
-      <section className="grid gap-8 py-10 pt-20 sm:py-14 sm:pt-24 md:grid-cols-2 md:items-center lg:grid-cols-[1.05fr_1fr]">
+      <section className="grid gap-8 pt-28 pb-10 sm:pt-36 sm:pb-14 md:grid-cols-2 md:items-start lg:grid-cols-[1.05fr_1fr]">
         <div className="flex flex-col gap-5">
           <h1 className="max-w-xl text-4xl font-extrabold leading-[1.05] tracking-tight md:text-5xl">
             Cara kerja penyelamatan porsi kampus.
@@ -77,7 +82,7 @@ export default function CaraKerjaPage() {
                 className={buttonVariants({
                   variant: "outline",
                   size: "lg",
-                  className: "w-full sm:w-auto",
+                  className: "w-full bg-white sm:w-auto",
                 })}
               >
                 Lihat Cara Hitung
@@ -94,7 +99,7 @@ export default function CaraKerjaPage() {
             alt="Suasana kantin kampus sore hari"
             width={520}
             height={346}
-            className="h-auto w-full rounded-md border object-cover"
+            className="h-auto w-full rounded-[20px] border border-[#E8ECE9] object-cover"
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
           />
@@ -105,22 +110,29 @@ export default function CaraKerjaPage() {
       </section>
 
       {/* LANGKAH */}
-      <Reveal className="flex flex-col gap-2 py-10">
-        <p className="text-xs font-bold tracking-[0.2em] text-primary">LANGKAH</p>
+      <Reveal className="flex flex-col gap-3 py-10">
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Tiga langkah dari etalase ke meja makan.
         </h2>
-        <ol className="divide-y divide-border border-b">
-          {STEPS.map((s, i) => (
-            <ChalkRow key={s.no} className="flex gap-4 py-4" delay={i * 0.09}>
-              <span className="font-heading text-2xl font-extrabold text-primary tabular-nums">
+        <ol
+          className={cn(
+            sieraCardClass,
+            "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4 sm:px-5",
+          )}
+        >
+          {STEPS.map((s) => (
+            <li key={s.no} className="flex min-h-11 items-center gap-3 py-4">
+              <span
+                aria-hidden
+                className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#DCEBE0] text-[15px] font-extrabold text-[#1E5A36] tabular-nums"
+              >
                 {s.no}
               </span>
-              <div>
-                <h3 className="font-bold leading-snug">{s.title}</h3>
-                <p className="mt-0.5 text-sm text-muted-foreground">{s.body}</p>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-[15px] leading-snug font-bold text-[#1C2826]">{s.title}</h3>
+                <p className="mt-0.5 text-[13px] text-[#64746B]">{s.body}</p>
               </div>
-            </ChalkRow>
+            </li>
           ))}
         </ol>
         <p className="py-2 text-xs text-muted-foreground">
@@ -129,51 +141,72 @@ export default function CaraKerjaPage() {
       </Reveal>
 
       {/* DAMPAK */}
-      <Reveal id="dampak" className="flex flex-col gap-2 py-10">
-        <p className="text-xs font-bold tracking-[0.2em] text-primary">DAMPAK</p>
+      <Reveal id="dampak" className="flex flex-col gap-3 py-10">
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Angka nyata dari transaksi tercatat.
         </h2>
-        <ul className="divide-y divide-border border-b">
-          {DAMPAK.map((f) => (
-            <li key={f.name} className="flex items-baseline justify-between gap-4 py-3">
-              <h3 className="font-bold leading-snug">{f.name}</h3>
-              <p className="shrink-0 text-right text-sm text-muted-foreground">{f.plain}</p>
-            </li>
-          ))}
+        <ul
+          className={cn(
+            sieraCardClass,
+            "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4 sm:px-5",
+          )}
+        >
+          {DAMPAK.map((f, i) => {
+            const Icon = DAMPAK_ICONS[i] ?? PackageCheck;
+            return (
+              <li key={f.name} className="flex min-h-11 items-center gap-3 py-4">
+                <SieraTile>
+                  <Icon className="size-5" strokeWidth={1.75} />
+                </SieraTile>
+                <div className="flex min-w-0 flex-1 flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+                  <h3 className="text-[15px] leading-snug font-bold text-[#1C2826]">{f.name}</h3>
+                  <p className="text-[13px] text-[#64746B]">{f.plain}</p>
+                </div>
+              </li>
+            );
+          })}
         </ul>
         <p className="py-2 text-xs text-muted-foreground">
           Berat pakai rata-rata sampel berkala. Tanpa klaim karbon.
         </p>
       </Reveal>
 
-      {/* FAQ + CTA */}
-      <Reveal className="mx-auto flex w-full max-w-3xl flex-col gap-2 py-10">
-        <p className="text-xs font-bold tracking-[0.2em] text-primary">TANYA JAWAB</p>
+      {/* FAQ */}
+      <Reveal className="mx-auto flex w-full max-w-3xl flex-col gap-3 py-10">
         <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Sering ditanyakan.</h2>
-        <ul className="divide-y divide-border border-b">
+        <ul
+          className={cn(
+            sieraCardClass,
+            "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4 sm:px-5",
+          )}
+        >
           {FAQS.map((f) => (
-            <li key={f.q} className="py-4">
-              <h3 className="font-bold">{f.q}</h3>
-              <p className="mt-0.5 text-sm text-muted-foreground">{f.a}</p>
+            <li key={f.q} className="flex gap-3 py-4">
+              <SieraTile>
+                <CircleHelp className="size-5" strokeWidth={1.75} />
+              </SieraTile>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-[15px] leading-snug font-bold text-[#1C2826]">{f.q}</h3>
+                <p className="mt-0.5 text-[13px] text-[#64746B]">{f.a}</p>
+              </div>
             </li>
           ))}
         </ul>
       </Reveal>
 
-      <Reveal className="mb-12 flex flex-col items-center gap-4 border-t-2 border-foreground px-6 py-12 text-center">
-        <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
+      <Reveal className="mb-12 overflow-hidden rounded-3xl bg-primary px-6 py-12 text-center text-primary-foreground sm:py-14">
+        <h2 className="mx-auto max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
           Jangan biarkan seporsi terakhir terbuang.
         </h2>
-        <p className="max-w-xl text-sm text-muted-foreground">
+        <p className="mx-auto mt-2 max-w-xl text-sm text-primary-foreground/80">
           Satu porsi terjual berarti satu porsi tidak jadi sampah dan satu mahasiswa makan lebih
           hemat.
         </p>
-        <div className="flex w-full max-w-md flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row">
+        <div className="mx-auto mt-6 flex w-full max-w-md flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
           <Pressable className="w-full sm:w-auto">
             <Link
               href="/katalog"
-              className={buttonVariants({ size: "lg", className: "w-full sm:w-auto" })}
+              className="inline-flex h-9 min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-transparent bg-primary-foreground px-2.5 text-sm font-medium whitespace-nowrap text-primary transition-all outline-none select-none hover:bg-primary-foreground/90 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-auto"
             >
               Lihat Porsi Hari Ini
             </Link>
@@ -181,11 +214,7 @@ export default function CaraKerjaPage() {
           <Pressable className="w-full sm:w-auto">
             <Link
               href="/masuk"
-              className={buttonVariants({
-                variant: "outline",
-                size: "lg",
-                className: "w-full sm:w-auto",
-              })}
+              className="inline-flex h-9 min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-primary-foreground/40 px-2.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-all outline-none select-none hover:bg-primary-foreground/10 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-auto"
             >
               Masuk Sekarang
             </Link>
@@ -193,6 +222,6 @@ export default function CaraKerjaPage() {
         </div>
       </Reveal>
       <SiteFooter />
-    </>
+    </div>
   );
 }

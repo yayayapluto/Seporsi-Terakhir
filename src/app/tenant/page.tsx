@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { SieraTenantHeader } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -117,19 +118,23 @@ async function loadData() {
   return { activePortions, reservations, pickupsToday, revenueToday, todayLocal, justExpired };
 }
 
-export default async function TenantDashboardPage() {
+export default async function TenantDashboardPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
   const { activePortions, reservations, pickupsToday, revenueToday, justExpired } =
     await loadData();
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">DASBOR TENANT</p>
-        <h1 className="text-3xl font-bold">Kantinmu hari ini</h1>
-        <p className="text-sm text-muted-foreground">
+      <SieraTenantHeader kicker="DASBOR TENANT" title="Kantinmu hari ini">
+        <p className="text-sm">
           {activePortions.reduce((sum, p) => sum + p.quantityRemaining, 0)} porsi aktif ·{" "}
           {pickupsToday} pickup · {formatIDR(revenueToday)} omzet hari ini
         </p>
-      </div>
+      </SieraTenantHeader>
 
       <section aria-labelledby="reservasi-heading" data-tour="reservasi" className="border-b pb-6">
         <div className="flex items-baseline justify-between gap-3">
@@ -261,7 +266,7 @@ export default async function TenantDashboardPage() {
       <div className="border-t pt-6">
         <SignOutButton />
       </div>
-      <TenantTour />
+      <TenantTour forced={tourForced} />
     </div>
   );
 }

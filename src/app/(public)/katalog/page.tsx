@@ -2,6 +2,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { SieraHero } from "@/components/siera";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
 import { KatalogList } from "./katalog-list";
@@ -87,30 +88,41 @@ async function loadCatalog(): Promise<{
   return { portions, tenants: [...tenantSet].sort(), dayTotal };
 }
 
-export default function KatalogPage() {
+export default function KatalogPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
+  return KatalogPageBody(searchParams);
+}
+
+async function KatalogPageBody(searchParams?: Promise<{ mode?: string }>) {
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
   return (
     <>
       <AppHeader title="Katalog" />
-      <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 pb-28">
-        <div className="flex flex-col gap-1">
-          <p className="text-xs font-bold tracking-wide text-[#1E5A36]">Katalog sore ini</p>
-          <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
-            Porsi hari ini
-          </h1>
-          <p className="text-sm text-[#1E5A36]">
-            Menu sisa yang masih layak, jam masak transparan, bayar di tempat. Maksimal 2 porsi per
-            mahasiswa per hari.
-          </p>
-        </div>
-        <Suspense fallback={<LoadingSkeleton variant="cards" />}>
-          <CatalogBody />
+      <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 lg:max-w-6xl lg:px-8">
+        <SieraHero eyebrow="Katalog sore ini" title="Porsi hari ini">
+          Sisa dagangan yang masih layak makan. Jam masaknya tertulis jelas, bayar langsung di
+          tempat. Maksimal 2 porsi per hari.
+        </SieraHero>
+        <Suspense fallback={<LoadingSkeleton variant="catalog-list" />}>
+          <CatalogBody tourForced={tourForced} />
         </Suspense>
       </div>
     </>
   );
 }
 
-async function CatalogBody() {
+async function CatalogBody({ tourForced }: { tourForced: boolean }) {
   const { portions, tenants, dayTotal } = await loadCatalog();
-  return <KatalogList portions={portions} tenants={tenants} dayTotal={dayTotal} />;
+  return (
+    <KatalogList
+      portions={portions}
+      tenants={tenants}
+      dayTotal={dayTotal}
+      tourForced={tourForced}
+    />
+  );
 }

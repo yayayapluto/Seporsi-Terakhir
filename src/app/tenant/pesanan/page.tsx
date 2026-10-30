@@ -1,7 +1,9 @@
 import { cn } from "cn";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
+import { GuidedTour } from "@/components/guided-tour";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { SieraTenantHeader } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -64,8 +66,14 @@ async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean
   };
 }
 
-export default async function TenantPesananPage() {
+export default async function TenantPesananPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
   const { orders, failed } = await loadOrders();
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
   const waiting = orders.filter((o) => o.status === "reserved");
   const done = orders.filter((o) => o.status !== "reserved");
 
@@ -103,13 +111,9 @@ export default async function TenantPesananPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">RESERVASI</p>
-        <h1 className="text-3xl font-bold">Pesanan masuk</h1>
-        <p className="text-muted-foreground">
-          Reservasi porsi dari mahasiswa. Konfirmasi pickup lewat scan QR di halaman scanner.
-        </p>
-      </div>
+      <SieraTenantHeader kicker="RESERVASI" title="Pesanan masuk">
+        Reservasi porsi dari mahasiswa. Konfirmasi pickup lewat scan QR di halaman scanner.
+      </SieraTenantHeader>
 
       {failed ? (
         <div
@@ -163,6 +167,26 @@ export default async function TenantPesananPage() {
           </section>
         </>
       )}
+      <GuidedTour
+        tourKey="tenant-pesanan"
+        forced={tourForced}
+        intro={{
+          title: "Pesanan masuk?",
+          body: "Reservasi mahasiswa yang menunggu pickup dan riwayatnya — semua di sini.",
+        }}
+        steps={[
+          {
+            target: '[aria-labelledby="menunggu-heading"]',
+            title: "Menunggu pickup",
+            body: "Yang harus kamu layani. Arahkan mereka ke scanner saat serah terima.",
+          },
+          {
+            target: '[aria-labelledby="selesai-heading"]',
+            title: "Riwayat",
+            body: "Yang sudah selesai dan dibatalkan, buat arsip.",
+          },
+        ]}
+      />
     </div>
   );
 }

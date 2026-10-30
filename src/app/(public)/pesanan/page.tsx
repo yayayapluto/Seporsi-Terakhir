@@ -1,4 +1,6 @@
 import { AppHeader } from "@/components/app-header";
+import { GuidedTour } from "@/components/guided-tour";
+import { SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { OrdersList } from "./pesanan-list";
@@ -40,23 +42,44 @@ async function loadOrders(): Promise<{ orders: MyOrder[]; error: string | null }
   };
 }
 
-export default async function PesananPage() {
+export default async function PesananPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
   await requireRole("/pesanan", "student");
   const { orders, error } = await loadOrders();
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
   return (
     <>
       <AppHeader title="Pesanan" />
-      <div className="flex w-full flex-1 flex-col gap-6 px-4 py-6 pb-28 md:px-8 md:pb-12">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-xl font-extrabold tracking-tight text-[#1C2826] md:text-2xl">
-            Pesanan saya
-          </h1>
-          <p className="text-sm text-[#64746B]">
-            Riwayat porsi yang kamu kunci. Tunjukkan QR saat pickup, bayar di tempat.
-          </p>
-        </div>
+      <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 lg:max-w-6xl lg:px-8">
+        <SieraHero eyebrow="Riwayat & aktif" title="Pesanan saya">
+          Porsi yang kamu kunci. Tunjukkan QR saat ambil, bayar di tempat.
+        </SieraHero>
         <OrdersList orders={orders} loadError={error} />
       </div>
+      <GuidedTour
+        tourKey="pesanan"
+        forced={tourForced}
+        intro={{
+          title: "Lacak pesananmu?",
+          body: "Semua porsi yang kamu kunci ada di sini. Saring status, buka QR, atau batalkan bila berubah pikiran.",
+        }}
+        steps={[
+          {
+            target: '[data-tour="order-filter"]',
+            title: "Saring status",
+            body: "Pisahkan yang menunggu pickup, sudah selesai, atau dibatalkan.",
+          },
+          {
+            target: '[data-tour="order-list"] li:first-child',
+            title: "Satu pesanan",
+            body: "Buka QR pickup, lihat detail, atau batalkan selagi masih menunggu.",
+          },
+        ]}
+      />
     </>
   );
 }
