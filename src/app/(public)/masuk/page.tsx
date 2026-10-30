@@ -1,4 +1,5 @@
 import { CircleAlert } from "lucide-react";
+import Link from "next/link";
 import { Suspense } from "react";
 import { SieraCard } from "@/components/siera";
 import { EmailSignIn } from "./email-sign-in";
@@ -40,8 +41,14 @@ async function MasukContent({
       <SieraCard className="flex flex-col gap-4 p-4">
         <EmailSignIn next={next} />
         <p className="border-t border-dashed border-[#E8ECE9] pt-3 text-center text-[12px] leading-relaxed text-[#64746B]">
-          Dengan masuk, kamu menyetujui penggunaan datamu untuk pencatatan dampak sesuai SOP
-          keamanan pangan di Cara Kerja.
+          Dengan masuk, kamu menyetujui penggunaan datamu untuk pencatatan dampak sesuai{" "}
+          <Link
+            href="/cara-kerja"
+            className="font-semibold text-[#1E5A36] underline underline-offset-2 outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+          >
+            SOP keamanan pangan di Cara Kerja
+          </Link>
+          .
         </p>
       </SieraCard>
     </div>
