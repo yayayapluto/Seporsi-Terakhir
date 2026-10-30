@@ -105,7 +105,7 @@ async function KatalogPageBody(
   return (
     <>
       <AppHeader title="Katalog" />
-      <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 lg:max-w-6xl lg:px-8">
+      <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl lg:max-w-6xl lg:px-8">
         <SieraHero eyebrow="Katalog sore ini" title="Porsi hari ini">
           Sisa dagangan yang masih layak makan. Jam masaknya tertulis jelas, bayar langsung di
           tempat. Maksimal 2 porsi per hari.

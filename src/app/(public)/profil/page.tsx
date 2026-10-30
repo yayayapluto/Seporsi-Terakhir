@@ -117,7 +117,7 @@ export default async function ProfilPage({
   return (
     <>
       <AppHeader title="Akun" />
-      <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 md:max-w-3xl md:grid-cols-2 md:px-8 md:pb-12">
+      <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl md:grid-cols-2 md:px-8 md:pb-12">
         {/* Identitas — avatar + nama dalam card */}
         <section aria-label="Identitas" className={`${sieraCardClass} p-4 md:col-span-2`}>
           <div className="flex items-center gap-3">

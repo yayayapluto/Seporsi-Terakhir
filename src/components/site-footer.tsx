@@ -67,3 +67,36 @@ export function SiteFooter() {
     </footer>
   );
 }
+
+/** Footer minimal satu baris untuk halaman dalam (bukan landing/cara-kerja/masuk). */
+export function SiteFooterMini() {
+  return (
+    <footer className="border-t border-[#E8ECE9] bg-white">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <p className="text-xs font-semibold text-[#64746B]">
+          © 2026 Seporsi Terakhir · UPN Veteran Jakarta
+        </p>
+        <nav className="flex flex-wrap gap-x-5" aria-label="Tautan bawah">
+          <Link
+            href="/katalog"
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
+          >
+            Katalog
+          </Link>
+          <Link
+            href="/cara-kerja"
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
+          >
+            Cara kerja
+          </Link>
+          <Link
+            href="/profil"
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
+          >
+            Akun
+          </Link>
+        </nav>
+      </div>
+    </footer>
+  );
+}

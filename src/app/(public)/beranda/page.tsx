@@ -110,7 +110,7 @@ export default async function BerandaPage({
     <>
       <AppHeader title="Beranda" />
       <div className="flex-1 bg-background">
-        <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 lg:max-w-6xl lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-x-8 lg:px-8">
+        <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl lg:max-w-6xl lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-x-8 lg:px-8">
           <section
             className="flex w-full flex-col gap-1 rounded-[20px] border border-[#E8ECE9] bg-gradient-to-b from-[#EAF5ED] to-white p-5 lg:col-span-2 lg:p-6"
             id="tour-hero"

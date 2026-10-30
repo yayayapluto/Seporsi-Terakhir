@@ -69,6 +69,8 @@ export function NavTabs({ tabs }: { tabs: NavTab[] }) {
   if (!inApp) return null;
   return (
     <>
+      {/* Penyeimbang sidebar fixed — hanya ter-render bareng sidebar. */}
+      <div aria-hidden="true" className="hidden w-60 shrink-0 md:block" />
       <nav
         aria-label="Navigasi utama"
         className="fixed inset-x-3 bottom-3 z-40 mx-auto max-w-[430px] md:hidden"
@@ -109,7 +111,7 @@ export function NavTabs({ tabs }: { tabs: NavTab[] }) {
       </nav>
       <nav
         aria-label="Navigasi utama"
-        className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col gap-1 self-start overflow-y-auto border-r border-[#E8ECE9] bg-white p-4 md:flex"
+        className="fixed inset-y-0 left-0 z-40 hidden h-dvh w-60 shrink-0 flex-col gap-1 overflow-y-auto border-r border-[#E8ECE9] bg-white p-4 md:flex"
       >
         <Link
           href="/"

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import { BottomNav } from "@/components/bottom-nav";
+import { FooterSlot } from "@/components/footer-slot";
 import { SiteHeader } from "@/components/site-header";
 import { SmoothProvider } from "@/components/smooth-provider";
 import "./globals.css";
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <BottomNav />
           <main className="flex min-w-0 flex-1 flex-col">
             <SmoothProvider>{children}</SmoothProvider>
+            <FooterSlot />
           </main>
         </div>
       </body>
