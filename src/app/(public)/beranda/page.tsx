@@ -3,6 +3,7 @@ import { ChevronRight, Store } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
+import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { sieraCardClass } from "@/components/siera";
@@ -271,24 +272,14 @@ async function SoonBody() {
   }
   if (portions.length === 0) {
     return (
-      <div
+      <EmptyState
         id="tour-catalog"
-        className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-8 text-center"
-      >
-        <p className="text-sm font-bold text-[#1C2826]">Belum ada porsi sore ini.</p>
-        <p className="text-sm text-[#64746B]">
-          Biasanya kantin mulai posting sekitar 15.30–16.30. Cek lagi nanti sore.
-        </p>
-        <Link
-          href="/katalog"
-          className={buttonVariants({
-            className:
-              "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
-          })}
-        >
-          Buka katalog
-        </Link>
-      </div>
+        compact
+        title="Belum ada porsi sore ini."
+        hint="Biasanya kantin mulai posting sekitar 15.30–16.30. Cek lagi nanti sore."
+        ctaHref="/katalog"
+        ctaLabel="Buka katalog"
+      />
     );
   }
   return (

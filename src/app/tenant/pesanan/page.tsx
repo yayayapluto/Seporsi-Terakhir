@@ -4,6 +4,7 @@ import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { EmptyLine } from "@/components/shared/empty-line";
 import {
   SieraList,
   SieraSectionTitle,
@@ -163,9 +164,7 @@ export default async function TenantPesananPage({
               Menunggu pickup{waiting.length > 0 ? ` (${waiting.length})` : ""}
             </SieraSectionTitle>
             {waiting.length === 0 ? (
-              <div className="rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
-                <p className="text-sm text-[#64746B]">Tidak ada reservasi aktif saat ini.</p>
-              </div>
+              <EmptyLine>Tidak ada reservasi aktif saat ini.</EmptyLine>
             ) : (
               <SieraList>
                 {waiting.map((o) => (
@@ -178,9 +177,7 @@ export default async function TenantPesananPage({
           <section aria-labelledby="selesai-heading" className="flex flex-col gap-3">
             <SieraSectionTitle id="selesai-heading">Selesai & dibatalkan</SieraSectionTitle>
             {done.length === 0 ? (
-              <div className="rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
-                <p className="text-sm text-[#64746B]">Belum ada riwayat.</p>
-              </div>
+              <EmptyLine>Belum ada riwayat.</EmptyLine>
             ) : (
               <SieraList>
                 {done.map((o) => (

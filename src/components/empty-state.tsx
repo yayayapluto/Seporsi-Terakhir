@@ -6,14 +6,21 @@ export function EmptyState({
   hint,
   ctaHref,
   ctaLabel,
+  id,
+  compact = false,
 }: {
   title: string;
   hint: string;
   ctaHref: string;
   ctaLabel: string;
+  id?: string;
+  compact?: boolean;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center">
+    <div
+      id={id}
+      className={`flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 ${compact ? "py-8" : "py-10"} text-center`}
+    >
       <p className="text-sm font-bold text-[#1C2826]">{title}</p>
       <p className="text-sm text-[#64746B]">{hint}</p>
       <Link
