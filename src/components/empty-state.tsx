@@ -13,7 +13,7 @@ export function EmptyState({
   ctaLabel: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-[#E8ECE9] bg-white px-4 py-10 text-center">
+    <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center">
       <p className="text-sm font-bold text-[#1C2826]">{title}</p>
       <p className="text-sm text-[#64746B]">{hint}</p>
       <Link

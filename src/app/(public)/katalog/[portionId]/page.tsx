@@ -99,7 +99,7 @@ import { SieraField, SieraSectionTitle, sieraCardClass } from "@/components/sier
 function DetailBody({ portion }: { portion: PortionDetail | null }) {
   if (!portion) {
     return (
-      <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-[#E8ECE9] bg-white px-4 py-10 text-center">
+      <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center">
         <p className="text-sm font-bold text-[#1C2826]">Porsi tidak tersedia</p>
         <p className="text-sm text-[#64746B]">
           Porsi ini sudah habis, lewat masa ambil, atau belum dibuka tenant. Lihat porsi lain yang
@@ -152,7 +152,7 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
           dari {portion.tenantName}
           {portion.tenantLocation ? ` · ${portion.tenantLocation}` : ""}
         </p>
-        <span aria-hidden className="border-t border-dashed border-[#E8ECE9]" />
+        <span aria-hidden className="border-t border-dashed border-line" />
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <p className="flex flex-wrap items-baseline gap-x-1.5">
             <del className="text-xs text-[#64746B]">
@@ -175,7 +175,7 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
           <PortionImage src={portion.imageUrl} alt={`Foto ${portion.menuName}`} />
         ) : (
           <div
-            className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 self-start rounded-[20px] border border-[#E8ECE9] bg-[#F4EFE6] text-[#64746B]"
+            className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 self-start rounded-[20px] border border-line bg-[#F4EFE6] text-[#64746B]"
             role="img"
             aria-label={`Foto ${portion.menuName} belum tersedia`}
           >
@@ -197,7 +197,7 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
       >
         <h2 className="text-[15px] font-bold text-[#1C2826]">Atur jumlah</h2>
         <p className="mt-0.5 text-[13px] text-[#64746B]">Stok tersisa: {remaining}</p>
-        <span aria-hidden className="my-3 block border-t border-dashed border-[#E8ECE9]" />
+        <span aria-hidden className="my-3 block border-t border-dashed border-line" />
         <div className="mt-4">
           <OrderForm
             portionId={portion.id}
@@ -214,12 +214,7 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
         className="flex flex-col gap-2 lg:col-start-1 lg:row-start-3"
       >
         <SieraSectionTitle>Detail porsi</SieraSectionTitle>
-        <dl
-          className={cn(
-            sieraCardClass,
-            "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4",
-          )}
-        >
+        <dl className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-line px-4")}>
           <SieraField icon={Clock3} label="Dimasak">
             {formatDateTimeWIB(new Date(portion.cookedAt))} WIB
           </SieraField>

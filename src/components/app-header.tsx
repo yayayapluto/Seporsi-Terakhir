@@ -15,7 +15,7 @@ export async function AppHeader({ title }: { title: string }) {
   const notifs = await loadNotifs(role, tenantId);
   const tables = (role === "admin" ? ["tenants"] : ["orders"]) as ("orders" | "tenants")[];
   return (
-    <header className="sticky top-0 z-30 flex h-[60px] items-center justify-between gap-2 border-b border-[#E8ECE9] bg-white px-4 md:px-8">
+    <header className="sticky top-0 z-30 flex h-[60px] items-center justify-between gap-2 border-b border-line bg-white px-4 md:px-8">
       <span className="flex min-w-0 items-center gap-2">
         <Image
           src="/images/Logo_UPNVJ.png"

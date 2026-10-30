@@ -14,7 +14,7 @@ export default async function KeamananPage() {
         Cara kamu masuk dan sejak kapan akun ini aktif.
       </SieraHero>
       <SieraCard className="p-4">
-        <dl className="divide-y divide-dashed divide-[#E8ECE9]">
+        <dl className="divide-y divide-dashed divide-line">
           <SieraField icon={AtSign} label="Email">
             {current.user.email ?? "—"}
           </SieraField>

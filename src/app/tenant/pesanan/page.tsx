@@ -163,7 +163,7 @@ export default async function TenantPesananPage({
               Menunggu pickup{waiting.length > 0 ? ` (${waiting.length})` : ""}
             </SieraSectionTitle>
             {waiting.length === 0 ? (
-              <div className="rounded-[20px] border border-dashed border-[#E8ECE9] bg-white p-6 text-center">
+              <div className="rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
                 <p className="text-sm text-[#64746B]">Tidak ada reservasi aktif saat ini.</p>
               </div>
             ) : (
@@ -178,7 +178,7 @@ export default async function TenantPesananPage({
           <section aria-labelledby="selesai-heading" className="flex flex-col gap-3">
             <SieraSectionTitle id="selesai-heading">Selesai & dibatalkan</SieraSectionTitle>
             {done.length === 0 ? (
-              <div className="rounded-[20px] border border-dashed border-[#E8ECE9] bg-white p-6 text-center">
+              <div className="rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
                 <p className="text-sm text-[#64746B]">Belum ada riwayat.</p>
               </div>
             ) : (

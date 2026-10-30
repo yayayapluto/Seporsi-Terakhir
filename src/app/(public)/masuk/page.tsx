@@ -13,7 +13,7 @@ async function MasukContent({
   const { next, error } = await searchParams;
   return (
     <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col justify-center gap-4 px-4 py-10">
-      <div className="flex flex-col gap-1 rounded-[20px] border border-[#E8ECE9] bg-gradient-to-b from-[#EAF5ED] to-white p-5">
+      <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5">
         <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
           Selamat datang kembali
         </h1>
@@ -40,7 +40,7 @@ async function MasukContent({
       </div>
       <SieraCard className="flex flex-col gap-4 p-4">
         <EmailSignIn next={next} />
-        <p className="border-t border-dashed border-[#E8ECE9] pt-3 text-center text-[12px] leading-relaxed text-[#64746B]">
+        <p className="border-t border-dashed border-line pt-3 text-center text-[12px] leading-relaxed text-[#64746B]">
           Dengan masuk, kamu menyetujui penggunaan datamu untuk pencatatan dampak sesuai{" "}
           <Link
             href="/cara-kerja"

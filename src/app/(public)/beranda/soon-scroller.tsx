@@ -93,7 +93,7 @@ export function SoonScroller({ portions }: { portions: SoonPortion[] }) {
             </span>
             <span className="truncate text-[13px] text-[#64746B]">{p.tenantName}</span>
           </span>
-          <span aria-hidden className="mx-4 border-t border-dashed border-[#E8ECE9]" />
+          <span aria-hidden className="mx-4 border-t border-dashed border-line" />
           <span className="flex flex-col gap-1 p-4 pt-3">
             <span className="text-[13px] text-[#64746B]">
               Dimasak {formatDateTimeWIB(new Date(p.cookedAt))} · Sisa {p.quantityRemaining}
@@ -151,7 +151,7 @@ export function SoonScroller({ portions }: { portions: SoonPortion[] }) {
               type="button"
               onClick={() => nudge(1)}
               aria-label="Geser katalog ke kiri"
-              className="flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-[#E8ECE9] bg-white text-[#1C2826] outline-none transition-colors hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+              className="flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-line bg-white text-[#1C2826] outline-none transition-colors hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
             >
               <ChevronLeft className="size-5" strokeWidth={1.75} aria-hidden />
             </button>
@@ -159,7 +159,7 @@ export function SoonScroller({ portions }: { portions: SoonPortion[] }) {
               type="button"
               onClick={() => nudge(-1)}
               aria-label="Geser katalog ke kanan"
-              className="flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-[#E8ECE9] bg-white text-[#1C2826] outline-none transition-colors hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+              className="flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-line bg-white text-[#1C2826] outline-none transition-colors hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
             >
               <ChevronRight className="size-5" strokeWidth={1.75} aria-hidden />
             </button>

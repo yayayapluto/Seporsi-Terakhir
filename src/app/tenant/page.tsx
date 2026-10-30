@@ -172,7 +172,7 @@ export default async function TenantDashboardPage({
         </p>
       </SieraTenantHeader>
 
-      <SieraCard className="grid grid-cols-3 divide-x divide-dashed divide-[#E8ECE9] p-4">
+      <SieraCard className="grid grid-cols-3 divide-x divide-dashed divide-line p-4">
         <div className="flex items-center gap-3 pr-2">
           <SieraTile>
             <Package className="size-5" strokeWidth={1.75} aria-hidden />
@@ -231,7 +231,7 @@ export default async function TenantDashboardPage({
           )}
         </div>
         {reservations.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-[#E8ECE9] bg-white p-6 text-center">
+          <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
             <p className="text-sm text-[#64746B]">Tidak ada reservasi aktif.</p>
             <Link
               href="/tenant/scan"
@@ -271,7 +271,7 @@ export default async function TenantDashboardPage({
           </Link>
         </div>
         {activePortions.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-[#E8ECE9] bg-white p-6 text-center">
+          <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
             <p className="text-sm text-[#64746B]">
               Belum ada porsi aktif. Posting sisa masakan hari ini.
             </p>

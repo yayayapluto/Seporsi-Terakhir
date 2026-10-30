@@ -52,7 +52,7 @@ export function SiteHeader() {
   return (
     <div className="pointer-events-none fixed inset-x-0 top-3 z-30 px-4 sm:top-5">
       <div className="relative mx-auto w-full max-w-xl">
-        <header className="pointer-events-auto flex h-14 w-full items-center justify-between gap-2 rounded-2xl border border-[#E8ECE9] bg-white py-2 pr-2 pl-4 shadow-[0_2px_12px_rgba(16,24,40,0.08)]">
+        <header className="pointer-events-auto flex h-14 w-full items-center justify-between gap-2 rounded-2xl border border-line bg-white py-2 pr-2 pl-4 shadow-[0_2px_12px_rgba(16,24,40,0.08)]">
           <Link
             href="/"
             onClick={() => setOpen(false)}
@@ -149,7 +149,7 @@ export function SiteHeader() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="pointer-events-auto absolute inset-x-0 top-[calc(100%+12px)] flex origin-top flex-col gap-1 rounded-2xl border border-[#E8ECE9] bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.16)] md:hidden"
+              className="pointer-events-auto absolute inset-x-0 top-[calc(100%+12px)] flex origin-top flex-col gap-1 rounded-2xl border border-line bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.16)] md:hidden"
             >
               {NAV.map((n, i) => (
                 <motion.span

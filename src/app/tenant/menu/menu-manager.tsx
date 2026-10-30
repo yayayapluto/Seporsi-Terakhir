@@ -193,7 +193,7 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
       </div>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-[#E8ECE9] bg-white p-6 text-center">
+        <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
           <p className="font-semibold">Belum ada menu</p>
           <p className="-mt-2 text-sm text-[#64746B]">
             Tambahkan menu dulu sebelum memposting porsi sisa.

@@ -541,7 +541,7 @@ export function GuidedTour({
                 role="dialog"
                 aria-modal="true"
                 aria-label={intro.title}
-                className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-[#E8ECE9] bg-white p-6 text-left"
+                className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-line bg-white p-6 text-left"
                 {...cardMotion}
               >
                 <span className="flex size-12 items-center justify-center rounded-2xl bg-[#DCEBE0] text-[#1E5A36]">
@@ -596,7 +596,7 @@ export function GuidedTour({
                 role="dialog"
                 aria-modal="true"
                 aria-label="Lanjutkan panduan?"
-                className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-[#E8ECE9] bg-white p-6 text-left"
+                className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-line bg-white p-6 text-left"
                 {...cardMotion}
               >
                 <h2
@@ -655,7 +655,7 @@ export function GuidedTour({
                 role="dialog"
                 aria-modal="true"
                 aria-label="Lewati panduan ini?"
-                className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-[#E8ECE9] bg-white p-6 text-left"
+                className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-line bg-white p-6 text-left"
                 {...cardMotion}
               >
                 <h2
@@ -700,7 +700,7 @@ export function GuidedTour({
             role="dialog"
             aria-modal="true"
             aria-label={`Panduan ${idx + 1} dari ${total}: ${step.title}`}
-            className="fixed z-[70] w-[min(340px,calc(100vw-32px))] rounded-2xl border border-[#E8ECE9] bg-white"
+            className="fixed z-[70] w-[min(340px,calc(100vw-32px))] rounded-2xl border border-line bg-white"
             style={
               anchor ? { top: anchor.top, left: anchor.left } : { left: 16, right: 16, bottom: 16 }
             }
@@ -717,7 +717,7 @@ export function GuidedTour({
             {anchor && (
               <span
                 aria-hidden
-                className={`absolute size-3.5 rotate-45 border-[#E8ECE9] bg-white ${
+                className={`absolute size-3.5 rotate-45 border-line bg-white ${
                   anchor.side === "below"
                     ? "-top-[7px] border-t border-l"
                     : "-bottom-[7px] border-r border-b"

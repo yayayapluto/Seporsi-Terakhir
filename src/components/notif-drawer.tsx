@@ -116,10 +116,10 @@ export function NotifDrawer({
               role="dialog"
               aria-modal="true"
               aria-label="Notifikasi"
-              className="absolute top-0 right-0 flex h-dvh w-full flex-col bg-white shadow-xl sm:w-[400px] sm:border-l sm:border-[#E8ECE9]"
+              className="absolute top-0 right-0 flex h-dvh w-full flex-col bg-white shadow-xl sm:w-[400px] sm:border-l sm:border-line"
               {...slide}
             >
-              <div className="flex items-center justify-between gap-2 border-b border-[#E8ECE9] bg-white px-4 py-3">
+              <div className="flex items-center justify-between gap-2 border-b border-line bg-white px-4 py-3">
                 <div className="min-w-0">
                   <h2 className="truncate text-base font-extrabold text-[#1C2826]">
                     Notifikasi
@@ -151,7 +151,7 @@ export function NotifDrawer({
               </div>
               <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4">
                 {notifs.length === 0 ? (
-                  <div className="flex flex-col items-center gap-2 rounded-[20px] border-[1.5px] border-dashed border-[#E8ECE9] bg-white px-4 py-10 text-center">
+                  <div className="flex flex-col items-center gap-2 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center">
                     <p className="text-sm font-bold text-[#1C2826]">Belum ada kabar</p>
                     <p className="text-sm text-[#64746B]">
                       Perubahan status pesanan dan pendaftaran akan muncul di sini.
@@ -174,7 +174,7 @@ export function NotifDrawer({
                           disabled={read}
                           aria-label={read ? "Sudah dibaca" : `Tandai "${n.title}" sudah dibaca`}
                           title={read ? "Sudah dibaca" : "Tandai sudah dibaca"}
-                          className="flex size-11 shrink-0 items-center justify-center rounded-full border border-[#E8ECE9] bg-white text-[#2E7D4F] outline-none transition-colors hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] disabled:opacity-40"
+                          className="flex size-11 shrink-0 items-center justify-center rounded-full border border-line bg-white text-[#2E7D4F] outline-none transition-colors hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] disabled:opacity-40"
                         >
                           <Check className="size-5" strokeWidth={2} aria-hidden />
                         </button>

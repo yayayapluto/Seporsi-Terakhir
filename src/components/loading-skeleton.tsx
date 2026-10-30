@@ -39,7 +39,7 @@ export function LoadingSkeleton({
     return (
       <output className="flex flex-col gap-2" aria-label="Memuat pesanan aktif">
         <Skeleton className="h-3 w-28" />
-        <div className="flex flex-col divide-y divide-dashed divide-[#E8ECE9] rounded-[20px] border border-[#E8ECE9] bg-white px-4">
+        <div className="flex flex-col divide-y divide-dashed divide-line rounded-[20px] border border-line bg-white px-4">
           {["a", "b", "c"].map((k) => (
             <div key={`order-${k}`} className="flex items-center gap-3 py-3">
               <Skeleton className="size-10 shrink-0 rounded-xl" />
@@ -61,14 +61,14 @@ export function LoadingSkeleton({
           {["a", "b"].map((k) => (
             <div
               key={`soon-${k}`}
-              className="flex w-[240px] shrink-0 snap-start flex-col overflow-hidden rounded-[20px] border border-[#E8ECE9] bg-white"
+              className="flex w-[240px] shrink-0 snap-start flex-col overflow-hidden rounded-[20px] border border-line bg-white"
             >
               <Skeleton className="h-28 w-full shrink-0 rounded-none" />
               <div className="flex flex-col gap-1.5 p-4 pb-3">
                 <Skeleton className="h-4 w-4/5" />
                 <Skeleton className="h-3 w-2/5" />
               </div>
-              <div aria-hidden className="mx-4 border-t border-dashed border-[#E8ECE9]" />
+              <div aria-hidden className="mx-4 border-t border-dashed border-line" />
               <div className="flex flex-col gap-1.5 p-4 pt-3">
                 <Skeleton className="h-3 w-3/5" />
                 <Skeleton className="h-5 w-2/5" />
@@ -86,14 +86,14 @@ export function LoadingSkeleton({
         {["a", "b", "c"].map((k) => (
           <div
             key={`cat-${k}`}
-            className="flex flex-col overflow-hidden rounded-[20px] border border-[#E8ECE9] bg-white"
+            className="flex flex-col overflow-hidden rounded-[20px] border border-line bg-white"
           >
             <Skeleton className="h-28 w-full shrink-0 rounded-none" />
             <div className="flex flex-col gap-1.5 p-4 pb-3">
               <Skeleton className="h-4 w-4/5" />
               <Skeleton className="h-3 w-2/5" />
             </div>
-            <div aria-hidden className="mx-4 border-t border-dashed border-[#E8ECE9]" />
+            <div aria-hidden className="mx-4 border-t border-dashed border-line" />
             <div className="flex flex-col gap-1.5 p-4 pt-3">
               <Skeleton className="h-3 w-3/5" />
               <Skeleton className="h-5 w-2/5" />

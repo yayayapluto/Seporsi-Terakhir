@@ -74,7 +74,7 @@ export function NavTabs({ tabs }: { tabs: NavTab[] }) {
         className="fixed inset-x-3 bottom-3 z-40 mx-auto max-w-[430px] md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <ul className="flex items-stretch rounded-[20px] border border-[#E8ECE9] bg-white px-1 py-1 shadow-[0_8px_24px_rgba(16,24,40,.10)]">
+        <ul className="flex items-stretch rounded-[20px] border border-line bg-white px-1 py-1 shadow-[0_8px_24px_rgba(16,24,40,.10)]">
           {tabs.map((t) => {
             const Icon = ICONS[t.icon];
             const active = pathname === t.href || pathname.startsWith(`${t.href}/`);
@@ -109,7 +109,7 @@ export function NavTabs({ tabs }: { tabs: NavTab[] }) {
       </nav>
       <nav
         aria-label="Navigasi utama"
-        className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col gap-1 self-start overflow-y-auto border-r border-[#E8ECE9] bg-white p-4 md:flex"
+        className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col gap-1 self-start overflow-y-auto border-r border-line bg-white p-4 md:flex"
       >
         <Link
           href="/"

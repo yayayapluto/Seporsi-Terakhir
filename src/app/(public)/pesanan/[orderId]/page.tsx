@@ -158,7 +158,7 @@ export default async function OrderDetailPage({
             </output>
           )}
           {order.status === "cancelled" && (
-            <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-[#E8ECE9] bg-white px-4 py-8 text-center">
+            <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-8 text-center">
               <p className="text-sm font-bold text-[#1C2826]">Pesanan dibatalkan</p>
               <p className="text-sm text-[#64746B]">Stok porsi sudah dikembalikan ke katalog.</p>
               <Link
@@ -178,7 +178,7 @@ export default async function OrderDetailPage({
             <dl
               className={cn(
                 sieraCardClass,
-                "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4",
+                "flex flex-col divide-y divide-dashed divide-line px-4",
               )}
             >
               {order.cookedAt && (
@@ -244,7 +244,7 @@ export default async function OrderDetailPage({
                   ? "Dibayar tunai di tempat saat pickup."
                   : "Bayar tunai di tempat saat pickup."}
               </p>
-              <span aria-hidden className="my-3 block border-t border-dashed border-[#E8ECE9]" />
+              <span aria-hidden className="my-3 block border-t border-dashed border-line" />
               <div className="flex flex-col gap-2">
                 {order.status === "reserved" && (
                   <>

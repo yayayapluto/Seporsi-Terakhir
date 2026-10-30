@@ -183,7 +183,7 @@ export function ScannerClient() {
                   width: "100%",
                   borderRadius: 20,
                   overflow: "hidden",
-                  border: "1px solid #E8ECE9",
+                  border: "1px solid var(--line)",
                 },
               }}
             />

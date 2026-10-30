@@ -112,7 +112,7 @@ export default async function BerandaPage({
       <div className="flex-1 bg-background">
         <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl lg:max-w-6xl lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-x-8 lg:px-8">
           <section
-            className="flex w-full flex-col gap-1 rounded-[20px] border border-[#E8ECE9] bg-gradient-to-b from-[#EAF5ED] to-white p-5 lg:col-span-2 lg:p-6"
+            className="flex w-full flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5 lg:col-span-2 lg:p-6"
             id="tour-hero"
           >
             <p className="text-xs font-bold tracking-wide text-[#1E5A36]">
@@ -207,9 +207,7 @@ async function ActiveOrdersBody() {
           Lihat Semua
         </Link>
       </div>
-      <ul
-        className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4")}
-      >
+      <ul className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-line px-4")}>
         {orders.map((o) => {
           const left = o.slotEnd
             ? Math.max(0, Math.floor((+new Date(o.slotEnd) - now) / 60_000))
@@ -255,7 +253,7 @@ async function SoonBody() {
     return (
       <div
         id="tour-catalog"
-        className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-[#E8ECE9] bg-white px-4 py-8 text-center"
+        className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-8 text-center"
       >
         <p className="text-sm font-bold text-[#1C2826]">Katalog gagal dimuat.</p>
         <p className="text-sm text-[#64746B]">Koneksi bermasalah. Muat ulang buat coba lagi.</p>
@@ -275,7 +273,7 @@ async function SoonBody() {
     return (
       <div
         id="tour-catalog"
-        className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-[#E8ECE9] bg-white px-4 py-8 text-center"
+        className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-8 text-center"
       >
         <p className="text-sm font-bold text-[#1C2826]">Belum ada porsi sore ini.</p>
         <p className="text-sm text-[#64746B]">

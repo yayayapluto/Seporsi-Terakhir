@@ -27,7 +27,7 @@ export default function GlobalError({
         >
           <div
             style={{
-              border: "1px solid #E8ECE9",
+              border: "1px solid var(--line)",
               borderRadius: 20,
               padding: 20,
               background: "linear-gradient(to bottom, #EAF5ED, #FFFFFF)",
@@ -79,7 +79,7 @@ export default function GlobalError({
                 minHeight: 48,
                 width: "100%",
                 borderRadius: 14,
-                border: "1px solid #E8ECE9",
+                border: "1px solid var(--line)",
                 background: "#fff",
                 color: "#1C2826",
                 fontSize: 15,

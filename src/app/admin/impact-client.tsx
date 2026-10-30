@@ -112,7 +112,7 @@ export function ImpactClient({
 
       <section
         aria-label="Sorotan dampak"
-        className="overflow-hidden rounded-[20px] border border-[#E8ECE9] bg-gradient-to-br from-[#2E7D4F] to-[#1E5A36] p-5 text-white sm:p-6"
+        className="overflow-hidden rounded-[20px] border border-line bg-gradient-to-br from-[#2E7D4F] to-[#1E5A36] p-5 text-white sm:p-6"
       >
         <p className="text-xs font-bold tracking-widest text-white/80">PORSI TERSELAMATKAN</p>
         <p className="mt-1 text-4xl font-extrabold tabular-nums sm:text-5xl">

@@ -174,7 +174,7 @@ export default async function ProfilPage({
                 </span>
               </p>
             )}
-            <dl className={`${sieraCardClass} divide-y divide-[#E8ECE9] overflow-hidden`}>
+            <dl className={`${sieraCardClass} divide-y divide-line overflow-hidden`}>
               <div className="flex min-h-16 items-center gap-3 px-4 py-3.5">
                 <SieraTile>
                   <PackageCheck className="size-5" />

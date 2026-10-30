@@ -10,7 +10,7 @@ export function PortionImage({ src, alt }: { src: string; alt: string }) {
   if (failed) {
     return (
       <div
-        className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 self-start rounded-[20px] border border-[#E8ECE9] bg-[#F4EFE6] text-[#64746B]"
+        className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 self-start rounded-[20px] border border-line bg-[#F4EFE6] text-[#64746B]"
         role="img"
         aria-label={`${alt} belum tersedia`}
       >
@@ -26,7 +26,7 @@ export function PortionImage({ src, alt }: { src: string; alt: string }) {
       width={800}
       height={600}
       onError={() => setFailed(true)}
-      className="aspect-[4/3] w-full self-start rounded-[20px] border border-[#E8ECE9] object-cover"
+      className="aspect-[4/3] w-full self-start rounded-[20px] border border-line object-cover"
       sizes="(max-width: 1024px) 100vw, 50vw"
     />
   );

@@ -7,7 +7,7 @@ const STATUS_LABEL: Record<string, string> = {
 const STATUS_CLASS: Record<string, string> = {
   reserved: "border-[#DCEBE0] bg-[#DCEBE0] text-[#1E5A36]",
   picked_up: "border-[#E6F4EA] bg-[#E6F4EA] text-[#1E5A36]",
-  cancelled: "border-[#E8ECE9] bg-[#F1F5F2] text-[#64746B]",
+  cancelled: "border-line bg-[#F1F5F2] text-[#64746B]",
 };
 
 export function OrderStatusBadge({ status }: { status: string }) {

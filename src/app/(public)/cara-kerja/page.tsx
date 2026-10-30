@@ -99,7 +99,7 @@ export default function CaraKerjaPage() {
             alt="Suasana kantin kampus sore hari"
             width={520}
             height={346}
-            className="h-auto w-full rounded-[20px] border border-[#E8ECE9] object-cover"
+            className="h-auto w-full rounded-[20px] border border-line object-cover"
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
           />
@@ -117,7 +117,7 @@ export default function CaraKerjaPage() {
         <ol
           className={cn(
             sieraCardClass,
-            "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4 sm:px-5",
+            "flex flex-col divide-y divide-dashed divide-line px-4 sm:px-5",
           )}
         >
           {STEPS.map((s) => (
@@ -148,7 +148,7 @@ export default function CaraKerjaPage() {
         <ul
           className={cn(
             sieraCardClass,
-            "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4 sm:px-5",
+            "flex flex-col divide-y divide-dashed divide-line px-4 sm:px-5",
           )}
         >
           {DAMPAK.map((f, i) => {
@@ -177,7 +177,7 @@ export default function CaraKerjaPage() {
         <ul
           className={cn(
             sieraCardClass,
-            "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4 sm:px-5",
+            "flex flex-col divide-y divide-dashed divide-line px-4 sm:px-5",
           )}
         >
           {FAQS.map((f) => (

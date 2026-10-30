@@ -18,7 +18,7 @@ export default function ErrorPage({
 
   return (
     <main className="mx-auto flex w-full max-w-[430px] flex-1 flex-col justify-center gap-4 px-4 py-10">
-      <div className="flex flex-col gap-1 rounded-[20px] border border-[#E8ECE9] bg-gradient-to-b from-[#EAF5ED] to-white p-5">
+      <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5">
         <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
           Halaman gagal dimuat
         </h1>

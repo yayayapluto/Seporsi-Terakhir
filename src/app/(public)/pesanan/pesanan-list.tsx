@@ -126,7 +126,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
             layout={!reduce}
             className={cn(
               sieraCardClass,
-              "flex flex-col divide-y divide-[#E8ECE9] px-4 overflow-hidden",
+              "flex flex-col divide-y divide-line px-4 overflow-hidden",
             )}
           >
             {filtered.map((o) => (

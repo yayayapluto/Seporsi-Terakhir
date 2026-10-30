@@ -163,7 +163,7 @@ export function KatalogList({
             </p>
           )}
         </div>
-        <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-[#E8ECE9] bg-white p-1">
+        <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1">
           <legend className="sr-only">Tampilan katalog</legend>
           {[
             { value: "grid" as ViewMode, label: "Tampilan grid", Icon: LayoutGrid },
@@ -200,7 +200,7 @@ export function KatalogList({
         </fieldset>
       </div>
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-[#E8ECE9] bg-white px-4 py-10 text-center">
+        <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center">
           <p className="text-sm font-bold text-[#1C2826]">Belum ada porsi sore ini.</p>
           <p className="text-sm text-[#64746B]">
             Biasanya tenant posting sekitar 15.30–16.30. Cek lagi nanti sore.
@@ -267,7 +267,7 @@ export function KatalogList({
                         </span>
                         <span className="truncate text-[13px] text-[#64746B]">{p.tenantName}</span>
                       </span>
-                      <span aria-hidden className="mx-4 border-t border-dashed border-[#E8ECE9]" />
+                      <span aria-hidden className="mx-4 border-t border-dashed border-line" />
                       <span className="flex flex-col gap-1 p-4 pt-3">
                         <span className="flex items-center gap-1.5 text-[13px] text-[#64746B]">
                           <Clock3 className="size-4 shrink-0" aria-hidden />
@@ -309,10 +309,7 @@ export function KatalogList({
       ) : (
         <motion.ul
           layout={!reduce}
-          className={cn(
-            sieraCardClass,
-            "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4",
-          )}
+          className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-line px-4")}
         >
           {shown.map((p) => {
             const soldOut = p.quantityRemaining <= 0;
