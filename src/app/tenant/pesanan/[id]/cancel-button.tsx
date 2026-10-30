@@ -79,7 +79,7 @@ export function TenantCancelButton({
             <Button
               type="button"
               variant="outline"
-              className="min-h-11 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+              className="min-h-11 flex-1 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
               onClick={onConfirm}
               disabled={pending}
             >
@@ -92,7 +92,12 @@ export function TenantCancelButton({
                 "Ya, batalkan"
               )}
             </Button>
-            <Button type="button" autoFocus className="min-h-11" onClick={() => setOpen(false)}>
+            <Button
+              type="button"
+              autoFocus
+              className="min-h-11 flex-1"
+              onClick={() => setOpen(false)}
+            >
               Kembali
             </Button>
           </DialogFooter>
