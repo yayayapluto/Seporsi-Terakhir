@@ -3,7 +3,6 @@ import {
   ChevronRight,
   CircleHelp,
   Database,
-  Globe,
   ReceiptText,
   ShieldCheck,
   Store,
@@ -57,10 +56,10 @@ export default async function PengaturanPage() {
   const akun: Row[] = [
     { href: "/profil", icon: UserRound, title: "Profil", desc: "Nama dan info akun" },
     {
-      href: "/masuk",
+      href: "/akun/keamanan",
       icon: ShieldCheck,
       title: "Keamanan",
-      desc: "Login Google, sesi aktif",
+      desc: "Email dan metode login",
     },
     {
       href: "/notifikasi",
@@ -69,16 +68,10 @@ export default async function PengaturanPage() {
       desc: "Kabar pesanan dan pendaftaran",
     },
     {
-      href: "/akun/pengaturan",
-      icon: Globe,
-      title: "Bahasa",
-      desc: "Indonesia — satu-satunya bahasa",
-    },
-    {
-      href: "/profil",
+      href: "/akun/privasi",
       icon: Database,
       title: "Privasi & data",
-      desc: "Minta ekspor atau hapus via admin",
+      desc: "Unduh data kamu (JSON)",
     },
   ];
 
@@ -86,7 +79,7 @@ export default async function PengaturanPage() {
     current.role === "tenant"
       ? [
           {
-            href: "/tenant/menu",
+            href: "/tenant/profil",
             icon: Store,
             title: "Profil kantin",
             desc: "Nama gerai dan lokasi",

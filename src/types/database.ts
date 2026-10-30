@@ -280,6 +280,39 @@ export type Database = {
           },
         ]
       }
+      tour_progress: {
+        Row: {
+          completed_at: string | null
+          current_step_id: string | null
+          furthest_step_id: string | null
+          status: string
+          tour_id: string
+          updated_at: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          completed_at?: string | null
+          current_step_id?: string | null
+          furthest_step_id?: string | null
+          status?: string
+          tour_id: string
+          updated_at?: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          completed_at?: string | null
+          current_step_id?: string | null
+          furthest_step_id?: string | null
+          status?: string
+          tour_id?: string
+          updated_at?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -470,6 +503,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      reject_tenant: { Args: { p_tenant_id: string }; Returns: undefined }
       tenant_cancel_order: {
         Args: { p_order_id: string }
         Returns: {
@@ -541,6 +575,24 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "portions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      update_tenant_profile: {
+        Args: { p_location_note?: string; p_name: string }
+        Returns: {
+          created_at: string
+          id: string
+          is_approved: boolean
+          location_note: string | null
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "tenants"
           isOneToOne: true
           isSetofReturn: false
         }
