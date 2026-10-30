@@ -3,8 +3,10 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import { BottomNav } from "@/components/bottom-nav";
 import { FooterSlot } from "@/components/footer-slot";
+import { PushBridge } from "@/components/push-bridge";
 import { SiteHeader } from "@/components/site-header";
 import { SmoothProvider } from "@/components/smooth-provider";
+import { getCurrentUser } from "@/lib/auth";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -23,7 +25,8 @@ export const metadata: Metadata = {
     "Selamatkan seporsi terakhir hari ini: makanan enak harga miring, kurangi sampah makanan kampus.",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const current = await getCurrentUser().catch(() => null);
   return (
     <html
       lang="id"
@@ -31,6 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${jakarta.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <PushBridge userId={current?.user.id ?? null} />
         <SiteHeader />
         <div className="flex w-full flex-1 items-stretch">
           <BottomNav />

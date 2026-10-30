@@ -62,10 +62,10 @@ export default async function PengaturanPage() {
       desc: "Email dan metode login",
     },
     {
-      href: "/notifikasi",
+      href: "/akun/notifikasi",
       icon: Bell,
       title: "Notifikasi",
-      desc: "Kabar pesanan dan pendaftaran",
+      desc: "Bunyi kabar pesanan",
     },
     {
       href: "/akun/privasi",
