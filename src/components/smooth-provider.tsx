@@ -1,7 +1,7 @@
 "use client";
 
 import Lenis from "lenis";
-import { motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect } from "react";
 
@@ -45,14 +45,8 @@ export function SmoothProvider({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   return (
-    <motion.div
-      key={pathname}
-      className="flex flex-1 flex-col"
-      initial={reduce ? { opacity: 0 } : { opacity: 0, filter: "blur(8px)", y: 12 }}
-      animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <div key={pathname} className="flex flex-1 flex-col">
       {children}
-    </motion.div>
+    </div>
   );
 }

@@ -53,12 +53,12 @@ export async function updateSession(request: NextRequest) {
   // /masuk bounces signed-in users home; /auth/* must run (code exchange).
   const isAuthPage = path === "/masuk";
   const isProtected =
+    path === "/beranda" ||
     path.startsWith("/katalog") ||
     path.startsWith("/pesanan") ||
     path.startsWith("/profil") ||
     path.startsWith("/tenant") ||
     path.startsWith("/admin");
-
   if (isAuthPage && user) {
     const { data } = await supabase.from("profiles").select("role").eq("id", user.id).single();
     const role = data?.role === "tenant" || data?.role === "admin" ? data.role : "student";

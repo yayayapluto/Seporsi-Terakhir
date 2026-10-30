@@ -23,6 +23,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const reduce = useReducedMotion();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: tutup menu tiap pindah rute
   useEffect(() => {
     setOpen(false);
   }, [pathname]);

@@ -1,0 +1,182 @@
+[
+ {
+  "route": "/",
+  "name": "root",
+  "status": 200,
+  "final_url": "http://localhost:3000/",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 23027
+ },
+ {
+  "route": "/katalog",
+  "name": "katalog",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Fkatalog",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/cara-kerja",
+  "name": "cara-kerja",
+  "status": 200,
+  "final_url": "http://localhost:3000/cara-kerja",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 10546
+ },
+ {
+  "route": "/masuk",
+  "name": "masuk",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/profil",
+  "name": "profil",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Fprofil",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/pesanan",
+  "name": "pesanan",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Fpesanan",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/tenant/pendaftaran",
+  "name": "tenant_pendaftaran",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Ftenant%2Fpendaftaran",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/tenant/menunggu-persetujuan",
+  "name": "tenant_menunggu-persetujuan",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Ftenant%2Fmenunggu-persetujuan",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/tenant",
+  "name": "tenant",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Ftenant",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/tenant/porsi/baru",
+  "name": "tenant_porsi_baru",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Ftenant%2Fporsi%2Fbaru",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/tenant/menu",
+  "name": "tenant_menu",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Ftenant%2Fmenu",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/tenant/pesanan",
+  "name": "tenant_pesanan",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Ftenant%2Fpesanan",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/tenant/scan",
+  "name": "tenant_scan",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Ftenant%2Fscan",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/admin",
+  "name": "admin",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Fadmin",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ },
+ {
+  "route": "/admin/tenant",
+  "name": "admin_tenant",
+  "status": 200,
+  "final_url": "http://localhost:3000/masuk?next=%2Fadmin%2Ftenant",
+  "title": "Porsi Terakhir",
+  "css": [
+   "http://localhost:3000/_next/static/chunks/2rswn03zqf_f7.css",
+   "http://localhost:3000/_next/static/chunks/2-pty-6d2o6c2.css"
+  ],
+  "main_len": 4514
+ }
+]

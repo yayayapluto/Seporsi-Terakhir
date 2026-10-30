@@ -46,9 +46,9 @@ async function loadOrders(): Promise<{ orders: MyOrder[]; error: string | null }
 export default async function PesananPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string; tour?: string }>;
+  searchParams?: Promise<{ mode?: string; tour?: string; fresh?: string }>;
 }) {
-  await requireRole("/pesanan", "student");
+  const { user } = await requireRole("/pesanan", "student");
   const { orders, error } = await loadOrders();
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
@@ -66,6 +66,8 @@ export default async function PesananPage({
         forced={tourForced}
         auto={false}
         journey={tourJourney}
+        userId={user.id}
+        fresh={sp.fresh === "1"}
         next={tourJourney ? (getJourneyNext("/pesanan") ?? undefined) : undefined}
         journeyLabel="Bagian 3 dari 4 · Pesanan"
         intro={{

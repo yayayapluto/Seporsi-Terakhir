@@ -92,7 +92,7 @@ function roleLabel(p: ProfileData): string | null {
 export default async function ProfilPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string; tour?: string }>;
+  searchParams?: Promise<{ mode?: string; tour?: string; fresh?: string }>;
 }) {
   const { user } = await requireRole("/profil", "student");
   const sp = (await searchParams) ?? {};
@@ -282,7 +282,10 @@ export default async function ProfilPage({
         <section aria-labelledby="bantuan-heading" className="flex flex-col gap-3">
           <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
           <nav aria-label="Bantuan" className={`${sieraCardClass} !p-0`}>
-            <Link href="/beranda?mode=onboarding" className="flex min-h-11 items-center gap-3 p-4">
+            <Link
+              href="/beranda?mode=onboarding&fresh=1"
+              className="flex min-h-11 items-center gap-3 p-4"
+            >
               <SieraTile>
                 <MapIcon className="size-5" />
               </SieraTile>
@@ -306,6 +309,8 @@ export default async function ProfilPage({
         forced={tourForced}
         auto={false}
         journey={tourJourney}
+        userId={user.id}
+        fresh={sp.fresh === "1"}
         next={tourJourney ? "/katalog" : undefined}
         journeyLabel="Bagian 4 dari 4 · Akun"
         finishLabel="Lihat porsi sore ini"

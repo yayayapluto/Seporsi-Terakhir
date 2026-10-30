@@ -1,7 +1,7 @@
-# Porsi Terakhir — Product Brief
+# Seporsi Terakhir — Product Brief
 
 Hyper-local web app (MVP prototype, opt-in pilot at one campus). Willing canteen
-tenants sell end-of-day leftover cooked food ("Porsi Terakhir Hari Ini") at a
+tenants sell end-of-day leftover cooked food ("Seporsi Terakhir Hari Ini") at a
 discount; students order, get a QR, pick up on foot, and pay on the spot
 (cash/QRIS — the system does **not** process payments). Every scanned pickup is
 recorded as verifiable impact data (SDG 12).

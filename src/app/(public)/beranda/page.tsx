@@ -66,7 +66,7 @@ async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }>
 export default async function BerandaPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string; tour?: string }>;
+  searchParams?: Promise<{ mode?: string; tour?: string; fresh?: string }>;
 }) {
   const { user } = await requireRole("/beranda", "student");
   const supabase = await createClient();
@@ -130,6 +130,8 @@ export default async function BerandaPage({
             forced={tourForced}
             auto={false}
             journey={tourJourney}
+            userId={user.id}
+            fresh={sp.fresh === "1"}
             next={tourJourney ? (getJourneyNext("/beranda") ?? undefined) : undefined}
             journeyLabel="Bagian 1 dari 4 · Beranda"
             intro={{

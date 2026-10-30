@@ -31,4 +31,4 @@
 
 ## Resolution
 
-<!-- filled in by validate-fix -->
+Fixed — footer `w-screen left-1/2 -translate-x-1/2` diganti full-bleed tanpa unit viewport-lebar: `bg-card` + `box-shadow: 0 0 0 100vmax` (shadow tak picu scrollbar) + `clip-path: inset(0 -100vmax)`; garis atas jadi hairline `h-px` terpisah dengan teknik sama. Commit `fix(layout): footer full-bleed tanpa w-screen cegah scrollbar X`. Verifikasi: `over = 0`, screenshot footer garis penuh, `typecheck` + 41 test lolos, HTML prod tanpa `w-screen`.

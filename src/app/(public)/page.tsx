@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { BarChart3, Store, Wallet } from "lucide-react";
 import Link from "next/link";
 import { SiteFooter } from "@/components/site-footer";
 import {
@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/accordion";
 import { buttonVariants } from "@/components/ui/button";
 import { getCurrentUser, homeForRole } from "@/lib/auth";
-import { ChalkRow, Pressable, Reveal } from "./reveal";
+import { ChalkRow, PickupCountdown, Pressable, Reveal } from "./reveal";
 
 const BOARD = [
   {
@@ -40,14 +40,17 @@ const BOARD = [
 
 const MASALAH = [
   {
+    icon: Store,
     title: "Tenant Kantin",
     body: "Makanan matang yang masih layak sering terbuang di akhir hari karena pembeli sore sepi.",
   },
   {
+    icon: Wallet,
     title: "Mahasiswa",
     body: "Uang saku terbatas, apalagi sore hari setelah praktikum. Opsi makan murah berkualitas itu penting.",
   },
   {
+    icon: BarChart3,
     title: "Kampus",
     body: "Belum ada data riil berapa banyak makanan kantin yang terbuang setiap hari.",
   },
@@ -118,40 +121,39 @@ export default async function Home() {
       : "Lihat Porsi Hari Ini";
   return (
     <>
-      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 sm:px-6">
-        {/* HERO */}
-        <section className="grid gap-8 py-10 sm:py-14 md:grid-cols-2 md:items-center lg:grid-cols-[1.05fr_1fr]">
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pt-20 sm:px-6 sm:pt-24">
+        {/* HERO: etalase sore — hook kiri, kaca kanan */}
+        <section className="grid gap-8 py-10 sm:py-14 md:grid-cols-2 md:items-start lg:grid-cols-[1.05fr_1fr]">
           <div className="flex flex-col gap-5">
-            <h1 className="max-w-xl text-4xl font-extrabold leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
-              Porsi terakhir hari ini di kantin kampus.
+            <h1 className="max-w-xl text-balance text-4xl font-extrabold leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
+              Sisa layak makan, harga mahasiswa.
             </h1>
             <p className="max-w-xl text-base text-muted-foreground">
-              Setiap sore, makanan layak makan di kantin kampus sering berakhir di tempat sampah.
-              Porsi Terakhir mempertemukan tenant yang menjual sisa dengan harga diskon, dan
-              mahasiswa yang butuh makan murah.
+              Etalase sore kantin kampus: porsi utuh yang belum laku menjelang tutup — bukan sisa
+              piring. Jam masak tertera, pickup 16.30–18.00, bayar di tempat ke tenant.
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center md:flex-col md:items-stretch lg:flex-row lg:items-center">
-              <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Pressable className="w-full sm:w-auto">
                 <Link
                   href={primaryHref}
                   className={buttonVariants({
                     size: "lg",
-                    className: "w-full sm:w-auto md:w-full lg:w-auto",
+                    className: "w-full sm:w-auto",
                   })}
                 >
                   {primaryLabel}
                 </Link>
               </Pressable>
-              <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
+              <Pressable className="w-full sm:w-auto">
                 <Link
                   href="/cara-kerja"
                   className={buttonVariants({
                     variant: "outline",
                     size: "lg",
-                    className: "w-full sm:w-auto md:w-full lg:w-auto",
+                    className: "w-full sm:w-auto",
                   })}
                 >
-                  Lihat Cara Kerja
+                  Cara Kerja
                 </Link>
               </Pressable>
             </div>
@@ -160,67 +162,74 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <figure>
-              <Image
-                src="/images/foto_kantin.webp"
-                alt="Suasana kantin kampus sore hari"
-                width={520}
-                height={346}
-                className="h-auto w-full rounded-md border object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <figcaption className="mt-1 text-xs text-muted-foreground">
-                Suasana kantin kampus sore hari.
-              </figcaption>
-            </figure>
-            <section
-              aria-label="Contoh papan porsi sore ini"
-              className="border-t-2 border-foreground"
-            >
-              <div className="flex items-baseline justify-between gap-2 border-b py-2 text-xs text-muted-foreground">
-                <span>Contoh papan sore ini</span>
-                <span>Pickup 16.30–18.00</span>
-              </div>
-              <ul className="divide-y divide-border">
-                {BOARD.map((item, i) => (
-                  <ChalkRow
-                    key={item.name}
-                    className="flex items-baseline justify-between gap-4 py-3"
-                    delay={i * 0.09}
-                  >
-                    <div>
-                      <h2 className="font-bold leading-snug">{item.name}</h2>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {item.tenant} • Dimasak {item.cooked} • {item.left}
-                      </p>
-                    </div>
-                    <p className="shrink-0 text-right text-sm">
-                      <del className="mr-1.5 text-xs text-muted-foreground">
-                        <span className="sr-only">Harga awal: </span>
-                        {item.normal}
-                      </del>
-                      <strong className="text-base">{item.price}</strong>
-                    </p>
-                  </ChalkRow>
-                ))}
-              </ul>
-              <p className="border-b py-2 text-xs text-muted-foreground">
-                Stok live ada di katalog.
+          {/* Etalase kaca: header lengket countdown + nampan skeleton */}
+          <section
+            aria-label="Contoh papan porsi sore ini"
+            className="overflow-hidden rounded-2xl border border-border bg-card/80 shadow-[0_16px_40px_-16px_rgba(28,40,38,0.25)] backdrop-blur"
+          >
+            <div className="flex items-center justify-between gap-2 border-b border-dashed bg-secondary/60 px-4 py-3 sm:px-5">
+              <p className="text-xs font-bold text-secondary-foreground sm:text-sm">
+                Sore ini · Kantin Gedung A
               </p>
-            </section>
-          </div>
+              <p className="text-xs font-bold text-secondary-foreground sm:text-sm">
+                <span className="sr-only">Pickup tutup dalam </span>
+                <PickupCountdown />
+              </p>
+            </div>
+            <ul className="divide-y divide-dashed divide-border">
+              {BOARD.map((item, i) => (
+                <ChalkRow
+                  key={item.name}
+                  className="grid grid-cols-[56px_1fr_auto] items-center gap-3 px-4 py-3 sm:grid-cols-[72px_1fr_auto] sm:gap-4 sm:px-5 sm:py-4"
+                  delay={i * 0.09}
+                >
+                  <span
+                    aria-hidden
+                    className="block h-14 w-14 animate-pulse rounded-xl border border-border bg-muted sm:h-[72px] sm:w-[72px]"
+                  />
+                  <span>
+                    <span className="block font-bold leading-snug">
+                      <span
+                        aria-hidden
+                        className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary align-middle text-[11px] font-extrabold text-primary-foreground"
+                      >
+                        {i + 1}
+                      </span>
+                      {item.name}
+                    </span>
+                    <span className="mt-0.5 block text-xs text-muted-foreground">
+                      {item.tenant} • Dimasak {item.cooked} • {item.left}
+                    </span>
+                  </span>
+                  <span className="text-right text-sm">
+                    <del className="mr-1.5 text-xs text-muted-foreground">
+                      <span className="sr-only">Harga awal: </span>
+                      {item.normal}
+                    </del>
+                    <strong className="text-base text-accent-strong">{item.price}</strong>
+                  </span>
+                </ChalkRow>
+              ))}
+            </ul>
+            <p className="border-t border-dashed px-4 py-2.5 text-xs text-muted-foreground sm:px-5">
+              Stok live ada di katalog. Contoh sintetis.
+            </p>
+          </section>
         </section>
 
-        {/* MASALAH */}
-        <Reveal className="flex flex-col gap-2 py-10">
+        {/* MASALAH — 3 kartu ikon */}
+        <Reveal className="flex flex-col gap-4 py-10">
           <p className="text-xs font-bold tracking-[0.2em] text-primary">MASALAH</p>
           <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
             Satu masalah, dua pihak butuh.
           </h2>
-          <ul className="divide-y divide-border border-b">
+          <ul className="grid gap-4 md:grid-cols-3">
             {MASALAH.map((m) => (
-              <li key={m.title} className="grid gap-1 py-4 sm:grid-cols-[180px_1fr] sm:gap-4">
+              <li
+                key={m.title}
+                className="flex flex-col gap-2 rounded-2xl border bg-card p-5 shadow-[0_2px_0_rgba(28,40,38,0.08)]"
+              >
+                <m.icon aria-hidden className="size-5 text-primary" />
                 <h3 className="font-bold">{m.title}</h3>
                 <p className="text-sm text-muted-foreground">{m.body}</p>
               </li>
@@ -256,14 +265,14 @@ export default async function Home() {
         </Reveal>
 
         {/* KEAMANAN */}
-        <Reveal id="keamanan" className="flex flex-col gap-2 py-10">
+        <Reveal id="keamanan" className="flex scroll-mt-24 flex-col gap-2 py-10">
           <p className="text-xs font-bold tracking-[0.2em] text-primary">KEAMANAN PANGAN</p>
           <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
             Aturan jelas supaya tetap aman.
           </h2>
-          <ul className="divide-y divide-border border-b">
+          <ul className="divide-y divide-border border-b lg:grid lg:grid-cols-3 lg:gap-x-8 lg:divide-y-0 lg:border-b-0">
             {AMAN.map((f) => (
-              <li key={f.title} className="py-4">
+              <li key={f.title} className="py-4 lg:flex lg:flex-col lg:gap-1">
                 <h3 className="font-bold">{f.title}</h3>
                 <p className="mt-0.5 text-sm text-muted-foreground">{f.body}</p>
               </li>
@@ -279,7 +288,10 @@ export default async function Home() {
         </Reveal>
 
         {/* FAQ */}
-        <Reveal id="faq" className="mx-auto flex w-full max-w-3xl flex-col gap-2 py-10">
+        <Reveal
+          id="faq"
+          className="mx-auto flex w-full max-w-3xl scroll-mt-24 flex-col gap-2 py-10"
+        >
           <p className="text-xs font-bold tracking-[0.2em] text-primary">TANYA JAWAB</p>
           <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
             Pertanyaan yang sering ditanyakan.
@@ -296,41 +308,36 @@ export default async function Home() {
           </Accordion>
         </Reveal>
 
-        {/* CTA */}
-        <Reveal className="mb-12 flex flex-col items-center gap-4 border-t-2 border-foreground px-6 py-12 text-center">
-          <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
+        {/* PITA TUTUP — hijau pekat */}
+        <Reveal className="mb-12 overflow-hidden rounded-3xl bg-primary px-6 py-12 text-center text-primary-foreground sm:py-14">
+          <h2 className="mx-auto max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
             Jangan biarkan porsi terakhir terbuang.
           </h2>
-          <p className="max-w-xl text-sm text-muted-foreground">
+          <p className="mx-auto mt-2 max-w-xl text-sm text-primary-foreground/80">
             Satu porsi terjual berarti satu porsi tidak jadi sampah dan satu mahasiswa makan lebih
             hemat.
           </p>
-          <div className="flex w-full max-w-md flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row md:flex-col md:items-stretch lg:flex-row lg:items-center">
-            <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
+          <div className="mx-auto mt-6 flex w-full max-w-md flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
+            <Pressable className="w-full sm:w-auto">
               <Link
                 href="/masuk"
-                className={buttonVariants({
-                  size: "lg",
-                  className: "w-full sm:w-auto md:w-full lg:w-auto",
-                })}
+                className="inline-flex h-9 min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-transparent bg-primary-foreground px-2.5 text-sm font-medium whitespace-nowrap text-primary transition-all outline-none select-none hover:bg-primary-foreground/90 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-auto"
               >
                 Masuk Sekarang
               </Link>
             </Pressable>
-            <Pressable className="w-full sm:w-auto md:w-full lg:w-auto">
+            <Pressable className="w-full sm:w-auto">
               <Link
                 href="/tenant/pendaftaran"
-                className={buttonVariants({
-                  variant: "outline",
-                  size: "lg",
-                  className: "w-full sm:w-auto md:w-full lg:w-auto",
-                })}
+                className="inline-flex h-9 min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-primary-foreground/40 px-2.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-all outline-none select-none hover:bg-primary-foreground/10 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-auto"
               >
                 Daftar sebagai Tenant
               </Link>
             </Pressable>
           </div>
-          <p className="text-xs text-muted-foreground">Tahap awal SDG 12 di lingkungan kampus</p>
+          <p className="mt-4 text-xs text-primary-foreground/70">
+            Tahap awal SDG 12 di lingkungan kampus
+          </p>
         </Reveal>
       </div>
       <SiteFooter />

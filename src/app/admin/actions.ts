@@ -118,7 +118,7 @@ export async function exportCsv(
   }));
   return {
     ok: true,
-    filename: `porsi-terakhir-laporan-${from || "awal"}-${to || "sekarang"}.csv`,
+    filename: `seporsi-terakhir-laporan-${from || "awal"}-${to || "sekarang"}.csv`,
     csv: buildTenantCsv(rows),
   };
 }

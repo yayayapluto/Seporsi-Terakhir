@@ -2,10 +2,22 @@
 
 import { GuidedTour } from "@/components/guided-tour";
 
-export function TenantTour() {
+export function TenantTour({
+  forced = false,
+  userId = "anon",
+}: {
+  forced?: boolean;
+  userId?: string;
+}) {
   return (
     <GuidedTour
       tourKey="tenant"
+      forced={forced}
+      userId={userId}
+      intro={{
+        title: "Kelola kantinmu?",
+        body: "Reservasi masuk, scan pickup, dan posting porsi dari sini. Bisa dilewati, dan diulang kapan saja.",
+      }}
       steps={[
         {
           target: '[data-tour="reservasi"]',

@@ -54,3 +54,5 @@ next-env.d.ts
 .omp/
 .pi/
 .impeccable/
+# Added by code-review-graph
+.code-review-graph/

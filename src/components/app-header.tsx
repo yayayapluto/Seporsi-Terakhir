@@ -1,13 +1,19 @@
-import { Bell } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
+import { loadNotifs } from "@/lib/notifs";
+import { getOwnTenant } from "@/lib/tenant";
 import { unreadFor } from "./bottom-nav";
+import { NotifDrawer } from "./notif-drawer";
+import { NotifLive } from "./notif-live";
 
 /** AppHeader Siera: logo + judul halaman + bell notifikasi. Khusus area login. */
 export async function AppHeader({ title }: { title: string }) {
   const current = await getCurrentUser();
   const unread = await unreadFor(current?.role ?? null, current?.user.id ?? null);
+  const role = current?.role ?? null;
+  const tenantId = role === "tenant" ? ((await getOwnTenant())?.id ?? null) : null;
+  const notifs = await loadNotifs(role, tenantId);
+  const tables = (role === "admin" ? ["tenants"] : ["orders"]) as ("orders" | "tenants")[];
   return (
     <header className="sticky top-0 z-30 flex h-[60px] items-center justify-between gap-2 border-b border-[#E8ECE9] bg-white px-4 md:px-8">
       <span className="flex min-w-0 items-center gap-2">
@@ -20,21 +26,12 @@ export async function AppHeader({ title }: { title: string }) {
         />
         <span className="truncate text-lg font-extrabold text-[#2E7D4F]">{title}</span>
       </span>
-      <Link
-        href="/notifikasi"
-        aria-label={unread > 0 ? `Notifikasi, ${unread} belum dibaca` : "Notifikasi"}
-        className="relative flex size-11 shrink-0 items-center justify-center rounded-full text-[#1C2826] transition-colors outline-none hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
-      >
-        <Bell className="size-6" strokeWidth={1.75} aria-hidden />
-        {unread > 0 && (
-          <span
-            aria-hidden
-            className="absolute top-1 right-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#BA1A1A] px-1 text-[11px] font-bold text-white"
-          >
-            {unread > 9 ? "9+" : unread}
-          </span>
-        )}
-      </Link>
+      <NotifDrawer
+        notifs={notifs}
+        unread={unread}
+        userKey={current?.user.id ?? "anon"}
+        live={<NotifLive tables={tables} />}
+      />
     </header>
   );
 }

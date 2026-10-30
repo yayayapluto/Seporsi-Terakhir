@@ -14,7 +14,7 @@ web
 
 ## Product Purpose
 
-Porsi Terakhir mempertemukan tenant kantin yang menjual sisa makanan layak makan dengan harga diskon dan mahasiswa yang butuh makan murah — setiap sore, tanpa ongkir, tanpa pembayaran di aplikasi. Sukses = porsi terselamatkan tercatat sebagai data dampak terverifikasi (SDG 12), bukan tampilan amal atau dashboard ESG.
+Seporsi Terakhir mempertemukan tenant kantin yang menjual sisa makanan layak makan dengan harga diskon dan mahasiswa yang butuh makan murah — setiap sore, tanpa ongkir, tanpa pembayaran di aplikasi. Sukses = porsi terselamatkan tercatat sebagai data dampak terverifikasi (SDG 12), bukan tampilan amal atau dashboard ESG.
 
 ## Positioning
 
@@ -28,7 +28,7 @@ Kantin kampus sore hari (jendela ambil ~16.30–18.30 WIB), satu tangan memegang
 
 ## Brand Commitments
 
-Nama "Porsi Terakhir", palet hijau `#2E7D4F` + aksen kuliner `#F28C28` + kanvas `#FFFBF5`, Plus Jakarta Sans (heading) + Inter (body). Nada: hemat cerdas dan tepercaya, bukan amal. Keputusan terkunci 2026-10-28: arah visual "Papan Tulis Kantin" untuk ketiga layar (landing, masuk, katalog).
+Nama "Seporsi Terakhir", palet hijau `#2E7D4F` + aksen kuliner `#F28C28` + kanvas `#FFFBF5`, Plus Jakarta Sans (heading) + Inter (body). Nada: hemat cerdas dan tepercaya, bukan amal. Keputusan terkunci 2026-10-28: arah visual "Papan Tulis Kantin" untuk ketiga layar (landing, masuk, katalog).
 
 ## Evidence on Hand
 

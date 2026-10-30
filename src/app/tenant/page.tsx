@@ -115,7 +115,15 @@ async function loadData() {
     return { menuName: menu?.name ?? "Menu", expiresAt: String(p.expires_at) };
   });
 
-  return { activePortions, reservations, pickupsToday, revenueToday, todayLocal, justExpired };
+  return {
+    activePortions,
+    reservations,
+    pickupsToday,
+    revenueToday,
+    todayLocal,
+    justExpired,
+    tenantId: tenant.id,
+  };
 }
 
 export default async function TenantDashboardPage({
@@ -125,7 +133,7 @@ export default async function TenantDashboardPage({
 }) {
   const sp = (await searchParams) ?? {};
   const tourForced = sp.mode === "onboarding";
-  const { activePortions, reservations, pickupsToday, revenueToday, justExpired } =
+  const { activePortions, reservations, pickupsToday, revenueToday, justExpired, tenantId } =
     await loadData();
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
@@ -266,7 +274,7 @@ export default async function TenantDashboardPage({
       <div className="border-t pt-6">
         <SignOutButton />
       </div>
-      <TenantTour forced={tourForced} />
+      <TenantTour forced={tourForced} userId={tenantId} />
     </div>
   );
 }

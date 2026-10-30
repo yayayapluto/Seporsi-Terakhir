@@ -76,18 +76,13 @@ export function TenantCancelButton({
             {buyerName} akan melihat status batal. Stok {quantity} porsi dikembalikan ke katalog.
           </DialogDescription>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              className="min-h-11"
-              onClick={() => setOpen(false)}
-            >
+            <Button type="button" autoFocus className="min-h-11" onClick={() => setOpen(false)}>
               Kembali
             </Button>
             <Button
               type="button"
-              variant="destructive"
-              className="min-h-11"
+              variant="outline"
+              className="min-h-11 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
               onClick={onConfirm}
               disabled={pending}
             >

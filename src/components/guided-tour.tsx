@@ -7,11 +7,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { placeTooltip } from "@/lib/tour-placement";
+import { isStale, resolveStart, stepIdFor, TOUR_VERSION } from "@/lib/tour-progress";
+import { useTourProgress } from "@/lib/use-tour-progress";
 
 export interface TourStep {
   target: string;
   title: string;
   body: string;
+  id?: string;
 }
 
 export interface TourIntro {
@@ -19,7 +22,7 @@ export interface TourIntro {
   body: string;
 }
 
-type Phase = "intro" | "step" | "confirm" | null;
+type Phase = "intro" | "step" | "confirm" | "resume" | null;
 
 const HOLE_PAD = 10;
 const RESUME_KEY = "tour-journey-resume";
@@ -42,7 +45,8 @@ function setBgInert(on: boolean) {
 
 /**
  * Spotlight tour: intro → langkah (cutout + tooltip berpanah) → konfirmasi lewati.
- * Sekali per tourKey (localStorage), kecuali forced/journey (?mode=onboarding / ?tour=journey).
+ * Progres (langkah terakhir) tersimpan lokal + server; lanjutkan setelah jeda,
+ * tawar ulang bila jeda > 7 hari, tidak pernah ulang dari awal tanpa alasan.
  * Overlay + tooltip di-portal ke body; target tidak interaktif selama tur.
  */
 export function GuidedTour({
@@ -55,12 +59,14 @@ export function GuidedTour({
   next,
   journeyLabel,
   finishLabel,
+  userId = "anon",
+  fresh = false,
 }: {
   tourKey: string;
   steps: TourStep[];
   intro?: TourIntro;
   forced?: boolean;
-  /** Tampilkan otomatis sekali (localStorage). Mati bila false — hanya forced/journey. */
+  /** Tampilkan otomatis sekali. Mati bila false — hanya forced/journey. */
   auto?: boolean;
   /** Bagian dari rantai onboarding: selesai lanjut ke `next`, keluar = strip query. */
   journey?: boolean;
@@ -69,6 +75,10 @@ export function GuidedTour({
   journeyLabel?: string;
   /** Teks tombol akhir, mis. "Lihat porsi sore ini". Default "Selesai". */
   finishLabel?: string;
+  /** Id pengguna untuk namespace progres + sinkron server. "anon" = lokal saja. */
+  userId?: string;
+  /** Reset progres lalu mulai dari awal (dipakai tautan "mulai ulang"). */
+  fresh?: boolean;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -85,11 +95,18 @@ export function GuidedTour({
     arrowX: number;
   } | null>(null);
   const [hole, setHole] = useState<Hole | null>(null);
+  const [resumeTitle, setResumeTitle] = useState("");
 
   const stepsRef = useRef(steps);
   stepsRef.current = steps;
-  const hasIntro = intro != null;
   const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const hasIntro = intro != null;
+  const orderDefIdx = useRef<number[]>([]);
+  const maxPos = useRef(0);
+  const resumeDefIdx = useRef<number | null>(null);
+  const startedRef = useRef(false);
+
+  const progress = useTourProgress({ tourKey, tourId: tourKey, userId });
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -99,69 +116,115 @@ export function GuidedTour({
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  // Mulai: paksa bila forced/journey; otomatis sekali bila auto dan belum selesai.
+  // Mulai: tunggu progres siap (tanpa kedip langkah 1), lalu putuskan.
   useEffect(() => {
+    if (!progress.isReady || startedRef.current) return;
     if (!forced && !journey && !auto) return;
-    let done = false;
-    if (!forced && !journey) {
-      try {
-        done = localStorage.getItem(`tour-${tourKey}-done`) === "1";
-      } catch {
-        done = true;
-      }
-    }
-    if (!forced && !journey && done) return;
-    if (journey) {
-      try {
-        localStorage.setItem(RESUME_KEY, `${pathname}?tour=journey`);
-      } catch {
-        /* abaikan */
-      }
-    }
+    const defs = stepsRef.current;
+    const allIds = defs.map((s, i) => stepIdFor(tourKey, s, i));
+    setTotalSteps(defs.length);
+    const doFresh = fresh || (forced && !journey);
+    const decision = resolveStart(progress.saved, allIds, TOUR_VERSION, doFresh);
+    if (decision.action === "hide") return;
+    if (decision.action === "reset") progress.reset();
+    maxPos.current = 0;
     let tries = 0;
-    let best: TourStep[] = [];
+    let best: { s: TourStep; i: number }[] = [];
     const timer = window.setInterval(() => {
+      if (!startedRef.current) return;
       tries += 1;
-      const valid = stepsRef.current.filter((s) => {
-        const t = document.querySelector(s.target);
-        return t instanceof HTMLElement && t.offsetParent !== null;
-      });
+      const valid = defs
+        .map((s, i) => ({ s, i }))
+        .filter(({ s }) => {
+          const t = document.querySelector(s.target);
+          return t instanceof HTMLElement && t.offsetParent !== null;
+        });
       if (valid.length > best.length) {
         best = valid;
-        setOrder(valid);
+        setOrder(valid.map((v) => v.s));
+        orderDefIdx.current = valid.map((v) => v.i);
       }
       const settled = tries >= 4 || (best.length > 0 && tries >= 2);
       if (settled) {
         window.clearInterval(timer);
-        setTotalSteps(stepsRef.current.length);
-        if (best.length > 0) {
-          setIdx(0);
-          setPhase(hasIntro || forced || journey ? "intro" : "step");
-        } else if ((journey || forced) && hasIntro) {
-          setOrder([]);
-          setIdx(0);
-          setPhase("intro");
+        if (best.length === 0) {
+          if ((journey || forced) && hasIntro) {
+            setOrder([]);
+            orderDefIdx.current = [];
+            setIdx(0);
+            setPhase("intro");
+          }
+          return;
         }
+        if (doFresh) {
+          setIdx(0);
+          maxPos.current = 0;
+          setPhase(hasIntro || forced || journey ? "intro" : "step");
+          return;
+        }
+        const saved = progress.saved;
+        if (
+          saved &&
+          saved.status === "in_progress" &&
+          saved.version === TOUR_VERSION &&
+          saved.currentStepId
+        ) {
+          const defIdx = allIds.indexOf(saved.currentStepId);
+          resumeDefIdx.current = defIdx;
+          const pos = (() => {
+            const at = orderDefIdx.current.indexOf(defIdx);
+            if (at >= 0) return at;
+            const after = orderDefIdx.current.findIndex((d) => d > defIdx);
+            return after >= 0 ? after : best.length - 1;
+          })();
+          const farDef = saved.furthestStepId ? allIds.indexOf(saved.furthestStepId) : -1;
+          const farPos = (() => {
+            const at = orderDefIdx.current.indexOf(farDef);
+            return at >= 0 ? at : pos;
+          })();
+          maxPos.current = Math.max(pos, farPos);
+          setIdx(pos);
+          if (isStale(saved.updatedAt)) {
+            setResumeTitle(defs[defIdx]?.title ?? best[pos]?.s.title ?? "");
+            setPhase("resume");
+          } else {
+            setPhase("step");
+          }
+          return;
+        }
+        setIdx(0);
+        maxPos.current = 0;
+        setPhase(hasIntro || forced || journey ? "intro" : "step");
       }
     }, 500);
     return () => window.clearInterval(timer);
-  }, [tourKey, forced, journey, auto, hasIntro, pathname]);
+  }, [tourKey, forced, journey, auto, hasIntro, fresh, progress]);
 
   const step = order[Math.min(idx, order.length - 1)];
 
+  // Catat tiap perpindahan langkah (sinkron lokal + debounce server).
+  useEffect(() => {
+    if (phase !== "step" || order.length === 0) return;
+    const pos = Math.min(idx, order.length - 1);
+    maxPos.current = Math.max(maxPos.current, pos);
+    const cur = order[pos];
+    const far = order[maxPos.current] ?? cur;
+    if (!cur || !far) return;
+    progress.record({
+      currentStepId: stepIdFor(tourKey, cur),
+      furthestStepId: stepIdFor(tourKey, far),
+    });
+  }, [phase, idx, order, tourKey, progress]);
+
   const dismiss = useCallback(() => {
-    try {
-      localStorage.setItem(`tour-${tourKey}-done`, "1");
-    } catch {
-      /* abaikan */
-    }
+    progress.record({ status: "skipped" }, { immediate: true });
     setPhase(null);
     if (journey) router.replace(pathname);
-  }, [tourKey, journey, router, pathname]);
+  }, [journey, router, pathname, progress]);
 
   const complete = useCallback(() => {
+    progress.record({ status: "completed" }, { immediate: true });
     try {
-      localStorage.setItem(`tour-${tourKey}-done`, "1");
       if (next) {
         if (next.includes("tour=journey")) localStorage.setItem(RESUME_KEY, next);
         else localStorage.removeItem(RESUME_KEY);
@@ -172,13 +235,19 @@ export function GuidedTour({
       /* abaikan */
     }
     if (next) {
-      // Assign penuh (bukan router.push): dijamin pindah halaman + render ulang server.
       window.location.assign(next);
     } else {
       setPhase(null);
       if (journey) router.replace(pathname);
     }
-  }, [tourKey, next, journey, router, pathname]);
+  }, [tourKey, next, journey, router, pathname, progress]);
+
+  // Tab lain menyelesaikan/melewati: tutup tur di sini.
+  useEffect(() => {
+    if (progress.saved && progress.saved.status !== "in_progress" && phase) {
+      setPhase(null);
+    }
+  }, [progress.saved, phase]);
 
   const focusTitle = useCallback(() => {
     const root = document.querySelector('#tour-root [role="dialog"]');
@@ -285,6 +354,7 @@ export function GuidedTour({
     };
     window.addEventListener("scroll", onScroll, { passive: true, capture: true });
     window.addEventListener("resize", compute);
+    window.addEventListener("orientationchange", compute);
     const prev = document.activeElement as HTMLElement | null;
     focusTitle();
     const root = document.querySelector('#tour-root [role="dialog"]');
@@ -310,15 +380,16 @@ export function GuidedTour({
       ro.disconnect();
       window.removeEventListener("scroll", onScroll, { capture: true });
       window.removeEventListener("resize", compute);
+      window.removeEventListener("orientationchange", compute);
       document.removeEventListener("keydown", onKey);
       setBgInert(false);
       prev?.focus?.();
     };
   }, [phase, step, reduce, order.length, tourKey, focusTitle, trapTab]);
 
-  // Esc + fokus + kunci scroll + Tab-trap untuk modal intro/konfirmasi.
+  // Esc + fokus + kunci scroll + Tab-trap untuk modal intro/konfirmasi/resume.
   useEffect(() => {
-    if (phase !== "intro" && phase !== "confirm") return;
+    if (phase !== "intro" && phase !== "confirm" && phase !== "resume") return;
     const prev = document.activeElement as HTMLElement | null;
     focusTitle();
     const root = document.querySelector('#tour-root [role="dialog"]');
@@ -406,7 +477,7 @@ export function GuidedTour({
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {(phase === "intro" || phase === "confirm") && (
+        {(phase === "intro" || phase === "confirm" || phase === "resume") && (
           <motion.div
             key={`tour-modal-${tourKey}-${phase}`}
             className="fixed inset-0 z-[80] flex items-center justify-center bg-black/45 p-4"
@@ -456,6 +527,7 @@ export function GuidedTour({
                         complete();
                       } else {
                         setIdx(0);
+                        maxPos.current = 0;
                         setPhase("step");
                       }
                     }}
@@ -463,6 +535,65 @@ export function GuidedTour({
                   >
                     <Play className="size-5" strokeWidth={1.75} aria-hidden />
                     {order.length === 0 ? "Lanjut" : "Mulai panduan"}
+                  </Button>
+                </div>
+              </motion.div>
+            ) : phase === "resume" ? (
+              <motion.div
+                role="dialog"
+                aria-modal="true"
+                aria-label="Lanjutkan panduan?"
+                className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-[#E8ECE9] bg-white p-6 text-left"
+                {...cardMotion}
+              >
+                <h2
+                  ref={titleRef}
+                  tabIndex={-1}
+                  className="text-lg font-extrabold text-[#1C2826] outline-none"
+                >
+                  Lanjutkan panduan?
+                </h2>
+                <p className="mt-1 text-sm leading-relaxed text-[#64746B]">
+                  Terakhir berhenti di “{resumeTitle}”. Lanjut dari sana atau mulai dari awal?
+                </p>
+                <div className="mt-5 flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      progress.reset();
+                      setIdx(0);
+                      maxPos.current = 0;
+                      setPhase(hasIntro ? "intro" : "step");
+                    }}
+                    className="h-12 flex-1 text-[15px] font-bold"
+                  >
+                    Mulai dari awal
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      const pos = Math.min(
+                        Math.max(0, resumeDefIdx.current ?? 0),
+                        Math.max(0, order.length - 1),
+                      );
+                      const mapped = (() => {
+                        if (resumeDefIdx.current == null) return pos;
+                        const at = orderDefIdx.current.indexOf(resumeDefIdx.current);
+                        if (at >= 0) return at;
+                        const after = orderDefIdx.current.findIndex(
+                          (d) => d > (resumeDefIdx.current as number),
+                        );
+                        return after >= 0 ? after : Math.max(0, order.length - 1);
+                      })();
+                      setIdx(mapped);
+                      maxPos.current = mapped;
+                      setPhase("step");
+                    }}
+                    className="h-12 flex-1 text-[15px] font-bold"
+                  >
+                    <Play className="size-5" strokeWidth={1.75} aria-hidden />
+                    Lanjutkan
                   </Button>
                 </div>
               </motion.div>

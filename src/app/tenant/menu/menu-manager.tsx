@@ -184,7 +184,7 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-4">
         <output className="text-sm text-muted-foreground">{items.length} menu</output>
-        <Button type="button" className="min-h-11" onClick={openNew}>
+        <Button type="button" data-tour="tambah-menu" className="min-h-11" onClick={openNew}>
           + Tambah menu
         </Button>
       </div>
@@ -197,7 +197,7 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
           </p>
         </div>
       ) : (
-        <ul className="divide-y divide-border border-b">
+        <ul data-tour="menu-list" className="divide-y divide-border border-b">
           {items.map((m) => (
             <li
               key={m.id}

@@ -42,7 +42,9 @@ export function CancelButton({ orderId }: { orderId: string }) {
       )}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger
-          render={<Button type="button" variant="outline" className="px-6 text-destructive" />}
+          render={
+            <Button type="button" variant="outline" className="w-full px-6 text-destructive" />
+          }
         >
           {pending ? (
             <>
@@ -57,18 +59,13 @@ export function CancelButton({ orderId }: { orderId: string }) {
           <DialogTitle>Batalkan pesanan?</DialogTitle>
           <DialogDescription>Stok porsi akan dikembalikan ke katalog.</DialogDescription>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              className="min-h-11"
-              onClick={() => setOpen(false)}
-            >
+            <Button type="button" autoFocus className="min-h-11" onClick={() => setOpen(false)}>
               Kembali
             </Button>
             <Button
               type="button"
-              variant="destructive"
-              className="min-h-11"
+              variant="outline"
+              className="min-h-11 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
               onClick={onConfirm}
               disabled={pending}
             >
