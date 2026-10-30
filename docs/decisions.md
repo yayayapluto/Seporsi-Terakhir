@@ -1,8 +1,10 @@
 
+
 # Decisions
 
 Assumptions, deviations, and interpretations. Updated as work proceeds.
-
+- Skill `humanizer-indonesia` v1.6 (MIT, adhiprib) terpasang di `.claude/skills/humanizer-indonesia/` (tanpa `portable/`). Dipakai untuk copywriting `/beranda`: sapaan ikut jam WIB, `Pickup` -> `Ambil`, en dash jam -> hubung, `Segera habis` -> `Keburu habis`, empty state + ajakan balik, banner tutur kampus. Metrik `metrik.py` preset akademik tak relevan untuk microcopy UI (kalimat pendek wajar); audit manual: nol verba ringan, nol kalke, nol en dash.
+ - Notifikasi realtime (29 Okt): halaman `/notifikasi` per role dari tabel ada (student = `my_orders` selesai/batal, tenant = reservasi masuk, admin = tenants pending), live via Supabase Realtime `NotifLive` (pola `OrderLiveStatus`), idle nol request. Bug badge diperbaiki: query lama pakai tabel `tenant_applications` + kolom `buyer_id` + status `confirmed/ready/placed` yang tak ada di skema → badge selalu 0; kini `student_id`/`reserved`, join `portions.tenants.owner_id`, `tenants is_approved=false`. Tab Notifikasi + Akun dipisah (`/notifikasi` vs `/profil`), nav-tabs `inApp` ditambah `/notifikasi`. Biome+typecheck+test(41)+build hijau scope; `bun run check` repo tetap gagal di `scripts/gen-link.ts` (pre-existing, bukan scope).
 ## Phase 1
 
 1. **Repo name vs scaffold**: `create-next-app` refuses uppercase project names
@@ -161,3 +163,5 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 - P1b: migration `reject_tenant` (guard = `approve_tenant`), action `rejectTenant`, UI Setuju/Tolak. Delete aman: profile applicant utuh, bisa daftar ulang.
 - P2a: confirm pickup via Dialog (pola `TenantCancelButton`); P2b: sukses tampil `totalPrice` (snapshot x qty); P2c: echo "baru kedaluwarsa <=1 jam" di dashboard.
 - `check` hijau (41 test), `build` hijau, `detect --json` 7 file `[]`.
+
+ 44. **Shell navigasi adaptif + 4 rute role (30 Okt, shape+adapt)**: `BottomNav` jadi sidebar `md+` (student 4 tab: Beranda/Katalog/Pesanan/Akun, badge hanya Pesanan; bell header satu-satunya indikator global), `AppHeader` sticky. Notifikasi: bell dot + reset badge baca; profil kartu ringkas + CTA tenant/pendaftaran + admin. `check` + `build` hijau, smoke 5 rute auth `:3001`.
