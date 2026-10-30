@@ -104,7 +104,6 @@ export function GuidedTour({
   const orderDefIdx = useRef<number[]>([]);
   const maxPos = useRef(0);
   const resumeDefIdx = useRef<number | null>(null);
-  const startedRef = useRef(false);
 
   const progress = useTourProgress({ tourKey, tourId: tourKey, userId });
 
@@ -118,7 +117,7 @@ export function GuidedTour({
 
   // Mulai: tunggu progres siap (tanpa kedip langkah 1), lalu putuskan.
   useEffect(() => {
-    if (!progress.isReady || startedRef.current) return;
+    if (!progress.isReady) return;
     if (!forced && !journey && !auto) return;
     const defs = stepsRef.current;
     const allIds = defs.map((s, i) => stepIdFor(tourKey, s, i));
@@ -131,7 +130,6 @@ export function GuidedTour({
     let tries = 0;
     let best: { s: TourStep; i: number }[] = [];
     const timer = window.setInterval(() => {
-      if (!startedRef.current) return;
       tries += 1;
       const valid = defs
         .map((s, i) => ({ s, i }))
@@ -198,7 +196,17 @@ export function GuidedTour({
       }
     }, 500);
     return () => window.clearInterval(timer);
-  }, [tourKey, forced, journey, auto, hasIntro, fresh, progress]);
+  }, [
+    tourKey,
+    forced,
+    journey,
+    auto,
+    hasIntro,
+    fresh,
+    progress.isReady,
+    progress.saved,
+    progress.reset,
+  ]);
 
   const step = order[Math.min(idx, order.length - 1)];
 
@@ -214,7 +222,7 @@ export function GuidedTour({
       currentStepId: stepIdFor(tourKey, cur),
       furthestStepId: stepIdFor(tourKey, far),
     });
-  }, [phase, idx, order, tourKey, progress]);
+  }, [phase, idx, order, tourKey, progress.record]);
 
   const dismiss = useCallback(() => {
     progress.record({ status: "skipped" }, { immediate: true });
