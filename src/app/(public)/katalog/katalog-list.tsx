@@ -414,6 +414,7 @@ export function KatalogList({
         auto={false}
         journey={tourJourney}
         next={tourJourney ? (getJourneyNext("/katalog") ?? undefined) : undefined}
+        journeyLabel="Bagian 2 dari 4 · Katalog"
         intro={{
           title: "Cara baca katalog?",
           body: "Saring tenant, urutkan yang hampir habis, ketuk kartunya buat pesan. Bisa dilewati, dan diulang kapan saja.",

@@ -20,7 +20,7 @@ import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
-import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
+import { parseTourParams } from "@/lib/tour-journey";
 
 /** Profil student: identitas, aplikasi tenant, dampak dari pesanan picked_up. */
 
@@ -306,7 +306,9 @@ export default async function ProfilPage({
         forced={tourForced}
         auto={false}
         journey={tourJourney}
-        next={tourJourney ? (getJourneyNext("/profil") ?? undefined) : undefined}
+        next={tourJourney ? "/katalog" : undefined}
+        journeyLabel="Bagian 4 dari 4 · Akun"
+        finishLabel="Lihat porsi sore ini"
         intro={{
           title: "Ada apa di akun?",
           body: "Dampakmu, jalan jadi tenant, dan semua pengaturan — sekilas saja.",

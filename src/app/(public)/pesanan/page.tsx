@@ -67,6 +67,7 @@ export default async function PesananPage({
         auto={false}
         journey={tourJourney}
         next={tourJourney ? (getJourneyNext("/pesanan") ?? undefined) : undefined}
+        journeyLabel="Bagian 3 dari 4 · Pesanan"
         intro={{
           title: "Lacak pesananmu?",
           body: "Semua porsi yang kamu kunci ada di sini. Saring status, buka QR, atau batalkan bila berubah pikiran.",

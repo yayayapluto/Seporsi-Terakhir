@@ -131,6 +131,7 @@ export default async function BerandaPage({
             auto={false}
             journey={tourJourney}
             next={tourJourney ? (getJourneyNext("/beranda") ?? undefined) : undefined}
+            journeyLabel="Bagian 1 dari 4 · Beranda"
             intro={{
               title: "Mau lihat panduan singkat beranda?",
               body: "Kami tunjukkan bagian yang penting buat kamu. Bisa dilewati, dan diulang kapan saja.",
