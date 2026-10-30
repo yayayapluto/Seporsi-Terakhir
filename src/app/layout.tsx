@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     >
       <body className="flex min-h-full flex-col">
         <SiteHeader />
-        <div className="flex w-full flex-1 items-stretch md:grid md:grid-cols-[15rem_minmax(0,1fr)]">
+        <div className="flex w-full flex-1 items-stretch">
           <BottomNav />
           <main className="flex min-w-0 flex-1 flex-col">
             <SmoothProvider>{children}</SmoothProvider>
