@@ -696,7 +696,7 @@ export function GuidedTour({
             role="dialog"
             aria-modal="true"
             aria-label={`Panduan ${idx + 1} dari ${total}: ${step.title}`}
-            className="fixed z-[70] max-h-[70dvh] w-[min(340px,calc(100vw-32px))] overflow-y-auto rounded-2xl border border-[#E8ECE9] bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] lg:max-h-none lg:pb-5"
+            className="fixed z-[70] w-[min(340px,calc(100vw-32px))] rounded-2xl border border-[#E8ECE9] bg-white"
             style={
               anchor ? { top: anchor.top, left: anchor.left } : { left: 16, right: 16, bottom: 16 }
             }
@@ -724,64 +724,66 @@ export function GuidedTour({
                 style={{ left: anchor.arrowX - 7 }}
               />
             )}
-            <p className="text-xs font-semibold text-[#64746B]">
-              {idx + 1} dari {total}
-            </p>
-            {journey && journeyLabel && (
-              <p className="-mt-0.5 text-xs font-bold text-[#2E7D4F]">{journeyLabel}</p>
-            )}
-            {totalSteps > total && (
-              <p className="mt-0.5 text-xs text-[#64746B]">
-                {total} dari {totalSteps} bagian tersedia saat ini.
+            <div className="max-h-[70dvh] overflow-y-auto rounded-2xl p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] lg:max-h-none lg:pb-5">
+              <p className="text-xs font-semibold text-[#64746B]">
+                {idx + 1} dari {total}
               </p>
-            )}
-            <h2
-              ref={titleRef}
-              tabIndex={-1}
-              className="mt-0.5 text-base font-extrabold text-[#1C2826] outline-none"
-            >
-              {step.title}
-            </h2>
-            <p className="mt-1 text-sm leading-relaxed text-[#64746B]">{step.body}</p>
-            <div className="mt-4 flex gap-2">
-              {idx > 0 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIdx((v) => Math.max(0, v - 1))}
-                  className="flex-1 text-sm font-bold"
-                >
-                  <ArrowLeft className="size-4" strokeWidth={1.75} aria-hidden />
-                  Kembali
-                </Button>
+              {journey && journeyLabel && (
+                <p className="-mt-0.5 text-xs font-bold text-[#2E7D4F]">{journeyLabel}</p>
               )}
-              {idx + 1 >= total ? (
-                <Button
-                  type="button"
-                  onClick={() => complete()}
-                  className="flex-1 text-sm font-bold"
-                >
-                  {finishLabel ?? "Selesai"}
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  onClick={() => setIdx((v) => Math.min(total - 1, v + 1))}
-                  className="flex-1 text-sm font-bold"
-                >
-                  Lanjut
-                  <ArrowRight className="size-4" strokeWidth={1.75} aria-hidden />
-                </Button>
+              {totalSteps > total && (
+                <p className="mt-0.5 text-xs text-[#64746B]">
+                  {total} dari {totalSteps} bagian tersedia saat ini.
+                </p>
               )}
+              <h2
+                ref={titleRef}
+                tabIndex={-1}
+                className="mt-0.5 text-base font-extrabold text-[#1C2826] outline-none"
+              >
+                {step.title}
+              </h2>
+              <p className="mt-1 text-sm leading-relaxed text-[#64746B]">{step.body}</p>
+              <div className="mt-4 flex gap-2">
+                {idx > 0 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIdx((v) => Math.max(0, v - 1))}
+                    className="flex-1 text-sm font-bold"
+                  >
+                    <ArrowLeft className="size-4" strokeWidth={1.75} aria-hidden />
+                    Kembali
+                  </Button>
+                )}
+                {idx + 1 >= total ? (
+                  <Button
+                    type="button"
+                    onClick={() => complete()}
+                    className="flex-1 text-sm font-bold"
+                  >
+                    {finishLabel ?? "Selesai"}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={() => setIdx((v) => Math.min(total - 1, v + 1))}
+                    className="flex-1 text-sm font-bold"
+                  >
+                    Lanjut
+                    <ArrowRight className="size-4" strokeWidth={1.75} aria-hidden />
+                  </Button>
+                )}
+              </div>
+              <Button
+                type="button"
+                variant="link"
+                onClick={() => setPhase("confirm")}
+                className="mt-2 min-h-[44px] w-full text-xs font-bold text-[#64746B]"
+              >
+                Lewati panduan
+              </Button>
             </div>
-            <Button
-              type="button"
-              variant="link"
-              onClick={() => setPhase("confirm")}
-              className="mt-2 min-h-[44px] w-full text-xs font-bold text-[#64746B]"
-            >
-              Lewati panduan
-            </Button>
           </motion.div>
         )}
       </AnimatePresence>
