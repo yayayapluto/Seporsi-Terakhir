@@ -11,7 +11,7 @@ import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
-import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
+import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { OnboardBanner } from "./onboard-banner";
 import { SoonScroller } from "./soon-scroller";
 
@@ -104,6 +104,8 @@ export default async function BerandaPage({
   const showOnboard = (count ?? 0) === 0;
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
+  // Pintu masuk 1: new user (belum pernah pesan) di URL bersih langsung masuk rantai.
+  const autoChain = shouldAutoChain(showOnboard, tourForced || tourJourney);
   return (
     <>
       <AppHeader title="Beranda" />
@@ -134,12 +136,12 @@ export default async function BerandaPage({
           <GuidedTour
             tourKey="beranda"
             forced={tourForced}
-            auto={false}
-            journey={tourJourney}
+            auto={autoChain}
+            journey={tourJourney || autoChain}
             userId={user.id}
             fresh={sp.fresh === "1"}
             entryStep={tourEntry}
-            next={tourJourney ? (getJourneyNext("/beranda") ?? undefined) : undefined}
+            next={tourJourney || autoChain ? (getJourneyNext("/beranda") ?? undefined) : undefined}
             journeyLabel="Bagian 1 dari 4 · Beranda"
             intro={{
               title: "Mau lihat panduan singkat beranda?",

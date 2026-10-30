@@ -36,3 +36,12 @@ export function parseTourParams(sp: {
 export function getJourneyNext(pathname: string): string | null {
   return JOURNEY_CHAIN[pathname] ?? null;
 }
+
+/**
+ * Pintu masuk rantai otomatis: new user (belum pernah pesan) yang membuka
+ * beranda lewat URL bersih (tanpa param tur). Sekali jalan, progres + URL
+ * (?mode=onboarding&chaining=true&lastStep=) mengambil alih.
+ */
+export function shouldAutoChain(showOnboard: boolean, hasTourParams: boolean): boolean {
+  return showOnboard && !hasTourParams;
+}

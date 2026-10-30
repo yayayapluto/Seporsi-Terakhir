@@ -289,7 +289,7 @@ export default async function ProfilPage({
           <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
           <nav aria-label="Bantuan" className={`${sieraCardClass} !p-0`}>
             <Link
-              href="/beranda?mode=onboarding&fresh=1"
+              href="/beranda?mode=onboarding&chaining=true&fresh=1"
               className="flex min-h-11 items-center gap-3 p-4"
             >
               <SieraTile>

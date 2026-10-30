@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
+import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 
 describe("parseTourParams", () => {
   it("starts nothing without params", () => {
@@ -37,6 +37,14 @@ describe("parseTourParams", () => {
       entryStep: 2,
     });
     expect(parseTourParams({ mode: "onboarding", lastStep: "x" }).entryStep).toBeNull();
+  });
+});
+
+describe("shouldAutoChain", () => {
+  it("true hanya untuk new user di URL bersih", () => {
+    expect(shouldAutoChain(true, false)).toBe(true);
+    expect(shouldAutoChain(true, true)).toBe(false);
+    expect(shouldAutoChain(false, false)).toBe(false);
   });
 });
 
