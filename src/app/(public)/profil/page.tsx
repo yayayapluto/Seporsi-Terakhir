@@ -3,6 +3,7 @@ import {
   Clock3,
   History,
   Leaf,
+  Map as MapIcon,
   PackageCheck,
   Settings,
   Store,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
+import { GuidedTour } from "@/components/guided-tour";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
@@ -75,10 +77,7 @@ async function loadProfile(userId: string): Promise<ProfileData> {
   };
 }
 
-const CARD =
-  "rounded-[20px] border border-[#E8ECE9] bg-card p-4 shadow-[0_1px_2px_rgba(16,24,40,.04)]";
-const ROW_TILE =
-  "flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#F1F5F2] text-primary";
+import { SieraSectionTitle, SieraTile, sieraCardClass } from "@/components/siera";
 
 function roleLabel(p: ProfileData): string | null {
   if (p.role == null) return null;
@@ -88,8 +87,14 @@ function roleLabel(p: ProfileData): string | null {
   return "Mahasiswa";
 }
 
-export default async function ProfilPage() {
+export default async function ProfilPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
   const { user } = await requireRole("/profil", "student");
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
   const p = await loadProfile(user.id);
   const label = roleLabel(p);
   const tenantStatus =
@@ -104,9 +109,9 @@ export default async function ProfilPage() {
   return (
     <>
       <AppHeader title="Akun" />
-      <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 pb-28 md:max-w-3xl md:grid-cols-2 md:px-8 md:pb-12">
+      <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 md:max-w-3xl md:grid-cols-2 md:px-8 md:pb-12">
         {/* Identitas — avatar + nama dalam card */}
-        <section aria-label="Identitas" className={`${CARD} md:col-span-2`}>
+        <section aria-label="Identitas" className={`${sieraCardClass} md:col-span-2`}>
           <div className="flex items-center gap-3">
             <span
               aria-hidden
@@ -128,12 +133,7 @@ export default async function ProfilPage() {
 
         {/* Dampak — Field Card rows */}
         <section aria-labelledby="dampak-heading" className="flex flex-col gap-3">
-          <h2
-            id="dampak-heading"
-            className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]"
-          >
-            Dampak kamu sejauh ini
-          </h2>
+          <SieraSectionTitle id="dampak-heading">Dampak kamu sejauh ini</SieraSectionTitle>
           {p.loadFailed && (
             <p
               role="alert"
@@ -151,29 +151,29 @@ export default async function ProfilPage() {
               </span>
             </p>
           )}
-          <dl className={`${CARD} divide-y divide-dashed divide-[#E8ECE9] !p-0`}>
+          <dl className={`${sieraCardClass} divide-y divide-dashed divide-[#E8ECE9] !p-0`}>
             <div className="flex min-h-11 items-center gap-3 p-4">
-              <span aria-hidden className={ROW_TILE}>
+              <SieraTile>
                 <PackageCheck className="size-5" />
-              </span>
+              </SieraTile>
               <div className="min-w-0 flex-1">
                 <dt className="text-[12px] font-semibold text-[#64746B]">Porsi terselamatkan</dt>
                 <dd className="text-[16px] font-extrabold">{p.savedPortions}</dd>
               </div>
             </div>
             <div className="flex min-h-11 items-center gap-3 p-4">
-              <span aria-hidden className={ROW_TILE}>
+              <SieraTile>
                 <Wallet className="size-5" />
-              </span>
+              </SieraTile>
               <div className="min-w-0 flex-1">
                 <dt className="text-[12px] font-semibold text-[#64746B]">Uang hemat</dt>
                 <dd className="text-[16px] font-extrabold">{formatIDR(p.moneySavedIdr)}</dd>
               </div>
             </div>
             <div className="flex min-h-11 items-center gap-3 p-4">
-              <span aria-hidden className={ROW_TILE}>
+              <SieraTile>
                 <Leaf className="size-5" />
-              </span>
+              </SieraTile>
               <div className="min-w-0 flex-1">
                 <dt className="text-[12px] font-semibold text-[#64746B]">Sampah makanan dicegah</dt>
                 <dd className="text-[16px] font-extrabold">
@@ -197,14 +197,9 @@ export default async function ProfilPage() {
 
         {/* Tenant — Settings/Empty Card */}
         <section aria-labelledby="tenant-heading" className="flex flex-col gap-3">
-          <h2
-            id="tenant-heading"
-            className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]"
-          >
-            Aplikasi tenant
-          </h2>
+          <SieraSectionTitle id="tenant-heading">Aplikasi tenant</SieraSectionTitle>
           {tenantStatus == null ? (
-            <div className={`${CARD} border-dashed text-center`}>
+            <div className={`${sieraCardClass} border-dashed text-center`}>
               <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
               <p className="mt-1 text-[13px] text-[#64746B]">
                 Jual sisa masakanmu lewat Seporsi Terakhir — gratis untuk saat ini.
@@ -217,14 +212,14 @@ export default async function ProfilPage() {
               </Link>
             </div>
           ) : (
-            <div className={CARD}>
+            <div className={sieraCardClass}>
               <Link
                 href={p.tenantApproved ? "/tenant" : "/tenant/menunggu-persetujuan"}
                 className="flex min-h-11 items-center gap-3"
               >
-                <span aria-hidden className={ROW_TILE}>
+                <SieraTile>
                   <Store className="size-5" />
-                </span>
+                </SieraTile>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-bold">{p.tenantName}</span>
                   <span className="block text-[13px] text-[#64746B]">{tenantStatus}</span>
@@ -237,20 +232,15 @@ export default async function ProfilPage() {
 
         {/* Navigasi — Grouped List Card */}
         <section aria-labelledby="riwayat-heading" className="flex flex-col gap-3">
-          <h2
-            id="riwayat-heading"
-            className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]"
-          >
-            Pesanan, katalog & pengaturan
-          </h2>
+          <SieraSectionTitle id="riwayat-heading">Pesanan, katalog & pengaturan</SieraSectionTitle>
           <nav
             aria-label="Pesanan dan katalog"
-            className={`${CARD} divide-y divide-dashed divide-[#E8ECE9] !p-0`}
+            className={`${sieraCardClass} divide-y divide-dashed divide-[#E8ECE9] !p-0`}
           >
             <Link href="/pesanan" className="flex min-h-11 items-center gap-3 p-4">
-              <span aria-hidden className={ROW_TILE}>
+              <SieraTile>
                 <History className="size-5" />
-              </span>
+              </SieraTile>
               <span className="min-w-0 flex-1">
                 <span className="block text-[15px] font-semibold">Riwayat pesanan</span>
                 <span className="block text-[12px] text-[#64746B]">
@@ -261,9 +251,9 @@ export default async function ProfilPage() {
             </Link>
             {!p.loadFailed && p.savedPortions === 0 && (
               <Link href="/katalog" className="flex min-h-11 items-center gap-3 p-4">
-                <span aria-hidden className={ROW_TILE}>
+                <SieraTile>
                   <UtensilsCrossed className="size-5" />
-                </span>
+                </SieraTile>
                 <span className="min-w-0 flex-1">
                   <span className="block text-[15px] font-semibold">Cari porsi sore ini</span>
                   <span className="block text-[12px] text-[#64746B]">Katalog rescue hari ini</span>
@@ -272,9 +262,9 @@ export default async function ProfilPage() {
               </Link>
             )}
             <Link href="/akun/pengaturan" className="flex min-h-11 items-center gap-3 p-4">
-              <span aria-hidden className={ROW_TILE}>
+              <SieraTile>
                 <Settings className="size-5" />
-              </span>
+              </SieraTile>
               <span className="min-w-0 flex-1">
                 <span className="block text-[15px] font-semibold">Pengaturan</span>
                 <span className="block text-[12px] text-[#64746B]">
@@ -286,10 +276,54 @@ export default async function ProfilPage() {
           </nav>
         </section>
 
+        {/* Bantuan — ulangi panduan beranda */}
+        <section aria-labelledby="bantuan-heading" className="flex flex-col gap-3">
+          <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
+          <nav aria-label="Bantuan" className={`${sieraCardClass} !p-0`}>
+            <Link href="/beranda?mode=onboarding" className="flex min-h-11 items-center gap-3 p-4">
+              <SieraTile>
+                <MapIcon className="size-5" />
+              </SieraTile>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-semibold">Panduan beranda</span>
+                <span className="block text-[12px] text-[#64746B]">
+                  Lihat lagi cara membaca Beranda dan memesan porsi
+                </span>
+              </span>
+              <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+            </Link>
+          </nav>
+        </section>
+
         <p className="pb-4 text-center text-[11px] font-semibold text-[#64746B] md:col-span-2">
           Seporsi Terakhir v0.1.0
         </p>
       </div>
+      <GuidedTour
+        tourKey="profil"
+        forced={tourForced}
+        intro={{
+          title: "Ada apa di akun?",
+          body: "Dampakmu, jalan jadi tenant, dan semua pengaturan — sekilas saja.",
+        }}
+        steps={[
+          {
+            target: '[aria-label="Identitas"]',
+            title: "Kamu siapa di sini",
+            body: "Nama, email, dan peranmu — mahasiswa, atau tenant yang sudah disetujui.",
+          },
+          {
+            target: '[aria-labelledby="dampak-heading"]',
+            title: "Jejak rescue-mu",
+            body: "Porsi terselamatkan, uang hemat, dan sampah dicegah dari setiap pickup.",
+          },
+          {
+            target: '[aria-labelledby="bantuan-heading"]',
+            title: "Butuh panduan lagi",
+            body: "Putar ulang panduan beranda kapan saja dari sini.",
+          },
+        ]}
+      />
     </>
   );
 }

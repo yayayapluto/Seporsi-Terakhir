@@ -1,10 +1,13 @@
 "use client";
 
 import { cn } from "cn";
+import { Store } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { SieraTile, sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -41,6 +44,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
   const [cancelling, setCancelling] = useState<string | null>(null);
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [, startTransition] = useTransition();
+  const reduce = useReducedMotion();
 
   const filtered = useMemo(
     () => (filter === "semua" ? orders : orders.filter((o) => o.status === filter)),
@@ -60,13 +64,16 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-b pb-4">
-        <span className="flex items-center gap-2">
-          <Label htmlFor="status-filter" className="text-sm font-semibold">
+      <div data-tour="order-filter" className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}>
+        <div className="flex items-center gap-2">
+          <Label
+            htmlFor="status-filter"
+            className="w-12 shrink-0 text-[13px] font-semibold text-[#64746B]"
+          >
             Status
           </Label>
           <Select value={filter} onValueChange={(v) => setFilter(String(v))}>
-            <SelectTrigger id="status-filter" className="h-11 w-fit min-w-44 max-w-[60vw]">
+            <SelectTrigger id="status-filter" className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -77,14 +84,14 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
               ))}
             </SelectContent>
           </Select>
-        </span>
-        <output className="text-sm text-muted-foreground">{filtered.length} pesanan</output>
+        </div>
+        <output className="text-[13px] text-[#64746B]">{filtered.length} pesanan</output>
       </div>
 
       {loadError && (
         <p
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="rounded-2xl bg-[#FEE2E2] p-4 text-sm font-semibold text-[#BA1A1A]"
         >
           {loadError}
         </p>
@@ -92,7 +99,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
       {error && (
         <p
           role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          className="rounded-2xl bg-[#FEE2E2] p-4 text-sm font-semibold text-[#BA1A1A]"
         >
           {error}
         </p>
@@ -114,29 +121,52 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
           <OrderLiveStatus
             orderIds={filtered.filter((o) => o.status === "reserved").map((o) => o.orderId)}
           />
-          <ul className="divide-y divide-border border-b">
+          <motion.ul
+            data-tour="order-list"
+            layout={!reduce}
+            className={cn(
+              sieraCardClass,
+              "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4",
+            )}
+          >
             {filtered.map((o) => (
-              <li key={o.orderId} className="flex flex-col gap-2 py-4 sm:flex-row sm:gap-4">
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-bold leading-snug">
-                      {o.menuName} <span className="font-normal">× {o.quantity}</span>
-                    </h2>
-                    <OrderStatusBadge status={o.status} />
-                  </div>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    {o.tenantName}
-                    {o.tenantLocation ? ` · ${o.tenantLocation}` : ""} · dipesan{" "}
-                    {formatDateTimeWIB(new Date(o.createdAt))} WIB
-                  </p>
-                  {o.pickedUpAt && (
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
+              <motion.li
+                key={o.orderId}
+                layout={!reduce}
+                {...(reduce
+                  ? {}
+                  : {
+                      initial: { opacity: 0, y: 12 },
+                      animate: { opacity: 1, y: 0 },
+                      transition: { duration: 0.2, ease: "easeOut" as const },
+                    })}
+                className="flex flex-col gap-3 py-4"
+              >
+                <div className="flex items-center gap-3">
+                  <SieraTile>
+                    <Store className="size-5" strokeWidth={1.75} aria-hidden />
+                  </SieraTile>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="text-[15px] leading-snug font-bold text-[#1C2826]">
+                        {o.menuName} <span className="font-semibold">× {o.quantity}</span>
+                      </h2>
+                      <OrderStatusBadge status={o.status} />
+                    </div>
+                    <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
+                      {o.tenantName}
+                      {o.tenantLocation ? ` · ${o.tenantLocation}` : ""} · dipesan{" "}
+                      {formatDateTimeWIB(new Date(o.createdAt))} WIB
                     </p>
-                  )}
+                    {o.pickedUpAt && (
+                      <p className="mt-0.5 text-[13px] text-[#64746B]">
+                        Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div className="flex flex-col items-start gap-2 sm:items-end">
-                  <p className="text-sm font-bold">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-base font-extrabold text-accent-strong">
                     {formatIDR(o.discountPriceSnapshot * o.quantity)}
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -151,7 +181,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                       <Button
                         type="button"
                         variant="outline"
-                        className="h-11 px-5 text-destructive"
+                        className="h-11 border-[#F1B6B6] px-5 text-[#BA1A1A] hover:bg-[#FEE2E2] hover:text-[#BA1A1A]"
                         onClick={() => setConfirmId(o.orderId)}
                         disabled={cancelling === o.orderId}
                       >
@@ -167,9 +197,9 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                     )}
                   </div>
                 </div>
-              </li>
+              </motion.li>
             ))}
-          </ul>
+          </motion.ul>
         </>
       )}
       <Dialog open={confirmId !== null} onOpenChange={(open) => !open && setConfirmId(null)}>

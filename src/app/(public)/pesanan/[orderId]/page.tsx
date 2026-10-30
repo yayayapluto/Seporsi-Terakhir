@@ -72,7 +72,7 @@ async function loadOrder(orderId: string) {
   return { order, pickupToken };
 }
 
-import { SieraField } from "@/components/siera";
+import { SieraField, SieraSectionTitle, sieraCardClass } from "@/components/siera";
 
 export default async function OrderDetailPage({
   params,
@@ -107,7 +107,7 @@ export default async function OrderDetailPage({
       {/* Detail Header Card */}
       <section
         aria-label="Ringkasan pesanan"
-        className="flex flex-col gap-3 rounded-[20px] border border-[#E8ECE9] bg-white p-5 shadow-[0_1px_2px_rgba(16,24,40,.04)]"
+        className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}
       >
         <div className="flex flex-wrap items-center gap-2">
           <OrderStatusBadge status={order.status} />
@@ -174,10 +174,13 @@ export default async function OrderDetailPage({
           )}
 
           <section aria-label="Detail pesanan" className="flex flex-col gap-2">
-            <h2 className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
-              Detail pesanan
-            </h2>
-            <dl className="flex flex-col divide-y divide-dashed divide-[#E8ECE9] rounded-[20px] border border-[#E8ECE9] bg-white px-4 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
+            <SieraSectionTitle>Detail pesanan</SieraSectionTitle>
+            <dl
+              className={cn(
+                sieraCardClass,
+                "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4",
+              )}
+            >
               {order.cookedAt && (
                 <SieraField icon={Clock3} label="Dimasak">
                   {formatDateTimeWIB(new Date(order.cookedAt))} WIB
@@ -203,7 +206,10 @@ export default async function OrderDetailPage({
 
         <aside
           aria-label="Ringkasan bayar"
-          className="h-fit rounded-[20px] border border-[#E8ECE9] bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,.04)] lg:sticky lg:top-[76px] lg:col-start-2 lg:self-start"
+          className={cn(
+            sieraCardClass,
+            "h-fit p-4 lg:sticky lg:top-[76px] lg:col-start-2 lg:self-start",
+          )}
         >
           {order.status === "cancelled" ? (
             <div className="flex flex-col gap-3">

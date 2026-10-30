@@ -94,7 +94,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   };
 }
 
-import { SieraField } from "@/components/siera";
+import { SieraField, SieraSectionTitle, sieraCardClass } from "@/components/siera";
 
 function DetailBody({ portion }: { portion: PortionDetail | null }) {
   if (!portion) {
@@ -131,7 +131,7 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
       {/* Detail Header Card */}
       <section
         aria-label="Ringkasan porsi"
-        className="flex flex-col gap-3 rounded-[20px] border border-[#E8ECE9] bg-white p-5 shadow-[0_1px_2px_rgba(16,24,40,.04)] lg:col-span-2"
+        className={cn(sieraCardClass, "flex flex-col gap-3 p-5 lg:col-span-2")}
       >
         <div className="flex flex-wrap items-center gap-2">
           <span
@@ -190,7 +190,10 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
       {/* Panel pesan */}
       <aside
         aria-label="Panel pesan"
-        className="h-fit rounded-[20px] border border-[#E8ECE9] bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,.04)] lg:sticky lg:top-[76px] lg:col-start-2 lg:row-span-2 lg:self-start"
+        className={cn(
+          sieraCardClass,
+          "h-fit p-4 lg:sticky lg:top-[76px] lg:col-start-2 lg:row-span-2 lg:self-start",
+        )}
       >
         <h2 className="text-[15px] font-bold text-[#1C2826]">Atur jumlah</h2>
         <p className="mt-0.5 text-[13px] text-[#64746B]">Stok tersisa: {remaining}</p>
@@ -210,8 +213,13 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
         aria-label="Detail porsi"
         className="flex flex-col gap-2 lg:col-start-1 lg:row-start-3"
       >
-        <h2 className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">Detail porsi</h2>
-        <dl className="flex flex-col divide-y divide-dashed divide-[#E8ECE9] rounded-[20px] border border-[#E8ECE9] bg-white px-4 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
+        <SieraSectionTitle>Detail porsi</SieraSectionTitle>
+        <dl
+          className={cn(
+            sieraCardClass,
+            "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4",
+          )}
+        >
           <SieraField icon={Clock3} label="Dimasak">
             {formatDateTimeWIB(new Date(portion.cookedAt))} WIB
           </SieraField>
