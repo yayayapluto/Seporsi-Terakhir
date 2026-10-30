@@ -1,10 +1,11 @@
-import { ChevronRight, Clock3, ImageOff, Store } from "lucide-react";
+import { ChevronRight, Clock3, Store } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
@@ -236,12 +237,10 @@ async function SoonBody() {
                       className="object-cover"
                     />
                   ) : (
-                    <span className="flex size-full flex-col items-center justify-center gap-1 text-muted-foreground">
-                      <ImageOff className="size-5" strokeWidth={1.75} aria-hidden />
-                      <span className="px-2 text-center text-[11px] leading-tight">
-                        tidak ada gambar
-                      </span>
-                    </span>
+                    <Skeleton
+                      className="size-full rounded-none"
+                      aria-label="Foto porsi belum tersedia"
+                    />
                   )}
                 </span>
                 <span className="flex flex-col gap-0.5 p-4 pb-3">
