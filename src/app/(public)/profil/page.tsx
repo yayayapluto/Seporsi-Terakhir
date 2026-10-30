@@ -1,3 +1,4 @@
+import { cn } from "cn";
 import {
   ChevronRight,
   Clock3,
@@ -111,7 +112,7 @@ export default async function ProfilPage({
       <AppHeader title="Akun" />
       <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 md:max-w-3xl md:grid-cols-2 md:px-8 md:pb-12">
         {/* Identitas — avatar + nama dalam card */}
-        <section aria-label="Identitas" className={`${sieraCardClass} md:col-span-2`}>
+        <section aria-label="Identitas" className={`${sieraCardClass} p-4 md:col-span-2`}>
           <div className="flex items-center gap-3">
             <span
               aria-hidden
@@ -199,7 +200,7 @@ export default async function ProfilPage({
         <section aria-labelledby="tenant-heading" className="flex flex-col gap-3">
           <SieraSectionTitle id="tenant-heading">Aplikasi tenant</SieraSectionTitle>
           {tenantStatus == null ? (
-            <div className={`${sieraCardClass} border-dashed text-center`}>
+            <div className={`${sieraCardClass} border-dashed p-4 text-center`}>
               <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
               <p className="mt-1 text-[13px] text-[#64746B]">
                 Jual sisa masakanmu lewat Seporsi Terakhir — gratis untuk saat ini.
@@ -212,7 +213,7 @@ export default async function ProfilPage({
               </Link>
             </div>
           ) : (
-            <div className={sieraCardClass}>
+            <div className={cn(sieraCardClass, "p-4")}>
               <Link
                 href={p.tenantApproved ? "/tenant" : "/tenant/menunggu-persetujuan"}
                 className="flex min-h-11 items-center gap-3"
