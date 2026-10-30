@@ -11,6 +11,7 @@ import { type PushPermission, permissionLabel, pushPrefKey, readPushPref } from 
 export function PushToggle({ userId }: { userId: string }) {
   const [permission, setPermission] = useState<PushPermission>("default");
   const [enabled, setEnabled] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
   const key = pushPrefKey(userId);
 
   useEffect(() => {
@@ -20,6 +21,11 @@ export function PushToggle({ userId }: { userId: string }) {
     }
     setPermission(Notification.permission);
     setEnabled(readPushPref((k) => localStorage.getItem(k), userId));
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {
+        /* offline / gagal daftar: contoh pakai jalur halaman */
+      });
+    }
   }, [userId]);
 
   const onToggle = useCallback(
@@ -53,15 +59,34 @@ export function PushToggle({ userId }: { userId: string }) {
     [key],
   );
 
-  function sendTest() {
+  async function sendTest() {
+    setNote(null);
+    if (!("Notification" in window)) {
+      setPermission("unsupported");
+      return;
+    }
+    const current = Notification.permission;
+    setPermission(current);
+    if (current !== "granted") {
+      setNote("Izin masih mati. Nyalakan dulu lewat toggle di atas.");
+      return;
+    }
+    const title = "Seporsi Terakhir";
+    const body = "Contoh kabar: porsi yang kamu kunci hampir kedaluwarsa.";
     try {
-      const n = new Notification("Seporsi Terakhir", {
-        body: "Contoh kabar: porsi yang kamu kunci hampir kedaluwarsa.",
-        tag: "seporsi-test",
-      });
-      n.onclick = () => window.focus();
+      if ("serviceWorker" in navigator) {
+        const reg = await Promise.race([
+          navigator.serviceWorker.ready,
+          new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), 4000)),
+        ]);
+        await reg.showNotification(title, { body, tag: "seporsi-test" });
+      } else {
+        const n = new Notification(title, { body, tag: "seporsi-test" });
+        n.onclick = () => window.focus();
+      }
+      setNote("Contoh terkirim. Lihat bilah notifikasi perangkatmu.");
     } catch {
-      /* abaikan */
+      setNote("Contoh gagal tampil. Cek mode Jangan Ganggu / izin notifikasi browser.");
     }
   }
 
@@ -94,6 +119,11 @@ export function PushToggle({ userId }: { userId: string }) {
       >
         Kirim contoh notifikasi
       </Button>
+      {note && (
+        <p role="status" className="text-center text-[13px] text-[#64746B]">
+          {note}
+        </p>
+      )}
     </SieraCard>
   );
 }
