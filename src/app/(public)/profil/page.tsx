@@ -96,12 +96,13 @@ export default async function ProfilPage({
     mode?: string;
     tour?: string;
     panduan?: string;
+    langkah?: string;
     fresh?: string;
   }>;
 }) {
   const { user } = await requireRole("/profil", "student");
   const sp = (await searchParams) ?? {};
-  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   const p = await loadProfile(user.id);
   const label = roleLabel(p);
   const tenantStatus =
@@ -316,6 +317,7 @@ export default async function ProfilPage({
         journey={tourJourney}
         userId={user.id}
         fresh={sp.fresh === "1"}
+        entryStep={tourEntry}
         next={tourJourney ? "/katalog" : undefined}
         journeyLabel="Bagian 4 dari 4 · Akun"
         finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}

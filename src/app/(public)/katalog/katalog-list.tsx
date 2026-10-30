@@ -38,12 +38,14 @@ export function KatalogList({
   dayTotal,
   tourForced,
   tourJourney,
+  tourEntry,
 }: {
   portions: CatalogPortion[];
   tenants: string[];
   dayTotal: number;
   tourForced: boolean;
   tourJourney: boolean;
+  tourEntry: number | null;
 }) {
   const [tenant, setTenant] = useState<string>("semua");
   const [sort, setSort] = useState<SortValue>("hampir-habis");
@@ -413,6 +415,7 @@ export function KatalogList({
         forced={tourForced}
         auto={false}
         journey={tourJourney}
+        entryStep={tourEntry}
         next={tourJourney ? (getJourneyNext("/katalog") ?? undefined) : undefined}
         journeyLabel="Bagian 2 dari 4 · Katalog"
         intro={{

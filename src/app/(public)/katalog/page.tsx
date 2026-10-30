@@ -92,16 +92,16 @@ async function loadCatalog(): Promise<{
 export default function KatalogPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string; tour?: string; panduan?: string }>;
+  searchParams?: Promise<{ mode?: string; tour?: string; panduan?: string; langkah?: string }>;
 }) {
   return KatalogPageBody(searchParams);
 }
 
 async function KatalogPageBody(
-  searchParams?: Promise<{ mode?: string; tour?: string; panduan?: string }>,
+  searchParams?: Promise<{ mode?: string; tour?: string; panduan?: string; langkah?: string }>,
 ) {
   const sp = (await searchParams) ?? {};
-  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
     <>
       <AppHeader title="Katalog" />
@@ -111,7 +111,7 @@ async function KatalogPageBody(
           tempat. Maksimal 2 porsi per hari.
         </SieraHero>
         <Suspense fallback={<LoadingSkeleton variant="catalog-list" />}>
-          <CatalogBody tourForced={tourForced} tourJourney={tourJourney} />
+          <CatalogBody tourForced={tourForced} tourJourney={tourJourney} tourEntry={tourEntry} />
         </Suspense>
       </div>
     </>
@@ -121,9 +121,11 @@ async function KatalogPageBody(
 async function CatalogBody({
   tourForced,
   tourJourney,
+  tourEntry,
 }: {
   tourForced: boolean;
   tourJourney: boolean;
+  tourEntry: number | null;
 }) {
   const { portions, tenants, dayTotal } = await loadCatalog();
   return (
@@ -133,6 +135,7 @@ async function CatalogBody({
       dayTotal={dayTotal}
       tourForced={tourForced}
       tourJourney={tourJourney}
+      tourEntry={tourEntry}
     />
   );
 }

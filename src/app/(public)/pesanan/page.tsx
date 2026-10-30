@@ -50,13 +50,14 @@ export default async function PesananPage({
     mode?: string;
     tour?: string;
     panduan?: string;
+    langkah?: string;
     fresh?: string;
   }>;
 }) {
   const { user } = await requireRole("/pesanan", "student");
   const { orders, error } = await loadOrders();
   const sp = (await searchParams) ?? {};
-  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
     <>
       <AppHeader title="Pesanan" />
@@ -73,6 +74,7 @@ export default async function PesananPage({
         journey={tourJourney}
         userId={user.id}
         fresh={sp.fresh === "1"}
+        entryStep={tourEntry}
         next={tourJourney ? (getJourneyNext("/pesanan") ?? undefined) : undefined}
         journeyLabel="Bagian 3 dari 4 · Pesanan"
         intro={{
