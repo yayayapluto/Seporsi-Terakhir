@@ -1,34 +1,38 @@
 /**
- * Rantai onboarding student: beranda -> katalog -> pesanan -> profil.
- * Journey aktif bila URL membawa ?tour=journey; replay tunggal via ?mode=onboarding.
+ * Rantai onboarding: beranda -> katalog -> pesanan -> profil.
+ * Rantai aktif bila ?mode=onboarding&chaining=true (?tour=journey lama tetap didukung).
+ * lastStep = indeks langkah untuk lompat langsung (tanpa intro).
  */
 
 const JOURNEY_CHAIN: Record<string, string> = {
-  "/beranda": "/katalog?tour=journey",
-  "/katalog": "/pesanan?tour=journey",
-  "/pesanan": "/profil?tour=journey",
+  "/beranda": "/katalog?mode=onboarding&chaining=true&lastStep=0",
+  "/katalog": "/pesanan?mode=onboarding&chaining=true&lastStep=0",
+  "/pesanan": "/profil?mode=onboarding&chaining=true&lastStep=0",
 };
 
-export function parseTourParams(sp: { mode?: string; tour?: string }): {
+export function parseTourParams(sp: {
+  mode?: string;
+  tour?: string;
+  chaining?: string;
+  lastStep?: string;
+}): {
   forced: boolean;
   journey: boolean;
+  chaining: boolean;
+  entryStep: number | null;
 } {
-  const journey = sp.tour === "journey";
-  return { forced: sp.mode === "onboarding" || journey, journey };
+  const chaining = sp.chaining === "true";
+  const journey = sp.tour === "journey" || (sp.mode === "onboarding" && chaining);
+  const n = sp.lastStep == null ? Number.NaN : Number.parseInt(sp.lastStep, 10);
+  return {
+    forced: sp.mode === "onboarding" || sp.tour === "journey",
+    journey,
+    chaining,
+    entryStep: Number.isInteger(n) && (n as number) >= 0 ? (n as number) : null,
+  };
 }
 
-/** Halaman berikutnya dalam journey, atau null bila di luar rantai / sudah ujung. */
+/** Halaman berikutnya dalam rantai, atau null bila di luar rantai / sudah ujung. */
 export function getJourneyNext(pathname: string): string | null {
   return JOURNEY_CHAIN[pathname] ?? null;
-}
-
-const REPLAY_CHAIN: Record<string, string> = {
-  "/beranda": "/katalog?mode=onboarding",
-  "/katalog": "/pesanan?mode=onboarding",
-  "/pesanan": "/profil?mode=onboarding",
-};
-
-/** Rantai replay tunggal (?mode=onboarding): selesai lanjut ke halaman berikut. */
-export function getReplayNext(pathname: string): string | null {
-  return REPLAY_CHAIN[pathname] ?? null;
 }

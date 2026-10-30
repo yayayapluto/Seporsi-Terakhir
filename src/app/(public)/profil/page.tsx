@@ -20,7 +20,7 @@ import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
-import { getReplayNext, parseTourParams } from "@/lib/tour-journey";
+import { parseTourParams } from "@/lib/tour-journey";
 
 /** Profil student: identitas, aplikasi tenant, dampak dari pesanan picked_up. */
 
@@ -92,11 +92,17 @@ function roleLabel(p: ProfileData): string | null {
 export default async function ProfilPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string; tour?: string; fresh?: string }>;
+  searchParams?: Promise<{
+    mode?: string;
+    tour?: string;
+    chaining?: string;
+    lastStep?: string;
+    fresh?: string;
+  }>;
 }) {
   const { user } = await requireRole("/profil", "student");
   const sp = (await searchParams) ?? {};
-  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   const p = await loadProfile(user.id);
   const label = roleLabel(p);
   const tenantStatus =
@@ -311,13 +317,7 @@ export default async function ProfilPage({
         journey={tourJourney}
         userId={user.id}
         fresh={sp.fresh === "1"}
-        next={
-          tourJourney
-            ? "/katalog"
-            : tourForced
-              ? (getReplayNext("/profil") ?? undefined)
-              : undefined
-        }
+        next={tourJourney ? "/katalog" : undefined}
         journeyLabel="Bagian 4 dari 4 · Akun"
         finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}
         intro={{

@@ -61,6 +61,7 @@ export function GuidedTour({
   finishLabel,
   userId = "anon",
   fresh = false,
+  entryStep = null,
 }: {
   tourKey: string;
   steps: TourStep[];
@@ -79,6 +80,8 @@ export function GuidedTour({
   userId?: string;
   /** Reset progres lalu mulai dari awal (dipakai tautan "mulai ulang"). */
   fresh?: boolean;
+  /** Indeks langkah definisi untuk lompat langsung (dari ?lastStep). Sekali pakai. */
+  entryStep?: number | null;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -105,6 +108,7 @@ export function GuidedTour({
   const maxPos = useRef(0);
   const resumeDefIdx = useRef<number | null>(null);
   const freshUsed = useRef(false);
+  const entryStepRef = useRef<number | null>(entryStep ?? null);
 
   const progress = useTourProgress({ tourKey, tourId: tourKey, userId });
 
@@ -174,6 +178,17 @@ export function GuidedTour({
           setPhase(hasIntro || forced || journey ? "intro" : "step");
           return;
         }
+        // Lompat langsung dari URL (?lastStep=): tanpa intro, tanpa prompt.
+        if (entryStepRef.current != null) {
+          const at = orderDefIdx.current.indexOf(entryStepRef.current);
+          entryStepRef.current = null;
+          const pos = at >= 0 ? at : orderDefIdx.current.findIndex((d) => d > 0);
+          const mapped = pos >= 0 ? pos : best.length - 1;
+          setIdx(mapped);
+          maxPos.current = mapped;
+          setPhase("step");
+          return;
+        }
         const saved = progress.saved;
         if (
           saved &&
@@ -236,7 +251,12 @@ export function GuidedTour({
       currentStepId: stepIdFor(tourKey, cur),
       furthestStepId: stepIdFor(tourKey, far),
     });
-  }, [phase, idx, order, tourKey, progress.record]);
+    if (journey && typeof window !== "undefined") {
+      const sp = new URLSearchParams(window.location.search);
+      sp.set("lastStep", String(orderDefIdx.current[pos] ?? pos));
+      window.history.replaceState(null, "", `${window.location.pathname}?${sp.toString()}`);
+    }
+  }, [phase, idx, order, tourKey, progress.record, journey]);
 
   const dismiss = useCallback(() => {
     progress.record({ status: "skipped" }, { immediate: true });
@@ -248,7 +268,7 @@ export function GuidedTour({
     progress.record({ status: "completed" }, { immediate: true });
     try {
       if (next) {
-        if (next.includes("tour=journey")) localStorage.setItem(RESUME_KEY, next);
+        if (next.includes("chaining=true")) localStorage.setItem(RESUME_KEY, next);
         else localStorage.removeItem(RESUME_KEY);
       } else {
         localStorage.removeItem(RESUME_KEY);
@@ -765,7 +785,7 @@ export function GuidedTour({
 export function getJourneyResume(): string | null {
   try {
     const v = localStorage.getItem(RESUME_KEY);
-    return v && v.includes("tour=journey") ? v : null;
+    return v && (v.includes("chaining=true") || v.includes("tour=journey")) ? v : null;
   } catch {
     return null;
   }

@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
-import { getJourneyNext, getReplayNext } from "@/lib/tour-journey";
+import { getJourneyNext } from "@/lib/tour-journey";
 import type { CatalogPortion } from "./page";
 
 const BATCH = 12;
@@ -38,12 +38,14 @@ export function KatalogList({
   dayTotal,
   tourForced,
   tourJourney,
+  tourEntry,
 }: {
   portions: CatalogPortion[];
   tenants: string[];
   dayTotal: number;
   tourForced: boolean;
   tourJourney: boolean;
+  tourEntry: number | null;
 }) {
   const [tenant, setTenant] = useState<string>("semua");
   const [sort, setSort] = useState<SortValue>("hampir-habis");
@@ -413,13 +415,8 @@ export function KatalogList({
         forced={tourForced}
         auto={false}
         journey={tourJourney}
-        next={
-          tourJourney
-            ? (getJourneyNext("/katalog") ?? undefined)
-            : tourForced
-              ? (getReplayNext("/katalog") ?? undefined)
-              : undefined
-        }
+        entryStep={tourEntry}
+        next={tourJourney ? (getJourneyNext("/katalog") ?? undefined) : undefined}
         journeyLabel="Bagian 2 dari 4 · Katalog"
         intro={{
           title: "Cara baca katalog?",

@@ -3,7 +3,7 @@ import { GuidedTour } from "@/components/guided-tour";
 import { SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { getJourneyNext, getReplayNext, parseTourParams } from "@/lib/tour-journey";
+import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { OrdersList } from "./pesanan-list";
 
 export interface MyOrder {
@@ -46,12 +46,18 @@ async function loadOrders(): Promise<{ orders: MyOrder[]; error: string | null }
 export default async function PesananPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string; tour?: string; fresh?: string }>;
+  searchParams?: Promise<{
+    mode?: string;
+    tour?: string;
+    chaining?: string;
+    lastStep?: string;
+    fresh?: string;
+  }>;
 }) {
   const { user } = await requireRole("/pesanan", "student");
   const { orders, error } = await loadOrders();
   const sp = (await searchParams) ?? {};
-  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
     <>
       <AppHeader title="Pesanan" />
@@ -68,13 +74,8 @@ export default async function PesananPage({
         journey={tourJourney}
         userId={user.id}
         fresh={sp.fresh === "1"}
-        next={
-          tourJourney
-            ? (getJourneyNext("/pesanan") ?? undefined)
-            : tourForced
-              ? (getReplayNext("/pesanan") ?? undefined)
-              : undefined
-        }
+        entryStep={tourEntry}
+        next={tourJourney ? (getJourneyNext("/pesanan") ?? undefined) : undefined}
         journeyLabel="Bagian 3 dari 4 · Pesanan"
         intro={{
           title: "Lacak pesananmu?",

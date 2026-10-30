@@ -27,7 +27,7 @@ export function OnboardBanner() {
       <p className="text-[13px] leading-relaxed text-[#1E5A36]">
         Pilih porsinya, simpan buat kamu, lalu ambil dan bayar langsung di kantin. Tanpa ongkir.{" "}
         <Link
-          href={resume ?? "/beranda?tour=journey"}
+          href={resume ?? "/beranda?mode=onboarding&chaining=true"}
           className="font-bold text-[#1E5A36] underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
         >
           {resume ? "Lanjutkan panduan" : "Ikuti panduan"}

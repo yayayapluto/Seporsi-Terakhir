@@ -11,7 +11,7 @@ import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
-import { getJourneyNext, getReplayNext, parseTourParams } from "@/lib/tour-journey";
+import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { OnboardBanner } from "./onboard-banner";
 import { SoonScroller } from "./soon-scroller";
 
@@ -66,7 +66,13 @@ async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }>
 export default async function BerandaPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ mode?: string; tour?: string; fresh?: string }>;
+  searchParams?: Promise<{
+    mode?: string;
+    tour?: string;
+    chaining?: string;
+    lastStep?: string;
+    fresh?: string;
+  }>;
 }) {
   const { user } = await requireRole("/beranda", "student");
   const supabase = await createClient();
@@ -97,7 +103,7 @@ export default async function BerandaPage({
     .eq("student_id", user.id);
   const showOnboard = (count ?? 0) === 0;
   const sp = (await searchParams) ?? {};
-  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
     <>
       <AppHeader title="Beranda" />
@@ -132,13 +138,8 @@ export default async function BerandaPage({
             journey={tourJourney}
             userId={user.id}
             fresh={sp.fresh === "1"}
-            next={
-              tourJourney
-                ? (getJourneyNext("/beranda") ?? undefined)
-                : tourForced
-                  ? (getReplayNext("/beranda") ?? undefined)
-                  : undefined
-            }
+            entryStep={tourEntry}
+            next={tourJourney ? (getJourneyNext("/beranda") ?? undefined) : undefined}
             journeyLabel="Bagian 1 dari 4 · Beranda"
             intro={{
               title: "Mau lihat panduan singkat beranda?",
