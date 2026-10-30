@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageOff } from "lucide-react";
+import { ChevronRight, Clock3, ImageOff, LayoutGrid, Rows3 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -26,6 +26,8 @@ const SORTS = [
 
 type SortValue = (typeof SORTS)[number]["value"];
 
+type ViewMode = "grid" | "list";
+
 export function KatalogList({
   portions,
   tenants,
@@ -37,6 +39,7 @@ export function KatalogList({
 }) {
   const [tenant, setTenant] = useState<string>("semua");
   const [sort, setSort] = useState<SortValue>("hampir-habis");
+  const [view, setView] = useState<ViewMode>("grid");
   const [visible, setVisible] = useState(BATCH);
   const moreRef = useRef<HTMLOutputElement>(null);
 
@@ -57,9 +60,10 @@ export function KatalogList({
     }
   }, [portions, tenant, sort]);
   const shown = filtered.slice(0, visible);
+  const now = Date.now();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset batch tiap ganti filter/sortir.
-  useEffect(() => setVisible(BATCH), [tenant, sort]);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset batch tiap ganti filter/sortir/tampilan.
+  useEffect(() => setVisible(BATCH), [tenant, sort, view]);
   useEffect(() => {
     const el = moreRef.current;
     if (!el) return;
@@ -76,48 +80,74 @@ export function KatalogList({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-b pb-4" data-tour="filter">
-        <span className="flex items-center gap-2">
-          <Label htmlFor="tenant-filter" className="text-sm font-semibold">
-            Tenant
-          </Label>
-          <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
-            <SelectTrigger id="tenant-filter" className="h-11 w-fit min-w-32 max-w-[60vw]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent align="start" alignItemWithTrigger={false}>
-              <SelectItem value="semua">Semua tenant</SelectItem>
-              {tenants.map((t) => (
-                <SelectItem key={t} value={t}>
-                  {t}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </span>
-        <span className="flex items-center gap-2">
-          <Label htmlFor="sort-filter" className="text-sm font-semibold">
-            Urut
-          </Label>
-          <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
-            <SelectTrigger id="sort-filter" className="h-11 w-fit min-w-32 max-w-[60vw]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent align="start" alignItemWithTrigger={false}>
-              {SORTS.map((s) => (
-                <SelectItem key={s.value} value={s.value}>
-                  {s.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </span>
-        <p className="flex basis-full text-xs text-muted-foreground">
-          <output>
-            {filtered.length} porsi
-            {dayTotal >= 2 ? " · batas 2/hari tercapai" : ""}
-          </output>
-        </p>
+      <div className="flex flex-col gap-3 rounded-[20px] border border-[#E8ECE9] bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-3" data-tour="filter">
+          <span className="flex items-center gap-2">
+            <Label htmlFor="tenant-filter" className="text-sm font-semibold">
+              Tenant
+            </Label>
+            <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
+              <SelectTrigger id="tenant-filter" className="h-11 w-fit min-w-32 max-w-[60vw]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="start" alignItemWithTrigger={false}>
+                <SelectItem value="semua">Semua tenant</SelectItem>
+                {tenants.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {t}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </span>
+          <span className="flex items-center gap-2">
+            <Label htmlFor="sort-filter" className="text-sm font-semibold">
+              Urut
+            </Label>
+            <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
+              <SelectTrigger id="sort-filter" className="h-11 w-fit min-w-32 max-w-[60vw]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="start" alignItemWithTrigger={false}>
+                {SORTS.map((s) => (
+                  <SelectItem key={s.value} value={s.value}>
+                    {s.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </span>
+          <fieldset className="ml-auto flex items-center gap-1 rounded-full bg-[#F1F5F2] p-1">
+            <legend className="sr-only">Tampilan katalog</legend>
+            <button
+              type="button"
+              aria-label="Tampilan grid"
+              onClick={() => setView("grid")}
+              className={`flex min-h-11 min-w-11 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F] ${
+                view === "grid" ? "bg-white text-[#1E5A36] shadow-sm" : "text-[#64746B]"
+              }`}
+            >
+              <LayoutGrid className="size-5" aria-hidden />
+            </button>
+            <button
+              type="button"
+              aria-pressed={view === "list"}
+              aria-label="Tampilan daftar"
+              onClick={() => setView("list")}
+              className={`flex min-h-11 min-w-11 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F] ${
+                view === "list" ? "bg-white text-[#1E5A36] shadow-sm" : "text-[#64746B]"
+              }`}
+            >
+              <Rows3 className="size-5" aria-hidden />
+            </button>
+          </fieldset>
+        </div>
+      </div>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <h2 className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
+          Katalog sore ini · {filtered.length}
+        </h2>
+        {dayTotal >= 2 && <p className="text-xs font-bold text-[#92400E]">Batas 2/hari tercapai</p>}
       </div>
       {filtered.length === 0 ? (
         <div className="rounded-[20px] border border-dashed border-[#E8ECE9] bg-white px-4 py-10 text-center">
@@ -126,10 +156,11 @@ export function KatalogList({
             Katalog biasanya diperbarui tenant pukul 15.30–16.30. Cek lagi sore ini.
           </p>
         </div>
-      ) : (
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      ) : view === "grid" ? (
+        <ul className="grid grid-cols-1 gap-3">
           {shown.map((p) => {
             const soldOut = p.quantityRemaining <= 0;
+            const leftMin = Math.max(0, Math.floor((+new Date(p.expiresAt) - now) / 60_000));
             return (
               <li
                 key={p.id}
@@ -147,7 +178,7 @@ export function KatalogList({
                         src={p.imageUrl}
                         alt={p.menuName}
                         fill
-                        sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+                        sizes="430px"
                         className="object-cover"
                       />
                     ) : (
@@ -172,7 +203,8 @@ export function KatalogList({
                   </span>
                   <span aria-hidden className="mx-4 border-t border-dashed border-[#E8ECE9]" />
                   <span className="flex flex-col gap-1 p-4 pt-3">
-                    <span className="text-[13px] text-[#64746B]">
+                    <span className="flex items-center gap-1.5 text-[13px] text-[#64746B]">
+                      <Clock3 className="size-4 shrink-0" aria-hidden />
                       Dimasak {formatDateTimeWIB(new Date(p.cookedAt))} · Sisa {p.quantityRemaining}
                     </span>
                     <span className="flex flex-wrap items-baseline gap-x-1.5">
@@ -181,7 +213,65 @@ export function KatalogList({
                         {formatIDR(p.discountPrice)}
                       </strong>
                     </span>
+                    {leftMin < 60 && (
+                      <span className="w-fit rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
+                        {leftMin <= 5 ? "Segera ambil · kedaluwarsa" : `Kedaluwarsa ${leftMin} mnt`}
+                      </span>
+                    )}
                   </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <ul className="flex flex-col divide-y divide-dashed divide-[#E8ECE9] rounded-[20px] border border-[#E8ECE9] bg-white px-4 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
+          {shown.map((p) => {
+            const soldOut = p.quantityRemaining <= 0;
+            const leftMin = Math.max(0, Math.floor((+new Date(p.expiresAt) - now) / 60_000));
+            return (
+              <li key={p.id}>
+                <Link
+                  href={`/katalog/${p.id}`}
+                  aria-label={soldOut ? `${p.menuName} habis` : `Lihat dan pesan ${p.menuName}`}
+                  aria-disabled={soldOut}
+                  className={`flex min-h-11 items-center gap-3 py-3 ${soldOut ? "opacity-60" : ""}`}
+                >
+                  <span className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-[#F4EFE6]">
+                    {p.imageUrl ? (
+                      <Image src={p.imageUrl} alt="" fill sizes="56px" className="object-cover" />
+                    ) : (
+                      <span className="flex size-full items-center justify-center text-[#64746B]">
+                        <ImageOff className="size-5" aria-hidden />
+                      </span>
+                    )}
+                  </span>
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="truncate text-[15px] font-bold text-[#1C2826]">
+                      {p.menuName}
+                    </span>
+                    <span className="truncate text-[13px] text-[#64746B]">
+                      {p.tenantName} · Sisa {p.quantityRemaining}
+                    </span>
+                    <span className="flex flex-wrap items-baseline gap-x-1.5">
+                      <del className="text-xs text-[#64746B]">{formatIDR(p.normalPrice)}</del>
+                      <strong className="text-base font-extrabold text-[#F28C28]">
+                        {formatIDR(p.discountPrice)}
+                      </strong>
+                    </span>
+                    {soldOut ? (
+                      <span className="w-fit rounded-full bg-[#F1F5F2] px-2.5 py-0.5 text-xs font-bold text-[#64746B]">
+                        Habis
+                      </span>
+                    ) : (
+                      leftMin < 60 && (
+                        <span className="w-fit rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
+                          {leftMin <= 5 ? "Segera ambil" : `Sisa ${leftMin} mnt`}
+                        </span>
+                      )
+                    )}
+                  </span>
+                  <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
                 </Link>
               </li>
             );

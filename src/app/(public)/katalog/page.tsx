@@ -91,12 +91,13 @@ export default function KatalogPage() {
   return (
     <>
       <AppHeader title="Katalog" />
-      <div className="flex w-full flex-1 flex-col gap-6 px-4 py-6 pb-28 md:px-8 md:pb-12">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-xl font-extrabold tracking-tight text-[#1C2826] md:text-2xl">
+      <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 pb-28">
+        <div className="flex flex-col gap-1">
+          <p className="text-xs font-bold tracking-wide text-[#1E5A36]">Katalog sore ini</p>
+          <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
             Porsi hari ini
           </h1>
-          <p className="text-sm text-[#64746B]">
+          <p className="text-sm text-[#1E5A36]">
             Menu sisa yang masih layak, jam masak transparan, bayar di tempat. Maksimal 2 porsi per
             mahasiswa per hari.
           </p>
