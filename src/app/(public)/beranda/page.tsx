@@ -140,7 +140,7 @@ async function ActiveOrdersBody() {
     <section aria-label="Pesanan aktif" className="flex flex-col gap-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h2 className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
-          Pesanan aktif · {orders.length}
+          Pesanan aktif ({orders.length})
         </h2>
         <Link
           href="/pesanan"
@@ -220,7 +220,7 @@ async function SoonBody() {
     <section aria-label="Katalog sore ini" className="flex flex-col gap-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h2 className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
-          Katalog sore ini · {portions.length}
+          Katalog sore ini ({portions.length})
         </h2>
         <Link
           href="/katalog"
@@ -229,7 +229,7 @@ async function SoonBody() {
           Lihat Semua
         </Link>
       </div>
-      <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pr-8 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ul className="flex snap-x snap-mandatory gap-3 overflow-x-auto pr-8 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {portions.map((p) => {
           const leftMin = Math.max(0, Math.floor((+new Date(p.expiresAt) - now) / 60_000));
           return (
@@ -282,6 +282,15 @@ async function SoonBody() {
           );
         })}
       </ul>
+      <Link
+        href="/katalog"
+        className={buttonVariants({
+          className:
+            "mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+        })}
+      >
+        Lihat katalog
+      </Link>
     </section>
   );
 }
