@@ -19,14 +19,14 @@ export function OnboardBanner() {
   return (
     <section
       aria-label="Panduan awal"
-      className="relative flex flex-col gap-1 rounded-lg border border-[#E5E1D8] bg-white p-4"
+      className="relative flex flex-col gap-1 rounded-[20px] border border-[#E8ECE9] bg-[#DCEBE0] p-4 pr-12"
     >
       <p className="text-sm font-bold text-[#1C2826]">Baru pertama kali ke sini?</p>
-      <p className="text-[13px] leading-relaxed text-[#64746B]">
+      <p className="text-[13px] leading-relaxed text-[#1E5A36]">
         Pilih porsinya, kunci buat kamu, lalu ambil dan bayar di kantin. Tanpa ongkir.{" "}
         <Link
           href="/cara-kerja"
-          className="font-bold text-[#2E7D4F] underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+          className="font-bold text-[#1E5A36] underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
         >
           Lihat cara kerja
         </Link>
@@ -35,9 +35,9 @@ export function OnboardBanner() {
         type="button"
         onClick={dismiss}
         aria-label="Tutup panduan"
-        className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full text-[#64746B] outline-none hover:bg-[#F4EFE6] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+        className="absolute top-2 right-2 flex size-11 items-center justify-center rounded-full text-[#1E5A36] outline-none hover:bg-white/60 focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
       >
-        <X className="size-4" strokeWidth={1.75} aria-hidden />
+        <X className="size-6" strokeWidth={1.75} aria-hidden />
       </button>
     </section>
   );
