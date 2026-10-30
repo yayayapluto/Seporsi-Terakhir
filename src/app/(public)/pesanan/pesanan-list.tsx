@@ -4,6 +4,7 @@ import { cn } from "cn";
 import { Store } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { OrderStatusBadge } from "@/components/order-status-badge";
@@ -39,6 +40,7 @@ const FILTERS = [
 ] as const;
 
 export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError: string | null }) {
+  const router = useRouter();
   const [filter, setFilter] = useState<string>("semua");
   const [error, setError] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState<string | null>(null);
@@ -58,6 +60,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
     startTransition(async () => {
       const res = await cancelOrder(orderId);
       if (!res.ok) setError(res.error);
+      else router.refresh();
       setCancelling(null);
     });
   }

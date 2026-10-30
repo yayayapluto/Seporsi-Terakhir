@@ -132,10 +132,10 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
     setRemovePhoto(false);
   }
 
-  /** Upload ke storage, kembalikan image_path (null = pertahankan, "" = hapus). */
+  /** Upload ke storage; null = tanpa gambar baru (pertahankan), "" = hapus, undefined = gagal. */
   async function resolveImagePath(): Promise<string | null | undefined> {
     if (removePhoto) return "";
-    if (!photoFile) return editing?.imagePath ? null : undefined;
+    if (!photoFile) return null;
     setUploading(true);
     try {
       const ext =

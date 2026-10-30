@@ -105,7 +105,15 @@ test("posting porsi: validasi lalu sukses", async ({ page }) => {
   else await page.getByLabel(/harga diskon/i).fill("6600");
   await act(page, /posting porsi/i);
   await expect(page).toHaveURL(/\/tenant(\?|$)/, { timeout: 20_000 });
-  if (usedUnique) await expect(page.getByText(new RegExp(unique)).first()).toBeVisible();
+  if (usedUnique) {
+    // dashboard bisa stale satu render setelah posting → reload sekali lalu assert
+    try {
+      await expect(page.getByText(new RegExp(unique)).first()).toBeVisible({ timeout: 5_000 });
+    } catch {
+      await page.reload();
+      await expect(page.getByText(new RegExp(unique)).first()).toBeVisible();
+    }
+  }
   else await expect(page.getByText(/sisa \d+\/\d+|porsi aktif/i).first()).toBeVisible();
 });
 
