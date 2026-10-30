@@ -139,3 +139,21 @@
     height: 0;
   }
 }
+
+/* Scanner tenant: pindahkan tombol flash bawaan ke sudut kanan-bawah dengan
+   target sentuh 44px. Selektor meniru DOM lib (tanpa API gaya sendiri). */
+.siera-scanner > button {
+  top: auto;
+  bottom: 12px;
+  right: 12px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.92);
+  color: #1c2826;
+}
+.siera-scanner > button > svg {
+  width: 20px;
+  height: 20px;
+}

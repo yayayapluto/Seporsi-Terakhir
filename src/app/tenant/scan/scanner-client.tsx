@@ -169,14 +169,36 @@ export function ScannerClient() {
       </SieraTenantHeader>
       {phase.kind === "scanning" && (
         <div data-tour="scanner" className="flex flex-col gap-3">
-          <Scanner
-            onScan={(codes) => {
-              const value = codes[0]?.rawValue;
-              if (value) onScan(value);
-            }}
-            onError={onCameraError}
-            styles={{ container: { width: "100%", maxWidth: 420, marginInline: "auto" } }}
-          />
+          <div className="relative mx-auto w-full max-w-[420px]">
+            <Scanner
+              onScan={(codes) => {
+                const value = codes[0]?.rawValue;
+                if (value) onScan(value);
+              }}
+              onError={onCameraError}
+              components={{ finder: false }}
+              classNames={{ container: "siera-scanner" }}
+              styles={{
+                container: {
+                  width: "100%",
+                  borderRadius: 20,
+                  overflow: "hidden",
+                  border: "1px solid #E8ECE9",
+                },
+              }}
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 flex items-center justify-center"
+            >
+              <div className="relative h-52 w-52">
+                <span className="absolute top-0 left-0 h-7 w-7 rounded-tl-lg border-t-4 border-l-4 border-[#2E7D4F]" />
+                <span className="absolute top-0 right-0 h-7 w-7 rounded-tr-lg border-t-4 border-r-4 border-[#2E7D4F]" />
+                <span className="absolute bottom-0 left-0 h-7 w-7 rounded-bl-lg border-b-4 border-l-4 border-[#2E7D4F]" />
+                <span className="absolute right-0 bottom-0 h-7 w-7 rounded-br-lg border-r-4 border-b-4 border-[#2E7D4F]" />
+              </div>
+            </div>
+          </div>
           <p className="text-center text-sm text-muted-foreground">
             QR hanya pratinjau. Tekan Konfirmasi setelah terima bayar.
           </p>
