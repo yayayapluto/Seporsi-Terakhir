@@ -1,18 +1,20 @@
+import { cn } from "cn";
 import { ChevronRight, Store } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
+import { GuidedTour } from "@/components/guided-tour";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { requireRole } from "@/lib/auth";
-import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { formatDateTimeWIB } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
 import { OnboardBanner } from "./onboard-banner";
+import { SoonScroller } from "./soon-scroller";
 
-interface SoonPortion {
+export interface SoonPortion {
   id: string;
   menuName: string;
   tenantName: string;
@@ -60,7 +62,11 @@ async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }>
   return { portions: out, failed: false };
 }
 
-export default async function BerandaPage() {
+export default async function BerandaPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
   const { user } = await requireRole("/beranda", "student");
   const supabase = await createClient();
   const hour = Number(
@@ -89,29 +95,61 @@ export default async function BerandaPage() {
     .select("id", { count: "exact", head: true })
     .eq("student_id", user.id);
   const showOnboard = (count ?? 0) === 0;
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
   return (
     <>
       <AppHeader title="Beranda" />
-      <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 pt-6 pb-28">
-        <section className="flex w-full flex-col gap-1 rounded-[20px] border border-[#E8ECE9] bg-gradient-to-b from-[#EAF5ED] to-white p-5">
-          <p className="text-xs font-bold tracking-wide text-[#1E5A36]">
-            {greet}
-            {firstName ? `, ${firstName}` : ""}
-          </p>
-          <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
-            Kantin mau tutup. Masih ada yang enak.
-          </h1>
-          <p className="text-sm text-[#1E5A36]">
-            Sisa hari ini, harga miring. Ambil 16.30–18.30, bayar di tempat.
-          </p>
-        </section>
-        {showOnboard && <OnboardBanner />}
-        <Suspense fallback={<LoadingSkeleton variant="cards" />}>
-          <ActiveOrdersBody />
-        </Suspense>
-        <Suspense fallback={<LoadingSkeleton variant="cards" />}>
-          <SoonBody />
-        </Suspense>
+      <div className="flex-1 bg-background">
+        <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 lg:max-w-6xl lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-x-8 lg:px-8">
+          <section
+            className="flex w-full flex-col gap-1 rounded-[20px] border border-[#E8ECE9] bg-gradient-to-b from-[#EAF5ED] to-white p-5 lg:col-span-2 lg:p-6"
+            id="tour-hero"
+          >
+            <p className="text-xs font-bold tracking-wide text-[#1E5A36]">
+              {greet}
+              {firstName ? `, ${firstName}` : ""}
+            </p>
+            <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
+              Kantin hampir tutup, masih ada yang enak.
+            </h1>
+            <p className="text-sm text-[#1E5A36]">
+              Sisa dagangan hari ini dijual miring. Ambil jam 16.30–18.30, bayar di tempat.
+            </p>
+          </section>
+          {showOnboard && <OnboardBanner />}
+          <Suspense fallback={<LoadingSkeleton variant="grouped-list" />}>
+            <ActiveOrdersBody />
+          </Suspense>
+          <Suspense fallback={<LoadingSkeleton variant="entity-row" />}>
+            <SoonBody />
+          </Suspense>
+          <GuidedTour
+            tourKey="beranda"
+            forced={tourForced}
+            intro={{
+              title: "Mau lihat panduan singkat beranda?",
+              body: "Kami tunjukkan bagian yang penting buat kamu. Bisa dilewati, dan diulang kapan saja.",
+            }}
+            steps={[
+              {
+                target: "#tour-hero",
+                title: "Mulai dari sini",
+                body: "Sapaan dan info pengambilan hari ini ada di kartu ini. Jam ambil dan cara bayar selalu tertulis di sini.",
+              },
+              {
+                target: "#tour-orders",
+                title: "Pesananmu yang aktif",
+                body: "Semua pesanan yang menunggu diambil kumpul di sini. Ketuk salah satu buat lihat QR dan detailnya.",
+              },
+              {
+                target: "#tour-catalog",
+                title: "Katalog sore ini",
+                body: "Porsi yang dijual hari ini muncul di sini. Geser ke samping buat lihat semuanya, ketuk kartunya buat pesan.",
+              },
+            ]}
+          />
+        </div>
       </div>
     </>
   );
@@ -137,7 +175,11 @@ async function ActiveOrdersBody() {
   if (orders.length === 0) return null;
   const now = Date.now();
   return (
-    <section aria-label="Pesanan aktif" className="flex flex-col gap-2">
+    <section
+      aria-label="Pesanan aktif"
+      id="tour-orders"
+      className="flex flex-col gap-2 lg:sticky lg:top-[76px] lg:col-start-2 lg:row-span-2 lg:row-start-2 lg:self-start"
+    >
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h2 className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
           Pesanan aktif ({orders.length})
@@ -149,7 +191,9 @@ async function ActiveOrdersBody() {
           Lihat Semua
         </Link>
       </div>
-      <ul className="flex flex-col divide-y divide-dashed divide-[#E8ECE9] rounded-[20px] border border-[#E8ECE9] bg-white px-4 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
+      <ul
+        className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-[#E8ECE9] px-4")}
+      >
         {orders.map((o) => {
           const left = o.slotEnd
             ? Math.max(0, Math.floor((+new Date(o.slotEnd) - now) / 60_000))
@@ -193,10 +237,19 @@ async function SoonBody() {
   const { portions, failed } = await loadSoon();
   if (failed) {
     return (
-      <div className="flex flex-col items-center gap-3 border-y border-dashed border-[#E8ECE9] px-4 py-8 text-center">
+      <div
+        id="tour-catalog"
+        className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-[#E8ECE9] bg-white px-4 py-8 text-center"
+      >
         <p className="text-sm font-bold text-[#1C2826]">Katalog gagal dimuat.</p>
-        <p className="text-sm text-[#64746B]">Koneksi bermasalah. Muat ulang untuk coba lagi.</p>
-        <Link href="/beranda" className={buttonVariants({ className: "w-fit rounded-md" })}>
+        <p className="text-sm text-[#64746B]">Koneksi bermasalah. Muat ulang buat coba lagi.</p>
+        <Link
+          href="/beranda"
+          className={buttonVariants({
+            className:
+              "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+          })}
+        >
           Muat ulang
         </Link>
       </div>
@@ -204,20 +257,28 @@ async function SoonBody() {
   }
   if (portions.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-3 border-y border-dashed border-[#E8ECE9] px-4 py-8 text-center">
-        <p className="text-sm font-bold text-[#1C2826]">Kantin belum posting porsi sore ini.</p>
+      <div
+        id="tour-catalog"
+        className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-[#E8ECE9] bg-white px-4 py-8 text-center"
+      >
+        <p className="text-sm font-bold text-[#1C2826]">Belum ada porsi sore ini.</p>
         <p className="text-sm text-[#64746B]">
-          Katalog biasanya diperbarui pukul 15.30–16.30. Cek lagi sore ini.
+          Biasanya kantin mulai posting sekitar 15.30–16.30. Cek lagi nanti sore.
         </p>
-        <Link href="/katalog" className={buttonVariants({ className: "w-fit rounded-md" })}>
+        <Link
+          href="/katalog"
+          className={buttonVariants({
+            className:
+              "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+          })}
+        >
           Buka katalog
         </Link>
       </div>
     );
   }
-  const now = Date.now();
   return (
-    <section aria-label="Katalog sore ini" className="flex flex-col gap-2">
+    <section aria-label="Katalog sore ini" className="flex flex-col gap-2" id="tour-catalog">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h2 className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
           Katalog sore ini ({portions.length})
@@ -229,59 +290,7 @@ async function SoonBody() {
           Lihat Semua
         </Link>
       </div>
-      <ul className="flex snap-x snap-mandatory gap-3 overflow-x-auto pr-8 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {portions.map((p) => {
-          const leftMin = Math.max(0, Math.floor((+new Date(p.expiresAt) - now) / 60_000));
-          return (
-            <li
-              key={p.id}
-              className="w-[240px] shrink-0 snap-start overflow-hidden rounded-[20px] border border-[#E8ECE9] bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]"
-            >
-              <Link href={`/katalog/${p.id}`} className="flex min-h-11 flex-col">
-                <span className="relative block h-28 w-full shrink-0 overflow-hidden bg-[#F4EFE6]">
-                  {p.imageUrl ? (
-                    <Image
-                      src={p.imageUrl}
-                      alt={p.menuName}
-                      fill
-                      sizes="240px"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <Skeleton
-                      className="size-full rounded-none"
-                      aria-label="Foto porsi belum tersedia"
-                    />
-                  )}
-                </span>
-                <span className="flex flex-col gap-0.5 p-4 pb-3">
-                  <span className="line-clamp-2 text-[15px] leading-snug font-bold text-[#1C2826]">
-                    {p.menuName}
-                  </span>
-                  <span className="truncate text-[13px] text-[#64746B]">{p.tenantName}</span>
-                </span>
-                <span aria-hidden className="mx-4 border-t border-dashed border-[#E8ECE9]" />
-                <span className="flex flex-col gap-1 p-4 pt-3">
-                  <span className="text-[13px] text-[#64746B]">
-                    Dimasak {formatDateTimeWIB(new Date(p.cookedAt))} · Sisa {p.quantityRemaining}
-                  </span>
-                  <span className="flex flex-wrap items-baseline gap-x-1.5">
-                    <del className="text-xs text-[#64746B]">{formatIDR(p.normalPrice)}</del>
-                    <strong className="text-base font-extrabold text-[#F28C28]">
-                      {formatIDR(p.discountPrice)}
-                    </strong>
-                  </span>
-                  {leftMin < 60 && (
-                    <span className="w-fit rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
-                      {leftMin <= 5 ? "Segera ambil · kedaluwarsa" : `Kedaluwarsa ${leftMin} mnt`}
-                    </span>
-                  )}
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      <SoonScroller portions={portions} />
       <Link
         href="/katalog"
         className={buttonVariants({
