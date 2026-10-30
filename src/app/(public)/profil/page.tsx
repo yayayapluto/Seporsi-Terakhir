@@ -317,6 +317,7 @@ export default async function ProfilPage({
         journey={tourJourney}
         userId={user.id}
         fresh={sp.fresh === "1"}
+        entryStep={tourEntry}
         next={tourJourney ? "/katalog" : undefined}
         journeyLabel="Bagian 4 dari 4 · Akun"
         finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}
