@@ -76,13 +76,14 @@ export function PushToggle({ userId }: { userId: string }) {
           <span className="block text-[15px] font-semibold">Bunyi kabar pesanan</span>
           <span className="block text-[12px] text-[#64746B]">{permissionLabel(permission)}</span>
         </span>
-        <Switch
-          checked={enabled && permission === "granted"}
-          onCheckedChange={onToggle}
-          disabled={blocked}
-          aria-label="Bunyi kabar pesanan"
-          className="min-h-11 min-w-11"
-        />
+        <span className="flex min-h-11 min-w-11 shrink-0 items-center justify-center">
+          <Switch
+            checked={enabled && permission === "granted"}
+            onCheckedChange={onToggle}
+            disabled={blocked}
+            aria-label="Bunyi kabar pesanan"
+          />
+        </span>
       </div>
       <Button
         type="button"
