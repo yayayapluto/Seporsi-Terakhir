@@ -56,15 +56,20 @@ export default function AdminTenantPage() {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">PANEL ADMIN</p>
-        <h1 className="text-3xl font-bold">Persetujuan mitra kantin</h1>
+        <p className="text-xs font-bold tracking-widest text-primary">KELOLA MITRA</p>
+        <h1 className="text-3xl font-bold">Mitra kantin</h1>
         <p className="text-muted-foreground">
-          Periksa pendaftaran, lalu setujui. Tenant baru bisa posting porsi setelah disetujui.
+          Setujui pendaftar baru dan atur siapa yang tampil di katalog.
         </p>
       </div>
-      <Suspense fallback={<LoadingSkeleton />}>
-        <PendingBody />
-      </Suspense>
+      <section aria-labelledby="antrean-heading" className="flex flex-col gap-3">
+        <h2 id="antrean-heading" className="text-xl font-bold">
+          Menunggu persetujuan
+        </h2>
+        <Suspense fallback={<LoadingSkeleton />}>
+          <PendingBody />
+        </Suspense>
+      </section>
       <section aria-labelledby="visibilitas-heading" className="flex flex-col gap-3">
         <h2 id="visibilitas-heading" className="text-xl font-bold">
           Visibilitas di katalog

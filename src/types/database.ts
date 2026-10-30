@@ -418,6 +418,13 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      impact_daily: {
+        Args: { p_from?: string; p_to?: string }
+        Returns: {
+          day: string
+          saved: number
+        }[]
+      }
       impact_summary: {
         Args: { p_from?: string; p_to?: string }
         Returns: {

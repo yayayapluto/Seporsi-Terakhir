@@ -6,6 +6,11 @@ import { percentSold } from "@/lib/domain/metrics";
 import { createClient } from "@/lib/supabase/server";
 import { ImpactClient } from "./impact-client";
 
+export interface AdminDailyPoint {
+  day: string;
+  saved: number;
+}
+
 export interface AdminReportRow {
   tenantName: string;
   portionsPosted: number;
@@ -45,9 +50,10 @@ async function loadReport(from: string, to: string) {
     new Date(`${to}T00:00:00+07:00`).getTime() + 24 * 60 * 60 * 1000,
   ).toISOString();
 
-  const [summaryRes, reportRes] = await Promise.all([
+  const [summaryRes, reportRes, dailyRes] = await Promise.all([
     supabase.rpc("impact_summary", { p_from: fromUtc, p_to: toExclusive }),
     supabase.rpc("admin_report", { p_from: fromUtc, p_to: toExclusive }),
+    supabase.rpc("impact_daily", { p_from: fromUtc, p_to: toExclusive }),
   ]);
   const s = (summaryRes.data as Array<Record<string, unknown>> | null)?.[0];
   const summary: ImpactSummary = {
@@ -67,7 +73,10 @@ async function loadReport(from: string, to: string) {
     moneySaved: Number(r.money_saved ?? 0),
     wasteKg: Number(r.waste_grams) > 0 ? Number(r.waste_grams) / 1000 : null,
   }));
-  return { summary, rows };
+  const daily: AdminDailyPoint[] = (
+    (dailyRes.data as Array<Record<string, unknown>> | null) ?? []
+  ).map((d) => ({ day: String(d.day ?? ""), saved: Number(d.saved ?? 0) }));
+  return { summary, rows, daily };
 }
 
 export default async function AdminPage({
@@ -96,6 +105,6 @@ export default async function AdminPage({
 }
 
 async function ReportBody({ from, to }: { from: string; to: string }) {
-  const { summary, rows } = await loadReport(from, to);
-  return <ImpactClient summary={summary} rows={rows} from={from} to={to} />;
+  const { summary, rows, daily } = await loadReport(from, to);
+  return <ImpactClient summary={summary} rows={rows} daily={daily} from={from} to={to} />;
 }
