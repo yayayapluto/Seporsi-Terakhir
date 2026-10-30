@@ -76,9 +76,6 @@ export function TenantCancelButton({
             {buyerName} akan melihat status batal. Stok {quantity} porsi dikembalikan ke katalog.
           </DialogDescription>
           <DialogFooter>
-            <Button type="button" autoFocus className="min-h-11" onClick={() => setOpen(false)}>
-              Kembali
-            </Button>
             <Button
               type="button"
               variant="outline"
@@ -94,6 +91,9 @@ export function TenantCancelButton({
               ) : (
                 "Ya, batalkan"
               )}
+            </Button>
+            <Button type="button" autoFocus className="min-h-11" onClick={() => setOpen(false)}>
+              Kembali
             </Button>
           </DialogFooter>
         </DialogContent>

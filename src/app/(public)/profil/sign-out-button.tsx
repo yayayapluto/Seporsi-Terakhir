@@ -57,15 +57,6 @@ export function SignOutButton() {
           <DialogFooter>
             <Button
               type="button"
-              autoFocus
-              className="min-h-11"
-              onClick={() => setOpen(false)}
-              disabled={pending}
-            >
-              Batal
-            </Button>
-            <Button
-              type="button"
               variant="outline"
               className="min-h-11 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
               onClick={onConfirm}
@@ -79,6 +70,15 @@ export function SignOutButton() {
               ) : (
                 "Keluar"
               )}
+            </Button>
+            <Button
+              type="button"
+              autoFocus
+              className="min-h-11"
+              onClick={() => setOpen(false)}
+              disabled={pending}
+            >
+              Batal
             </Button>
           </DialogFooter>
         </DialogContent>

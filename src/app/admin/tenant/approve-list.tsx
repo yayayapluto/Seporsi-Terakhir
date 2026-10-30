@@ -4,6 +4,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { approveTenant, rejectTenant } from "../actions";
 import type { PendingTenant } from "./page";
 
@@ -12,6 +19,7 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
   const router = useRouter();
   const [openId, setOpenId] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<"approve" | "reject" | null>(null);
+  const [rejectId, setRejectId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function act(id: string, kind: "approve" | "reject") {
@@ -24,8 +32,11 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
       return;
     }
     setOpenId(null);
+    setRejectId(null);
     router.refresh();
   }
+
+  const rejectTarget = tenants.find((t) => t.id === rejectId) ?? null;
 
   if (tenants.length === 0) {
     return (
@@ -112,16 +123,9 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                       type="button"
                       variant="destructive"
                       disabled={confirming !== null}
-                      onClick={() => act(t.id, "reject")}
+                      onClick={() => setRejectId(t.id)}
                     >
-                      {confirming === "reject" ? (
-                        <>
-                          <Spinner />
-                          Menolak…
-                        </>
-                      ) : (
-                        "Tolak pendaftar"
-                      )}
+                      Tolak pendaftar
                     </Button>
                     <Button
                       type="button"
@@ -138,6 +142,41 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
           );
         })}
       </ul>
+      <Dialog open={rejectId !== null} onOpenChange={(open) => !open && setRejectId(null)}>
+        <DialogContent>
+          <DialogTitle>Tolak {rejectTarget ? `“${rejectTarget.name}”` : "pendaftar"}?</DialogTitle>
+          <DialogDescription>
+            Pendaftar bisa daftar ulang kapan saja. Tindakan ini berlaku langsung.
+          </DialogDescription>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-11 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+              onClick={() => rejectId && act(rejectId, "reject")}
+              disabled={confirming !== null}
+            >
+              {confirming === "reject" ? (
+                <>
+                  <Spinner />
+                  Menolak…
+                </>
+              ) : (
+                "Tolak pendaftar"
+              )}
+            </Button>
+            <Button
+              type="button"
+              autoFocus
+              className="min-h-11"
+              onClick={() => setRejectId(null)}
+              disabled={confirming !== null}
+            >
+              Batal
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

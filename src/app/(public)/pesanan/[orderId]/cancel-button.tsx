@@ -59,9 +59,6 @@ export function CancelButton({ orderId }: { orderId: string }) {
           <DialogTitle>Batalkan pesanan?</DialogTitle>
           <DialogDescription>Stok porsi akan dikembalikan ke katalog.</DialogDescription>
           <DialogFooter>
-            <Button type="button" autoFocus className="min-h-11" onClick={() => setOpen(false)}>
-              Kembali
-            </Button>
             <Button
               type="button"
               variant="outline"
@@ -69,7 +66,17 @@ export function CancelButton({ orderId }: { orderId: string }) {
               onClick={onConfirm}
               disabled={pending}
             >
-              Ya, batalkan
+              {pending ? (
+                <>
+                  <Spinner />
+                  Membatalkan…
+                </>
+              ) : (
+                "Ya, batalkan"
+              )}
+            </Button>
+            <Button type="button" autoFocus className="min-h-11" onClick={() => setOpen(false)}>
+              Kembali
             </Button>
           </DialogFooter>
         </DialogContent>
