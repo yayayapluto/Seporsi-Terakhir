@@ -104,6 +104,7 @@ export function GuidedTour({
   const orderDefIdx = useRef<number[]>([]);
   const maxPos = useRef(0);
   const resumeDefIdx = useRef<number | null>(null);
+  const freshUsed = useRef(false);
 
   const progress = useTourProgress({ tourKey, tourId: tourKey, userId });
 
@@ -122,7 +123,20 @@ export function GuidedTour({
     const defs = stepsRef.current;
     const allIds = defs.map((s, i) => stepIdFor(tourKey, s, i));
     setTotalSteps(defs.length);
-    const doFresh = fresh || (forced && !journey);
+    // fresh sekali pakai: reset + buang param dari URL agar selesai tidak mengulang.
+    const doFresh = (fresh || (forced && !journey)) && !freshUsed.current;
+    if (doFresh) {
+      freshUsed.current = true;
+      progress.reset();
+      if (typeof window !== "undefined") {
+        const sp = new URLSearchParams(window.location.search);
+        if (sp.has("fresh")) {
+          sp.delete("fresh");
+          const q = sp.toString();
+          router.replace(`${pathname}${q ? `?${q}` : ""}`);
+        }
+      }
+    }
     const decision = resolveStart(progress.saved, allIds, TOUR_VERSION, doFresh);
     if (decision.action === "hide") return;
     if (decision.action === "reset") progress.reset();
