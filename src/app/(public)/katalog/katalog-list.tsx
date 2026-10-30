@@ -80,7 +80,7 @@ export function KatalogList({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-3 rounded-[20px] border border-[#E8ECE9] bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
+      <div className="flex flex-col gap-3 rounded-lg border border-[#E5E1D8] bg-white p-4">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3" data-tour="filter">
           <span className="flex items-center gap-2">
             <Label htmlFor="tenant-filter" className="text-sm font-semibold">
@@ -117,14 +117,15 @@ export function KatalogList({
               </SelectContent>
             </Select>
           </span>
-          <fieldset className="ml-auto flex items-center gap-1 rounded-full bg-[#F1F5F2] p-1">
+          <fieldset className="ml-auto flex items-center gap-1 rounded-md border border-[#E5E1D8] bg-white p-1">
             <legend className="sr-only">Tampilan katalog</legend>
             <button
               type="button"
+              aria-pressed={view === "grid"}
               aria-label="Tampilan grid"
               onClick={() => setView("grid")}
-              className={`flex min-h-11 min-w-11 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F] ${
-                view === "grid" ? "bg-white text-[#1E5A36] shadow-sm" : "text-[#64746B]"
+              className={`flex min-h-11 min-w-11 items-center justify-center rounded-[0.3rem] outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F] ${
+                view === "grid" ? "bg-[#DCEBE0] text-[#1E5A36]" : "text-[#64746B]"
               }`}
             >
               <LayoutGrid className="size-5" aria-hidden />
@@ -134,8 +135,8 @@ export function KatalogList({
               aria-pressed={view === "list"}
               aria-label="Tampilan daftar"
               onClick={() => setView("list")}
-              className={`flex min-h-11 min-w-11 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F] ${
-                view === "list" ? "bg-white text-[#1E5A36] shadow-sm" : "text-[#64746B]"
+              className={`flex min-h-11 min-w-11 items-center justify-center rounded-[0.3rem] outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F] ${
+                view === "list" ? "bg-[#DCEBE0] text-[#1E5A36]" : "text-[#64746B]"
               }`}
             >
               <Rows3 className="size-5" aria-hidden />
