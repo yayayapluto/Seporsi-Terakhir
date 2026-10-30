@@ -280,7 +280,7 @@ export function KatalogList({
                         </span>
                         {!soldOut && leftMin < 60 && (
                           <span className="w-fit rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
-                            {leftMin <= 5 ? "Segera ambil" : `Kedaluwarsa ${leftMin} mnt`}
+                            {leftMin <= 5 ? "Segera ambil" : `Batas ambil ${leftMin} mnt lagi`}
                           </span>
                         )}
                       </span>
@@ -417,7 +417,7 @@ export function KatalogList({
         journeyLabel="Bagian 2 dari 4 · Katalog"
         intro={{
           title: "Cara baca katalog?",
-          body: "Saring tenant, urutkan yang hampir habis, ketuk kartunya buat pesan. Bisa dilewati, dan diulang kapan saja.",
+          body: "Saring tenant, urutkan yang hampir habis, buka kartunya buat pesan. Bisa dilewati, dan diulang kapan saja.",
         }}
         steps={[
           {
@@ -428,7 +428,7 @@ export function KatalogList({
           {
             target: "ul li:first-child a, ul li:first-child button",
             title: "Kunci porsimu",
-            body: "Ketuk Lihat & Pesan, atur jumlah, ambil dengan QR, bayar di tempat.",
+            body: "Pilih Lihat & Pesan, atur jumlah, ambil dengan QR, bayar di tempat.",
           },
         ]}
       />

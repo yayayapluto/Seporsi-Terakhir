@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { getJourneyResume } from "@/components/guided-tour";
 
 const KEY = "onboard-beranda-v1";
 
@@ -12,6 +13,7 @@ export function OnboardBanner() {
     typeof window === "undefined" ? true : localStorage.getItem(KEY) === "1",
   );
   if (gone) return null;
+  const resume = getJourneyResume();
   const dismiss = () => {
     localStorage.setItem(KEY, "1");
     setGone(true);
@@ -25,10 +27,10 @@ export function OnboardBanner() {
       <p className="text-[13px] leading-relaxed text-[#1E5A36]">
         Pilih porsinya, simpan buat kamu, lalu ambil dan bayar langsung di kantin. Tanpa ongkir.{" "}
         <Link
-          href="/beranda?tour=journey"
+          href={resume ?? "/beranda?tour=journey"}
           className="font-bold text-[#1E5A36] underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
         >
-          Ikuti panduan
+          {resume ? "Lanjutkan panduan" : "Ikuti panduan"}
         </Link>{" "}
         atau{" "}
         <Link

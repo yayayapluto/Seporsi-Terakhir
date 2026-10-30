@@ -141,7 +141,7 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
           </span>
           {!soldOut && leftMin < 60 && (
             <span className="inline-flex items-center rounded-full bg-[#FEF3C7] px-2.5 py-1 text-xs font-bold text-[#92400E]">
-              {leftMin <= 5 ? "Segera ambil" : `Kedaluwarsa ${leftMin} mnt`}
+              {leftMin <= 5 ? "Segera ambil" : `Batas ambil ${leftMin} mnt lagi`}
             </span>
           )}
         </div>

@@ -106,7 +106,7 @@ export function SoonScroller({ portions }: { portions: SoonPortion[] }) {
             </span>
             {leftMin < 60 && (
               <span className="w-fit rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
-                {leftMin <= 5 ? "Segera ambil · kedaluwarsa" : `Kedaluwarsa ${leftMin} mnt`}
+                {leftMin <= 5 ? "Segera ambil" : `Batas ambil ${leftMin} mnt lagi`}
               </span>
             )}
           </span>

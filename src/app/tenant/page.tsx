@@ -233,7 +233,7 @@ export default async function TenantDashboardPage({
                   <div className="flex shrink-0 items-center gap-3">
                     {nearExpiry && (
                       <span className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent-strong">
-                        Kedaluwarsa {minutesLeft} mnt
+                        Batas ambil {minutesLeft} mnt lagi
                       </span>
                     )}
                     <Link

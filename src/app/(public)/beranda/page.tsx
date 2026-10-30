@@ -145,12 +145,12 @@ export default async function BerandaPage({
               {
                 target: "#tour-orders",
                 title: "Pesananmu yang aktif",
-                body: "Semua pesanan yang menunggu diambil kumpul di sini. Ketuk salah satu buat lihat QR dan detailnya.",
+                body: "Semua pesanan yang menunggu diambil kumpul di sini. Buka salah satu buat lihat QR dan detailnya.",
               },
               {
                 target: "#tour-catalog",
                 title: "Katalog sore ini",
-                body: "Porsi yang dijual hari ini muncul di sini. Geser ke samping buat lihat semuanya, ketuk kartunya buat pesan.",
+                body: "Porsi yang dijual hari ini muncul di sini. Lihat semuanya, lalu buka kartunya buat pesan.",
               },
             ]}
           />
