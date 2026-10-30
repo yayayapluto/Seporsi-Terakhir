@@ -132,7 +132,7 @@ export function NavTabs({ tabs }: { tabs: NavTab[] }) {
                     active ? "text-[#1E5A36]" : "text-muted-foreground hover:bg-muted",
                   )}
                 >
-                  {active && <ActivePill id="nav-pill-desktop" rounded="rounded-[14px]" />}
+                  {active && <ActivePill id="nav-pill-desktop" rounded="rounded-full" />}
                   <span className="relative z-10">
                     <Icon className="size-5" strokeWidth={active ? 2.25 : 1.75} aria-hidden />
                     {t.badge != null && (
