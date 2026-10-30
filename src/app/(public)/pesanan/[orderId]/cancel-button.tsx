@@ -2,13 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -58,32 +58,15 @@ export function CancelButton({ orderId }: { orderId: string }) {
         <DialogContent>
           <DialogTitle>Batalkan pesanan?</DialogTitle>
           <DialogDescription>Stok porsi akan dikembalikan ke katalog.</DialogDescription>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              className="min-h-11 flex-1 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
-              onClick={onConfirm}
-              disabled={pending}
-            >
-              {pending ? (
-                <>
-                  <Spinner />
-                  Membatalkan…
-                </>
-              ) : (
-                "Ya, batalkan"
-              )}
-            </Button>
-            <Button
-              type="button"
-              autoFocus
-              className="min-h-11 flex-1"
-              onClick={() => setOpen(false)}
-            >
-              Kembali
-            </Button>
-          </DialogFooter>
+          <ConfirmDialogFooter
+            confirmLabel="Ya, batalkan"
+            busyLabel="Membatalkan…"
+            cancelLabel="Kembali"
+            busy={pending}
+            onConfirm={onConfirm}
+            onCancel={() => setOpen(false)}
+            lockCancelWhenBusy={false}
+          />
         </DialogContent>
       </Dialog>
     </div>

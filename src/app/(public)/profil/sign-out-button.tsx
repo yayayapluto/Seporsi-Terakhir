@@ -3,15 +3,9 @@
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Spinner } from "@/components/spinner";
+import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { createClient } from "@/lib/supabase/client";
 
 /** Danger Action Card — klik buka dialog konfirmasi, spinner hanya di tombol Keluar dialog. */
@@ -54,33 +48,14 @@ export function SignOutButton() {
           <DialogDescription>
             Sesi di perangkat ini diakhiri. Pesanan aktif dan riwayatmu tetap tersimpan.
           </DialogDescription>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              className="min-h-11 flex-1 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
-              onClick={onConfirm}
-              disabled={pending}
-            >
-              {pending ? (
-                <>
-                  <Spinner />
-                  Keluar…
-                </>
-              ) : (
-                "Keluar"
-              )}
-            </Button>
-            <Button
-              type="button"
-              autoFocus
-              className="min-h-11 flex-1"
-              onClick={() => setOpen(false)}
-              disabled={pending}
-            >
-              Batal
-            </Button>
-          </DialogFooter>
+          <ConfirmDialogFooter
+            confirmLabel="Keluar"
+            busyLabel="Keluar…"
+            cancelLabel="Batal"
+            busy={pending}
+            onConfirm={onConfirm}
+            onCancel={() => setOpen(false)}
+          />
         </DialogContent>
       </Dialog>
     </>

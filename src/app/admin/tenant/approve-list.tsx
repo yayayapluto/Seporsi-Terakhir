@@ -2,15 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { approveTenant, rejectTenant } from "../actions";
 import type { PendingTenant } from "./page";
 
@@ -148,33 +143,14 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
           <DialogDescription>
             Pendaftar bisa daftar ulang kapan saja. Tindakan ini berlaku langsung.
           </DialogDescription>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              className="min-h-11 flex-1 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
-              onClick={() => rejectId && act(rejectId, "reject")}
-              disabled={confirming !== null}
-            >
-              {confirming === "reject" ? (
-                <>
-                  <Spinner />
-                  Menolak…
-                </>
-              ) : (
-                "Tolak pendaftar"
-              )}
-            </Button>
-            <Button
-              type="button"
-              autoFocus
-              className="min-h-11 flex-1"
-              onClick={() => setRejectId(null)}
-              disabled={confirming !== null}
-            >
-              Batal
-            </Button>
-          </DialogFooter>
+          <ConfirmDialogFooter
+            confirmLabel="Tolak pendaftar"
+            busyLabel="Menolak…"
+            cancelLabel="Batal"
+            busy={confirming !== null}
+            onConfirm={() => rejectId && act(rejectId, "reject")}
+            onCancel={() => setRejectId(null)}
+          />
         </DialogContent>
       </Dialog>
     </div>
