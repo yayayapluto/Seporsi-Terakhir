@@ -109,6 +109,7 @@ export function GuidedTour({
   const resumeDefIdx = useRef<number | null>(null);
   const freshUsed = useRef(false);
   const entryStepRef = useRef<number | null>(entryStep ?? null);
+  const settledRef = useRef(false);
 
   const progress = useTourProgress({ tourKey, tourId: tourKey, userId });
 
@@ -122,6 +123,7 @@ export function GuidedTour({
 
   // Mulai: tunggu progres siap (tanpa kedip langkah 1), lalu putuskan.
   useEffect(() => {
+    if (settledRef.current) return;
     if (!progress.isReady) return;
     if (!forced && !journey && !auto) return;
     const defs = stepsRef.current;
@@ -141,7 +143,12 @@ export function GuidedTour({
         }
       }
     }
-    const decision = resolveStart(progress.saved, allIds, TOUR_VERSION, doFresh);
+    // Chain arrival (?lastStep=) menang atas status tersimpan: rantai yang sedang
+    // jalan tidak boleh diblokir completed/skipped dari sesi sebelumnya.
+    const entryForced = entryStepRef.current != null && (forced || journey);
+    const decision = entryForced
+      ? { action: "reset" as const }
+      : resolveStart(progress.saved, allIds, TOUR_VERSION, doFresh);
     if (decision.action === "hide") return;
     if (decision.action === "reset") progress.reset();
     maxPos.current = 0;
@@ -163,6 +170,7 @@ export function GuidedTour({
       const settled = tries >= 4 || (best.length > 0 && tries >= 2);
       if (settled) {
         window.clearInterval(timer);
+        settledRef.current = true;
         if (best.length === 0) {
           if ((journey || forced) && hasIntro) {
             setOrder([]);
