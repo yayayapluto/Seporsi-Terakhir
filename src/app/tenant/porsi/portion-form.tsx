@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageOff } from "lucide-react";
+import { ImageOff, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -218,6 +218,18 @@ export function PortionForm({
     }
   }
 
+  function bumpQty(delta: number) {
+    const cur = Number.parseInt(watch("quantity") || "0", 10) || 0;
+    const next = Math.min(999, Math.max(1, cur + delta));
+    setValue("quantity", String(next), { shouldDirty: true, shouldValidate: true });
+  }
+
+  function bumpPrice(delta: number) {
+    const digits = (watch("discountPrice") || "").replace(/\D/g, "");
+    const next = Math.max(0, (Number.parseInt(digits || "0", 10) || 0) + delta);
+    setValue("discountPrice", String(next), { shouldDirty: true, shouldValidate: true });
+  }
+
   function applyYesterday() {
     if (!yesterday) return;
     setValue("menuItemId", yesterday.menuItemId, { shouldDirty: true, shouldValidate: true });
@@ -334,7 +346,39 @@ export function PortionForm({
           <Label htmlFor="portion-qty" className="font-semibold">
             Jumlah porsi
           </Label>
-          <Input id="portion-qty" type="text" inputMode="numeric" {...register("quantity")} />
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              aria-label="Kurangi porsi"
+              onClick={() => bumpQty(-1)}
+              className="min-h-11 min-w-11 shrink-0 px-0"
+            >
+              <Minus className="size-5" aria-hidden />
+            </Button>
+            <Input
+              id="portion-qty"
+              type="text"
+              inputMode="numeric"
+              className="text-center"
+              {...register("quantity")}
+              onChange={(e) =>
+                setValue("quantity", e.target.value.replace(/\D/g, ""), {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }
+            />
+            <Button
+              type="button"
+              variant="outline"
+              aria-label="Tambah porsi"
+              onClick={() => bumpQty(1)}
+              className="min-h-11 min-w-11 shrink-0 px-0"
+            >
+              <Plus className="size-5" aria-hidden />
+            </Button>
+          </div>
           {errors.quantity && <p className="text-sm text-destructive">{errors.quantity.message}</p>}
         </div>
 
@@ -376,9 +420,48 @@ export function PortionForm({
             type="text"
             inputMode="numeric"
             {...register("discountPrice")}
+            onChange={(e) =>
+              setValue("discountPrice", e.target.value.replace(/\D/g, ""), {
+                shouldDirty: true,
+                shouldValidate: true,
+              })
+            }
             aria-invalid={invalidDiscount ? true : undefined}
             aria-describedby={selected ? "discount-hint" : undefined}
           />
+          <div className="flex flex-wrap gap-2" aria-label="Ubah cepat harga diskon">
+            {selected != null && suggested > 0 && (
+              <Button
+                type="button"
+                variant="outline"
+                className="min-h-11 px-3 text-sm"
+                onClick={() =>
+                  setValue("discountPrice", String(suggested), {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+              >
+                Saran {formatIDR(suggested)}
+              </Button>
+            )}
+            {[
+              { label: "+1.000", delta: 1000 },
+              { label: "+500", delta: 500 },
+              { label: "−500", delta: -500 },
+              { label: "−1.000", delta: -1000 },
+            ].map((c) => (
+              <Button
+                key={c.label}
+                type="button"
+                variant="outline"
+                className="min-h-11 px-3 text-sm tabular-nums"
+                onClick={() => bumpPrice(c.delta)}
+              >
+                {c.label}
+              </Button>
+            ))}
+          </div>
           {errors.discountPrice && (
             <p className="text-sm text-destructive">{errors.discountPrice.message}</p>
           )}
