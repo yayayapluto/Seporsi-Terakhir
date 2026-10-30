@@ -4,7 +4,13 @@ import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { OrderStatusBadge } from "@/components/order-status-badge";
-import { SieraCard, SieraSectionTitle, SieraTenantHeader, SieraTile } from "@/components/siera";
+import {
+  SieraList,
+  SieraSectionTitle,
+  SieraTenantHeader,
+  SieraTile,
+  sieraRowLayoutClass,
+} from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -87,39 +93,41 @@ export default async function TenantPesananPage({
 
   function Row({ o, showBadge }: { o: TenantOrderRow; showBadge: boolean }) {
     return (
-      <li className="flex items-center gap-3 py-3">
-        <Link
-          href={`/tenant/pesanan/${o.id}`}
-          className="flex min-h-11 min-w-0 flex-1 items-center gap-3"
-        >
-          <SieraTile>
-            {showBadge ? (
-              <History className="size-5" strokeWidth={1.75} aria-hidden />
-            ) : (
-              <ReceiptText className="size-5" strokeWidth={1.75} aria-hidden />
+      <li>
+        <div className={sieraRowLayoutClass}>
+          <Link
+            href={`/tenant/pesanan/${o.id}`}
+            className="flex min-h-11 min-w-0 flex-1 items-center gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+          >
+            <SieraTile>
+              {showBadge ? (
+                <History className="size-5" strokeWidth={1.75} aria-hidden />
+              ) : (
+                <ReceiptText className="size-5" strokeWidth={1.75} aria-hidden />
+              )}
+            </SieraTile>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[15px] leading-[1.3] font-semibold text-[#1C2826]">
+                {o.menuName} <span className="font-normal text-[#64746B]">×{o.quantity}</span>
+              </span>
+              <span className="block truncate text-[12px] leading-[1.4] text-[#64746B]">
+                {o.buyerName} · Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
+                {formatIDR(o.discountPrice * o.quantity)}
+                {o.status === "picked_up" && o.pickedUpAt
+                  ? ` · Diambil ${formatDateTimeWIB(new Date(o.pickedUpAt))} WIB`
+                  : ""}
+              </span>
+            </span>
+            <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+          </Link>
+          <div className="flex shrink-0 items-center gap-3">
+            {showBadge && <OrderStatusBadge status={o.status} />}
+            {o.status === "reserved" && (
+              <Link href="/tenant/scan" className={cn(buttonVariants({ size: "sm" }), "min-h-11")}>
+                Scan pickup
+              </Link>
             )}
-          </SieraTile>
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-[15px] font-semibold">
-              {o.menuName} <span className="font-normal text-[#64746B]">×{o.quantity}</span>
-            </span>
-            <span className="block truncate text-[12px] text-[#64746B]">
-              {o.buyerName} · Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
-              {formatIDR(o.discountPrice * o.quantity)}
-              {o.status === "picked_up" && o.pickedUpAt
-                ? ` · Diambil ${formatDateTimeWIB(new Date(o.pickedUpAt))} WIB`
-                : ""}
-            </span>
-          </span>
-          <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-        </Link>
-        <div className="flex shrink-0 items-center gap-3">
-          {showBadge && <OrderStatusBadge status={o.status} />}
-          {o.status === "reserved" && (
-            <Link href="/tenant/scan" className={cn(buttonVariants({ size: "sm" }), "min-h-11")}>
-              Scan pickup
-            </Link>
-          )}
+          </div>
         </div>
       </li>
     );
@@ -159,13 +167,11 @@ export default async function TenantPesananPage({
                 <p className="text-sm text-[#64746B]">Tidak ada reservasi aktif saat ini.</p>
               </div>
             ) : (
-              <SieraCard>
-                <ul className="divide-y divide-dashed divide-[#E8ECE9]">
-                  {waiting.map((o) => (
-                    <Row key={o.id} o={o} showBadge={false} />
-                  ))}
-                </ul>
-              </SieraCard>
+              <SieraList>
+                {waiting.map((o) => (
+                  <Row key={o.id} o={o} showBadge={false} />
+                ))}
+              </SieraList>
             )}
           </section>
 
@@ -176,13 +182,11 @@ export default async function TenantPesananPage({
                 <p className="text-sm text-[#64746B]">Belum ada riwayat.</p>
               </div>
             ) : (
-              <SieraCard>
-                <ul className="divide-y divide-dashed divide-[#E8ECE9]">
-                  {done.map((o) => (
-                    <Row key={o.id} o={o} showBadge />
-                  ))}
-                </ul>
-              </SieraCard>
+              <SieraList>
+                {done.map((o) => (
+                  <Row key={o.id} o={o} showBadge />
+                ))}
+              </SieraList>
             )}
           </section>
         </>

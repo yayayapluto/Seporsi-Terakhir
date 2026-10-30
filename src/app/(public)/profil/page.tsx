@@ -1,6 +1,4 @@
-import { cn } from "cn";
 import {
-  ChevronRight,
   Clock3,
   History,
   LayoutDashboard,
@@ -86,7 +84,13 @@ async function loadProfile(userId: string, includeOrders: boolean): Promise<Prof
   };
 }
 
-import { SieraSectionTitle, SieraTile, sieraCardClass } from "@/components/siera";
+import {
+  SieraList,
+  SieraRowLink,
+  SieraSectionTitle,
+  SieraTile,
+  sieraCardClass,
+} from "@/components/siera";
 
 function roleLabel(p: ProfileData): string | null {
   if (p.role == null) return null;
@@ -170,8 +174,8 @@ export default async function ProfilPage({
                 </span>
               </p>
             )}
-            <dl className={`${sieraCardClass} divide-y divide-dashed divide-[#E8ECE9] !p-0`}>
-              <div className="flex min-h-11 items-center gap-3 p-4">
+            <dl className={`${sieraCardClass} divide-y divide-[#E8ECE9] overflow-hidden`}>
+              <div className="flex min-h-16 items-center gap-3 px-4 py-3.5">
                 <SieraTile>
                   <PackageCheck className="size-5" />
                 </SieraTile>
@@ -180,7 +184,7 @@ export default async function ProfilPage({
                   <dd className="text-[16px] font-extrabold">{p.savedPortions}</dd>
                 </div>
               </div>
-              <div className="flex min-h-11 items-center gap-3 p-4">
+              <div className="flex min-h-16 items-center gap-3 px-4 py-3.5">
                 <SieraTile>
                   <Wallet className="size-5" />
                 </SieraTile>
@@ -189,7 +193,7 @@ export default async function ProfilPage({
                   <dd className="text-[16px] font-extrabold">{formatIDR(p.moneySavedIdr)}</dd>
                 </div>
               </div>
-              <div className="flex min-h-11 items-center gap-3 p-4">
+              <div className="flex min-h-16 items-center gap-3 px-4 py-3.5">
                 <SieraTile>
                   <Leaf className="size-5" />
                 </SieraTile>
@@ -237,21 +241,14 @@ export default async function ProfilPage({
                 </Link>
               </div>
             ) : (
-              <div className={cn(sieraCardClass, "p-4")}>
-                <Link
+              <SieraList>
+                <SieraRowLink
                   href={p.tenantApproved ? "/tenant" : "/tenant/menunggu-persetujuan"}
-                  className="flex min-h-11 items-center gap-3"
-                >
-                  <SieraTile>
-                    <Store className="size-5" />
-                  </SieraTile>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-bold">{p.tenantName}</span>
-                    <span className="block text-[13px] text-[#64746B]">{tenantStatus}</span>
-                  </span>
-                  <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-                </Link>
-              </div>
+                  icon={Store}
+                  title={p.tenantName ?? "Kantinmu"}
+                  subtitle={tenantStatus}
+                />
+              </SieraList>
             )}
           </section>
         )}
@@ -260,10 +257,7 @@ export default async function ProfilPage({
         {isTenant && (
           <section aria-labelledby="kelola-heading" className="flex flex-col gap-3">
             <SieraSectionTitle id="kelola-heading">Kelola kantin</SieraSectionTitle>
-            <nav
-              aria-label="Kelola kantin"
-              className={`${sieraCardClass} divide-y divide-dashed divide-[#E8ECE9] !p-0`}
-            >
+            <SieraList aria-label="Kelola kantin">
               {(
                 [
                   {
@@ -303,22 +297,16 @@ export default async function ProfilPage({
                     desc: "Nama gerai dan lokasi",
                   },
                 ] as const
-              ).map((r) => {
-                const Icon = r.icon;
-                return (
-                  <Link key={r.href} href={r.href} className="flex min-h-11 items-center gap-3 p-4">
-                    <SieraTile>
-                      <Icon className="size-5" />
-                    </SieraTile>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[15px] font-semibold">{r.title}</span>
-                      <span className="block text-[12px] text-[#64746B]">{r.desc}</span>
-                    </span>
-                    <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-                  </Link>
-                );
-              })}
-            </nav>
+              ).map((r) => (
+                <SieraRowLink
+                  key={r.href}
+                  href={r.href}
+                  icon={r.icon}
+                  title={r.title}
+                  subtitle={r.desc}
+                />
+              ))}
+            </SieraList>
           </section>
         )}
 
@@ -326,10 +314,7 @@ export default async function ProfilPage({
         {!isStudent && !isTenant && (
           <section aria-labelledby="kelola-heading" className="flex flex-col gap-3">
             <SieraSectionTitle id="kelola-heading">Kelola platform</SieraSectionTitle>
-            <nav
-              aria-label="Kelola platform"
-              className={`${sieraCardClass} divide-y divide-dashed divide-[#E8ECE9] !p-0`}
-            >
+            <SieraList aria-label="Kelola platform">
               {(
                 [
                   {
@@ -340,22 +325,16 @@ export default async function ProfilPage({
                   },
                   { href: "/admin", icon: Leaf, title: "Dampak", desc: "Angka rescue & unduhan" },
                 ] as const
-              ).map((r) => {
-                const Icon = r.icon;
-                return (
-                  <Link key={r.href} href={r.href} className="flex min-h-11 items-center gap-3 p-4">
-                    <SieraTile>
-                      <Icon className="size-5" />
-                    </SieraTile>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[15px] font-semibold">{r.title}</span>
-                      <span className="block text-[12px] text-[#64746B]">{r.desc}</span>
-                    </span>
-                    <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-                  </Link>
-                );
-              })}
-            </nav>
+              ).map((r) => (
+                <SieraRowLink
+                  key={r.href}
+                  href={r.href}
+                  icon={r.icon}
+                  title={r.title}
+                  subtitle={r.desc}
+                />
+              ))}
+            </SieraList>
           </section>
         )}
 
@@ -364,56 +343,37 @@ export default async function ProfilPage({
           <SieraSectionTitle id="riwayat-heading">
             {isStudent ? "Pesanan, katalog & pengaturan" : "Pengaturan"}
           </SieraSectionTitle>
-          <nav
-            aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}
-            className={`${sieraCardClass} divide-y divide-dashed divide-[#E8ECE9] !p-0`}
-          >
+          <SieraList aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}>
             {isStudent && (
-              <Link href="/pesanan" className="flex min-h-11 items-center gap-3 p-4">
-                <SieraTile>
-                  <History className="size-5" />
-                </SieraTile>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] font-semibold">Riwayat pesanan</span>
-                  <span className="block text-[12px] text-[#64746B]">
-                    Lihat QR pickup atau cek riwayat lengkap
-                  </span>
-                </span>
-                <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-              </Link>
+              <SieraRowLink
+                href="/pesanan"
+                icon={History}
+                title="Riwayat pesanan"
+                subtitle="Lihat QR pickup atau cek riwayat lengkap"
+              />
             )}
             {isStudent && !p.loadFailed && p.savedPortions === 0 && (
-              <Link href="/katalog" className="flex min-h-11 items-center gap-3 p-4">
-                <SieraTile>
-                  <UtensilsCrossed className="size-5" />
-                </SieraTile>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] font-semibold">Cari porsi sore ini</span>
-                  <span className="block text-[12px] text-[#64746B]">Katalog rescue hari ini</span>
-                </span>
-                <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-              </Link>
+              <SieraRowLink
+                href="/katalog"
+                icon={UtensilsCrossed}
+                title="Cari porsi sore ini"
+                subtitle="Katalog rescue hari ini"
+              />
             )}
-            <Link href="/akun/pengaturan" className="flex min-h-11 items-center gap-3 p-4">
-              <SieraTile>
-                <Settings className="size-5" />
-              </SieraTile>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-semibold">Pengaturan</span>
-                <span className="block text-[12px] text-[#64746B]">
-                  Keamanan, notifikasi, privasi
-                </span>
-              </span>
-              <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-            </Link>
-          </nav>
+            <SieraRowLink
+              href="/akun/pengaturan"
+              icon={Settings}
+              title="Pengaturan"
+              subtitle="Keamanan, notifikasi, privasi"
+            />
+          </SieraList>
         </section>
 
         {/* Bantuan — panduan sesuai peran */}
         <section aria-labelledby="bantuan-heading" className="flex flex-col gap-3">
           <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
-          <nav aria-label="Bantuan" className={`${sieraCardClass} !p-0`}>
-            <Link
+          <SieraList aria-label="Bantuan">
+            <SieraRowLink
               href={
                 isTenant
                   ? "/tenant?panduan=rantai&fresh=1"
@@ -421,26 +381,17 @@ export default async function ProfilPage({
                     ? "/beranda?panduan=rantai&fresh=1"
                     : "/cara-kerja"
               }
-              className="flex min-h-11 items-center gap-3 p-4"
-            >
-              <SieraTile>
-                <MapIcon className="size-5" />
-              </SieraTile>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-semibold">
-                  {isTenant ? "Panduan kelola" : isStudent ? "Panduan beranda" : "Cara kerja"}
-                </span>
-                <span className="block text-[12px] text-[#64746B]">
-                  {isTenant
-                    ? "Tur singkat dasbor sampai scan"
-                    : isStudent
-                      ? "Lihat lagi cara membaca Beranda dan memesan porsi"
-                      : "Alur rescue & keamanan pangan"}
-                </span>
-              </span>
-              <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-            </Link>
-          </nav>
+              icon={MapIcon}
+              title={isTenant ? "Panduan kelola" : isStudent ? "Panduan beranda" : "Cara kerja"}
+              subtitle={
+                isTenant
+                  ? "Tur singkat dasbor sampai scan"
+                  : isStudent
+                    ? "Lihat lagi cara membaca Beranda dan memesan porsi"
+                    : "Alur rescue & keamanan pangan"
+              }
+            />
+          </SieraList>
         </section>
 
         <p className="pb-4 text-center text-[11px] font-semibold text-[#64746B] md:col-span-2">

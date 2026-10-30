@@ -1,6 +1,13 @@
-import { ChevronRight, CircleHelp, Package, ReceiptText, ScanLine, Wallet } from "lucide-react";
+import { CircleHelp, Package, ReceiptText, ScanLine, Wallet } from "lucide-react";
 import Link from "next/link";
-import { SieraCard, SieraSectionTitle, SieraTenantHeader, SieraTile } from "@/components/siera";
+import {
+  SieraCard,
+  SieraList,
+  SieraRowLink,
+  SieraSectionTitle,
+  SieraTenantHeader,
+  SieraTile,
+} from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -234,32 +241,21 @@ export default async function TenantDashboardPage({
             </Link>
           </div>
         ) : (
-          <SieraCard>
-            <ul className="divide-y divide-dashed divide-[#E8ECE9]">
-              {reservations.slice(0, 5).map((r) => (
-                <li key={r.id}>
-                  <Link
-                    href={`/tenant/pesanan/${r.id}`}
-                    className="flex min-h-11 items-center gap-3 py-3"
-                  >
-                    <SieraTile>
-                      <ReceiptText className="size-5" strokeWidth={1.75} aria-hidden />
-                    </SieraTile>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[15px] font-semibold">
-                        {r.menuName}{" "}
-                        <span className="font-normal text-[#64746B]">×{r.quantity}</span>
-                      </span>
-                      <span className="block text-[12px] text-[#64746B]">
-                        Dipesan {formatDateTimeWIB(new Date(r.createdAt))} WIB
-                      </span>
-                    </span>
-                    <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </SieraCard>
+          <SieraList>
+            {reservations.slice(0, 5).map((r) => (
+              <SieraRowLink
+                key={r.id}
+                href={`/tenant/pesanan/${r.id}`}
+                icon={ReceiptText}
+                title={
+                  <>
+                    {r.menuName} <span className="font-normal text-[#64746B]">×{r.quantity}</span>
+                  </>
+                }
+                subtitle={`Dipesan ${formatDateTimeWIB(new Date(r.createdAt))} WIB`}
+              />
+            ))}
+          </SieraList>
         )}
       </section>
 
@@ -287,8 +283,8 @@ export default async function TenantDashboardPage({
             </Link>
           </div>
         ) : (
-          <SieraCard>
-            <ul className="divide-y divide-dashed divide-[#E8ECE9]">
+          <>
+            <SieraList>
               {activePortions.map((p) => {
                 const minutesLeft = Math.max(
                   0,
@@ -298,7 +294,7 @@ export default async function TenantDashboardPage({
                 return (
                   <li
                     key={p.id}
-                    className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                    className="flex min-h-16 flex-col justify-center gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
                   >
                     <div className="min-w-0">
                       <h3 className="truncate font-bold leading-snug">
@@ -330,9 +326,9 @@ export default async function TenantDashboardPage({
                   </li>
                 );
               })}
-            </ul>
+            </SieraList>
             {justExpired.length > 0 && (
-              <p className="border-t border-dashed border-[#E8ECE9] pt-3 text-xs text-muted-foreground">
+              <p className="px-1 text-xs text-muted-foreground">
                 Baru saja kedaluwarsa (≤1 jam):{" "}
                 {justExpired
                   .map((j) => `${j.menuName} (${formatDateTimeWIB(new Date(j.expiresAt))})`)
@@ -340,31 +336,20 @@ export default async function TenantDashboardPage({
                 — posting ulang bila masih layak.
               </p>
             )}
-          </SieraCard>
+          </>
         )}
       </section>
 
       <section aria-labelledby="bantuan-heading" className="flex flex-col gap-3">
         <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
-        <SieraCard>
-          <nav aria-label="Bantuan">
-            <Link
-              href="/tenant?panduan=rantai&fresh=1"
-              className="flex min-h-11 items-center gap-3 py-1"
-            >
-              <SieraTile>
-                <CircleHelp className="size-5" strokeWidth={1.75} aria-hidden />
-              </SieraTile>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-semibold">Panduan kelola</span>
-                <span className="block text-[12px] text-[#64746B]">
-                  Tur singkat dasbor sampai scan
-                </span>
-              </span>
-              <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-            </Link>
-          </nav>
-        </SieraCard>
+        <SieraList>
+          <SieraRowLink
+            href="/tenant?panduan=rantai&fresh=1"
+            icon={CircleHelp}
+            title="Panduan kelola"
+            subtitle="Tur singkat dasbor sampai scan"
+          />
+        </SieraList>
       </section>
 
       <TenantTour

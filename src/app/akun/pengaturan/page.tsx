@@ -1,6 +1,5 @@
 import {
   Bell,
-  ChevronRight,
   CircleHelp,
   Database,
   ReceiptText,
@@ -8,9 +7,8 @@ import {
   Store,
   UserRound,
 } from "lucide-react";
-import Link from "next/link";
 import { SignOutButton } from "@/app/(public)/profil/sign-out-button";
-import { SieraSectionTitle, SieraTile, sieraCardClass } from "@/components/siera";
+import { SieraList, SieraRowLink, SieraSectionTitle } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 
 interface Row {
@@ -25,26 +23,17 @@ function Group({ heading, label, rows }: { heading: string; label: string; rows:
   return (
     <section aria-labelledby={id} className="flex flex-col gap-3">
       <SieraSectionTitle id={id}>{heading}</SieraSectionTitle>
-      <nav
-        aria-label={label}
-        className={`${sieraCardClass} divide-y divide-dashed divide-[#E8ECE9] !p-0`}
-      >
-        {rows.map((r) => {
-          const Icon = r.icon;
-          return (
-            <Link key={r.href} href={r.href} className="flex min-h-11 items-center gap-3 p-4">
-              <SieraTile>
-                <Icon className="size-5" />
-              </SieraTile>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-semibold">{r.title}</span>
-                <span className="block text-[12px] text-[#64746B]">{r.desc}</span>
-              </span>
-              <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
-            </Link>
-          );
-        })}
-      </nav>
+      <SieraList aria-label={label}>
+        {rows.map((r) => (
+          <SieraRowLink
+            key={r.href}
+            href={r.href}
+            icon={r.icon}
+            title={r.title}
+            subtitle={r.desc}
+          />
+        ))}
+      </SieraList>
     </section>
   );
 }

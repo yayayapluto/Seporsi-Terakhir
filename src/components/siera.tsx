@@ -1,10 +1,12 @@
 import { cn } from "cn";
 import type { LucideIcon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 /** Token class card Siera — untuk section ber-label yang wajib pertahankan tag + aria. */
 export const sieraCardClass =
-  "rounded-[20px] border border-[#E8ECE9] bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]";
+  "overflow-hidden rounded-[20px] border border-[#E8ECE9] bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]";
 
 /** Card Siera standar: putih, radius 20, border #E8ECE9, shadow 1px. */
 export function SieraCard({ className, children }: { className?: string; children: ReactNode }) {
@@ -95,5 +97,69 @@ export function SieraTenantHeader({
       <h1 className="text-3xl font-bold">{title}</h1>
       <div className="text-muted-foreground">{children}</div>
     </div>
+  );
+}
+
+/** Wadah grouped list: radius tetap, overflow hidden, tanpa padding, divider solid. */
+export const sieraListClass = "overflow-hidden rounded-[20px] border border-[#E8ECE9] bg-white";
+
+/** List homogen: divider solid 1px antar baris, tanpa dashed. */
+export function SieraList({
+  className,
+  children,
+  ...rest
+}: {
+  className?: string;
+  children: ReactNode;
+} & React.HTMLAttributes<HTMLUListElement>) {
+  return (
+    <ul {...rest} className={cn(sieraListClass, "divide-y divide-[#E8ECE9]", className)}>
+      {children}
+    </ul>
+  );
+}
+
+/** Tata letak baris: flex 64px, padding simetris 14px/16px. */
+export const sieraRowLayoutClass = "flex min-h-16 items-center gap-3 px-4 py-3.5";
+
+/** Interaksi baris: hover/focus/active mengisi penuh, radius ikut kartu. */
+export const sieraRowActionClass =
+  "outline-none transition-colors hover:bg-[#F1F5F2] focus-visible:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#2E7D4F] active:bg-[#E8ECE9]";
+
+/** Baris navigasi: ikon 40 + teks truncate + chevron 20. */
+export function SieraRowLink({
+  href,
+  icon: Icon,
+  title,
+  subtitle,
+  onNavigate,
+}: {
+  href: string;
+  icon: LucideIcon;
+  title: ReactNode;
+  subtitle?: ReactNode;
+  onNavigate?: () => void;
+}) {
+  return (
+    <li>
+      <Link
+        href={href}
+        onClick={onNavigate}
+        className={cn(sieraRowLayoutClass, sieraRowActionClass, "w-full text-left")}
+      >
+        <SieraTile>
+          <Icon className="size-5" strokeWidth={1.75} aria-hidden />
+        </SieraTile>
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className="truncate text-[15px] leading-[1.3] font-semibold text-[#1C2826]">
+            {title}
+          </span>
+          {subtitle != null && (
+            <span className="truncate text-[12px] leading-[1.4] text-[#64746B]">{subtitle}</span>
+          )}
+        </span>
+        <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+      </Link>
+    </li>
   );
 }
