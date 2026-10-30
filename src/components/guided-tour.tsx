@@ -151,14 +151,29 @@ export function GuidedTour({
         return;
       }
       const w = 340;
+      const gap = 16;
       const left = Math.min(Math.max(16, r.left), window.innerWidth - w - 16);
-      let top = r.bottom + 12;
-      if (top + 300 > window.innerHeight) top = Math.max(16, r.top - 312);
+      const cardEl = document.querySelector(`[data-tour-card="${tourKey}"]`);
+      const h =
+        cardEl instanceof HTMLElement && cardEl.offsetHeight > 0 ? cardEl.offsetHeight : 360;
+      let top = r.bottom + gap;
+      if (top + h + gap > window.innerHeight) top = r.top - h - gap;
+      if (top < gap) top = Math.max(gap, window.innerHeight - h - gap);
       setAnchor({ top, left });
     };
     const t = window.setTimeout(place, 60);
     window.addEventListener("resize", place);
     window.addEventListener("orientationchange", place);
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        place();
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
     const prev = document.activeElement as HTMLElement | null;
     const root = document.querySelector('[role="dialog"]');
     const btn = root?.querySelector("button:last-of-type") as HTMLElement | undefined;
@@ -188,6 +203,7 @@ export function GuidedTour({
       window.clearTimeout(t);
       window.removeEventListener("resize", place);
       window.removeEventListener("orientationchange", place);
+      window.removeEventListener("scroll", onScroll, { capture: true });
       document.removeEventListener("keydown", onKey);
       el.classList.remove("tour-spotlight");
       prev?.focus?.();
@@ -353,6 +369,7 @@ export function GuidedTour({
             <AnimatePresence mode="wait">
               <motion.div
                 key={step.target}
+                data-tour-card={tourKey}
                 role="dialog"
                 aria-modal="true"
                 aria-label={`Panduan ${idx + 1} dari ${total}: ${step.title}`}
