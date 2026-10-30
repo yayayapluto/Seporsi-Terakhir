@@ -69,8 +69,7 @@ export default async function BerandaPage({
   searchParams?: Promise<{
     mode?: string;
     tour?: string;
-    chaining?: string;
-    lastStep?: string;
+    panduan?: string;
     fresh?: string;
   }>;
 }) {
@@ -103,7 +102,7 @@ export default async function BerandaPage({
     .eq("student_id", user.id);
   const showOnboard = (count ?? 0) === 0;
   const sp = (await searchParams) ?? {};
-  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
+  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
   // Pintu masuk 1: new user (belum pernah pesan) di URL bersih langsung masuk rantai.
   const autoChain = shouldAutoChain(showOnboard, tourForced || tourJourney);
   return (
@@ -140,7 +139,6 @@ export default async function BerandaPage({
             journey={tourJourney || autoChain}
             userId={user.id}
             fresh={sp.fresh === "1"}
-            entryStep={tourEntry}
             next={tourJourney || autoChain ? (getJourneyNext("/beranda") ?? undefined) : undefined}
             journeyLabel="Bagian 1 dari 4 · Beranda"
             intro={{

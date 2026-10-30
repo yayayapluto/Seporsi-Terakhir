@@ -4,6 +4,8 @@ import { z } from "zod";
 export const TOUR_VERSION = 1;
 export const STALE_DAYS = 7;
 const STALE_MS = STALE_DAYS * 86_400_000;
+/** Batas kedaluwarsa progres/rantai (milidetik). */
+export const STALE_AFTER_MS = STALE_MS;
 
 export type TourStatus = "in_progress" | "completed" | "skipped";
 

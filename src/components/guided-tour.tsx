@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
+import { getChainLabel, getJourneyNext, isChainActive, setChainActive } from "@/lib/tour-journey";
 import { placeTooltip } from "@/lib/tour-placement";
 import { isStale, resolveStart, stepIdFor, TOUR_VERSION } from "@/lib/tour-progress";
 import { useTourProgress } from "@/lib/use-tour-progress";
@@ -61,7 +62,6 @@ export function GuidedTour({
   finishLabel,
   userId = "anon",
   fresh = false,
-  entryStep = null,
 }: {
   tourKey: string;
   steps: TourStep[];
@@ -80,8 +80,6 @@ export function GuidedTour({
   userId?: string;
   /** Reset progres lalu mulai dari awal (dipakai tautan "mulai ulang"). */
   fresh?: boolean;
-  /** Indeks langkah definisi untuk lompat langsung (dari ?lastStep). Sekali pakai. */
-  entryStep?: number | null;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -108,8 +106,9 @@ export function GuidedTour({
   const maxPos = useRef(0);
   const resumeDefIdx = useRef<number | null>(null);
   const freshUsed = useRef(false);
-  const entryStepRef = useRef<number | null>(entryStep ?? null);
   const settledRef = useRef(false);
+  // Tiba lewat rantai (flag sesi aktif, URL bersih): lompat langsung ke langkah 1.
+  const chainArrivalRef = useRef(false);
 
   const progress = useTourProgress({ tourKey, tourId: tourKey, userId });
 
@@ -143,10 +142,11 @@ export function GuidedTour({
         }
       }
     }
-    // Chain arrival (?lastStep=) menang atas status tersimpan: rantai yang sedang
-    // jalan tidak boleh diblokir completed/skipped dari sesi sebelumnya.
-    const entryForced = entryStepRef.current != null && (forced || journey);
-    const decision = entryForced
+    // Rantai: flag sesi aktif + halaman ini bagian rantai + bukan pintu masuk.
+    // Menang atas status tersimpan agar rantai tidak diblokir sesi kemarin.
+    const arrival = !journey && isChainActive() && getChainLabel(pathname) != null;
+    chainArrivalRef.current = arrival;
+    const decision = arrival
       ? { action: "reset" as const }
       : resolveStart(progress.saved, allIds, TOUR_VERSION, doFresh);
     if (decision.action === "hide") return;
@@ -171,6 +171,7 @@ export function GuidedTour({
       if (settled) {
         window.clearInterval(timer);
         settledRef.current = true;
+        if (journey) setChainActive(true);
         if (best.length === 0) {
           if ((journey || forced) && hasIntro) {
             setOrder([]);
@@ -186,14 +187,10 @@ export function GuidedTour({
           setPhase(hasIntro || forced || journey ? "intro" : "step");
           return;
         }
-        // Lompat langsung dari URL (?lastStep=): tanpa intro, tanpa prompt.
-        if (entryStepRef.current != null) {
-          const at = orderDefIdx.current.indexOf(entryStepRef.current);
-          entryStepRef.current = null;
-          const pos = at >= 0 ? at : orderDefIdx.current.findIndex((d) => d > 0);
-          const mapped = pos >= 0 ? pos : best.length - 1;
-          setIdx(mapped);
-          maxPos.current = mapped;
+        // Tiba lewat rantai (URL bersih, flag aktif): langsung langkah 1.
+        if (chainArrivalRef.current) {
+          setIdx(0);
+          maxPos.current = 0;
           setPhase("step");
           return;
         }
@@ -259,38 +256,44 @@ export function GuidedTour({
       currentStepId: stepIdFor(tourKey, cur),
       furthestStepId: stepIdFor(tourKey, far),
     });
-    if (journey && typeof window !== "undefined") {
-      const sp = new URLSearchParams(window.location.search);
-      sp.set("lastStep", String(orderDefIdx.current[pos] ?? pos));
-      window.history.replaceState(null, "", `${window.location.pathname}?${sp.toString()}`);
-    }
-  }, [phase, idx, order, tourKey, progress.record, journey]);
+  }, [phase, idx, order, tourKey, progress.record]);
+
+  // Rantai aktif di halaman ini (pintu masuk atau tiba dari halaman sebelum).
+  const inChain = journey || chainArrivalRef.current;
+  // Lanjut rantai dihitung di klien agar URL tetap bersih (tanpa param).
+  const effNext = next ?? (isChainActive() ? (getJourneyNext(pathname) ?? undefined) : undefined);
+  const effLabel = journeyLabel ?? (inChain || effNext ? getChainLabel(pathname) : undefined);
 
   const dismiss = useCallback(() => {
     progress.record({ status: "skipped" }, { immediate: true });
+    setChainActive(false);
+    try {
+      localStorage.removeItem(RESUME_KEY);
+    } catch {
+      /* abaikan */
+    }
     setPhase(null);
-    if (journey) router.replace(pathname);
-  }, [journey, router, pathname, progress]);
+  }, [progress]);
 
   const complete = useCallback(() => {
     progress.record({ status: "completed" }, { immediate: true });
     try {
-      if (next) {
-        if (next.includes("chaining=true")) localStorage.setItem(RESUME_KEY, next);
-        else localStorage.removeItem(RESUME_KEY);
+      if (effNext) {
+        localStorage.setItem(RESUME_KEY, effNext);
+        setChainActive(true);
       } else {
         localStorage.removeItem(RESUME_KEY);
+        setChainActive(false);
       }
     } catch {
       /* abaikan */
     }
-    if (next) {
-      window.location.assign(next);
+    if (effNext) {
+      window.location.assign(effNext);
     } else {
       setPhase(null);
-      if (journey) router.replace(pathname);
     }
-  }, [tourKey, next, journey, router, pathname, progress]);
+  }, [effNext, progress]);
 
   // Tab lain menyelesaikan/melewati: tutup tur di sini.
   useEffect(() => {
@@ -552,9 +555,7 @@ export function GuidedTour({
                   {intro.title}
                 </h2>
                 <p className="mt-1 text-sm leading-relaxed text-[#64746B]">{intro.body}</p>
-                {journey && journeyLabel && (
-                  <p className="mt-2 text-xs font-bold text-[#2E7D4F]">{journeyLabel}</p>
-                )}
+                {effLabel && <p className="mt-2 text-xs font-bold text-[#2E7D4F]">{effLabel}</p>}
                 {order.length === 0 && totalSteps > 0 && (
                   <p className="mt-2 text-xs font-semibold text-[#64746B]">
                     Belum ada konten untuk bagian ini — lanjut ke berikutnya.
@@ -726,9 +727,7 @@ export function GuidedTour({
             <p className="text-xs font-semibold text-[#64746B]">
               {idx + 1} dari {total}
             </p>
-            {journey && journeyLabel && (
-              <p className="-mt-0.5 text-xs font-bold text-[#2E7D4F]">{journeyLabel}</p>
-            )}
+            {effLabel && <p className="-mt-0.5 text-xs font-bold text-[#2E7D4F]">{effLabel}</p>}
             {totalSteps > total && (
               <p className="mt-0.5 text-xs text-[#64746B]">
                 {total} dari {totalSteps} bagian tersedia saat ini.
@@ -789,11 +788,11 @@ export function GuidedTour({
   );
 }
 
-/** URL lanjutan journey yang tersimpan (halaman terakhir dikunjungi). */
+/** URL lanjutan rantai yang tersimpan (halaman terakhir dikunjungi). */
 export function getJourneyResume(): string | null {
   try {
     const v = localStorage.getItem(RESUME_KEY);
-    return v && (v.includes("chaining=true") || v.includes("tour=journey")) ? v : null;
+    return v && v.startsWith("/") ? v : null;
   } catch {
     return null;
   }

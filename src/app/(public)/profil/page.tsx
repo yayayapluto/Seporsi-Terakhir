@@ -95,14 +95,13 @@ export default async function ProfilPage({
   searchParams?: Promise<{
     mode?: string;
     tour?: string;
-    chaining?: string;
-    lastStep?: string;
+    panduan?: string;
     fresh?: string;
   }>;
 }) {
   const { user } = await requireRole("/profil", "student");
   const sp = (await searchParams) ?? {};
-  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
+  const { forced: tourForced, journey: tourJourney } = parseTourParams(sp);
   const p = await loadProfile(user.id);
   const label = roleLabel(p);
   const tenantStatus =
@@ -289,7 +288,7 @@ export default async function ProfilPage({
           <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
           <nav aria-label="Bantuan" className={`${sieraCardClass} !p-0`}>
             <Link
-              href="/beranda?mode=onboarding&chaining=true&fresh=1"
+              href="/beranda?panduan=rantai&fresh=1"
               className="flex min-h-11 items-center gap-3 p-4"
             >
               <SieraTile>
@@ -317,7 +316,6 @@ export default async function ProfilPage({
         journey={tourJourney}
         userId={user.id}
         fresh={sp.fresh === "1"}
-        entryStep={tourEntry}
         next={tourJourney ? "/katalog" : undefined}
         journeyLabel="Bagian 4 dari 4 · Akun"
         finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}
