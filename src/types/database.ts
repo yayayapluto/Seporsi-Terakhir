@@ -247,6 +247,7 @@ export type Database = {
           created_at: string
           id: string
           is_approved: boolean
+          is_listed: boolean
           location_note: string | null
           name: string
           owner_id: string
@@ -256,6 +257,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_approved?: boolean
+          is_listed?: boolean
           location_note?: string | null
           name: string
           owner_id: string
@@ -265,6 +267,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_approved?: boolean
+          is_listed?: boolean
           location_note?: string | null
           name?: string
           owner_id?: string
@@ -335,6 +338,7 @@ export type Database = {
           created_at: string
           id: string
           is_approved: boolean
+          is_listed: boolean
           location_note: string | null
           name: string
           owner_id: string
@@ -353,6 +357,7 @@ export type Database = {
           created_at: string
           id: string
           is_approved: boolean
+          is_listed: boolean
           location_note: string | null
           name: string
           owner_id: string
@@ -504,6 +509,26 @@ export type Database = {
         }
       }
       reject_tenant: { Args: { p_tenant_id: string }; Returns: undefined }
+      set_tenant_listed: {
+        Args: { p_listed: boolean; p_tenant_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          is_approved: boolean
+          is_listed: boolean
+          location_note: string | null
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "tenants"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      sweep_expired_orders: { Args: never; Returns: number }
       tenant_cancel_order: {
         Args: { p_order_id: string }
         Returns: {
@@ -585,6 +610,7 @@ export type Database = {
           created_at: string
           id: string
           is_approved: boolean
+          is_listed: boolean
           location_note: string | null
           name: string
           owner_id: string
@@ -631,7 +657,7 @@ export type Database = {
       }
     }
     Enums: {
-      order_status: "reserved" | "picked_up" | "cancelled"
+      order_status: "reserved" | "picked_up" | "cancelled" | "unpicked"
       user_role: "student" | "tenant" | "admin"
     }
     CompositeTypes: {
@@ -763,7 +789,7 @@ export const Constants = {
   },
   public: {
     Enums: {
-      order_status: ["reserved", "picked_up", "cancelled"],
+      order_status: ["reserved", "picked_up", "cancelled", "unpicked"],
       user_role: ["student", "tenant", "admin"],
     },
   },

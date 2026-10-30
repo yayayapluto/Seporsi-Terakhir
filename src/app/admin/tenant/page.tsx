@@ -4,6 +4,25 @@ import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ApproveList } from "./approve-list";
+import { ListedList, type ListedTenant } from "./listed-list";
+
+async function loadListed(): Promise<{ tenants: ListedTenant[] }> {
+  const supabase = await createClient();
+  await connection();
+  const { data } = await supabase
+    .from("tenants")
+    .select("id, name, location_note, is_listed")
+    .eq("is_approved", true)
+    .order("name", { ascending: true });
+  return {
+    tenants: (data ?? []).map((t) => ({
+      id: t.id,
+      name: t.name,
+      locationNote: t.location_note,
+      isListed: t.is_listed,
+    })),
+  };
+}
 
 export interface PendingTenant {
   id: string;
@@ -46,6 +65,18 @@ export default function AdminTenantPage() {
       <Suspense fallback={<LoadingSkeleton />}>
         <PendingBody />
       </Suspense>
+      <section aria-labelledby="visibilitas-heading" className="flex flex-col gap-3">
+        <h2 id="visibilitas-heading" className="text-xl font-bold">
+          Visibilitas di katalog
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Sembunyikan gerai bermasalah dari katalog tanpa menghapus datanya. Porsi yang sudah
+          dipesan tetap bisa diambil.
+        </p>
+        <Suspense fallback={<LoadingSkeleton />}>
+          <ListedBody />
+        </Suspense>
+      </section>
     </div>
   );
 }
@@ -64,4 +95,10 @@ async function PendingBody() {
     );
   }
   return <ApproveList tenants={tenants} />;
+}
+
+async function ListedBody() {
+  await requireRole("/admin/tenant", "admin");
+  const { tenants } = await loadListed();
+  return <ListedList tenants={tenants} />;
 }

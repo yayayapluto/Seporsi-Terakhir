@@ -33,8 +33,9 @@ async function loadCatalog(): Promise<{
   const { data, error } = await supabase
     .from("portions")
     .select(
-      "id, quantity_remaining, cooked_at, expires_at, release_at, discount_price, menu_items!inner(name, normal_price, image_path), tenants!inner(name, location_note)",
+      "id, quantity_remaining, cooked_at, expires_at, release_at, discount_price, menu_items!inner(name, normal_price, image_path), tenants!inner(name, location_note, is_listed)",
     )
+    .eq("tenants.is_listed", true)
     .gt("expires_at", now.toISOString())
     .lte("release_at", now.toISOString())
     .order("expires_at", { ascending: true })
