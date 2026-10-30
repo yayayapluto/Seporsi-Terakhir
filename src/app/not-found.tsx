@@ -7,16 +7,20 @@ export const metadata: Metadata = { title: "Halaman tidak ditemukan" };
 /** 404: alamat salah/kedaluwarsa — satu jalan keluar ke beranda. */
 export default function NotFound() {
   return (
-    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center gap-4 px-4 py-16 text-center">
-      <p className="text-sm font-semibold text-muted-foreground">Halaman tidak ditemukan</p>
-      <h1 className="text-balance font-display text-3xl font-bold">
-        Alamat ini tidak ada di kantin kami
-      </h1>
-      <p className="text-pretty text-muted-foreground">
-        Mungkin tautannya salah ketik atau halamannya sudah dipindah. Porsi sore ini masih
-        menunggumu di beranda.
-      </p>
-      <Link href="/" className={buttonVariants({ size: "lg", className: "mt-2 min-h-11" })}>
+    <main className="mx-auto flex w-full max-w-[430px] flex-1 flex-col justify-center gap-4 px-4 py-10">
+      <div className="flex flex-col gap-1 rounded-[20px] border border-[#E8ECE9] bg-gradient-to-b from-[#EAF5ED] to-white p-5">
+        <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
+          Alamat ini tidak ada di kantin kami
+        </h1>
+        <p className="text-sm text-[#1E5A36]">
+          Mungkin tautannya salah ketik atau halamannya sudah dipindah. Porsi sore ini masih
+          menunggumu di beranda.
+        </p>
+      </div>
+      <Link
+        href="/"
+        className={buttonVariants({ size: "lg", className: "min-h-12 w-full text-[15px]" })}
+      >
         Kembali ke beranda
       </Link>
     </main>
