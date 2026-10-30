@@ -2,46 +2,87 @@
 
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Spinner } from "@/components/spinner";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { createClient } from "@/lib/supabase/client";
 
-/** Danger Action Card — satu-satunya tempat aksi Keluar (Siera §5.3). */
+/** Danger Action Card — klik buka dialog konfirmasi, spinner hanya di tombol Keluar dialog. */
 export function SignOutButton() {
   const router = useRouter();
-  const [busy, setBusy] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [pending, startTransition] = useTransition();
+
+  function onConfirm() {
+    startTransition(async () => {
+      try {
+        await fetch("/auth/sign-out", { method: "POST" });
+        await createClient().auth.signOut();
+      } finally {
+        setOpen(false);
+        router.push("/");
+        router.refresh();
+      }
+    });
+  }
+
   return (
-    <button
-      type="button"
-      disabled={busy}
-      onClick={async () => {
-        setBusy(true);
-        try {
-          await fetch("/auth/sign-out", { method: "POST" });
-          await createClient().auth.signOut();
-        } finally {
-          router.push("/");
-          router.refresh();
-        }
-      }}
-      className="flex min-h-11 w-full items-center gap-3 rounded-[20px] border border-[#E8ECE9] bg-card p-4 text-left shadow-[0_1px_2px_rgba(16,24,40,.04)] transition-opacity active:opacity-70 disabled:opacity-60"
-    >
-      <span
-        aria-hidden
-        className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FEE2E2] text-[#BA1A1A]"
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="flex min-h-11 w-full items-center gap-3 rounded-[20px] border border-[#E8ECE9] bg-card p-4 text-left shadow-[0_1px_2px_rgba(16,24,40,.04)] transition-opacity active:opacity-70"
       >
-        <LogOut className="size-5" />
-      </span>
-      <span className="flex-1 text-sm font-bold text-[#BA1A1A]">
-        {busy ? (
-          <span className="flex items-center gap-2">
-            <Spinner />
-            Keluar…
-          </span>
-        ) : (
-          "Keluar"
-        )}
-      </span>
-    </button>
+        <span
+          aria-hidden
+          className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FEE2E2] text-[#BA1A1A]"
+        >
+          <LogOut className="size-5" />
+        </span>
+        <span className="flex-1 text-sm font-bold text-[#BA1A1A]">Keluar</span>
+      </button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogTitle>Keluar dari akun?</DialogTitle>
+          <DialogDescription>
+            Sesi di perangkat ini diakhiri. Pesanan aktif dan riwayatmu tetap tersimpan.
+          </DialogDescription>
+          <DialogFooter>
+            <Button
+              type="button"
+              autoFocus
+              className="min-h-11"
+              onClick={() => setOpen(false)}
+              disabled={pending}
+            >
+              Batal
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-11 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+              onClick={onConfirm}
+              disabled={pending}
+            >
+              {pending ? (
+                <>
+                  <Spinner />
+                  Keluar…
+                </>
+              ) : (
+                "Keluar"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
