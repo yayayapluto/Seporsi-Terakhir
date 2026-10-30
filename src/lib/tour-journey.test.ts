@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
+import { getJourneyNext, getReplayNext, parseTourParams } from "@/lib/tour-journey";
 
 describe("parseTourParams", () => {
   it("starts nothing without params", () => {
@@ -27,5 +27,15 @@ describe("getJourneyNext", () => {
     expect(getJourneyNext("/")).toBeNull();
     expect(getJourneyNext("/tenant")).toBeNull();
     expect(getJourneyNext("/katalog/abc")).toBeNull();
+  });
+});
+
+describe("getReplayNext", () => {
+  it("chains replays with mode=onboarding", () => {
+    expect(getReplayNext("/beranda")).toBe("/katalog?mode=onboarding");
+    expect(getReplayNext("/katalog")).toBe("/pesanan?mode=onboarding");
+    expect(getReplayNext("/pesanan")).toBe("/profil?mode=onboarding");
+    expect(getReplayNext("/profil")).toBeNull();
+    expect(getReplayNext("/tenant")).toBeNull();
   });
 });

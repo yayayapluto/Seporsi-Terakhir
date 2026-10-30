@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
-import { getJourneyNext } from "@/lib/tour-journey";
+import { getJourneyNext, getReplayNext } from "@/lib/tour-journey";
 import type { CatalogPortion } from "./page";
 
 const BATCH = 12;
@@ -413,7 +413,13 @@ export function KatalogList({
         forced={tourForced}
         auto={false}
         journey={tourJourney}
-        next={tourJourney ? (getJourneyNext("/katalog") ?? undefined) : undefined}
+        next={
+          tourJourney
+            ? (getJourneyNext("/katalog") ?? undefined)
+            : tourForced
+              ? (getReplayNext("/katalog") ?? undefined)
+              : undefined
+        }
         journeyLabel="Bagian 2 dari 4 · Katalog"
         intro={{
           title: "Cara baca katalog?",

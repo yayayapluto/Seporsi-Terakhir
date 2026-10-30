@@ -3,7 +3,7 @@ import { GuidedTour } from "@/components/guided-tour";
 import { SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
+import { getJourneyNext, getReplayNext, parseTourParams } from "@/lib/tour-journey";
 import { OrdersList } from "./pesanan-list";
 
 export interface MyOrder {
@@ -68,7 +68,13 @@ export default async function PesananPage({
         journey={tourJourney}
         userId={user.id}
         fresh={sp.fresh === "1"}
-        next={tourJourney ? (getJourneyNext("/pesanan") ?? undefined) : undefined}
+        next={
+          tourJourney
+            ? (getJourneyNext("/pesanan") ?? undefined)
+            : tourForced
+              ? (getReplayNext("/pesanan") ?? undefined)
+              : undefined
+        }
         journeyLabel="Bagian 3 dari 4 · Pesanan"
         intro={{
           title: "Lacak pesananmu?",

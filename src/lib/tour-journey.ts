@@ -21,3 +21,14 @@ export function parseTourParams(sp: { mode?: string; tour?: string }): {
 export function getJourneyNext(pathname: string): string | null {
   return JOURNEY_CHAIN[pathname] ?? null;
 }
+
+const REPLAY_CHAIN: Record<string, string> = {
+  "/beranda": "/katalog?mode=onboarding",
+  "/katalog": "/pesanan?mode=onboarding",
+  "/pesanan": "/profil?mode=onboarding",
+};
+
+/** Rantai replay tunggal (?mode=onboarding): selesai lanjut ke halaman berikut. */
+export function getReplayNext(pathname: string): string | null {
+  return REPLAY_CHAIN[pathname] ?? null;
+}

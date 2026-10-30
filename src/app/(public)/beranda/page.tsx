@@ -11,7 +11,7 @@ import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
-import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
+import { getJourneyNext, getReplayNext, parseTourParams } from "@/lib/tour-journey";
 import { OnboardBanner } from "./onboard-banner";
 import { SoonScroller } from "./soon-scroller";
 
@@ -132,7 +132,13 @@ export default async function BerandaPage({
             journey={tourJourney}
             userId={user.id}
             fresh={sp.fresh === "1"}
-            next={tourJourney ? (getJourneyNext("/beranda") ?? undefined) : undefined}
+            next={
+              tourJourney
+                ? (getJourneyNext("/beranda") ?? undefined)
+                : tourForced
+                  ? (getReplayNext("/beranda") ?? undefined)
+                  : undefined
+            }
             journeyLabel="Bagian 1 dari 4 · Beranda"
             intro={{
               title: "Mau lihat panduan singkat beranda?",
