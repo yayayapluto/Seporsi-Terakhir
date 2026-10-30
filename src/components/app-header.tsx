@@ -9,7 +9,7 @@ export async function AppHeader({ title }: { title: string }) {
   const current = await getCurrentUser();
   const unread = await unreadFor(current?.role ?? null, current?.user.id ?? null);
   return (
-    <header className="flex h-[60px] items-center justify-between gap-2 border-b border-[#E8ECE9] bg-white px-4">
+    <header className="sticky top-0 z-30 flex h-[60px] items-center justify-between gap-2 border-b border-[#E5E1D8] bg-white px-4 md:px-8">
       <span className="flex min-w-0 items-center gap-2">
         <Image
           src="/images/Logo_UPNVJ.png"

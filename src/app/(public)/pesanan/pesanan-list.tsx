@@ -60,22 +60,24 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-3 border-b pb-4">
-        <Label htmlFor="status-filter" className="text-sm font-semibold">
-          Status
-        </Label>
-        <Select value={filter} onValueChange={(v) => setFilter(String(v))}>
-          <SelectTrigger id="status-filter" className="h-11 w-fit min-w-44">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {FILTERS.map((f) => (
-              <SelectItem key={f.value} value={f.value}>
-                {f.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-b pb-4">
+        <span className="flex items-center gap-2">
+          <Label htmlFor="status-filter" className="text-sm font-semibold">
+            Status
+          </Label>
+          <Select value={filter} onValueChange={(v) => setFilter(String(v))}>
+            <SelectTrigger id="status-filter" className="h-11 w-fit min-w-44 max-w-[60vw]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {FILTERS.map((f) => (
+                <SelectItem key={f.value} value={f.value}>
+                  {f.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </span>
         <output className="text-sm text-muted-foreground">{filtered.length} pesanan</output>
       </div>
 
@@ -175,18 +177,13 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
           <DialogTitle>Batalkan pesanan?</DialogTitle>
           <DialogDescription>Stok porsi akan dikembalikan ke katalog.</DialogDescription>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              className="min-h-11"
-              onClick={() => setConfirmId(null)}
-            >
+            <Button type="button" autoFocus className="min-h-11" onClick={() => setConfirmId(null)}>
               Kembali
             </Button>
             <Button
               type="button"
-              variant="destructive"
-              className="min-h-11"
+              variant="outline"
+              className="min-h-11 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
               disabled={confirmId === null || cancelling !== null}
               onClick={() => confirmId && cancel(confirmId)}
             >

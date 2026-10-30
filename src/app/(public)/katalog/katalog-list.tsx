@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GuidedTour } from "@/components/guided-tour";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -15,7 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
-import { Reveal } from "../reveal";
 import type { CatalogPortion } from "./page";
 
 const BATCH = 12;
@@ -78,38 +76,42 @@ export function KatalogList({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b pb-4" data-tour="filter">
-        <Label htmlFor="tenant-filter" className="text-sm font-semibold">
-          Tenant
-        </Label>
-        <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
-          <SelectTrigger id="tenant-filter" className="h-11 w-fit min-w-32 max-w-[50vw]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent align="start" alignItemWithTrigger={false}>
-            <SelectItem value="semua">Semua tenant</SelectItem>
-            {tenants.map((t) => (
-              <SelectItem key={t} value={t}>
-                {t}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Label htmlFor="sort-filter" className="text-sm font-semibold">
-          Urut
-        </Label>
-        <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
-          <SelectTrigger id="sort-filter" className="h-11 w-fit min-w-32 max-w-[50vw]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent align="start" alignItemWithTrigger={false}>
-            {SORTS.map((s) => (
-              <SelectItem key={s.value} value={s.value}>
-                {s.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-b pb-4" data-tour="filter">
+        <span className="flex items-center gap-2">
+          <Label htmlFor="tenant-filter" className="text-sm font-semibold">
+            Tenant
+          </Label>
+          <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
+            <SelectTrigger id="tenant-filter" className="h-11 w-fit min-w-32 max-w-[60vw]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent align="start" alignItemWithTrigger={false}>
+              <SelectItem value="semua">Semua tenant</SelectItem>
+              {tenants.map((t) => (
+                <SelectItem key={t} value={t}>
+                  {t}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </span>
+        <span className="flex items-center gap-2">
+          <Label htmlFor="sort-filter" className="text-sm font-semibold">
+            Urut
+          </Label>
+          <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
+            <SelectTrigger id="sort-filter" className="h-11 w-fit min-w-32 max-w-[60vw]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent align="start" alignItemWithTrigger={false}>
+              {SORTS.map((s) => (
+                <SelectItem key={s.value} value={s.value}>
+                  {s.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </span>
         <p className="flex basis-full text-xs text-muted-foreground">
           <output>
             {filtered.length} porsi
@@ -118,74 +120,69 @@ export function KatalogList({
         </p>
       </div>
       {filtered.length === 0 ? (
-        <div className="border-b py-10 text-center">
-          <p className="font-bold">Belum ada porsi tersedia</p>
-          <p className="mt-1 text-sm text-muted-foreground">
+        <div className="rounded-[20px] border border-dashed border-[#E8ECE9] bg-white px-4 py-10 text-center">
+          <p className="text-sm font-bold text-[#1C2826]">Belum ada porsi tersedia</p>
+          <p className="mt-1 text-sm text-[#64746B]">
             Katalog biasanya diperbarui tenant pukul 15.30–16.30. Cek lagi sore ini.
           </p>
         </div>
       ) : (
-        <ul className="divide-y divide-border border-b">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((p) => {
             const soldOut = p.quantityRemaining <= 0;
             return (
-              <li key={p.id}>
-                <Reveal className="group relative isolate flex flex-col gap-3 py-4 transition-colors duration-150 hover:bg-muted/40 motion-reduce:transition-none sm:flex-row">
-                  <div className="flex gap-3">
-                    <div className="relative block size-20 shrink-0 overflow-hidden rounded-lg bg-muted">
-                      {p.imageUrl ? (
-                        <Image
-                          src={p.imageUrl}
-                          alt={p.menuName}
-                          fill
-                          sizes="80px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <span className="flex size-full flex-col items-center justify-center gap-0.5 text-muted-foreground">
-                          <ImageOff className="size-5" aria-hidden />
-                          <span className="px-1 text-center text-xs leading-tight">
-                            tidak ada gambar
-                          </span>
+              <li
+                key={p.id}
+                className="overflow-hidden rounded-[20px] border border-[#E8ECE9] bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]"
+              >
+                <Link
+                  href={`/katalog/${p.id}`}
+                  aria-label={soldOut ? `${p.menuName} habis` : `Lihat dan pesan ${p.menuName}`}
+                  aria-disabled={soldOut}
+                  className="flex min-h-11 flex-col"
+                >
+                  <span className="relative block h-28 w-full shrink-0 overflow-hidden bg-[#F4EFE6]">
+                    {p.imageUrl ? (
+                      <Image
+                        src={p.imageUrl}
+                        alt={p.menuName}
+                        fill
+                        sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="flex size-full flex-col items-center justify-center gap-0.5 text-[#64746B]">
+                        <ImageOff className="size-5" aria-hidden />
+                        <span className="px-1 text-center text-xs leading-tight">
+                          Foto porsi belum tersedia
                         </span>
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h2 className="line-clamp-2 min-h-10 break-words text-sm font-bold leading-snug sm:text-base">
-                        {p.menuName}
-                      </h2>
-                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                        {p.tenantName} · Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
-                        {soldOut ? " · Habis" : ` · Sisa ${p.quantityRemaining}`}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex shrink-0 flex-row items-center justify-between gap-2 sm:ml-auto sm:flex-col sm:items-end sm:justify-between">
-                    <p className="flex flex-wrap items-baseline gap-x-1.5 text-sm">
-                      <del className="text-xs text-muted-foreground">
-                        <span className="sr-only">Harga awal: </span>
-                        {formatIDR(p.normalPrice)}
-                      </del>
-                      <strong className="text-base sm:text-lg">{formatIDR(p.discountPrice)}</strong>
-                    </p>
-                    <Button
-                      type="button"
-                      disabled={soldOut}
-                      render={
-                        <Link
-                          href={`/katalog/${p.id}`}
-                          aria-label={
-                            soldOut ? `${p.menuName} habis` : `Lihat dan pesan ${p.menuName}`
-                          }
-                          aria-disabled={soldOut}
-                          className="relative z-10 min-h-11 flex-1 sm:flex-none"
-                        />
-                      }
-                    >
-                      {soldOut ? "Habis" : "Lihat & Pesan"}
-                    </Button>
-                  </div>
-                </Reveal>
+                      </span>
+                    )}
+                    {soldOut && (
+                      <span className="absolute inset-0 flex items-center justify-center bg-white/70 text-sm font-bold text-[#1C2826]">
+                        Habis
+                      </span>
+                    )}
+                  </span>
+                  <span className="flex flex-col gap-0.5 p-4 pb-3">
+                    <span className="line-clamp-2 text-[15px] leading-snug font-bold text-[#1C2826]">
+                      {p.menuName}
+                    </span>
+                    <span className="truncate text-[13px] text-[#64746B]">{p.tenantName}</span>
+                  </span>
+                  <span aria-hidden className="mx-4 border-t border-dashed border-[#E8ECE9]" />
+                  <span className="flex flex-col gap-1 p-4 pt-3">
+                    <span className="text-[13px] text-[#64746B]">
+                      Dimasak {formatDateTimeWIB(new Date(p.cookedAt))} · Sisa {p.quantityRemaining}
+                    </span>
+                    <span className="flex flex-wrap items-baseline gap-x-1.5">
+                      <del className="text-xs text-[#64746B]">{formatIDR(p.normalPrice)}</del>
+                      <strong className="text-base font-extrabold text-[#F28C28]">
+                        {formatIDR(p.discountPrice)}
+                      </strong>
+                    </span>
+                  </span>
+                </Link>
               </li>
             );
           })}

@@ -1,4 +1,4 @@
-import { ChevronRight, Clock3, Store } from "lucide-react";
+import { ChevronRight, Store } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -24,7 +24,7 @@ interface SoonPortion {
   imageUrl: string | null;
 }
 
-async function loadSoon(): Promise<SoonPortion[]> {
+async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }> {
   const supabase = await createClient();
   const now = new Date();
   const { data, error } = await supabase
@@ -36,7 +36,7 @@ async function loadSoon(): Promise<SoonPortion[]> {
     .lte("release_at", now.toISOString())
     .order("expires_at", { ascending: true })
     .limit(6);
-  if (error || !data) return [];
+  if (error || !data) return { portions: [], failed: true };
   const out: SoonPortion[] = [];
   for (const row of data) {
     const menu = row.menu_items as unknown as {
@@ -57,7 +57,7 @@ async function loadSoon(): Promise<SoonPortion[]> {
       imageUrl: menu.image_path ? publicMenuImageUrl(menu.image_path) : null,
     });
   }
-  return out;
+  return { portions: out, failed: false };
 }
 
 export default async function BerandaPage() {
@@ -87,22 +87,22 @@ export default async function BerandaPage() {
   const { count } = await supabase
     .from("orders")
     .select("id", { count: "exact", head: true })
-    .eq("buyer_id", user.id);
+    .eq("student_id", user.id);
   const showOnboard = (count ?? 0) === 0;
   return (
     <>
       <AppHeader title="Beranda" />
-      <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 pt-6 pb-28">
-        <section className="flex flex-col gap-1 rounded-[20px] border border-[#E8ECE9] bg-gradient-to-b from-[#EAF5ED] to-white p-5 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
-          <p className="text-xs font-semibold text-muted-foreground">
+      <div className="flex w-full flex-1 flex-col gap-6 px-4 pt-6 pb-28 md:px-8 md:pb-12">
+        <section className="flex w-full flex-col gap-1 rounded-lg border border-[#E5E1D8] bg-[#EAF5ED] p-5">
+          <p className="text-xs font-bold tracking-wide text-[#1E5A36]">
             {greet}
             {firstName ? `, ${firstName}` : ""}
           </p>
-          <h1 className="text-[22px] leading-[1.3] font-extrabold">
+          <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
             Kantin mau tutup. Masih ada yang enak.
           </h1>
-          <p className="text-sm text-muted-foreground">
-            Sisa hari ini, harga miring. Ambil 16.30-18.30, bayar di tempat.
+          <p className="text-sm text-[#1E5A36]">
+            Sisa hari ini, harga miring. Ambil 16.30–18.30, bayar di tempat.
           </p>
         </section>
         {showOnboard && <OnboardBanner />}
@@ -112,12 +112,6 @@ export default async function BerandaPage() {
         <Suspense fallback={<LoadingSkeleton variant="cards" />}>
           <SoonBody />
         </Suspense>
-        <Link
-          href="/katalog"
-          className={buttonVariants({ size: "lg", className: "h-12 w-full rounded-2xl" })}
-        >
-          Lihat katalog
-        </Link>
       </div>
     </>
   );
@@ -143,16 +137,19 @@ async function ActiveOrdersBody() {
   if (orders.length === 0) return null;
   const now = Date.now();
   return (
-    <section aria-label="Pesanan aktif" className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="text-xs font-semibold text-muted-foreground">
-          Pesanan aktif ({orders.length})
+    <section aria-label="Pesanan aktif" className="flex flex-col gap-1">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <h2 className="text-sm font-bold tracking-tight text-[#1C2826]">
+          Pesanan aktif · {orders.length}
         </h2>
-        <Link href="/pesanan" className="text-sm font-bold text-primary">
+        <Link
+          href="/pesanan"
+          className="min-h-11 content-center text-sm font-bold text-[#2E7D4F] underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+        >
           Lihat Semua
         </Link>
       </div>
-      <ul className="flex flex-col divide-y divide-dashed divide-[#E8ECE9] rounded-[20px] border border-[#E8ECE9] bg-card shadow-[0_1px_2px_rgba(16,24,40,.04)]">
+      <ul className="flex flex-col divide-y divide-dashed divide-[#E8ECE9] border-y border-y-[#E8ECE9] bg-card">
         {orders.map((o) => {
           const left = o.slotEnd
             ? Math.max(0, Math.floor((+new Date(o.slotEnd) - now) / 60_000))
@@ -161,26 +158,25 @@ async function ActiveOrdersBody() {
             <li key={o.orderId}>
               <Link
                 href={`/pesanan/${o.orderId}`}
-                className="flex min-h-11 items-center gap-3 px-4 py-3"
+                className="flex min-h-11 items-center gap-3 py-3"
               >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#F1F5F2] text-primary">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#DCEBE0] text-[#1E5A36]">
                   <Store className="size-5" strokeWidth={1.75} aria-hidden />
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span className="truncate text-sm font-semibold">{o.menuName}</span>
-                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock3 className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
+                  <span className="truncate text-sm font-bold text-[#1C2826]">{o.menuName}</span>
+                  <span className="truncate text-xs text-[#64746B]">
                     {o.tenantName}
-                    {o.slotEnd ? ` • Pickup sampai ${formatDateTimeWIB(new Date(o.slotEnd))}` : ""}
+                    {o.slotEnd ? ` · Ambil sampai ${formatDateTimeWIB(new Date(o.slotEnd))}` : ""}
                   </span>
                 </span>
                 {left !== null && left < 60 && (
-                  <span className="shrink-0 rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#B45309]">
-                    Sisa {left} mnt
+                  <span className="shrink-0 rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
+                    {left <= 5 ? "Segera ambil" : `Sisa ${left} mnt`}
                   </span>
                 )}
                 <ChevronRight
-                  className="size-5 shrink-0 text-muted-foreground"
+                  className="size-5 shrink-0 text-[#64746B]"
                   strokeWidth={1.75}
                   aria-hidden
                 />
@@ -194,14 +190,26 @@ async function ActiveOrdersBody() {
 }
 
 async function SoonBody() {
-  const portions = await loadSoon();
+  const { portions, failed } = await loadSoon();
+  if (failed) {
+    return (
+      <div className="flex flex-col items-center gap-3 border-y border-dashed border-[#E8ECE9] px-4 py-8 text-center">
+        <p className="text-sm font-bold text-[#1C2826]">Katalog gagal dimuat.</p>
+        <p className="text-sm text-[#64746B]">Koneksi bermasalah. Muat ulang untuk coba lagi.</p>
+        <Link href="/beranda" className={buttonVariants({ className: "w-fit rounded-md" })}>
+          Muat ulang
+        </Link>
+      </div>
+    );
+  }
   if (portions.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-[#E8ECE9] px-4 py-8 text-center">
-        <p className="text-sm text-muted-foreground">
-          Kantin belum posting porsi sore ini. Cek lagi nanti.
+      <div className="flex flex-col items-center gap-3 border-y border-dashed border-[#E8ECE9] px-4 py-8 text-center">
+        <p className="text-sm font-bold text-[#1C2826]">Kantin belum posting porsi sore ini.</p>
+        <p className="text-sm text-[#64746B]">
+          Katalog biasanya diperbarui pukul 15.30–16.30. Cek lagi sore ini.
         </p>
-        <Link href="/katalog" className={buttonVariants({ className: "w-fit rounded-2xl" })}>
+        <Link href="/katalog" className={buttonVariants({ className: "w-fit rounded-md" })}>
           Buka katalog
         </Link>
       </div>
@@ -209,31 +217,23 @@ async function SoonBody() {
   }
   const now = Date.now();
   return (
-    <section aria-label="Katalog sore ini" className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="text-xs font-semibold text-muted-foreground">
-          Katalog sore ini ({portions.length})
-        </h2>
-        <Link href="/katalog" className="text-sm font-bold text-primary">
-          Lihat Semua
-        </Link>
-      </div>
-      <ul className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <section aria-label="Katalog sore ini" className="flex flex-col gap-1">
+      <h2 className="text-sm font-bold tracking-tight text-[#1C2826]">
+        Katalog sore ini · {portions.length}
+      </h2>
+      <ul className="grid gap-3 sm:grid-cols-2">
         {portions.map((p) => {
           const leftMin = Math.max(0, Math.floor((+new Date(p.expiresAt) - now) / 60_000));
           return (
-            <li
-              key={p.id}
-              className="w-[240px] shrink-0 snap-start overflow-hidden rounded-[20px] border border-[#E8ECE9] bg-card shadow-[0_1px_2px_rgba(16,24,40,.04)]"
-            >
+            <li key={p.id} className="overflow-hidden rounded-lg border border-[#E5E1D8] bg-white">
               <Link href={`/katalog/${p.id}`} className="flex min-h-11 flex-col">
-                <span className="relative block h-28 w-full shrink-0 overflow-hidden bg-[#F1F5F2]">
+                <span className="relative block h-28 w-full shrink-0 overflow-hidden bg-[#F4EFE6]">
                   {p.imageUrl ? (
                     <Image
                       src={p.imageUrl}
                       alt={p.menuName}
                       fill
-                      sizes="240px"
+                      sizes="(min-width: 768px) 360px, 100vw"
                       className="object-cover"
                     />
                   ) : (
@@ -244,24 +244,25 @@ async function SoonBody() {
                   )}
                 </span>
                 <span className="flex flex-col gap-0.5 p-4 pb-3">
-                  <span className="truncate text-[15px] font-bold">{p.menuName}</span>
-                  <span className="truncate text-[13px] text-muted-foreground">{p.tenantName}</span>
+                  <span className="line-clamp-2 text-[15px] leading-snug font-bold text-[#1C2826]">
+                    {p.menuName}
+                  </span>
+                  <span className="truncate text-[13px] text-[#64746B]">{p.tenantName}</span>
                 </span>
-                <span aria-hidden className="mx-4 border-t border-dashed border-[#E8ECE9]" />
+                <span aria-hidden className="mx-4 border-t border-dashed border-[#E5E1D8]" />
                 <span className="flex flex-col gap-1 p-4 pt-3">
-                  <span className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
-                    <Clock3 className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
-                    Dimasak {formatDateTimeWIB(new Date(p.cookedAt))} • Sisa {p.quantityRemaining}
+                  <span className="text-[13px] text-[#64746B]">
+                    Dimasak {formatDateTimeWIB(new Date(p.cookedAt))} · Sisa {p.quantityRemaining}
                   </span>
                   <span className="flex flex-wrap items-baseline gap-x-1.5">
-                    <del className="text-xs text-muted-foreground">{formatIDR(p.normalPrice)}</del>
-                    <strong className="text-base font-extrabold text-[#F28C28]">
+                    <del className="text-xs text-[#64746B]">{formatIDR(p.normalPrice)}</del>
+                    <strong className="text-base font-extrabold text-[#1C2826]">
                       {formatIDR(p.discountPrice)}
                     </strong>
                   </span>
                   {leftMin < 60 && (
-                    <span className="w-fit rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#B45309]">
-                      Kedaluwarsa {leftMin} mnt
+                    <span className="w-fit rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
+                      {leftMin <= 5 ? "Segera ambil · kedaluwarsa" : `Kedaluwarsa ${leftMin} mnt`}
                     </span>
                   )}
                 </span>
@@ -270,6 +271,12 @@ async function SoonBody() {
           );
         })}
       </ul>
+      <Link
+        href="/katalog"
+        className={buttonVariants({ size: "lg", className: "mt-3 h-12 w-full rounded-md" })}
+      >
+        Lihat semua porsi
+      </Link>
     </section>
   );
 }

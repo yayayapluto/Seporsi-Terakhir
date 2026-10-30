@@ -1,10 +1,10 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { AppHeader } from "@/components/app-header";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
 import { KatalogList } from "./katalog-list";
-/** Auth + live stock: per-request data, streamed inside Suspense. */
 
 export interface CatalogPortion {
   id: string;
@@ -89,19 +89,23 @@ async function loadCatalog(): Promise<{
 
 export default function KatalogPage() {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">KATALOG PORSI TERAKHIR</p>
-        <h1 className="text-3xl font-bold">Porsi hari ini</h1>
-        <p className="text-muted-foreground">
-          Menu sisa yang masih layak, jam masak transparan, bayar di tempat. Maksimal 2 porsi per
-          mahasiswa per hari.
-        </p>
+    <>
+      <AppHeader title="Katalog" />
+      <div className="flex w-full flex-1 flex-col gap-6 px-4 py-6 pb-28 md:px-8 md:pb-12">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-xl font-extrabold tracking-tight text-[#1C2826] md:text-2xl">
+            Porsi hari ini
+          </h1>
+          <p className="text-sm text-[#64746B]">
+            Menu sisa yang masih layak, jam masak transparan, bayar di tempat. Maksimal 2 porsi per
+            mahasiswa per hari.
+          </p>
+        </div>
+        <Suspense fallback={<LoadingSkeleton variant="cards" />}>
+          <CatalogBody />
+        </Suspense>
       </div>
-      <Suspense fallback={<LoadingSkeleton variant="cards" />}>
-        <CatalogBody />
-      </Suspense>
-    </div>
+    </>
   );
 }
 

@@ -1,8 +1,7 @@
+import { AppHeader } from "@/components/app-header";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { OrdersList } from "./pesanan-list";
-
-/** Riwayat pesanan student via RPC my_orders (RLS portions_read menyembunyikan sebagian baris). */
 
 export interface MyOrder {
   orderId: string;
@@ -45,15 +44,19 @@ export default async function PesananPage() {
   await requireRole("/pesanan", "student");
   const { orders, error } = await loadOrders();
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">PESANANKU</p>
-        <h1 className="text-3xl font-bold">Pesanan saya</h1>
-        <p className="text-muted-foreground">
-          Riwayat porsi yang kamu kunci. Tunjukkan QR saat pickup, bayar di tempat.
-        </p>
+    <>
+      <AppHeader title="Pesanan" />
+      <div className="flex w-full flex-1 flex-col gap-6 px-4 py-6 pb-28 md:px-8 md:pb-12">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-xl font-extrabold tracking-tight text-[#1C2826] md:text-2xl">
+            Pesanan saya
+          </h1>
+          <p className="text-sm text-[#64746B]">
+            Riwayat porsi yang kamu kunci. Tunjukkan QR saat pickup, bayar di tempat.
+          </p>
+        </div>
+        <OrdersList orders={orders} loadError={error} />
       </div>
-      <OrdersList orders={orders} loadError={error} />
-    </div>
+    </>
   );
 }
