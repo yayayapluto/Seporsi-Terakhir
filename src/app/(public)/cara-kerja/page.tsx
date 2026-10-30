@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { SiteFooter } from "@/components/site-footer";
 import { buttonVariants } from "@/components/ui/button";
 import { ChalkRow, Pressable, Reveal } from "../reveal";
 
@@ -46,13 +47,13 @@ const FAQS = [
     q: "Tenant dipungut biaya?",
     a: "Tidak. Sukarela, tanpa potongan selama pilot, bisa berhenti kapan saja.",
   },
-] as const;
+];
 
 export default function CaraKerjaPage() {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 sm:px-6">
+    <>
       {/* HERO — struktur sama dengan landing */}
-      <section className="grid gap-8 py-10 sm:py-14 md:grid-cols-2 md:items-center lg:grid-cols-[1.05fr_1fr]">
+      <section className="grid gap-8 py-10 pt-20 sm:py-14 sm:pt-24 md:grid-cols-2 md:items-center lg:grid-cols-[1.05fr_1fr]">
         <div className="flex flex-col gap-5">
           <h1 className="max-w-xl text-4xl font-extrabold leading-[1.05] tracking-tight md:text-5xl">
             Cara kerja penyelamatan porsi kampus.
@@ -162,7 +163,7 @@ export default function CaraKerjaPage() {
 
       <Reveal className="mb-12 flex flex-col items-center gap-4 border-t-2 border-foreground px-6 py-12 text-center">
         <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
-          Jangan biarkan porsi terakhir terbuang.
+          Jangan biarkan seporsi terakhir terbuang.
         </h2>
         <p className="max-w-xl text-sm text-muted-foreground">
           Satu porsi terjual berarti satu porsi tidak jadi sampah dan satu mahasiswa makan lebih
@@ -191,6 +192,7 @@ export default function CaraKerjaPage() {
           </Pressable>
         </div>
       </Reveal>
-    </div>
+      <SiteFooter />
+    </>
   );
 }
