@@ -71,4 +71,13 @@ describe("placeTooltip", () => {
     expect(r.top).toBeGreaterThanOrEqual(target.top + target.height + 12 - 1);
     expect(intersects({ ...r, width: cardW, height: 300 }, target)).toBe(false);
   });
+
+  it("target tinggi melebihi ruang: pilih sisi dengan irisan terkecil, tetap di viewport", () => {
+    const vp = { w: 430, h: 932 };
+    const cardW = Math.min(340, vp.w - 32);
+    const target = { top: 100, left: 16, width: 398, height: 700 };
+    const r = placeTooltip({ target, cardH: 300, cardW, viewport: vp });
+    expect(r.top).toBeGreaterThanOrEqual(0);
+    expect(r.top + 300).toBeLessThanOrEqual(932);
+  });
 });

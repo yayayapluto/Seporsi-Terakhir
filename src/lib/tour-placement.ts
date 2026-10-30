@@ -29,13 +29,25 @@ export function placeTooltip({
   gap?: number;
 }): { top: number; left: number; side: "above" | "below"; arrowX: number } {
   const left = Math.min(Math.max(EDGE, target.left), viewport.w - cardW - EDGE);
-  const belowTop = target.top + target.height + gap;
+  const tBottom = target.top + target.height;
+  const belowTop = tBottom + gap;
   const aboveTop = target.top - cardH - gap;
   const belowFits = belowTop + cardH + EDGE <= viewport.h;
   const aboveFits = aboveTop >= EDGE;
+  // Irisan vertikal bila dipasang tanpa jepit viewport — pilih sisi yang bersih.
+  const overlap = (top: number) =>
+    Math.max(0, Math.min(top + cardH, tBottom) - Math.max(top, target.top));
+  const overlapBelow = overlap(belowTop);
+  const overlapAbove = overlap(aboveTop);
   let top: number;
   let side: "above" | "below";
-  if (belowFits || !aboveFits) {
+  if (overlapBelow === 0 && belowFits) {
+    side = "below";
+    top = belowTop;
+  } else if (overlapAbove === 0 && aboveFits) {
+    side = "above";
+    top = aboveTop;
+  } else if (overlapBelow <= overlapAbove) {
     side = "below";
     top = Math.min(belowTop, viewport.h - cardH - EDGE);
   } else {

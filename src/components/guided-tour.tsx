@@ -24,6 +24,10 @@ export interface TourIntro {
 
 type Phase = "intro" | "step" | "confirm" | "resume" | null;
 
+// Kunci scroll bertingkat antar-langkah: restore hanya saat tuntas.
+let stepLocks = 0;
+let stepPrevOverflow = "";
+
 const HOLE_PAD = 10;
 const RESUME_KEY = "tour-journey-resume";
 
@@ -313,11 +317,14 @@ export function GuidedTour({
   }, []);
 
   // Sorot target + posisikan cutout dan tooltip tiap langkah.
+  // Scroll dikunci selama panduan (seperti modal), dibuka sesaat untuk scrollIntoView.
   useEffect(() => {
     if (phase !== "step" || !step) return;
     const el = document.querySelector(step.target) as HTMLElement | null;
     if (!el || el.offsetParent === null) return;
     let cancelled = false;
+    if (stepLocks === 0) stepPrevOverflow = document.body.style.overflow;
+    stepLocks += 1;
     const compute = () => {
       if (cancelled) return;
       const r = el.getBoundingClientRect();
@@ -332,6 +339,7 @@ export function GuidedTour({
       const parsed = Number.parseFloat(rawRx);
       const rx = Number.isFinite(parsed) ? Math.min(parsed + 4, 28) : 20;
       setHole({ top, left, w: Math.max(w, 8), h: Math.max(h, 8), rx });
+      document.body.style.overflow = "hidden";
       const card = document.querySelector(`[data-tour-card="${tourKey}"]`);
       const cardH = card instanceof HTMLElement && card.offsetHeight > 0 ? card.offsetHeight : 360;
       const cardW = Math.min(340, vw - 32);
@@ -345,6 +353,7 @@ export function GuidedTour({
       );
     };
     const settle = async () => {
+      if (stepLocks <= 1) document.body.style.overflow = stepPrevOverflow;
       el.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
       try {
         await Promise.race([
@@ -416,6 +425,8 @@ export function GuidedTour({
     return () => {
       cancelled = true;
       ro.disconnect();
+      stepLocks = Math.max(0, stepLocks - 1);
+      if (stepLocks === 0) document.body.style.overflow = stepPrevOverflow;
       window.removeEventListener("scroll", onScroll, { capture: true });
       window.removeEventListener("resize", compute);
       window.removeEventListener("orientationchange", compute);
