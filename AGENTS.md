@@ -69,6 +69,43 @@ what was NOT verified, pending manual steps.
 - Don't mix package managers. Don't add deps without a one-line justification in `docs/decisions.md`.
 - Don't build P1 (FR-08/09/15: push notifications, faculty leaderboard, waste-trend insight).
 
+## Aturan Animasi (WAJIB)
+
+Stack animasi proyek ini: Motion, Lenis, View Transitions, Lottie.
+Dilarang menulis animasi pakai CSS vanilla (@keyframes, animation:, transition: kompleks)
+kalau salah satu library di bawah bisa mengerjakannya. Jangan pilih CSS hanya karena lebih singkat.
+
+### Pembagian tugas
+1. Motion (`import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "motion/react"`)
+   Dipakai untuk: animasi komponen, mount/unmount (exit), layout animation,
+   stagger, gesture (hover/tap/drag), spring, whileInView, parallax (useScroll + useTransform).
+2. Lenis (`lenis`)
+   Dipakai untuk: smooth scroll global. Sudah/harus di-setup sekali di layout
+   lewat satu client component. Jangan bikin smooth scroll pakai `scroll-behavior: smooth`
+   atau JS scroll manual.
+3. View Transitions
+   Dipakai untuk: transisi antar halaman/route. Jangan bikin page transition
+   pakai Motion atau CSS manual.
+4. Lottie (`lottie-react`)
+   Dipakai untuk: ikon/ilustrasi animatif dari file JSON. Jangan meniru
+   animasi ilustrasi pakai CSS/SVG manual.
+
+### Aturan teknis
+- Import Motion dari `motion/react`, BUKAN `framer-motion`.
+- Komponen Motion butuh `"use client"`. Gunakan wrapper di `components/motion/`
+  (FadeUp, Stagger, dll). Cek folder itu dulu dan pakai ulang sebelum bikin baru.
+- Server component boleh pakai `import * as motion from "motion/react-client"`.
+- Hormati `prefers-reduced-motion` (pakai `useReducedMotion` dari Motion).
+- Animasikan `transform` dan `opacity` saja, hindari animasi width/height/top/left.
+
+### Satu-satunya pengecualian CSS
+Tailwind/CSS hanya boleh untuk: hover/focus warna sederhana, transisi warna/opacity
+satu properti, dan marquee/loop sederhana. Di luar itu, pakai library di atas.
+
+### Sebelum menulis kode
+Tentukan dulu library mana yang cocok dengan kebutuhan, lalu tulis
+satu baris alasannya. Kalau memilih CSS, sebutkan kenapa library tidak bisa dipakai.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know

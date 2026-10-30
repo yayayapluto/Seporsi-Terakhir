@@ -182,3 +182,4 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 - `check` hijau (41 test), `build` hijau, `detect --json` 7 file `[]`.
 
  44. **Shell navigasi adaptif + 4 rute role (30 Okt, shape+adapt)**: `BottomNav` jadi sidebar `md+` (student 4 tab: Beranda/Katalog/Pesanan/Akun, badge hanya Pesanan; bell header satu-satunya indikator global), `AppHeader` sticky. Notifikasi: bell dot + reset badge baca; profil kartu ringkas + CTA tenant/pendaftaran + admin. `check` + `build` hijau, smoke 5 rute auth `:3001`.
+45. **Aturan Animasi + audit (30 Okt)**: `sonner` + `next-themes` dibuang (tak dipakai; toast mati tanpa pengganti). Pelanggaran CSS→Motion: `scroll-behavior` hapus (Lenis global), akordeon jadi Motion height/opacity via `render`+`keepMounted`+`inert`, ikon menu Motion morph, `transition-all`→`transition-colors`, tur pakai `lenis-host` + tanpa animasi top/left.

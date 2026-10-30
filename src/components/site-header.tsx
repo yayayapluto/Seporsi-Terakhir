@@ -109,26 +109,33 @@ export function SiteHeader() {
               className="inline-flex size-11 items-center justify-center rounded-full text-[#1C2826] transition-colors outline-none hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] md:hidden"
             >
               <span className="relative grid size-6 place-items-center">
-                <Menu
-                  strokeWidth={1.75}
+                {/* Alasan lib: morph ikon = animasi transform+opacity → Motion. */}
+                <motion.span
                   aria-hidden
-                  className={
-                    reduce
-                      ? "size-6"
-                      : "size-6 transition-all duration-200 " +
-                        (open ? "scale-50 rotate-90 opacity-0" : "scale-100 rotate-0 opacity-100")
+                  className="grid place-items-center"
+                  initial={false}
+                  animate={
+                    open
+                      ? { scale: 0.5, rotate: 90, opacity: 0 }
+                      : { scale: 1, rotate: 0, opacity: 1 }
                   }
-                />
-                <X
-                  strokeWidth={1.75}
+                  transition={reduce ? { duration: 0 } : { duration: 0.2 }}
+                >
+                  <Menu strokeWidth={1.75} className="size-6" aria-hidden />
+                </motion.span>
+                <motion.span
                   aria-hidden
-                  className={
-                    reduce
-                      ? "absolute inset-0 m-auto size-6"
-                      : "absolute inset-0 m-auto size-6 transition-all duration-200 " +
-                        (open ? "scale-100 rotate-0 opacity-100" : "scale-50 -rotate-90 opacity-0")
+                  className="absolute inset-0 m-auto grid size-6 place-items-center"
+                  initial={false}
+                  animate={
+                    open
+                      ? { scale: 1, rotate: 0, opacity: 1 }
+                      : { scale: 0.5, rotate: -90, opacity: 0 }
                   }
-                />
+                  transition={reduce ? { duration: 0 } : { duration: 0.2 }}
+                >
+                  <X strokeWidth={1.75} className="size-6" aria-hidden />
+                </motion.span>
               </span>
             </button>
           </div>

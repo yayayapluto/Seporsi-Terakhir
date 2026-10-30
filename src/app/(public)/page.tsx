@@ -321,7 +321,7 @@ export default async function Home() {
             <Pressable className="w-full sm:w-auto">
               <Link
                 href="/masuk"
-                className="inline-flex h-9 min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-transparent bg-primary-foreground px-2.5 text-sm font-medium whitespace-nowrap text-primary transition-all outline-none select-none hover:bg-primary-foreground/90 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-auto"
+                className="inline-flex h-9 min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-transparent bg-primary-foreground px-2.5 text-sm font-medium whitespace-nowrap text-primary transition-colors outline-none select-none hover:bg-primary-foreground/90 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-auto"
               >
                 Masuk Sekarang
               </Link>
@@ -329,7 +329,7 @@ export default async function Home() {
             <Pressable className="w-full sm:w-auto">
               <Link
                 href="/tenant/pendaftaran"
-                className="inline-flex h-9 min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-primary-foreground/40 px-2.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-all outline-none select-none hover:bg-primary-foreground/10 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-auto"
+                className="inline-flex h-9 min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-primary-foreground/40 px-2.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-colors outline-none select-none hover:bg-primary-foreground/10 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-auto"
               >
                 Daftar sebagai Tenant
               </Link>

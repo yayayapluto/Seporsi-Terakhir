@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
+import { getLenisHost } from "@/lib/lenis-host";
 import { placeTooltip } from "@/lib/tour-placement";
 import { isStale, resolveStart, stepIdFor, TOUR_VERSION } from "@/lib/tour-progress";
 import { useTourProgress } from "@/lib/use-tour-progress";
@@ -354,7 +355,10 @@ export function GuidedTour({
     };
     const settle = async () => {
       if (stepLocks <= 1) document.body.style.overflow = stepPrevOverflow;
-      el.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+      // Alasan lib: smooth scroll milik Lenis; fallback instan bila Lenis mati.
+      const lenis = getLenisHost();
+      if (lenis && !reduce) lenis.scrollTo(el, { offset: -80 });
+      else el.scrollIntoView({ block: "center" });
       try {
         await Promise.race([
           new Promise<void>((res) => {
@@ -704,11 +708,8 @@ export function GuidedTour({
               ? {}
               : {
                   initial: { opacity: 0, y: 16 },
-                  animate: {
-                    opacity: 1,
-                    y: 0,
-                    ...(anchor ? { top: anchor.top, left: anchor.left } : {}),
-                  },
+                  // Alasan lib: posisi akhir di style; yang dianimasikan hanya transform+opacity.
+                  animate: { opacity: 1, y: 0 },
                   exit: { opacity: 0, y: 8 },
                   transition: { duration: 0.22, ease: "easeOut" as const },
                 })}

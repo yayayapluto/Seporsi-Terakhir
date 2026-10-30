@@ -55,25 +55,7 @@
   --radius: 0.5rem;
 }
 
-/* ponytail: sonner tak punya API animasi; satu keyframe untuk semua toast. */
-.cn-toast {
-  animation: toast-in 200ms ease-out;
-}
-@keyframes toast-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cn-toast {
-    animation: none;
-  }
-}
+/* Toast dinonaktifkan: tidak ada pemakaian sonner; jangan tambah tanpa Motion. */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -89,12 +71,6 @@
   }
   html {
     @apply font-sans;
-    scroll-behavior: smooth;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
   }
   html.lenis,
   html.lenis body {
@@ -122,23 +98,7 @@
   }
 }
 
-/* Base UI accordion: tw-animate keyframes tak kenal --accordion-panel-height → snap. */
-@keyframes porsi-accordion-down {
-  from {
-    height: 0;
-  }
-  to {
-    height: var(--accordion-panel-height, auto);
-  }
-}
-@keyframes porsi-accordion-up {
-  from {
-    height: var(--accordion-panel-height, auto);
-  }
-  to {
-    height: 0;
-  }
-}
+/* Base UI accordion: tinggi + opacity dianimasikan Motion (ui/accordion). */
 
 /* Scanner tenant: pindahkan tombol flash bawaan ke sudut kanan-bawah dengan
    target sentuh 44px. Selektor meniru DOM lib (tanpa API gaya sendiri). */

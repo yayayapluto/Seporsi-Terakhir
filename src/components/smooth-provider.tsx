@@ -4,6 +4,7 @@ import Lenis from "lenis";
 import { useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect } from "react";
+import { setLenisHost } from "@/lib/lenis-host";
 
 /** ponytail: satu Lenis global; anchor handler manual agar lenis tangani, bukan jump. */
 export function SmoothProvider({ children }: { children: ReactNode }) {
@@ -14,6 +15,7 @@ export function SmoothProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (reduce) return;
     const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+    setLenisHost(lenis);
     let raf = 0;
     const loop = (t: number) => {
       lenis.raf(t);
@@ -34,6 +36,7 @@ export function SmoothProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelAnimationFrame(raf);
       document.removeEventListener("click", onAnchor);
+      setLenisHost(null);
       lenis.destroy();
     };
   }, [reduce]);

@@ -69,7 +69,7 @@ export function DateField({
                 id={id}
                 type="button"
                 data-slot="button"
-                className="group/button inline-flex h-11 min-h-11 flex-1 shrink-0 items-center justify-start gap-1.5 rounded-lg border border-border bg-background px-2.5 py-2 text-sm font-normal whitespace-nowrap transition-all outline-none select-none hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-expanded:bg-muted aria-expanded:text-foreground"
+                className="group/button inline-flex h-11 min-h-11 flex-1 shrink-0 items-center justify-start gap-1.5 rounded-lg border border-border bg-background px-2.5 py-2 text-sm font-normal whitespace-nowrap transition-colors outline-none select-none hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-expanded:bg-muted aria-expanded:text-foreground"
               >
                 <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />
                 {selected

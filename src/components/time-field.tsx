@@ -51,7 +51,7 @@ export function TimeField({
         <Select value={h ?? null} onValueChange={(v) => v != null && set(String(v), mi ?? "")}>
           <SelectTrigger
             id={`${id}-hour`}
-            className="h-11 min-h-11 min-w-0 flex-1 border-border bg-background px-2.5 font-normal transition-all hover:bg-muted hover:text-foreground"
+            className="h-11 min-h-11 min-w-0 flex-1 border-border bg-background px-2.5 font-normal transition-colors hover:bg-muted hover:text-foreground"
             aria-label={`${label} jam`}
           >
             <SelectValue placeholder="−−" />
@@ -70,7 +70,7 @@ export function TimeField({
         <Select value={mi ?? null} onValueChange={(v) => v != null && set(h ?? "", String(v))}>
           <SelectTrigger
             id={id}
-            className="h-11 min-h-11 min-w-0 flex-1 border-border bg-background px-2.5 font-normal transition-all hover:bg-muted hover:text-foreground"
+            className="h-11 min-h-11 min-w-0 flex-1 border-border bg-background px-2.5 font-normal transition-colors hover:bg-muted hover:text-foreground"
             aria-label={`${label} menit`}
           >
             <SelectValue placeholder="−−" />
@@ -88,7 +88,7 @@ export function TimeField({
             type="button"
             onClick={() => onChange("")}
             aria-label={`Hapus ${label.toLowerCase()}`}
-            className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-sm text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
+            className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <XIcon className="size-4" />
           </button>
