@@ -81,13 +81,16 @@ export function KatalogList({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 rounded-lg border border-[#E5E1D8] bg-white p-4">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-3" data-tour="filter">
-          <span className="flex items-center gap-2">
+        <div className="flex items-center gap-2" data-tour="filter">
+          <span className="flex min-w-0 flex-1 items-center gap-1.5">
             <Label htmlFor="tenant-filter" className="text-sm font-semibold">
               Tenant
             </Label>
             <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
-              <SelectTrigger id="tenant-filter" className="h-11 w-fit min-w-32 max-w-[60vw]">
+              <SelectTrigger
+                id="tenant-filter"
+                className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm [&>span]:min-w-0 [&>span]:truncate"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent align="start" alignItemWithTrigger={false}>
@@ -100,12 +103,15 @@ export function KatalogList({
               </SelectContent>
             </Select>
           </span>
-          <span className="flex items-center gap-2">
+          <span className="flex min-w-0 flex-1 items-center gap-1.5">
             <Label htmlFor="sort-filter" className="text-sm font-semibold">
               Urut
             </Label>
             <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
-              <SelectTrigger id="sort-filter" className="h-11 w-fit min-w-32 max-w-[60vw]">
+              <SelectTrigger
+                id="sort-filter"
+                className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm [&>span]:min-w-0 [&>span]:truncate"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent align="start" alignItemWithTrigger={false}>
@@ -117,7 +123,7 @@ export function KatalogList({
               </SelectContent>
             </Select>
           </span>
-          <fieldset className="ml-auto flex items-center gap-1 rounded-md border border-[#E5E1D8] bg-white p-1">
+          <fieldset className="flex shrink-0 items-center gap-1 rounded-md border border-[#E5E1D8] bg-white p-1">
             <legend className="sr-only">Tampilan katalog</legend>
             <button
               type="button"
