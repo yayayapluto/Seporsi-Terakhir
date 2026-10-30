@@ -1,4 +1,5 @@
-import { ChevronRight, Clock3, Store } from "lucide-react";
+import { ChevronRight, Clock3, ImageOff, Store } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
@@ -6,6 +7,7 @@ import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
 import { OnboardBanner } from "./onboard-banner";
 
@@ -18,6 +20,7 @@ interface SoonPortion {
   quantityRemaining: number;
   cookedAt: string;
   expiresAt: string;
+  imageUrl: string | null;
 }
 
 async function loadSoon(): Promise<SoonPortion[]> {
@@ -26,7 +29,7 @@ async function loadSoon(): Promise<SoonPortion[]> {
   const { data, error } = await supabase
     .from("portions")
     .select(
-      "id, quantity_remaining, cooked_at, expires_at, discount_price, menu_items!inner(name, normal_price), tenants!inner(name)",
+      "id, quantity_remaining, cooked_at, expires_at, discount_price, menu_items!inner(name, normal_price, image_path), tenants!inner(name)",
     )
     .gt("expires_at", now.toISOString())
     .lte("release_at", now.toISOString())
@@ -35,7 +38,11 @@ async function loadSoon(): Promise<SoonPortion[]> {
   if (error || !data) return [];
   const out: SoonPortion[] = [];
   for (const row of data) {
-    const menu = row.menu_items as unknown as { name: string; normal_price: number };
+    const menu = row.menu_items as unknown as {
+      name: string;
+      normal_price: number;
+      image_path: string | null;
+    };
     const tenant = row.tenants as unknown as { name: string };
     out.push({
       id: String(row.id),
@@ -46,6 +53,7 @@ async function loadSoon(): Promise<SoonPortion[]> {
       quantityRemaining: Number(row.quantity_remaining),
       cookedAt: String(row.cooked_at),
       expiresAt: String(row.expires_at),
+      imageUrl: menu.image_path ? publicMenuImageUrl(menu.image_path) : null,
     });
   }
   return out;
@@ -69,6 +77,12 @@ export default async function BerandaPage() {
         : hour < 19
           ? "Selamat sore"
           : "Selamat malam";
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user.id)
+    .single();
+  const firstName = (profile?.full_name as string | null)?.trim().split(/\s+/)[0];
   const { count } = await supabase
     .from("orders")
     .select("id", { count: "exact", head: true })
@@ -79,7 +93,10 @@ export default async function BerandaPage() {
       <AppHeader title="Beranda" />
       <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 pt-6 pb-28">
         <section className="flex flex-col gap-1 rounded-[20px] border border-[#E8ECE9] bg-gradient-to-b from-[#EAF5ED] to-white p-5 shadow-[0_1px_2px_rgba(16,24,40,.04)]">
-          <p className="text-xs font-semibold text-muted-foreground">{greet}</p>
+          <p className="text-xs font-semibold text-muted-foreground">
+            {greet}
+            {firstName ? `, ${firstName}` : ""}
+          </p>
           <h1 className="text-[22px] leading-[1.3] font-extrabold">
             Kantin mau tutup. Masih ada yang enak.
           </h1>
@@ -209,6 +226,24 @@ async function SoonBody() {
               className="w-[240px] shrink-0 snap-start overflow-hidden rounded-[20px] border border-[#E8ECE9] bg-card shadow-[0_1px_2px_rgba(16,24,40,.04)]"
             >
               <Link href={`/katalog/${p.id}`} className="flex min-h-11 flex-col">
+                <span className="relative block h-28 w-full shrink-0 overflow-hidden bg-[#F1F5F2]">
+                  {p.imageUrl ? (
+                    <Image
+                      src={p.imageUrl}
+                      alt={p.menuName}
+                      fill
+                      sizes="240px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="flex size-full flex-col items-center justify-center gap-1 text-muted-foreground">
+                      <ImageOff className="size-5" strokeWidth={1.75} aria-hidden />
+                      <span className="px-2 text-center text-[11px] leading-tight">
+                        tidak ada gambar
+                      </span>
+                    </span>
+                  )}
+                </span>
                 <span className="flex flex-col gap-0.5 p-4 pb-3">
                   <span className="truncate text-[15px] font-bold">{p.menuName}</span>
                   <span className="truncate text-[13px] text-muted-foreground">{p.tenantName}</span>
