@@ -204,7 +204,7 @@ export function ScannerClient() {
         <InputOTP
           maxLength={4}
           value={manualToken}
-          onChange={(v) => setManualToken(v.replace(/\D/g, "").slice(0, 4))}
+          onChange={(v: string) => setManualToken(v.replace(/\D/g, "").slice(0, 4))}
           inputMode="numeric"
           aria-label="Kode pickup 4 digit"
         >
