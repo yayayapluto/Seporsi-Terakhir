@@ -3,9 +3,7 @@ import { expect, test } from "@playwright/test";
 test("beranda student memuat", async ({ page }) => {
   await page.goto("/beranda");
   await expect(page).toHaveURL(/beranda/);
-  await expect(
-    page.getByRole("heading", { name: /kantin hampir tutup/i }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: /kantin hampir tutup/i })).toBeVisible();
 });
 
 test("katalog student: filter + pesan 1 porsi", async ({ page }) => {
@@ -66,14 +64,24 @@ test("edge: over-cap harian ditolak dengan pesan", async ({ page }) => {
     .getByRole("link", { name: /lihat dan pesan/i })
     .first()
     .getAttribute("href");
-  await page.goto(href!);
+  expect(href, "link detail porsi ada di katalog").toBeTruthy();
+  await page.goto(href as string);
   await page.getByRole("button", { name: /pesan/i }).click();
   // masih dalam kuota → lolos ke detail; over-cap: server kirim pesan limit. tunggu salah satu.
-  await expect.poll(async () => {
-    if (/pesanan\//.test(page.url())) return "ok";
-    const t = await page.getByRole("alert").first().innerText().catch(() => "");
-    return /batas harian|maksimal 2/i.test(t) ? "limit" : "pending";
-  }, { timeout: 20_000 }).not.toBe("pending");
+  await expect
+    .poll(
+      async () => {
+        if (/pesanan\//.test(page.url())) return "ok";
+        const t = await page
+          .getByRole("alert")
+          .first()
+          .innerText()
+          .catch(() => "");
+        return /batas harian|maksimal 2/i.test(t) ? "limit" : "pending";
+      },
+      { timeout: 20_000 },
+    )
+    .not.toBe("pending");
   if (/pesanan\//.test(page.url())) return; // masih dalam kuota
   await expect(page.getByRole("alert").first()).toContainText(/batas harian|maksimal 2/i);
 });
@@ -113,7 +121,10 @@ test("batalkan pesanan reserved → Dibatalkan, tombol hilang", async ({ page })
     return;
   }
   // cancel does router.refresh(): row flips from reserved to Dibatalkan
-  await page.getByRole("button", { name: /^batalkan$/i }).first().click();
+  await page
+    .getByRole("button", { name: /^batalkan$/i })
+    .first()
+    .click();
   await expect(page.getByText(/batalkan pesanan\?/i)).toBeVisible();
   await page.getByRole("button", { name: /ya, batalkan/i }).click();
   await page.waitForLoadState("networkidle");

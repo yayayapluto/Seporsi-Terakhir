@@ -1,7 +1,7 @@
 "use client";
 
 import { useReducedMotion } from "motion/react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 /** Blur + fade antar halaman tanpa View Transitions API.
@@ -9,11 +9,13 @@ import { useEffect, useRef } from "react";
  * Reduced-motion → navigasi biasa. Anchor `#` milik Lenis. */
 export function PageTransition() {
   const router = useRouter();
-  const pathname = usePathname();
   const reduce = useReducedMotion();
   const leaving = useRef(false);
 
   // Halaman baru selesai mount → buka blur lama + mainkan enter.
+  // Komponen ini remount tiap navigasi App Router, jadi effect mount-only
+  // jalan tepat sekali per halaman tanpa butuh dep pathname.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only disengaja; reduce dibaca sekali, leaving via ref.
   useEffect(() => {
     if (!leaving.current) return;
     leaving.current = false;
@@ -24,7 +26,7 @@ export function PageTransition() {
     main.classList.add("page-entering");
     const t = window.setTimeout(() => main.classList.remove("page-entering"), 320);
     return () => window.clearTimeout(t);
-  }, [pathname, reduce]);
+  }, []);
 
   useEffect(() => {
     if (reduce) return;

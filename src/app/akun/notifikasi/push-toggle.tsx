@@ -119,11 +119,7 @@ export function PushToggle({ userId }: { userId: string }) {
       >
         Kirim contoh notifikasi
       </Button>
-      {note && (
-        <p role="status" className="text-center text-[13px] text-[#64746B]">
-          {note}
-        </p>
-      )}
+      {note && <output className="block text-center text-[13px] text-[#64746B]">{note}</output>}
     </SieraCard>
   );
 }

@@ -1,5 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
 import { expect, test } from "@playwright/test";
+import { createClient } from "@supabase/supabase-js";
 import { act, dismissTour } from "./helpers/tour";
 
 const ANNEX = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
@@ -34,7 +34,10 @@ test("dampak: angka + tabel + ubah rentang", async ({ page }) => {
   await expect(page.getByText(/sell-through/i).first()).toBeVisible();
   // DateField = popover kalender (bukan input): klik trigger "Sampai", pilih tanggal 26
   await page.getByRole("button", { name: /^sampai/i }).click();
-  await page.getByRole("gridcell", { name: /senin, 26 oktober/i }).first().click();
+  await page
+    .getByRole("gridcell", { name: /senin, 26 oktober/i })
+    .first()
+    .click();
   await expect(page).toHaveURL(/to=2026-10-26/, { timeout: 20_000 });
 });
 
@@ -67,9 +70,13 @@ test("approve pendaftar sintetis via RPC → setujui", async ({ page }) => {
     return;
   }
   await dismissTour(page);
-  await row.getByRole("button", { name: /^tinjau$/i }).evaluate((el) => (el as HTMLElement).click());
+  await row
+    .getByRole("button", { name: /^tinjau$/i })
+    .evaluate((el) => (el as HTMLElement).click());
   await dismissTour(page);
-  await row.getByRole("button", { name: /setujui tenant/i }).evaluate((el) => (el as HTMLElement).click());
+  await row
+    .getByRole("button", { name: /setujui tenant/i })
+    .evaluate((el) => (el as HTMLElement).click());
   await expect(page.locator("li", { hasText: name })).toHaveCount(0, { timeout: 20_000 });
   await expect(page.getByText(/visibilitas di katalog/i).first()).toBeVisible();
 });
@@ -87,12 +94,19 @@ test("reject pendaftar sintetis", async ({ page }) => {
   await page.goto("/admin/tenant");
   const row = page.locator("li", { hasText: name }).first();
   await dismissTour(page);
-  await row.getByRole("button", { name: /^tinjau$/i }).evaluate((el) => (el as HTMLElement).click());
+  await row
+    .getByRole("button", { name: /^tinjau$/i })
+    .evaluate((el) => (el as HTMLElement).click());
   await dismissTour(page);
-  await row.getByRole("button", { name: /tolak pendaftar/i }).evaluate((el) => (el as HTMLElement).click());
+  await row
+    .getByRole("button", { name: /tolak pendaftar/i })
+    .evaluate((el) => (el as HTMLElement).click());
   await expect(page.getByRole("dialog")).toContainText(name);
   await dismissTour(page);
-  await page.getByRole("button", { name: /tolak pendaftar/i }).last().evaluate((el) => (el as HTMLElement).click());
+  await page
+    .getByRole("button", { name: /tolak pendaftar/i })
+    .last()
+    .evaluate((el) => (el as HTMLElement).click());
   await expect(page.locator("li", { hasText: name })).toHaveCount(0, { timeout: 20_000 });
 });
 
@@ -112,12 +126,16 @@ test("toggle visibilitas reversibel", async ({ page }) => {
       timeout: 20_000,
     });
     await dismissTour(page);
-    await row.getByRole("button", { name: /tampilkan/i }).evaluate((el) => (el as HTMLElement).click());
+    await row
+      .getByRole("button", { name: /tampilkan/i })
+      .evaluate((el) => (el as HTMLElement).click());
     await expect(row.getByText(/tampil di katalog/i)).toBeVisible({ timeout: 20_000 });
   } else {
     await expect(row.getByText(/tampil di katalog/i)).toBeVisible({ timeout: 20_000 });
     await dismissTour(page);
-    await row.getByRole("button", { name: /sembunyikan/i }).evaluate((el) => (el as HTMLElement).click());
+    await row
+      .getByRole("button", { name: /sembunyikan/i })
+      .evaluate((el) => (el as HTMLElement).click());
     await expect(row.getByText(/disembunyikan dari katalog/i)).toBeVisible({
       timeout: 20_000,
     });

@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "cn";
-import { ChevronLeft, ChevronRight, ImageOff } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,6 +21,7 @@ export function SoonScroller({ portions }: { portions: SoonPortion[] }) {
   const barScale = useTransform(x, (v) => (range > 0 ? Math.min(1, Math.max(0, -v / range)) : 0));
   const now = useMemo(() => Date.now(), []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: measure baca scrollWidth hasil render; wajib ukur ulang saat jumlah porsi berubah.
   useEffect(() => {
     const measure = () => {
       const el = viewRef.current;

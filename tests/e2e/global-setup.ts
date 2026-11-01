@@ -4,9 +4,13 @@ import { config as loadEnv } from "dotenv";
 
 loadEnv({ path: ".env.local" });
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const PW = process.env.SEED_PASSWORD!;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+const ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+const PW = process.env.SEED_PASSWORD ?? "";
+if (!SUPABASE_URL || !ANON || !PW)
+  throw new Error(
+    "env e2e kurang: NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY / SEED_PASSWORD",
+  );
 const REF = new globalThis.URL(SUPABASE_URL).hostname.split(".")[0];
 
 const ACCOUNTS = {

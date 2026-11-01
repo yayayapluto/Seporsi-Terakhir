@@ -115,7 +115,7 @@ export function GuidedTour({
   const entryStepRef = useRef<number | null>(entryStep ?? null);
   const settledRef = useRef(false);
 
-  const progress = useTourProgress({ tourKey, tourId: tourKey, userId });
+  const progress = useTourProgress({ tourId: tourKey, userId });
 
   // Mulai: tunggu progres siap (tanpa kedip langkah 1), lalu putuskan.
   useEffect(() => {
@@ -239,6 +239,9 @@ export function GuidedTour({
     progress.isReady,
     progress.saved,
     progress.reset,
+    // router.replace stabil; pathname hanya dipakai di jalur fresh-sekali (dijaga settledRef).
+    pathname,
+    router.replace,
   ]);
 
   const step = order[Math.min(idx, order.length - 1)];
@@ -286,7 +289,7 @@ export function GuidedTour({
       setPhase(null);
       if (journey) router.replace(pathname);
     }
-  }, [tourKey, next, journey, router, pathname, progress]);
+  }, [next, journey, router, pathname, progress]);
 
   // Tab lain menyelesaikan/melewati: tutup tur di sini.
   useEffect(() => {
@@ -499,7 +502,7 @@ export function GuidedTour({
             {...fade}
           >
             {hole && (
-              <svg className="absolute inset-0 size-full" aria-hidden>
+              <svg className="absolute inset-0 size-full" aria-hidden="true" focusable="false">
                 <defs>
                   <mask id={`tour-hole-${tourKey}`}>
                     <rect x="0" y="0" width="100%" height="100%" fill="white" />
@@ -797,7 +800,7 @@ export function GuidedTour({
 export function getJourneyResume(): string | null {
   try {
     const v = localStorage.getItem(RESUME_KEY);
-    return v && v.includes("panduan=rantai") ? v : null;
+    return v?.includes("panduan=rantai") ? v : null;
   } catch {
     return null;
   }

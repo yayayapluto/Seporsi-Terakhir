@@ -6,7 +6,7 @@ import { formatDateTimeWIB } from "@/lib/format";
 /** Keamanan: info sesi masuk saja — tanpa aksi. */
 export default async function KeamananPage() {
   const current = await requireRole("/akun/keamanan", "student", "tenant", "admin");
-  const provider = (current.user.app_metadata?.["provider"] as string | undefined) ?? "email";
+  const provider = current.user.app_metadata?.provider ?? "email";
   const method = provider === "google" ? "Login Google" : `Login ${provider}`;
   return (
     <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl">

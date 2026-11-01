@@ -42,12 +42,9 @@ export function TenantProfileForm({
         </p>
       )}
       {saved && (
-        <p
-          role="status"
-          className="rounded-xl border border-[#BFE3CF] bg-[#EAF5ED] px-4 py-3 text-sm font-semibold text-[#1E5A36]"
-        >
+        <output className="block rounded-xl border border-[#BFE3CF] bg-[#EAF5ED] px-4 py-3 text-sm font-semibold text-[#1E5A36]">
           Tersimpan. Nama dan lokasi gerai sudah diperbarui.
-        </p>
+        </output>
       )}
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="tenant-name">Nama gerai</Label>

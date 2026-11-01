@@ -5,7 +5,10 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 
 const TokenSchema = z.string().trim().uuid();
-const CodeSchema = z.string().trim().regex(/^[0-9]{4}$/);
+const CodeSchema = z
+  .string()
+  .trim()
+  .regex(/^[0-9]{4}$/);
 
 /** Decode hasil scan → preview order (tanpa mengonfirmasi). */
 export async function lookupOrderByToken(token: string): Promise<
@@ -94,9 +97,7 @@ export async function confirmPickup(
 }
 
 /** Lookup order by kode 4 digit (ketik manual) → preview order. */
-export async function lookupOrderByCode(
-  code: string,
-): Promise<
+export async function lookupOrderByCode(code: string): Promise<
   | {
       ok: true;
       order: {

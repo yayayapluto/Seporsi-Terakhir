@@ -13,12 +13,18 @@ export async function dismissTour(page: Page) {
     const skip = page.getByRole("button", { name: /^lewati$/i });
     const skipAll = page.getByRole("button", { name: /lewati panduan/i });
     if ((await skipAll.count()) > 0) {
-      await skipAll.first().evaluate((el) => (el as HTMLElement).click()).catch(() => {});
+      await skipAll
+        .first()
+        .evaluate((el) => (el as HTMLElement).click())
+        .catch(() => {});
       await page.waitForTimeout(600);
       continue;
     }
     if ((await skip.count()) === 0) break;
-    await skip.first().evaluate((el) => (el as HTMLElement).click()).catch(() => {});
+    await skip
+      .first()
+      .evaluate((el) => (el as HTMLElement).click())
+      .catch(() => {});
     await page.waitForTimeout(600);
   }
 }
