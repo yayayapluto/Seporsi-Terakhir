@@ -109,7 +109,7 @@ export default async function BerandaPage({
   const autoChain = shouldAutoChain(showOnboard, tourForced || tourJourney);
   return (
     <>
-      <AppHeader title="Beranda" />
+      <AppHeader title="Beranda" trail={[{ label: "Beranda", href: "/beranda" }]} />
       <div className="flex-1 bg-background">
         <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl lg:max-w-6xl lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-x-8 lg:px-8">
           <section

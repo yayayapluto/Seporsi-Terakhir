@@ -1,11 +1,9 @@
 import {
   Clock3,
   History,
-  LayoutDashboard,
   Leaf,
   Map as MapIcon,
   PackageCheck,
-  ScanLine,
   Settings,
   Store,
   TriangleAlert,
@@ -253,59 +251,23 @@ export default async function ProfilPage({
           </section>
         )}
 
-        {/* Kelola kantin — khusus tenant */}
+        {/* Navigasi akun — khusus tenant */}
         {isTenant && (
-          <section aria-labelledby="kelola-heading" className="flex flex-col gap-3">
-            <SieraSectionTitle id="kelola-heading">Kelola kantin</SieraSectionTitle>
-            <SieraList aria-label="Kelola kantin">
-              {(
-                [
-                  {
-                    href: "/tenant",
-                    icon: LayoutDashboard,
-                    title: "Dasbor",
-                    desc: "Ringkasan hari ini",
-                  },
-                  {
-                    href: "/tenant/menu",
-                    icon: UtensilsCrossed,
-                    title: "Menu",
-                    desc: "Daftar menu gerai",
-                  },
-                  {
-                    href: "/tenant/porsi/baru",
-                    icon: PackageCheck,
-                    title: "Posting porsi",
-                    desc: "Tambah sisa hari ini",
-                  },
-                  {
-                    href: "/tenant/pesanan",
-                    icon: History,
-                    title: "Pesanan",
-                    desc: "Reservasi menunggu pickup",
-                  },
-                  {
-                    href: "/tenant/scan",
-                    icon: ScanLine,
-                    title: "Scan pickup",
-                    desc: "Konfirmasi serah terima",
-                  },
-                  {
-                    href: "/tenant/profil",
-                    icon: Store,
-                    title: "Profil kantin",
-                    desc: "Nama gerai dan lokasi",
-                  },
-                ] as const
-              ).map((r) => (
-                <SieraRowLink
-                  key={r.href}
-                  href={r.href}
-                  icon={r.icon}
-                  title={r.title}
-                  subtitle={r.desc}
-                />
-              ))}
+          <section aria-labelledby="akun-heading" className="flex flex-col gap-3">
+            <SieraSectionTitle id="akun-heading">Pengaturan</SieraSectionTitle>
+            <SieraList aria-label="Pengaturan">
+              <SieraRowLink
+                href="/tenant/profil"
+                icon={Store}
+                title="Profil kantin"
+                subtitle="Nama gerai dan lokasi"
+              />
+              <SieraRowLink
+                href="/akun/pengaturan"
+                icon={Settings}
+                title="Pengaturan"
+                subtitle="Keamanan, notifikasi, privasi"
+              />
             </SieraList>
           </section>
         )}

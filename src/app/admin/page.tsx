@@ -1,5 +1,6 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { AppHeader } from "@/components/app-header";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { requireRole } from "@/lib/auth";
 import { percentSold } from "@/lib/domain/metrics";
@@ -86,19 +87,22 @@ export default async function AdminPage({
   const sp = await searchParams;
   const { from, to } = resolveRange(sp.from, sp.to);
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">DASBOR DAMPAK</p>
-        <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>
-        <p className="text-muted-foreground">
-          Halo {user.user.email ?? "Admin"}. Angka dari pickup yang discan — bukan estimasi. Berat =
-          estimasi sampling per menu.
-        </p>
+    <>
+      <AppHeader title="Dampak" trail={[{ label: "Dampak", href: "/admin" }]} />
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-bold tracking-widest text-primary">DASBOR DAMPAK</p>
+          <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>
+          <p className="text-muted-foreground">
+            Halo {user.user.email ?? "Admin"}. Angka dari pickup yang discan — bukan estimasi. Berat
+            = estimasi sampling per menu.
+          </p>
+        </div>
+        <Suspense fallback={<LoadingSkeleton variant="report" />}>
+          <ReportBody from={from} to={to} />
+        </Suspense>
       </div>
-      <Suspense fallback={<LoadingSkeleton variant="report" />}>
-        <ReportBody from={from} to={to} />
-      </Suspense>
-    </div>
+    </>
   );
 }
 

@@ -1,8 +1,17 @@
+import { ArrowLeft, Timer } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { OrderStatusBadge } from "@/components/order-status-badge";
-import { SieraTenantHeader, sieraCardClass } from "@/components/siera";
+import { sieraCardClass } from "@/components/siera";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -26,6 +35,7 @@ interface TenantOrderDetail {
   buyerPickups: number;
   buyerCancelled: number;
   pickupToken: string | null;
+  pickupCode: string | null;
   expiresAt: string | null;
 }
 
@@ -51,6 +61,7 @@ async function loadDetail(orderId: string): Promise<TenantOrderDetail> {
     buyerPickups: Number(r.buyer_pickups),
     buyerCancelled: Number(r.buyer_cancelled),
     pickupToken: r.pickup_token == null ? null : String(r.pickup_token),
+    pickupCode: r.pickup_code == null ? null : String(r.pickup_code),
     expiresAt: r.expires_at == null ? null : String(r.expires_at),
   };
 }
@@ -76,43 +87,74 @@ export default async function TenantOrderDetailPage({
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+      <Breadcrumb className="hidden md:flex">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink render={<Link href="/tenant/pesanan" />}>Pesanan</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Detail</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <Link
         href="/tenant/pesanan"
-        className="inline-flex min-h-11 w-fit items-center text-sm font-medium text-muted-foreground hover:text-foreground"
+        className="inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[#1E5A36] hover:underline md:hidden"
       >
-        ← Semua pesanan
+        <ArrowLeft className="size-4" aria-hidden />
+        Pesanan
       </Link>
-      <SieraTenantHeader kicker="RESERVASI" title={`${o.menuName} × ${o.quantity}`}>
-        Dipesan {o.buyerName} · {formatDateTimeWIB(new Date(o.createdAt))} WIB
-      </SieraTenantHeader>
-
-      <div className="flex flex-wrap items-center gap-3 border-b pb-4">
-        <OrderStatusBadge status={o.status} />
-        {o.status === "picked_up" && o.pickedUpAt && (
-          <span className="text-sm text-muted-foreground">
-            Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
-          </span>
-        )}
+      <div className="flex flex-col gap-1">
+        <p className="text-xs font-bold tracking-wide text-[#1E5A36]">RESERVASI</p>
+        <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
+          {o.menuName} × {o.quantity}
+        </h1>
+        <p className="text-sm text-[#1E5A36]">
+          Dipesan {o.buyerName} · {formatDateTimeWIB(new Date(o.createdAt))} WIB
+        </p>
+        <p className="mt-1">
+          <OrderStatusBadge status={o.status} />
+          {o.status === "picked_up" && o.pickedUpAt && (
+            <span className="ml-2 text-sm text-muted-foreground">
+              Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
+            </span>
+          )}
+        </p>
       </div>
-
-      {o.pickupToken && (
+      {o.pickupCode && (
         <section aria-labelledby="pickup-heading" className={`${sieraCardClass} p-5`}>
-          <h2 id="pickup-heading" className="text-lg font-bold">
-            Kode pickup: <span className="font-mono break-all">{o.pickupToken}</span>
+          <p className="text-xs font-bold tracking-wide text-[#64746B]">KODE PICKUP</p>
+          <h2
+            id="pickup-heading"
+            className="mt-1 text-4xl font-extrabold tracking-[0.2em] text-[#1C2826] tabular-nums"
+          >
+            {o.pickupCode}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Tempel di kolom kode manual halaman Scan pickup bila kamera bermasalah.
+            Ketik di kolom kode manual halaman Scan pickup bila kamera bermasalah.
           </p>
-          <CopyTokenButton token={o.pickupToken} />
-          {o.expiresAt && (
-            <p className="mt-2 text-sm">
-              Ambil sebelum {formatDateTimeWIB(new Date(o.expiresAt))} WIB
-            </p>
-          )}
+          <CopyTokenButton token={o.pickupCode} />
+        </section>
+      )}
+      {o.expiresAt && (
+        <section
+          aria-label="Batas ambil"
+          className="flex items-center gap-3 rounded-2xl border border-[#B45309]/20 bg-[#FEF3C7] p-4"
+        >
+          <span
+            aria-hidden
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#B45309]"
+          >
+            <Timer className="size-5" />
+          </span>
+          <p className="text-sm font-semibold text-[#1C2826]">
+            Ambil sebelum {formatDateTimeWIB(new Date(o.expiresAt))} WIB
+          </p>
         </section>
       )}
 
-      <section aria-labelledby="pemesan-heading" className={`${sieraCardClass} p-5`}>
+      <section aria-labelledby="pemesan-heading" className={`${sieraCardClass} p-5 text-center`}>
         <h2 id="pemesan-heading" className="text-2xl font-bold">
           {o.buyerName}
         </h2>
@@ -129,7 +171,7 @@ export default async function TenantOrderDetailPage({
         </p>
       </section>
 
-      <dl className="divide-y divide-border border-b">
+      <dl className={`${sieraCardClass} divide-y divide-dashed divide-line px-5`}>
         {o.cookedAt && <Row label="Dimasak">{formatDateTimeWIB(new Date(o.cookedAt))} WIB</Row>}
         <Row label="Harga/porsi">
           <span>
@@ -152,8 +194,11 @@ export default async function TenantOrderDetailPage({
       </dl>
 
       {o.status === "reserved" && (
-        <div className="flex flex-wrap items-center gap-3">
-          <Link href="/tenant/scan" className={buttonVariants({ className: "min-h-11" })}>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <Link
+            href="/tenant/scan"
+            className={buttonVariants({ className: "min-h-12 w-full text-[15px]" })}
+          >
             Scan pickup
           </Link>
           <TenantCancelButton

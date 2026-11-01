@@ -58,6 +58,7 @@ function ActivePill({ id, rounded }: { id: string; rounded: string }) {
 export function NavTabs({ tabs }: { tabs: NavTab[] }) {
   const pathname = usePathname();
   const inApp =
+    pathname.startsWith("/dasbor") ||
     pathname.startsWith("/beranda") ||
     pathname.startsWith("/katalog") ||
     pathname.startsWith("/pesanan") ||

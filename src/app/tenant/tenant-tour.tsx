@@ -4,15 +4,33 @@ import { GuidedTour } from "@/components/guided-tour";
 
 export function TenantTour({
   forced = false,
+  auto = false,
+  journey = false,
+  next,
+  journeyLabel,
+  entryStep = null,
+  fresh = false,
   userId = "anon",
 }: {
   forced?: boolean;
+  auto?: boolean;
+  journey?: boolean;
+  next?: string;
+  journeyLabel?: string;
+  entryStep?: number | null;
+  fresh?: boolean;
   userId?: string;
 }) {
   return (
     <GuidedTour
       tourKey="tenant"
       forced={forced}
+      auto={auto}
+      journey={journey}
+      next={next}
+      journeyLabel={journeyLabel}
+      entryStep={entryStep}
+      fresh={fresh}
       userId={userId}
       intro={{
         title: "Kelola kantinmu?",

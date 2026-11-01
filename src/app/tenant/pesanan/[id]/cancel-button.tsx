@@ -56,7 +56,7 @@ export function TenantCancelButton({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger
           render={
-            <Button type="button" variant="outline" className="min-h-11 px-6 text-destructive" />
+            <Button type="button" variant="outline" className="min-h-12 w-full text-destructive" />
           }
         >
           {pending ? (
