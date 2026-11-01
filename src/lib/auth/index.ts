@@ -33,7 +33,7 @@ export function homeForRole(role: Role): string {
     case "tenant":
       return "/tenant";
     case "student":
-      return "/katalog";
+      return "/beranda";
   }
 }
 

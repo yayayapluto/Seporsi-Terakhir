@@ -1,9 +1,17 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { AppHeader } from "@/components/app-header";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { requireRole } from "@/lib/auth";
 import { percentSold } from "@/lib/domain/metrics";
+import { wibDayRangeUtc } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { ImpactClient } from "./impact-client";
+
+export interface AdminDailyPoint {
+  day: string;
+  saved: number;
+}
 
 export interface AdminReportRow {
   tenantName: string;
@@ -39,14 +47,12 @@ async function loadReport(from: string, to: string) {
   const supabase = await createClient();
   await connection();
   // WIB day boundaries: [from 00:00, to+1d 00:00) in Jakarta → UTC.
-  const fromUtc = new Date(`${from}T00:00:00+07:00`).toISOString();
-  const toExclusive = new Date(
-    new Date(`${to}T00:00:00+07:00`).getTime() + 24 * 60 * 60 * 1000,
-  ).toISOString();
+  const { fromUtc, toExclusive } = wibDayRangeUtc(from, to);
 
-  const [summaryRes, reportRes] = await Promise.all([
+  const [summaryRes, reportRes, dailyRes] = await Promise.all([
     supabase.rpc("impact_summary", { p_from: fromUtc, p_to: toExclusive }),
     supabase.rpc("admin_report", { p_from: fromUtc, p_to: toExclusive }),
+    supabase.rpc("impact_daily", { p_from: fromUtc, p_to: toExclusive }),
   ]);
   const s = (summaryRes.data as Array<Record<string, unknown>> | null)?.[0];
   const summary: ImpactSummary = {
@@ -66,7 +72,10 @@ async function loadReport(from: string, to: string) {
     moneySaved: Number(r.money_saved ?? 0),
     wasteKg: Number(r.waste_grams) > 0 ? Number(r.waste_grams) / 1000 : null,
   }));
-  return { summary, rows };
+  const daily: AdminDailyPoint[] = (
+    (dailyRes.data as Array<Record<string, unknown>> | null) ?? []
+  ).map((d) => ({ day: String(d.day ?? ""), saved: Number(d.saved ?? 0) }));
+  return { summary, rows, daily };
 }
 
 export default async function AdminPage({
@@ -78,23 +87,26 @@ export default async function AdminPage({
   const sp = await searchParams;
   const { from, to } = resolveRange(sp.from, sp.to);
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">DASBOR DAMPAK</p>
-        <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>
-        <p className="text-muted-foreground">
-          Halo {user.user.email ?? "Admin"}. Angka dari pickup yang discan — bukan estimasi. Berat =
-          estimasi sampling per menu.
-        </p>
+    <>
+      <AppHeader title="Dampak" trail={[{ label: "Dampak", href: "/admin" }]} />
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-bold tracking-widest text-primary">DASBOR DAMPAK</p>
+          <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>
+          <p className="text-muted-foreground">
+            Halo {user.user.email ?? "Admin"}. Angka dari pickup yang discan — bukan estimasi. Berat
+            = estimasi sampling per menu.
+          </p>
+        </div>
+        <Suspense fallback={<LoadingSkeleton variant="report" />}>
+          <ReportBody from={from} to={to} />
+        </Suspense>
       </div>
-      <Suspense fallback={<p className="text-sm text-muted-foreground">Memuat laporan…</p>}>
-        <ReportBody from={from} to={to} />
-      </Suspense>
-    </div>
+    </>
   );
 }
 
 async function ReportBody({ from, to }: { from: string; to: string }) {
-  const { summary, rows } = await loadReport(from, to);
-  return <ImpactClient summary={summary} rows={rows} from={from} to={to} />;
+  const { summary, rows, daily } = await loadReport(from, to);
+  return <ImpactClient summary={summary} rows={rows} daily={daily} from={from} to={to} />;
 }

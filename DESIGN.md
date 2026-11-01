@@ -1,5 +1,5 @@
 ---
-name: Porsi Terakhir
+name: Seporsi Terakhir
 description: Papan tulis kantin — porsi sisa transparan, harga rescue jujur, tanpa dekorasi.
 colors:
   daun-kantin: "#2E7D4F"
@@ -66,7 +66,7 @@ components:
     padding: "12px 24px"
 ---
 
-# Design System: Porsi Terakhir
+# Design System: Seporsi Terakhir
 
 ## Overview
 

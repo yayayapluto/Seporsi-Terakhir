@@ -32,7 +32,7 @@ describe("resolveNext", () => {
 
 describe("homeForRole", () => {
   it("maps each role to its home", () => {
-    expect(homeForRole("student")).toBe("/katalog");
+    expect(homeForRole("student")).toBe("/beranda");
     expect(homeForRole("tenant")).toBe("/tenant");
     expect(homeForRole("admin")).toBe("/admin");
   });

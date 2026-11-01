@@ -1,3 +1,5 @@
+import { GuidedTour } from "@/components/guided-tour";
+import { SieraTenantHeader } from "@/components/siera";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 import { MenuManager } from "./menu-manager";
@@ -12,15 +14,18 @@ export interface MenuItemRow {
   isActive: boolean;
   ingredients: string | null;
   allergenNote: string | null;
+  imagePath: string | null;
 }
 
-async function loadMenu(): Promise<MenuItemRow[]> {
-  const tenant = await requireOwnTenant("/tenant/menu");
+async function loadMenu(tenantId: string): Promise<MenuItemRow[]> {
   const supabase = await createClient();
+
   const { data, error } = await supabase
     .from("menu_items")
-    .select("id, name, normal_price, avg_weight_grams, is_active, ingredients, allergen_note")
-    .eq("tenant_id", tenant.id)
+    .select(
+      "id, name, normal_price, avg_weight_grams, is_active, ingredients, allergen_note, image_path",
+    )
+    .eq("tenant_id", tenantId)
     .order("name", { ascending: true });
   if (error || !data) return [];
   return data.map((m) => ({
@@ -31,22 +36,46 @@ async function loadMenu(): Promise<MenuItemRow[]> {
     isActive: m.is_active,
     ingredients: (m.ingredients as string | null) ?? null,
     allergenNote: (m.allergen_note as string | null) ?? null,
+    imagePath: (m.image_path as string | null) ?? null,
   }));
 }
 
-export default async function MenuPage() {
-  const items = await loadMenu();
+export default async function MenuPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
+  const tenant = await requireOwnTenant("/tenant/menu");
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
+  const items = await loadMenu(tenant.id);
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">MENU KANTIN</p>
-        <h1 className="text-3xl font-bold">Menu saya</h1>
-        <p className="text-muted-foreground">
-          Daftar menu yang bisa diposting sebagai porsi sisa. Harga diskon disarankan otomatis saat
-          posting.
-        </p>
-      </div>
-      <MenuManager items={items} />
+      <SieraTenantHeader kicker="MENU KANTIN" title="Menu saya">
+        Daftar menu yang bisa diposting sebagai porsi sisa. Harga diskon disarankan otomatis saat
+        posting.
+      </SieraTenantHeader>
+      <MenuManager items={items} tenantId={tenant.id} />
+      <GuidedTour
+        tourKey="tenant-menu"
+        forced={tourForced}
+        intro={{
+          title: "Kelola menu?",
+          body: "Daftarkan menu sekali, pakai berkali-kali tiap posting porsi.",
+        }}
+        steps={[
+          {
+            target: '[data-tour="tambah-menu"]',
+            title: "Tambah menu",
+            body: "Nama, harga normal, bahan, dan alergen. Harga diskon disarankan otomatis.",
+          },
+          {
+            target: '[data-tour="menu-list"] li:first-child',
+            title: "Daftar menumu",
+            body: "Ketuk Edit buat ubah harga atau nonaktifkan menu yang lagi libur.",
+          },
+        ]}
+      />
     </div>
   );
 }

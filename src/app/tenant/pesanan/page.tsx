@@ -1,8 +1,21 @@
+import { cn } from "cn";
+import { ChevronRight, History, ReceiptText } from "lucide-react";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
+import { GuidedTour } from "@/components/guided-tour";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { EmptyLine } from "@/components/shared/empty-line";
+import {
+  SieraList,
+  SieraSectionTitle,
+  SieraTenantHeader,
+  SieraTile,
+  sieraRowLayoutClass,
+} from "@/components/siera";
+import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
+import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 
 /** Daftar reservasi porsi tenant: menunggu pickup → selesai. Tanpa token. */
@@ -15,74 +28,107 @@ interface TenantOrderRow {
   pickedUpAt: string | null;
   discountPrice: number;
   menuName: string;
-  slotStart: string | null;
-  slotEnd: string | null;
+  buyerName: string;
 }
 
-async function loadOrders(): Promise<TenantOrderRow[]> {
+/** Bentuk mentah join supabase (buyer + portion nested). */
+interface RawTenantOrder {
+  id: string;
+  status: string;
+  quantity: number;
+  created_at: string;
+  picked_up_at: string | null;
+  discount_price_snapshot: number;
+  buyer?: { full_name?: string | null; email?: string | null } | null;
+  portions?: { menu_items?: { name: string } | { name: string }[] | null } | null;
+}
+
+async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean }> {
   const tenant = await requireOwnTenant("/tenant/pesanan");
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, status, quantity, created_at, picked_up_at, discount_price_snapshot, slot_start, slot_end, portions!inner(menu_item_id, menu_items!inner(name), tenant_id)",
+      "id, status, quantity, created_at, picked_up_at, discount_price_snapshot, buyer:profiles!orders_student_id_fkey(full_name, email), portions!inner(menu_item_id, menu_items!inner(name), tenant_id)",
     )
     .eq("portions.tenant_id", tenant.id)
     .order("created_at", { ascending: false })
     .limit(200);
-  if (error || !data) return [];
-  return data.map((o) => {
-    const portion = o.portions as unknown as {
-      menu_items: { name: string } | { name: string }[];
-    } | null;
-    const menu = Array.isArray(portion?.menu_items) ? portion.menu_items[0] : portion?.menu_items;
-    return {
-      id: o.id,
-      status: o.status as TenantOrderRow["status"],
-      quantity: o.quantity,
-      createdAt: o.created_at,
-      pickedUpAt: (o.picked_up_at as string | null) ?? null,
-      discountPrice: o.discount_price_snapshot,
-      menuName: menu?.name ?? "Menu",
-      slotStart: (o.slot_start as string | null) ?? null,
-      slotEnd: (o.slot_end as string | null) ?? null,
-    };
-  });
+  if (error || !data) return { orders: [], failed: true };
+  return {
+    orders: (data as unknown as RawTenantOrder[]).map((o) => {
+      const menu = Array.isArray(o.portions?.menu_items)
+        ? o.portions.menu_items[0]
+        : o.portions?.menu_items;
+      return {
+        id: o.id,
+        status: o.status as TenantOrderRow["status"],
+        quantity: o.quantity,
+        createdAt: o.created_at,
+        pickedUpAt: o.picked_up_at ?? null,
+        discountPrice: o.discount_price_snapshot,
+        menuName: menu?.name ?? "Menu",
+        buyerName: o.buyer?.full_name?.trim() || o.buyer?.email?.split("@")[0] || "Mahasiswa",
+      };
+    }),
+    failed: false,
+  };
 }
 
-export default async function TenantPesananPage() {
-  const orders = await loadOrders();
+export default async function TenantPesananPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    mode?: string;
+    tour?: string;
+    panduan?: string;
+    langkah?: string;
+    fresh?: string;
+  }>;
+}) {
+  const { orders, failed } = await loadOrders();
+  const sp = (await searchParams) ?? {};
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   const waiting = orders.filter((o) => o.status === "reserved");
   const done = orders.filter((o) => o.status !== "reserved");
 
-  function Row({ o }: { o: TenantOrderRow }) {
+  function Row({ o, showBadge }: { o: TenantOrderRow; showBadge: boolean }) {
     return (
-      <li className="flex flex-col gap-2 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-        <div className="min-w-0">
-          <h2 className="font-bold leading-snug">
-            {o.menuName} <span className="font-normal text-muted-foreground">×{o.quantity}</span>
-          </h2>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
-            {formatIDR(o.discountPrice * o.quantity)}
-            {o.slotStart && o.slotEnd
-              ? ` · Slot ${formatDateTimeWIB(new Date(o.slotStart))}–${new Date(o.slotEnd).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" })}`
-              : ""}
-            {o.status === "picked_up" && o.pickedUpAt
-              ? ` · Diambil ${formatDateTimeWIB(new Date(o.pickedUpAt))} WIB`
-              : ""}
-          </p>
-        </div>
-        <div className="flex shrink-0 items-center gap-3">
-          <OrderStatusBadge status={o.status} />
-          {o.status === "reserved" && (
-            <Link
-              href="/tenant/scan"
-              className="inline-flex h-10 items-center rounded-lg bg-primary px-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              Scan pickup
-            </Link>
-          )}
+      <li>
+        <div className={sieraRowLayoutClass}>
+          <Link
+            href={`/tenant/pesanan/${o.id}`}
+            className="flex min-h-11 min-w-0 flex-1 items-center gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+          >
+            <SieraTile>
+              {showBadge ? (
+                <History className="size-5" strokeWidth={1.75} aria-hidden />
+              ) : (
+                <ReceiptText className="size-5" strokeWidth={1.75} aria-hidden />
+              )}
+            </SieraTile>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[15px] leading-[1.3] font-semibold text-[#1C2826]">
+                {o.menuName} <span className="font-normal text-[#64746B]">×{o.quantity}</span>
+              </span>
+              <span className="block truncate text-[12px] leading-[1.4] text-[#64746B]">
+                {o.buyerName} · Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
+                {formatIDR(o.discountPrice * o.quantity)}
+                {o.status === "picked_up" && o.pickedUpAt
+                  ? ` · Diambil ${formatDateTimeWIB(new Date(o.pickedUpAt))} WIB`
+                  : ""}
+              </span>
+            </span>
+            <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+          </Link>
+          <div className="flex shrink-0 items-center gap-3">
+            {showBadge && <OrderStatusBadge status={o.status} />}
+            {o.status === "reserved" && (
+              <Link href="/tenant/scan" className={cn(buttonVariants({ size: "sm" }), "min-h-11")}>
+                Scan pickup
+              </Link>
+            )}
+          </div>
         </div>
       </li>
     );
@@ -90,15 +136,21 @@ export default async function TenantPesananPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">RESERVASI</p>
-        <h1 className="text-3xl font-bold">Pesanan masuk</h1>
-        <p className="text-muted-foreground">
-          Reservasi porsi dari mahasiswa. Konfirmasi pickup lewat scan QR di halaman scanner.
-        </p>
-      </div>
+      <SieraTenantHeader kicker="RESERVASI" title="Pesanan masuk">
+        Reservasi porsi dari mahasiswa. Konfirmasi pickup lewat scan QR di halaman scanner.
+      </SieraTenantHeader>
 
-      {orders.length === 0 ? (
+      {failed ? (
+        <div
+          role="alert"
+          className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3"
+        >
+          <p className="font-bold text-destructive">Gagal memuat pesanan</p>
+          <p className="mt-1 text-sm text-destructive">
+            Koneksi bermasalah. Muat ulang halaman untuk mencoba lagi — jangan posting ulang porsi.
+          </p>
+        </div>
+      ) : orders.length === 0 ? (
         <EmptyState
           title="Belum ada pesanan"
           hint="Posting porsi dulu supaya mahasiswa bisa memesan."
@@ -107,39 +159,60 @@ export default async function TenantPesananPage() {
         />
       ) : (
         <>
-          <section aria-labelledby="menunggu-heading" className="border-b pb-6">
-            <h2 id="menunggu-heading" className="text-lg font-bold">
-              Menunggu pickup {waiting.length > 0 && `(${waiting.length})`}
-            </h2>
+          <section aria-labelledby="menunggu-heading" className="flex flex-col gap-3">
+            <SieraSectionTitle id="menunggu-heading">
+              Menunggu pickup{waiting.length > 0 ? ` (${waiting.length})` : ""}
+            </SieraSectionTitle>
             {waiting.length === 0 ? (
-              <p className="mt-2 text-sm text-muted-foreground">
-                Tidak ada reservasi aktif saat ini.
-              </p>
+              <EmptyLine>Tidak ada reservasi aktif saat ini.</EmptyLine>
             ) : (
-              <ul className="mt-2 divide-y divide-border">
+              <SieraList>
                 {waiting.map((o) => (
-                  <Row key={o.id} o={o} />
+                  <Row key={o.id} o={o} showBadge={false} />
                 ))}
-              </ul>
+              </SieraList>
             )}
           </section>
 
-          <section aria-labelledby="selesai-heading">
-            <h2 id="selesai-heading" className="text-lg font-bold">
-              Selesai & dibatalkan
-            </h2>
+          <section aria-labelledby="selesai-heading" className="flex flex-col gap-3">
+            <SieraSectionTitle id="selesai-heading">Selesai & dibatalkan</SieraSectionTitle>
             {done.length === 0 ? (
-              <p className="mt-2 text-sm text-muted-foreground">Belum ada riwayat.</p>
+              <EmptyLine>Belum ada riwayat.</EmptyLine>
             ) : (
-              <ul className="mt-2 divide-y divide-border border-b">
+              <SieraList>
                 {done.map((o) => (
-                  <Row key={o.id} o={o} />
+                  <Row key={o.id} o={o} showBadge />
                 ))}
-              </ul>
+              </SieraList>
             )}
           </section>
         </>
       )}
+      <GuidedTour
+        tourKey="tenant-pesanan"
+        forced={tourForced}
+        journey={tourJourney}
+        next={tourJourney ? (getJourneyNext("/tenant/pesanan") ?? undefined) : undefined}
+        journeyLabel="Bagian 4 dari 5 · Pesanan"
+        entryStep={tourEntry}
+        fresh={sp.fresh === "1"}
+        intro={{
+          title: "Pesanan masuk?",
+          body: "Reservasi mahasiswa yang menunggu pickup dan riwayatnya — semua di sini.",
+        }}
+        steps={[
+          {
+            target: '[aria-labelledby="menunggu-heading"]',
+            title: "Menunggu pickup",
+            body: "Yang harus kamu layani. Arahkan mereka ke scanner saat serah terima.",
+          },
+          {
+            target: '[aria-labelledby="selesai-heading"]',
+            title: "Riwayat",
+            body: "Yang sudah selesai dan dibatalkan, buat arsip.",
+          },
+        ]}
+      />
     </div>
   );
 }

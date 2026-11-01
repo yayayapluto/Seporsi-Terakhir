@@ -2,7 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { cancelOrder } from "../actions";
 
 export function CancelButton({ orderId }: { orderId: string }) {
@@ -10,9 +19,10 @@ export function CancelButton({ orderId }: { orderId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function onClick() {
-    if (!window.confirm("Batalkan pesanan ini? Stok porsi akan dikembalikan.")) return;
+  const [open, setOpen] = useState(false);
+  function onConfirm() {
     setError(null);
+    setOpen(false);
     startTransition(async () => {
       const res = await cancelOrder(orderId);
       if (!res.ok) setError(res.error);
@@ -30,15 +40,35 @@ export function CancelButton({ orderId }: { orderId: string }) {
           {error}
         </p>
       )}
-      <Button
-        type="button"
-        variant="outline"
-        className="h-11 px-6 text-destructive"
-        onClick={onClick}
-        disabled={pending}
-      >
-        {pending ? "Membatalkan…" : "Batalkan pesanan"}
-      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger
+          render={
+            <Button type="button" variant="outline" className="w-full px-6 text-destructive" />
+          }
+        >
+          {pending ? (
+            <>
+              <Spinner />
+              Membatalkan…
+            </>
+          ) : (
+            "Batalkan pesanan"
+          )}
+        </DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Batalkan pesanan?</DialogTitle>
+          <DialogDescription>Stok porsi akan dikembalikan ke katalog.</DialogDescription>
+          <ConfirmDialogFooter
+            confirmLabel="Ya, batalkan"
+            busyLabel="Membatalkan…"
+            cancelLabel="Kembali"
+            busy={pending}
+            onConfirm={onConfirm}
+            onCancel={() => setOpen(false)}
+            lockCancelWhenBusy={false}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,31 +1,56 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { createClient } from "@/lib/supabase/client";
 
 export function SignOutButton() {
   const router = useRouter();
-  const [busy, setBusy] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [pending, startTransition] = useTransition();
+
+  function onConfirm() {
+    startTransition(async () => {
+      try {
+        await fetch("/auth/sign-out", { method: "POST" });
+        await createClient().auth.signOut();
+      } finally {
+        setOpen(false);
+        router.push("/");
+        router.refresh();
+      }
+    });
+  }
+
   return (
-    <Button
-      type="button"
-      variant="outline"
-      className="text-destructive"
-      disabled={busy}
-      onClick={async () => {
-        setBusy(true);
-        try {
-          await fetch("/auth/sign-out", { method: "POST" });
-          await createClient().auth.signOut();
-        } finally {
-          router.push("/");
-          router.refresh();
-        }
-      }}
-    >
-      {busy ? "Keluar…" : "Keluar dari akun"}
-    </Button>
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        className="min-h-11 text-destructive"
+        onClick={() => setOpen(true)}
+      >
+        Keluar dari akun
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogTitle>Keluar dari akun?</DialogTitle>
+          <DialogDescription>
+            Sesi di perangkat ini diakhiri. Kamu bisa masuk lagi kapan saja.
+          </DialogDescription>
+          <ConfirmDialogFooter
+            confirmLabel="Keluar"
+            busyLabel="Keluar…"
+            cancelLabel="Batal"
+            busy={pending}
+            onConfirm={onConfirm}
+            onCancel={() => setOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

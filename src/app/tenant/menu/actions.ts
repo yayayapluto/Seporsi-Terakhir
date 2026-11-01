@@ -19,6 +19,13 @@ const MenuSchema = z.object({
   isActive: z.boolean(),
   ingredients: z.string().trim().max(500).optional(),
   allergenNote: z.string().trim().max(300).optional(),
+  imagePath: z
+    .string()
+    .trim()
+    .max(300)
+    .regex(/^[A-Za-z0-9/_.-]+$/, "Path gambar tidak valid.")
+    .nullable()
+    .optional(),
 });
 
 /** Tenant create/update menu sendiri via RPC upsert_menu_item. */
@@ -43,6 +50,7 @@ export async function saveMenuItem(
     p_is_active: d.isActive,
     p_ingredients: d.ingredients?.trim() ? d.ingredients.trim() : null,
     p_allergen_note: d.allergenNote?.trim() ? d.allergenNote.trim() : null,
+    p_image_path: d.imagePath ?? null,
   });
   if (error) {
     const msg = error.message.toLowerCase();

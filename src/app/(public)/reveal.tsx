@@ -1,8 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
-
+import { useEffect, useState } from "react";
 export function Reveal({
   children,
   className,
@@ -12,55 +11,71 @@ export function Reveal({
   className?: string;
   id?: string;
 }) {
-  const reduce = useReducedMotion();
   return (
-    <motion.div
-      id={id}
-      className={className}
-      initial={reduce ? false : { opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-15% 0px" }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <div id={id} className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 }
 
 // Wrapper tekan: CTA <Link> tetap server-side, efek press di span luar.
 export function Pressable({ children, className }: { children: ReactNode; className?: string }) {
-  const reduce = useReducedMotion();
   return (
-    <motion.span
-      className={className ? `inline-block ${className}` : "inline-block"}
-      whileHover={reduce ? undefined : { scale: 1.02 }}
-      whileTap={reduce ? undefined : { scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 400, damping: 22 }}
-    >
-      {children}
-    </motion.span>
+    <span className={className ? `inline-block ${className}` : "inline-block"}>{children}</span>
   );
 }
 
-// Baris papan tulis: masuk kiri + blur tajam, stagger via delay prop.
+// Countdown tutup pickup 18.00 WIB. Render awal statis biar SSR = hydrate.
+export function PickupCountdown({ className }: { className?: string }) {
+  const [label, setLabel] = useState("16.30–18.00");
+  useEffect(() => {
+    const tick = () => {
+      try {
+        const parts = new Intl.DateTimeFormat("id-ID", {
+          timeZone: "Asia/Jakarta",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }).formatToParts(new Date());
+        const g = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
+        const now = g("hour") * 3600 + g("minute") * 60 + g("second");
+        if (now < 15.5 * 3600) {
+          setLabel("Buka 15.30");
+          return;
+        }
+        if (now >= 18 * 3600) {
+          setLabel("Tutup · buka besok");
+          return;
+        }
+        const r = 18 * 3600 - now;
+        const h = String(Math.floor(r / 3600)).padStart(2, "0");
+        const m = String(Math.floor((r % 3600) / 60)).padStart(2, "0");
+        const s = String(r % 60).padStart(2, "0");
+        setLabel(`${h}:${m}:${s}`);
+      } catch {
+        setLabel("16.30–18.00");
+      }
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <span role="timer" className={className ? `tabular-nums ${className}` : "tabular-nums"}>
+      {label}
+    </span>
+  );
+}
+
+// Baris papan tulis: tanpa animasi (stagger via delay prop tak dipakai lagi).
 export function ChalkRow({
   children,
   className,
-  delay = 0,
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
 }) {
-  const reduce = useReducedMotion();
-  return (
-    <motion.li
-      className={className}
-      initial={reduce ? false : { opacity: 0, x: -12, filter: "blur(2px)" }}
-      animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-      transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {children}
-    </motion.li>
-  );
+  return <li className={className}>{children}</li>;
 }

@@ -5,6 +5,7 @@ import { CircleAlert, MailCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,7 +58,7 @@ function SentState({
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="flex items-start gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
+      <p className="flex items-start gap-2 rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
         <MailCheck className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
         <span>
           Tautan masuk terkirim ke <strong>{email}</strong>. Buka email lalu ketuk tautannya.
@@ -75,10 +76,19 @@ function SentState({
       <Button
         type="button"
         disabled={sending || cooldown > 0}
-        className="min-h-11 w-full"
+        className="min-h-12 w-full"
         onClick={handleResend}
       >
-        {sending ? "Mengirim…" : cooldown > 0 ? `Kirim ulang (${cooldown}d)` : "Kirim ulang"}
+        {sending ? (
+          <>
+            <Spinner />
+            Mengirim…
+          </>
+        ) : cooldown > 0 ? (
+          `Kirim ulang (${cooldown}d)`
+        ) : (
+          "Kirim ulang"
+        )}
       </Button>
       <Button type="button" variant="outline" className="min-h-11 w-full" onClick={onChangeEmail}>
         Ganti email
@@ -141,7 +151,7 @@ export function EmailSignIn({ next }: { next?: string }) {
           aria-invalid={emailError ? true : undefined}
           aria-describedby={describedBy}
           {...register("email")}
-          className="min-h-11"
+          className="min-h-12"
         />
         {emailError && (
           <p
@@ -164,8 +174,15 @@ export function EmailSignIn({ next }: { next?: string }) {
           {formError}
         </p>
       )}
-      <Button type="submit" disabled={isSubmitting} className="min-h-11 w-full">
-        {isSubmitting ? "Mengirim…" : "Kirim tautan masuk"}
+      <Button type="submit" disabled={isSubmitting} className="min-h-12 w-full text-[15px]">
+        {isSubmitting ? (
+          <>
+            <Spinner />
+            Mengirim…
+          </>
+        ) : (
+          "Kirim tautan masuk"
+        )}
       </Button>
     </form>
   );

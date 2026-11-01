@@ -1,9 +1,13 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { AppHeader } from "@/components/app-header";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { SieraHero } from "@/components/siera";
+import { wibTodayRange } from "@/lib/format";
+import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
+import { parseTourParams } from "@/lib/tour-journey";
 import { KatalogList } from "./katalog-list";
-
-/** Auth + live stock: per-request data, streamed inside Suspense. */
 
 export interface CatalogPortion {
   id: string;
@@ -30,21 +34,15 @@ async function loadCatalog(): Promise<{
   const { data, error } = await supabase
     .from("portions")
     .select(
-      "id, quantity_remaining, cooked_at, expires_at, release_at, discount_price, menu_items!inner(name, normal_price), tenants!inner(name, location_note)",
+      "id, quantity_remaining, cooked_at, expires_at, release_at, discount_price, menu_items!inner(name, normal_price, image_path), tenants!inner(name, location_note, is_listed)",
     )
-    .gt("quantity_remaining", 0)
+    .eq("tenants.is_listed", true)
     .gt("expires_at", now.toISOString())
     .lte("release_at", now.toISOString())
     .order("expires_at", { ascending: true })
     .limit(60);
   // Batas hari ini Asia/Jakarta → UTC (pola sama kayak dasbor tenant).
-  const nowWib = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const todayLocal = `${nowWib.getFullYear()}-${pad(nowWib.getMonth() + 1)}-${pad(nowWib.getDate())}`;
-  const dayStartUtc = new Date(`${todayLocal}T00:00:00+07:00`).toISOString();
-  const dayEndIso = new Date(
-    new Date(`${todayLocal}T00:00:00+07:00`).getTime() + 86400000,
-  ).toISOString();
+  const { dayStartUtc, dayEndIso } = wibTodayRange();
   let dayTotal = 0;
   const {
     data: { user },
@@ -63,7 +61,11 @@ async function loadCatalog(): Promise<{
   const portions: CatalogPortion[] = [];
   const tenantSet = new Set<string>();
   for (const row of data) {
-    const menu = row.menu_items as unknown as { name: string; normal_price: number };
+    const menu = row.menu_items as unknown as {
+      name: string;
+      normal_price: number;
+      image_path: string | null;
+    };
     const tenant = row.tenants as unknown as { name: string; location_note: string | null };
     tenantSet.add(tenant.name);
     portions.push({
@@ -77,30 +79,59 @@ async function loadCatalog(): Promise<{
       cookedAt: row.cooked_at,
       expiresAt: row.expires_at,
       releaseAt: row.release_at,
+      imageUrl: menu.image_path ? publicMenuImageUrl(menu.image_path) : null,
     });
   }
   return { portions, tenants: [...tenantSet].sort(), dayTotal };
 }
 
-export default function KatalogPage() {
+export default function KatalogPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string; tour?: string; panduan?: string; langkah?: string }>;
+}) {
+  return KatalogPageBody(searchParams);
+}
+
+async function KatalogPageBody(
+  searchParams?: Promise<{ mode?: string; tour?: string; panduan?: string; langkah?: string }>,
+) {
+  const sp = (await searchParams) ?? {};
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">KATALOG PORSI TERAKHIR</p>
-        <h1 className="text-3xl font-bold">Porsi hari ini</h1>
-        <p className="text-muted-foreground">
-          Menu sisa yang masih layak, jam masak transparan, bayar di tempat. Maksimal 2 porsi per
-          mahasiswa per hari.
-        </p>
+    <>
+      <AppHeader title="Katalog" />
+      <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl lg:max-w-6xl lg:px-8">
+        <SieraHero eyebrow="Katalog sore ini" title="Porsi hari ini">
+          Sisa dagangan yang masih layak makan. Jam masaknya tertulis jelas, bayar langsung di
+          tempat. Maksimal 2 porsi per hari.
+        </SieraHero>
+        <Suspense fallback={<LoadingSkeleton variant="catalog-list" />}>
+          <CatalogBody tourForced={tourForced} tourJourney={tourJourney} tourEntry={tourEntry} />
+        </Suspense>
       </div>
-      <Suspense fallback={<p className="text-sm text-muted-foreground">Memuat porsi…</p>}>
-        <CatalogBody />
-      </Suspense>
-    </div>
+    </>
   );
 }
 
-async function CatalogBody() {
+async function CatalogBody({
+  tourForced,
+  tourJourney,
+  tourEntry,
+}: {
+  tourForced: boolean;
+  tourJourney: boolean;
+  tourEntry: number | null;
+}) {
   const { portions, tenants, dayTotal } = await loadCatalog();
-  return <KatalogList portions={portions} tenants={tenants} dayTotal={dayTotal} />;
+  return (
+    <KatalogList
+      portions={portions}
+      tenants={tenants}
+      dayTotal={dayTotal}
+      tourForced={tourForced}
+      tourJourney={tourJourney}
+      tourEntry={tourEntry}
+    />
+  );
 }

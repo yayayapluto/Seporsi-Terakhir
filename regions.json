@@ -1,0 +1,36 @@
+{
+  "regions": [
+    {
+      "grid": "B1:E2",
+      "id": "hero-hook",
+      "kind": "text",
+      "note": "display headline dua baris, Plus Jakarta Sans 800"
+    },
+    { "grid": "B2:E3", "id": "hero-sub", "kind": "text", "note": "subcopy dua baris + microcopy" },
+    {
+      "grid": "B3:D3",
+      "id": "hero-cta",
+      "kind": "control",
+      "note": "CTA primer + sekunder sejajar"
+    },
+    {
+      "grid": "F0:I4",
+      "id": "etalase-case",
+      "kind": "chrome",
+      "note": "etalase kaca: header lengket countdown + 3 nampan skeleton + foot"
+    },
+    { "grid": "B5:E5", "id": "masalah-head", "kind": "text", "note": "heading seksi masalah" },
+    {
+      "grid": "B6:I6",
+      "id": "masalah-cards",
+      "kind": "chrome",
+      "note": "3 kartu masalah, flat produksi"
+    },
+    {
+      "grid": "B7:I9",
+      "id": "close-band",
+      "kind": "chrome",
+      "note": "pita tutup gelap + CTA primer tengah"
+    }
+  ]
+}

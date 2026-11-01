@@ -63,13 +63,13 @@ verifikasi = `bun run check` (lint+typecheck+30 test) + `bun run build`
 - 7-hari tenant dashboard limit 50 + date UTC vs WIB: minor, pilot-scale,
   ditunda (ponytail).
 
-## Belum terverifikasi (butuh DB lokal / akun test)
-- Semua RPC Baru (`update_portion` guard, `impact_summary` sum+admin,
-  `not_released` mapping) — butuh `bun run db:reset` + seed + login
-  student/tenant/admin sungguhan. Docker daemon mati saat hunt.
-- OAuth Google end-to-end (callback exchange + `next` aman).
-- Scan QR pickup + approve tenant + CSV export live.
-- Daily-cap 2/hari (pgTAP skip bertahan).
+ ## Belum terverifikasi (butuh hosted / akun test) [catatan 28 Okt, era Docker]
+ - Semua RPC Baru (`update_portion` guard, `impact_summary` sum+admin,
+   `not_released` mapping) — butuh `db:push` ke hosted + seed + login
+   student/tenant/admin sungguhan.
+ - OAuth Google end-to-end (callback exchange + `next` aman).
+ - Scan QR pickup + approve tenant + CSV export live.
+ - Daily-cap 2/hari.
 
 ## Gate akhir
 - `bun run check`: hijau (lint + typecheck + 30 test, 5 file).
