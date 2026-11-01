@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
-import { act, dismissTour } from "./helpers/tour";
 import { createClient } from "@supabase/supabase-js";
+import { act, dismissTour } from "./helpers/tour";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const ANNEX = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
@@ -19,7 +19,10 @@ async function placeFreshOrder(portionId: string) {
   // batalkan reservasi admin sisa run lama agar token tak menumpuk
   const mine = await sb2.from("orders").select("id").eq("status", "reserved").limit(5);
   for (const o of (mine.data ?? []) as { id: string }[]) {
-    await sb2.rpc("cancel_order", { p_order_id: o.id }).then((r) => r, () => null);
+    await sb2.rpc("cancel_order", { p_order_id: o.id }).then(
+      (r) => r,
+      () => null,
+    );
   }
   const res = await sb2.rpc("place_order", { p_portion_id: portionId, p_quantity: 1 });
   // JANGAN signOut: revoke refresh token akun shared, bunuh sesi test lain (persistSession false cukup)
@@ -113,8 +116,7 @@ test("posting porsi: validasi lalu sukses", async ({ page }) => {
       await page.reload();
       await expect(page.getByText(new RegExp(unique)).first()).toBeVisible();
     }
-  }
-  else await expect(page.getByText(/sisa \d+\/\d+|porsi aktif/i).first()).toBeVisible();
+  } else await expect(page.getByText(/sisa \d+\/\d+|porsi aktif/i).first()).toBeVisible();
 });
 
 test("edit porsi: kurangi jumlah, sisa berkurang", async ({ page }) => {
@@ -188,7 +190,13 @@ test("scan manual: token sampah + konfirmasi + token terpakai", async ({ page })
   await dismissTour(page);
   const portionIds = await page
     .locator('a[href*="/tenant/porsi/"][href*="/edit"]')
-    .evaluateAll((els) => [...new Set(els.map((e) => (e as HTMLAnchorElement).href.split("/tenant/porsi/")[1]?.split("/")[0] ?? ""))]);
+    .evaluateAll((els) => [
+      ...new Set(
+        els.map(
+          (e) => (e as HTMLAnchorElement).href.split("/tenant/porsi/")[1]?.split("/")[0] ?? "",
+        ),
+      ),
+    ]);
   let kode = "";
   let lastErr = "tidak ada porsi aktif";
   for (const portionId of portionIds.slice(0, 5)) {

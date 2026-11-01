@@ -20,7 +20,12 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { toast } from "@/components/ui/toast";
 import { formatIDR } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { confirmPickup, confirmPickupByCode, lookupOrderByCode, lookupOrderByToken } from "./actions";
+import {
+  confirmPickup,
+  confirmPickupByCode,
+  lookupOrderByCode,
+  lookupOrderByToken,
+} from "./actions";
 
 export interface ScannedOrder {
   menuName: string;
@@ -31,7 +36,11 @@ export interface ScannedOrder {
 
 type Phase =
   | { kind: "scanning" }
-  | { kind: "preview"; auth: { kind: "token"; value: string } | { kind: "code"; value: string }; order: ScannedOrder }
+  | {
+      kind: "preview";
+      auth: { kind: "token"; value: string } | { kind: "code"; value: string };
+      order: ScannedOrder;
+    }
   | { kind: "success"; order: ScannedOrder };
 
 const STATUS_LABEL: Record<string, string> = {

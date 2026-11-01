@@ -429,7 +429,7 @@ export function PortionForm({
             aria-invalid={invalidDiscount ? true : undefined}
             aria-describedby={selected ? "discount-hint" : undefined}
           />
-          <div className="flex flex-wrap gap-2" aria-label="Ubah cepat harga diskon">
+          <fieldset aria-label="Ubah cepat harga diskon" className="flex flex-wrap gap-2">
             {selected != null && suggested > 0 && (
               <Button
                 type="button"
@@ -461,7 +461,7 @@ export function PortionForm({
                 {c.label}
               </Button>
             ))}
-          </div>
+          </fieldset>
           {errors.discountPrice && (
             <p className="text-sm text-destructive">{errors.discountPrice.message}</p>
           )}

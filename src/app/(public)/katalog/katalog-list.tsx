@@ -289,9 +289,9 @@ export function KatalogList({
                     </>
                   );
                   return soldOut ? (
-                    <div className="flex min-h-11 flex-col" aria-label={`${p.menuName} habis`}>
+                    <fieldset aria-label={`${p.menuName} habis`} className="flex min-h-11 flex-col">
                       {body}
-                    </div>
+                    </fieldset>
                   ) : (
                     <Link
                       href={`/katalog/${p.id}`}
@@ -377,12 +377,12 @@ export function KatalogList({
                     </>
                   );
                   return soldOut ? (
-                    <div
-                      className="flex min-h-11 items-center gap-3 py-3"
+                    <fieldset
                       aria-label={`${p.menuName} habis`}
+                      className="flex min-h-11 items-center gap-3 py-3"
                     >
                       {inner}
-                    </div>
+                    </fieldset>
                   ) : (
                     <Link
                       href={`/katalog/${p.id}`}

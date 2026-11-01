@@ -37,12 +37,10 @@ function writeLocal(key: string, p: TourProgress | null) {
  * Server hanya dipakai bila userId bukan "anon".
  */
 export function useTourProgress({
-  tourKey,
   tourId,
   userId,
   version = TOUR_VERSION,
 }: {
-  tourKey: string;
   tourId: string;
   userId: string;
   version?: number;
