@@ -21,9 +21,10 @@ export function PushToggle({ userId }: { userId: string }) {
     }
     setPermission(Notification.permission);
     setEnabled(readPushPref((k) => localStorage.getItem(k), userId));
+    // SW didaftar global via SwRegister; halaman ini hanya pakai yang aktif.
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {
-        /* offline / gagal daftar: contoh pakai jalur halaman */
+      navigator.serviceWorker.ready.catch(() => {
+        /* abaikan: contoh pakai jalur halaman */
       });
     }
   }, [userId]);
@@ -68,11 +69,10 @@ export function PushToggle({ userId }: { userId: string }) {
     const current = Notification.permission;
     setPermission(current);
     if (current !== "granted") {
-      setNote("Izin masih mati. Nyalakan dulu lewat toggle di atas.");
-      return;
+      setNote("Izin masih mati. Nyalakan dulu lewat tombol di atas.");
     }
     const title = "Seporsi Terakhir";
-    const body = "Contoh kabar: porsi yang kamu kunci hampir kedaluwarsa.";
+    const body = "Contoh kabar: porsi yang kamu kunci hampir lewat batas ambil.";
     try {
       if ("serviceWorker" in navigator) {
         const reg = await Promise.race([
@@ -84,9 +84,9 @@ export function PushToggle({ userId }: { userId: string }) {
         const n = new Notification(title, { body, tag: "seporsi-test" });
         n.onclick = () => window.focus();
       }
-      setNote("Contoh terkirim. Lihat bilah notifikasi perangkatmu.");
+      setNote("Contoh terkirim. Cek bilah notifikasi di perangkatmu.");
     } catch {
-      setNote("Contoh gagal tampil. Cek mode Jangan Ganggu / izin notifikasi browser.");
+      setNote("Contoh gagal tampil. Periksa mode Jangan Ganggu atau izin notifikasi browser.");
     }
   }
 

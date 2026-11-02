@@ -8,6 +8,8 @@ import {
   UserRound,
 } from "lucide-react";
 import { SignOutButton } from "@/app/(public)/profil/sign-out-button";
+import { AppHeader } from "@/components/app-header";
+import { InstallPwa } from "@/components/install-pwa";
 import { SieraList, SieraRowLink, SieraSectionTitle } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 
@@ -43,24 +45,24 @@ export default async function PengaturanPage() {
   const current = await requireRole("/akun/pengaturan", "student", "tenant", "admin");
 
   const akun: Row[] = [
-    { href: "/profil", icon: UserRound, title: "Profil", desc: "Nama dan info akun" },
+    { href: "/profil", icon: UserRound, title: "Profil", desc: "Nama dan info akunmu" },
     {
       href: "/akun/keamanan",
       icon: ShieldCheck,
       title: "Keamanan",
-      desc: "Email dan metode login",
+      desc: "Email dan cara masuk",
     },
     {
       href: "/akun/notifikasi",
       icon: Bell,
       title: "Notifikasi",
-      desc: "Bunyi kabar pesanan",
+      desc: "Bunyi untuk kabar pesanan",
     },
     {
       href: "/akun/privasi",
       icon: Database,
       title: "Privasi & data",
-      desc: "Unduh data kamu (JSON)",
+      desc: "Ambil data kamu (JSON)",
     },
   ];
 
@@ -71,7 +73,7 @@ export default async function PengaturanPage() {
             href: "/tenant/profil",
             icon: Store,
             title: "Profil kantin",
-            desc: "Nama gerai dan lokasi",
+            desc: "Nama gerai dan lokasimu",
           },
           {
             href: "/tenant/pesanan",
@@ -86,13 +88,13 @@ export default async function PengaturanPage() {
               href: "/admin/tenant",
               icon: Store,
               title: "Persetujuan tenant",
-              desc: "Daftar menunggu verifikasi",
+              desc: "Pendaftar yang menunggu verifikasi",
             },
             {
               href: "/admin",
               icon: ReceiptText,
               title: "Kebijakan jendela jual",
-              desc: "120–240 menit pasca-masak",
+              desc: "120 sampai 240 menit setelah masak",
             },
           ]
         : [
@@ -100,27 +102,33 @@ export default async function PengaturanPage() {
               href: "/cara-kerja",
               icon: CircleHelp,
               title: "Bantuan & lapor",
-              desc: "Cara kerja dan keamanan pangan",
+              desc: "Cara kerja dan keamanan makanan",
             },
           ];
 
   return (
-    <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl md:grid-cols-2 md:px-6">
-      <div className="flex flex-col gap-1 md:col-span-2">
-        <h1 className="text-[18px] leading-[1.3] font-extrabold">Pengaturan</h1>
-        <p className="text-[13px] text-[#64746B]">Kelola akun dan preferensi kamu.</p>
+    <>
+      <AppHeader title="Pengaturan" trail={[{ label: "Pengaturan", href: "/akun/pengaturan" }]} />
+      <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl md:grid-cols-2 md:px-6 lg:max-w-6xl lg:px-8">
+        <div className="flex flex-col gap-1 md:col-span-2">
+          <h1 className="text-[18px] leading-[1.3] font-extrabold">Pengaturan</h1>
+          <p className="text-[13px] text-[#64746B]">Kelola akun dan pilihan notifikasimu.</p>
+        </div>
+
+        <Group heading="Akun & preferensi" label="Akun dan preferensi" rows={akun} />
+        <Group heading="Khusus peran kamu" label="Menu khusus peran" rows={peran} />
+        <div className="md:col-span-2">
+          <InstallPwa />
+        </div>
+
+        <div className="md:col-span-2">
+          <SignOutButton />
+        </div>
+
+        <p className="pb-4 text-center text-[11px] font-semibold text-[#64746B] md:col-span-2">
+          Seporsi Terakhir v0.1.0
+        </p>
       </div>
-
-      <Group heading="Akun & preferensi" label="Akun dan preferensi" rows={akun} />
-      <Group heading="Khusus peran kamu" label="Menu khusus peran" rows={peran} />
-
-      <div className="md:col-span-2">
-        <SignOutButton />
-      </div>
-
-      <p className="pb-4 text-center text-[11px] font-semibold text-[#64746B] md:col-span-2">
-        Seporsi Terakhir v0.1.0
-      </p>
-    </div>
+    </>
   );
 }
