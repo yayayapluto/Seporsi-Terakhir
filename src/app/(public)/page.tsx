@@ -332,7 +332,7 @@ export default async function Home() {
         </Reveal>
 
         {/* CARA KERJA DETAIL */}
-        <Reveal id="cara-kerja-detail" className="flex scroll-mt-24 flex-col gap-3 py-10">
+        <Reveal id="cara-kerja" className="flex scroll-mt-24 flex-col gap-3 py-10">
           <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
             Cara kerja penyelamatan porsi
           </h2>
