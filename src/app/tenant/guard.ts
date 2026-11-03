@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
-import { type OwnTenant, getOwnTenant } from "@/lib/tenant";
+import { getOwnTenant, type OwnTenant } from "@/lib/tenant";
 
 /**
  * Guard bersama semua halaman /tenant/* kecuali pendaftaran & menunggu:
