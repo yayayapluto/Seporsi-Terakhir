@@ -9,7 +9,7 @@ import { OrderStatusBadge } from "@/components/order-status-badge";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
-import { ROUTES } from "@/lib/routes";
+import { ROUTES, katalogDetail } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { OrderLiveStatus } from "../order-live-status";
 import { CancelButton } from "./cancel-button";
@@ -83,7 +83,7 @@ export default async function OrderDetailPage({
   params: Promise<{ orderId: string }>;
   searchParams?: Promise<{ mode?: string }>;
 }) {
-  await requireRole("/pesanan", "student");
+  await requireRole(ROUTES.pesanan, "student");
   const { orderId } = await params;
   const sp = (await searchParams) ?? {};
   const tourForced = sp.mode === "onboarding";
@@ -97,7 +97,11 @@ export default async function OrderDetailPage({
     <>
       <AppHeader
         title={`${order.menuName} x ${order.quantity}`}
-        trail={[{ label: "Pesanan", href: ROUTES.pesanan }, { label: `Detail ${order.menuName}` }]}
+        trail={[
+          { label: "Beranda", href: ROUTES.beranda },
+          { label: "Pesanan", href: ROUTES.pesanan },
+          { label: `Detail ${order.menuName}` },
+        ]}
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
         {order.status === "reserved" && <OrderLiveStatus orderIds={[order.orderId]} />}
@@ -159,7 +163,7 @@ export default async function OrderDetailPage({
               <p className="text-sm font-bold text-[#1C2826]">Pesanan dibatalkan</p>
               <p className="text-sm text-[#64746B]">Stok porsi sudah dikembalikan ke katalog.</p>
               <Link
-                href="/katalog"
+                href={ROUTES.katalog}
                 className={cn(
                   buttonVariants({ variant: "outline" }),
                   "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
@@ -215,7 +219,7 @@ export default async function OrderDetailPage({
                 Porsi lain masih menunggu diselamatkan sore ini.
               </p>
               <Link
-                href="/katalog"
+                href={ROUTES.katalog}
                 className={cn(
                   buttonVariants(),
                   "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
@@ -246,7 +250,7 @@ export default async function OrderDetailPage({
                 {order.status === "reserved" && (
                   <>
                     <Link
-                      href="/katalog"
+                      href={ROUTES.katalog}
                       className={cn(
                         buttonVariants({ variant: "outline" }),
                         "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
@@ -260,7 +264,7 @@ export default async function OrderDetailPage({
                 {order.status === "picked_up" && (
                   <>
                     <Link
-                      href={`/katalog/${order.portionId}`}
+                      href={katalogDetail(order.portionId)}
                       className={cn(
                         buttonVariants(),
                         "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
@@ -269,7 +273,7 @@ export default async function OrderDetailPage({
                       Pesan lagi
                     </Link>
                     <Link
-                      href="/katalog"
+                      href={ROUTES.katalog}
                       className={cn(
                         buttonVariants({ variant: "outline" }),
                         "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
