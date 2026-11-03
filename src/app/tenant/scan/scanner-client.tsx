@@ -1,11 +1,18 @@
 "use client";
 
 import { type IScannerError, type IScannerHandle, Scanner } from "@yudiel/react-qr-scanner";
-import { CameraOff, CheckIcon } from "lucide-react";
+import { CameraOff, CheckIcon, History } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { SieraHero, sieraCardClass } from "@/components/siera";
+import { EmptyLine } from "@/components/shared/empty-line";
+import {
+  SieraHero,
+  SieraRailPage,
+  SieraSection,
+  SieraStat,
+  sieraCardClass,
+} from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -18,7 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { toast } from "@/components/ui/toast";
-import { formatIDR } from "@/lib/format";
+import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import {
   confirmPickup,
@@ -26,7 +33,7 @@ import {
   lookupOrderByCode,
   lookupOrderByToken,
 } from "./actions";
-
+import type { LastPickup } from "./page";
 export interface ScannedOrder {
   menuName: string;
   quantity: number;
@@ -53,7 +60,7 @@ function orderStatusLine(status: string): string {
   return STATUS_LABEL[status] ?? status;
 }
 
-export function ScannerClient() {
+export function ScannerClient({ lastPickup }: { lastPickup: LastPickup | null }) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>({ kind: "scanning" });
   const [confirming, setConfirming] = useState(false);
@@ -190,51 +197,61 @@ export function ScannerClient() {
     setCameraError(null);
     setPhase({ kind: "scanning" });
   }
-  function renderManualForm() {
-    return (
-      <form onSubmit={onManualSubmit} className="flex flex-col items-center gap-3 text-center">
-        <div className="flex flex-col items-center gap-1">
-          <p id="manual-code-heading" className="text-sm font-bold text-[#1C2826]">
-            Kode pickup
-          </p>
-          <p className="text-[13px] text-muted-foreground">
-            Minta dari layar mahasiswa, lalu tempel di sini.
-          </p>
-        </div>
-        <InputOTP
-          maxLength={4}
-          value={manualToken}
-          onChange={(v: string) => setManualToken(v.replace(/\D/g, "").slice(0, 4))}
-          inputMode="numeric"
-          aria-label="Kode pickup 4 digit"
-        >
-          <InputOTPGroup>
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-            <InputOTPSlot index={3} />
-          </InputOTPGroup>
-        </InputOTP>
-        <Button
-          type="submit"
-          className="min-h-12 w-full text-[15px]"
-          disabled={manualBusy || manualToken.trim().length !== 4}
-        >
-          {manualBusy ? (
-            <>
-              <Spinner />
-              Mencari…
-            </>
-          ) : (
-            "Cari pesanan"
-          )}
-        </Button>
-      </form>
-    );
-  }
+  const manualForm = (
+    <form onSubmit={onManualSubmit} className="flex flex-col items-center gap-3 text-center">
+      <div className="flex flex-col items-center gap-1">
+        <p id="manual-code-heading" className="text-sm font-bold text-[#1C2826]">
+          Kode pickup
+        </p>
+        <p className="text-[13px] text-muted-foreground">
+          Minta dari layar mahasiswa, lalu tempel di sini.
+        </p>
+      </div>
+      <InputOTP
+        maxLength={4}
+        value={manualToken}
+        onChange={(v: string) => setManualToken(v.replace(/\D/g, "").slice(0, 4))}
+        inputMode="numeric"
+        aria-label="Kode pickup 4 digit"
+      >
+        <InputOTPGroup>
+          <InputOTPSlot index={0} />
+          <InputOTPSlot index={1} />
+          <InputOTPSlot index={2} />
+          <InputOTPSlot index={3} />
+        </InputOTPGroup>
+      </InputOTP>
+      <Button
+        type="submit"
+        className="min-h-12 w-full text-[15px]"
+        disabled={manualBusy || manualToken.trim().length !== 4}
+      >
+        {manualBusy ? (
+          <>
+            <Spinner />
+            Mencari…
+          </>
+        ) : (
+          "Cari pesanan"
+        )}
+      </Button>
+    </form>
+  );
 
-  return (
-    <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
+  const manualCard =
+    phase.kind === "preview" || phase.kind === "success" ? null : manualOpen ? (
+      <div className="rounded-[20px] border border-line bg-white p-4">{manualForm}</div>
+    ) : (
+      <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-white p-4">
+        <p className="text-sm font-bold text-[#1C2826]">Belum bisa pindai?</p>
+        <p className="text-sm text-muted-foreground">
+          QR hanya pratinjau. Minta kode dari layar mahasiswa, terima bayar, lalu konfirmasi.
+        </p>
+      </div>
+    );
+
+  const main = (
+    <>
       <SieraHero eyebrow="SCAN PICKUP" title="Serahkan porsi dalam 3 langkah">
         <ol className="mt-2 flex flex-col gap-1 text-sm text-[#1E5A36] sm:flex-row sm:gap-4">
           <li>
@@ -249,92 +266,60 @@ export function ScannerClient() {
         </ol>
       </SieraHero>
       {phase.kind === "scanning" && (
-        <div
-          data-tour="scanner"
-          className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-6"
-        >
-          <div className="relative mx-auto w-full max-w-[520px]">
-            {cameraError ? (
-              <div className="flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
-                <span
-                  aria-hidden
-                  className="flex size-12 items-center justify-center rounded-2xl bg-[#F1F5F2] text-[#64746B]"
-                >
-                  <CameraOff className="size-6" />
-                </span>
-                <p className="text-sm font-bold text-[#1C2826]">Kamera tidak tersedia</p>
-                <p className="text-[13px] text-muted-foreground">{cameraError}</p>
-              </div>
-            ) : (
-              <>
-                <Scanner
-                  ref={scannerRef}
-                  onScan={(codes) => {
-                    const value = codes[0]?.rawValue;
-                    if (value) onScan(value);
-                  }}
-                  onError={onCameraError}
-                  constraints={{ facingMode: "environment" }}
-                  components={{ finder: false }}
-                  classNames={{ container: "siera-scanner" }}
-                  styles={{
-                    container: {
-                      width: "100%",
-                      borderRadius: 20,
-                      overflow: "hidden",
-                      border: "1px solid var(--line)",
-                    },
-                    video: {
-                      transform: mirrored ? "scaleX(-1)" : "none",
-                      opacity: videoReady ? 1 : 0,
-                    },
-                  }}
-                />
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 flex items-center justify-center"
-                >
-                  <div className="relative h-52 w-52">
-                    <span className="absolute top-0 left-0 h-7 w-7 rounded-tl-lg border-t-4 border-l-4 border-[#2E7D4F]" />
-                    <span className="absolute top-0 right-0 h-7 w-7 rounded-tr-lg border-t-4 border-r-4 border-[#2E7D4F]" />
-                    <span className="absolute bottom-0 left-0 h-7 w-7 rounded-bl-lg border-b-4 border-l-4 border-[#2E7D4F]" />
-                    <span className="absolute right-0 bottom-0 h-7 w-7 rounded-br-lg border-r-4 border-b-4 border-[#2E7D4F]" />
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-          <div className="flex min-w-0 flex-col gap-3">
-            <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-white p-4">
-              <p className="text-sm font-bold text-[#1C2826]">Belum bisa pindai?</p>
-              <p className="text-sm text-muted-foreground">
-                QR hanya pratinjau. Minta kode dari layar mahasiswa, terima bayar, lalu konfirmasi.
-              </p>
+        <div data-tour="scanner" className="relative mx-auto w-full max-w-[520px]">
+          {cameraError ? (
+            <div className="flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
+              <span
+                aria-hidden
+                className="flex size-12 items-center justify-center rounded-2xl bg-[#F1F5F2] text-[#64746B]"
+              >
+                <CameraOff className="size-6" />
+              </span>
+              <p className="text-sm font-bold text-[#1C2826]">Kamera tidak tersedia</p>
+              <p className="text-[13px] text-muted-foreground">{cameraError}</p>
             </div>
-            <Button
-              type="button"
-              variant="outline"
-              data-tour="manual"
-              className="min-h-11 w-full"
-              onClick={() => setManualOpen((v) => !v)}
-              aria-expanded={manualOpen}
-            >
-              {manualOpen ? "Tutup kode manual" : "Masukkan kode manual"}
-            </Button>
-            {manualOpen && (
-              <div className="rounded-[20px] border border-line bg-white p-4">
-                {renderManualForm()}
+          ) : (
+            <>
+              <Scanner
+                ref={scannerRef}
+                onScan={(codes) => {
+                  const value = codes[0]?.rawValue;
+                  if (value) onScan(value);
+                }}
+                onError={onCameraError}
+                constraints={{ facingMode: "environment" }}
+                components={{ finder: false }}
+                classNames={{ container: "siera-scanner" }}
+                styles={{
+                  container: {
+                    width: "100%",
+                    borderRadius: 20,
+                    overflow: "hidden",
+                    border: "1px solid var(--line)",
+                  },
+                  video: {
+                    transform: mirrored ? "scaleX(-1)" : "none",
+                    opacity: videoReady ? 1 : 0,
+                  },
+                }}
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 flex items-center justify-center"
+              >
+                <div className="relative h-52 w-52">
+                  <span className="absolute top-0 left-0 h-7 w-7 rounded-tl-lg border-t-4 border-l-4 border-[#2E7D4F]" />
+                  <span className="absolute top-0 right-0 h-7 w-7 rounded-tr-lg border-t-4 border-r-4 border-[#2E7D4F]" />
+                  <span className="absolute bottom-0 left-0 h-7 w-7 rounded-bl-lg border-b-4 border-l-4 border-[#2E7D4F]" />
+                  <span className="absolute right-0 bottom-0 h-7 w-7 rounded-br-lg border-r-4 border-b-4 border-[#2E7D4F]" />
+                </div>
               </div>
-            )}
-          </div>
+            </>
+          )}
         </div>
       )}
-
       {phase.kind === "preview" && (
-        <section
-          aria-labelledby="preview-heading"
-          className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-6"
-        >
+        <section aria-labelledby="preview-heading">
           <div className={cn(sieraCardClass, "p-5")}>
             <p className="text-xs font-bold tracking-wide text-[#1E5A36]">CEK SEBELUM SERAHKAN</p>
             <h2 id="preview-heading" className="mt-1 text-lg font-extrabold">
@@ -359,61 +344,60 @@ export function ScannerClient() {
               Terima pembayaran tunai {formatIDR(phase.order.totalPrice)} dulu, baru tekan
               konfirmasi.
             </p>
-          </div>
-          <div className="flex min-w-0 flex-col gap-2 lg:sticky lg:top-24">
-            <Button
-              type="button"
-              variant="outline"
-              className="min-h-12 w-full"
-              onClick={() => reset()}
-            >
-              Batal — scan ulang
-            </Button>
-            <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-              <DialogTrigger
-                render={<Button type="button" className="min-h-11" disabled={confirming} />}
+            <div className="mt-3 flex min-w-0 flex-col gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="min-h-12 w-full"
+                onClick={() => reset()}
               >
-                {confirming ? (
-                  <>
-                    <Spinner />
-                    Mengonfirmasi…
-                  </>
-                ) : (
-                  "Konfirmasi pickup"
-                )}
-              </DialogTrigger>
-              <DialogContent>
-                <DialogTitle>
-                  Konfirmasi pickup {phase.order.menuName} × {phase.order.quantity}?
-                </DialogTitle>
-                <DialogDescription>
-                  Pastikan pembayaran tunai sudah diterima. Tindakan ini tidak bisa dibatalkan.
-                </DialogDescription>
-                <DialogFooter>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="min-h-11 flex-1"
-                    onClick={() => setConfirmOpen(false)}
-                  >
-                    Kembali
-                  </Button>
-                  <Button
-                    type="button"
-                    autoFocus
-                    className="min-h-11 flex-1"
-                    onClick={onConfirm}
-                    disabled={confirming}
-                  >
-                    Ya, konfirmasi
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                Batal — scan ulang
+              </Button>
+              <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                <DialogTrigger
+                  render={<Button type="button" className="min-h-11" disabled={confirming} />}
+                >
+                  {confirming ? (
+                    <>
+                      <Spinner />
+                      Mengonfirmasi…
+                    </>
+                  ) : (
+                    "Konfirmasi pickup"
+                  )}
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle>
+                    Konfirmasi pickup {phase.order.menuName} × {phase.order.quantity}?
+                  </DialogTitle>
+                  <DialogDescription>
+                    Pastikan pembayaran tunai sudah diterima. Tindakan ini tidak bisa dibatalkan.
+                  </DialogDescription>
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="min-h-11 flex-1"
+                      onClick={() => setConfirmOpen(false)}
+                    >
+                      Kembali
+                    </Button>
+                    <Button
+                      type="button"
+                      autoFocus
+                      className="min-h-11 flex-1"
+                      onClick={onConfirm}
+                      disabled={confirming}
+                    >
+                      Ya, konfirmasi
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </section>
       )}
-
       {phase.kind === "success" && (
         <output
           aria-live="polite"
@@ -444,6 +428,49 @@ export function ScannerClient() {
           </div>
         </output>
       )}
-    </div>
+    </>
   );
+
+  const aside = (
+    <>
+      <SieraSection
+        id="manual-heading"
+        label="Konfirmasi manual"
+        action={
+          phase.kind === "scanning" ? (
+            <button
+              type="button"
+              data-tour="manual"
+              className="min-h-11 text-[13px] font-bold text-[#1E5A36] underline underline-offset-4"
+              onClick={() => setManualOpen((v) => !v)}
+              aria-expanded={manualOpen}
+            >
+              {manualOpen ? "Tutup kode manual" : "Masukkan kode manual"}
+            </button>
+          ) : undefined
+        }
+      >
+        {phase.kind === "preview" || phase.kind === "success" ? (
+          <EmptyLine>Selesaikan konfirmasi di kolom utama dulu.</EmptyLine>
+        ) : (
+          manualCard
+        )}
+      </SieraSection>
+      <SieraSection id="terakhir-heading" label="Pickup terakhir">
+        {lastPickup == null ? (
+          <EmptyLine>Belum ada pickup.</EmptyLine>
+        ) : (
+          <div className={`${sieraCardClass} p-4`}>
+            <SieraStat
+              icon={History}
+              value={`${lastPickup.menuName} ×${lastPickup.quantity}`}
+              label={`${formatDateTimeWIB(new Date(lastPickup.pickedUpAt))} WIB · ${formatIDR(lastPickup.totalPrice)}`}
+            />
+          </div>
+        )}
+      </SieraSection>
+    </>
+  );
+
+  return <SieraRailPage main={main} asideLabel="Bantuan konfirmasi" aside={aside} />;
 }
