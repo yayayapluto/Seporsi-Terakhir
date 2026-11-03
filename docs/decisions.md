@@ -196,3 +196,4 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 - Profil keterangan estimasi: kartu `sieraCardClass` dilepas -> teks kecil `px-1 text-[11px] text-muted` tanpa kartu (boleh tanpa kartu, hanya bila diperlukan). Dampak `dl` tetap card 3 kolom.
 - Profil revert `sejajarkan` (atas permintaan user, numpuk di tablet): `page.tsx` + `siera.tsx` kembali ke `f50c433`. Label panjang, dampak responsif 1->3 kolom, nav/bantuan susun lama. Log adopsi + footnote tetap tercatat; perbaikan numpuk ditunda sampai arahan baru.
 - Profil grid rata: label "Dampakmu" + "Pesanan & pengaturan", `dl` selalu 3 kolom simetris, footnote teks kecil tanpa kartu, `SieraSection` gap-2 global. Tanpa dep baru.
+- Profil label rata: header manual dampak/bantuan dibungkus `div min-h-11 items-center` agar sejajar dengan header `SieraSection` (indikator = teks label, card mengikuti).
