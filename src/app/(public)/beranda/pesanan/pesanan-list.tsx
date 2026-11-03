@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { ROUTES, pesananDetail } from "@/lib/routes";
 import { cancelOrder } from "./actions";
 import { OrderLiveStatus } from "./order-live-status";
 import type { MyOrder } from "./page";
@@ -116,7 +117,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
               ? "Porsi hari ini menunggu diselamatkan."
               : "Coba filter status lain."
           }
-          ctaHref="/katalog"
+          ctaHref={ROUTES.katalog}
           ctaLabel="Lihat katalog"
         />
       ) : (
@@ -175,7 +176,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                   <div className="flex flex-wrap gap-2">
                     {o.status === "reserved" && <QrModal order={o} />}
                     <Link
-                      href={`/pesanan/${o.orderId}`}
+                      href={pesananDetail(o.orderId)}
                       className={cn(buttonVariants({ variant: "outline" }), "h-11 px-5")}
                     >
                       Detail
