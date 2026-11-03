@@ -1,4 +1,5 @@
 import { BarChart3, Store, Wallet } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { SiteFooter } from "@/components/site-footer";
 import {
@@ -139,7 +140,8 @@ export default async function Home() {
                   href={primaryHref}
                   className={buttonVariants({
                     size: "lg",
-                    className: "w-full sm:w-auto",
+                    className:
+                      "w-full border-b-[3px] border-b-[#1E5A36] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] active:translate-y-[2px] active:border-b-0 sm:w-auto",
                   })}
                 >
                   {primaryLabel}
@@ -163,59 +165,76 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* Etalase kaca: header lengket countdown + nampan skeleton */}
-          <section
-            aria-label="Contoh papan porsi sore ini"
-            className="overflow-hidden rounded-2xl border border-border bg-card/80 shadow-[0_16px_40px_-16px_rgba(28,40,38,0.25)] backdrop-blur"
-          >
-            <div className="flex items-center justify-between gap-2 border-b border-dashed bg-secondary/60 px-4 py-3 sm:px-5">
-              <p className="text-xs font-bold text-secondary-foreground sm:text-sm">
-                Sore ini · Kantin Gedung A
-              </p>
-              <p className="text-xs font-bold text-secondary-foreground sm:text-sm">
-                <span className="sr-only">Pickup tutup dalam </span>
-                <PickupCountdown />
-              </p>
-            </div>
-            <ul className="divide-y divide-dashed divide-border">
-              {BOARD.map((item, i) => (
-                <ChalkRow
-                  key={item.name}
-                  className="grid grid-cols-[56px_1fr_auto] items-center gap-3 px-4 py-3 sm:grid-cols-[72px_1fr_auto] sm:gap-4 sm:px-5 sm:py-4"
-                  delay={i * 0.09}
-                >
-                  <span
-                    aria-hidden
-                    className="block h-14 w-14 animate-pulse rounded-xl border border-border bg-muted sm:h-[72px] sm:w-[72px]"
-                  />
-                  <span>
-                    <span className="block font-bold leading-snug">
-                      <span
-                        aria-hidden
-                        className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary align-middle text-[11px] font-extrabold text-primary-foreground"
-                      >
-                        {i + 1}
+          {/* Etalase: foto kantin + papan porsi sore ini */}
+          <div className="flex flex-col gap-4">
+            <figure className="overflow-hidden rounded-[20px] border border-line bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]">
+              <Image
+                src="/images/foto_kantin.webp"
+                alt="Suasana kantin kampus sore hari"
+                width={1040}
+                height={650}
+                className="aspect-[16/10] w-full object-cover"
+                priority
+              />
+              <figcaption className="px-4 py-2 text-[12px] text-muted-foreground">
+                Kantin sore — contoh, bukan stok live.
+              </figcaption>
+            </figure>
+            <section
+              aria-label="Contoh papan porsi sore ini"
+              className="overflow-hidden rounded-[20px] border border-line bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]"
+            >
+              <div className="flex items-center justify-between gap-2 border-b border-dashed border-line bg-[#EAF5ED] px-4 py-3 sm:px-5">
+                <p className="text-xs font-bold text-[#1E5A36] sm:text-sm">
+                  Sore ini · Kantin Gedung A
+                </p>
+                <p className="text-xs font-bold text-[#1E5A36] sm:text-sm">
+                  <span className="sr-only">Pickup tutup dalam </span>
+                  <PickupCountdown />
+                </p>
+              </div>
+              <ul className="divide-y divide-dashed divide-line">
+                {BOARD.map((item, i) => (
+                  <ChalkRow
+                    key={item.name}
+                    className="grid grid-cols-[56px_1fr_auto] items-center gap-3 px-4 py-3 sm:grid-cols-[72px_1fr_auto] sm:gap-4 sm:px-5 sm:py-4"
+                    delay={i * 0.07}
+                  >
+                    <span
+                      aria-hidden
+                      className="block h-14 w-14 rounded-xl border border-line bg-[#F1F5F2] sm:h-[72px] sm:w-[72px]"
+                    />
+                    <span>
+                      <span className="block font-bold leading-snug">
+                        <span
+                          aria-hidden
+                          className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary align-middle text-[11px] font-extrabold text-primary-foreground"
+                        >
+                          {i + 1}
+                        </span>
+                        {item.name}
                       </span>
-                      {item.name}
+                      <span className="mt-0.5 block text-xs text-muted-foreground">
+                        {item.tenant} • Dimasak {item.cooked} • {item.left}
+                      </span>
                     </span>
-                    <span className="mt-0.5 block text-xs text-muted-foreground">
-                      {item.tenant} • Dimasak {item.cooked} • {item.left}
+                    <span className="text-right text-sm">
+                      <del className="mr-1.5 text-xs text-muted-foreground">
+                        <span className="sr-only">Harga awal: </span>
+                        {item.normal}
+                      </del>
+                      <strong data-pop className="text-base text-accent-strong">
+                        {item.price}
+                      </strong>
                     </span>
-                  </span>
-                  <span className="text-right text-sm">
-                    <del className="mr-1.5 text-xs text-muted-foreground">
-                      <span className="sr-only">Harga awal: </span>
-                      {item.normal}
-                    </del>
-                    <strong className="text-base text-accent-strong">{item.price}</strong>
-                  </span>
-                </ChalkRow>
-              ))}
-            </ul>
-            <p className="border-t border-dashed px-4 py-2.5 text-xs text-muted-foreground sm:px-5">
-              Stok live ada di katalog. Contoh sintetis.
-            </p>
-          </section>
+                  </ChalkRow>
+                ))}
+              </ul>
+              <p className="border-t border-dashed border-line px-4 py-2.5 text-xs text-muted-foreground sm:px-5">
+                Stok live ada di katalog. Contoh sintetis.
+              </p>
+            </section>
+          </div>
         </section>
 
         {/* MASALAH — 3 kartu ikon */}
