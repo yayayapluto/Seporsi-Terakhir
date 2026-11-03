@@ -10,6 +10,7 @@ import { GuidedTour } from "@/components/guided-tour";
 import {
   SieraCard,
   SieraEmpty,
+  SieraSection,
   SieraSectionTitle,
   SieraWarningBadge,
   sieraCardClass,
@@ -110,67 +111,71 @@ export function KatalogList({
 
   return (
     <div className="flex flex-col gap-4">
-      <SieraCard className="flex flex-col gap-3 p-4">
-        <div
-          className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-2"
-          data-tour="filter"
-        >
-          <span className="flex min-w-0 flex-1 items-center gap-2">
-            <Label
-              htmlFor="tenant-filter"
-              className="w-12 shrink-0 text-[13px] font-semibold text-[#64746B]"
-            >
-              Tenant
-            </Label>
-            <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
-              <SelectTrigger
-                id="tenant-filter"
-                className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm [&>span]:min-w-0 [&>span]:truncate"
+      <SieraSection id="filter-heading" label="Saring katalog">
+        <SieraCard className="flex flex-col gap-3 p-4 lg:sticky lg:top-[76px]">
+          <div
+            className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-2"
+            data-tour="filter"
+          >
+            <span className="flex min-w-0 flex-1 items-center gap-2">
+              <Label
+                htmlFor="tenant-filter"
+                className="w-12 shrink-0 text-[13px] font-semibold text-[#64746B]"
               >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent align="start" alignItemWithTrigger={false}>
-                <SelectItem value="semua">Semua tenant</SelectItem>
-                {tenants.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {t}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </span>
-          <span className="flex min-w-0 flex-1 items-center gap-2">
-            <Label
-              htmlFor="sort-filter"
-              className="w-12 shrink-0 text-[13px] font-semibold text-[#64746B]"
-            >
-              Urut
-            </Label>
-            <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
-              <SelectTrigger
-                id="sort-filter"
-                className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm [&>span]:min-w-0 [&>span]:truncate"
+                Tenant
+              </Label>
+              <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
+                <SelectTrigger
+                  id="tenant-filter"
+                  className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm [&>span]:min-w-0 [&>span]:truncate"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent align="start" alignItemWithTrigger={false}>
+                  <SelectItem value="semua">Semua tenant</SelectItem>
+                  {tenants.map((t) => (
+                    <SelectItem key={t} value={t}>
+                      {t}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </span>
+            <span className="flex min-w-0 flex-1 items-center gap-2">
+              <Label
+                htmlFor="sort-filter"
+                className="w-12 shrink-0 text-[13px] font-semibold text-[#64746B]"
               >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent align="start" alignItemWithTrigger={false}>
-                {SORTS.map((s) => (
-                  <SelectItem key={s.value} value={s.value}>
-                    {s.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </span>
-        </div>
-      </SieraCard>
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
-          <SieraSectionTitle>Katalog sore ini · {filtered.length}</SieraSectionTitle>
-          {dayTotal >= MAX_PORTIONS_PER_DAY && (
+                Urut
+              </Label>
+              <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
+                <SelectTrigger
+                  id="sort-filter"
+                  className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm [&>span]:min-w-0 [&>span]:truncate"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent align="start" alignItemWithTrigger={false}>
+                  {SORTS.map((s) => (
+                    <SelectItem key={s.value} value={s.value}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </span>
+          </div>
+        </SieraCard>
+      </SieraSection>
+      <SieraSection
+        id="katalog-heading"
+        label={`Katalog sore ini · ${filtered.length}`}
+        action={
+          dayTotal >= MAX_PORTIONS_PER_DAY ? (
             <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
-          )}
-        </div>
+          ) : undefined
+        }
+      >
         <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1">
           <legend className="sr-only">Tampilan katalog</legend>
           {[
@@ -205,7 +210,7 @@ export function KatalogList({
             );
           })}
         </fieldset>
-      </div>
+      </SieraSection>
       {filtered.length === 0 ? (
         <SieraEmpty
           title="Belum ada porsi sore ini."
@@ -223,7 +228,7 @@ export function KatalogList({
       ) : view === "grid" ? (
         <motion.ul
           layout={!reduce}
-          className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-2 lg:grid-cols-3"
         >
           {shown.map((p) => {
             const soldOut = p.quantityRemaining <= 0;
@@ -232,14 +237,11 @@ export function KatalogList({
               <motion.li
                 key={p.id}
                 layout={!reduce}
-                {...(reduce
-                  ? {}
-                  : {
-                      initial: { opacity: 0, y: 12 },
-                      animate: { opacity: 1, y: 0 },
-                      transition: { duration: 0.2, ease: "easeOut" as const },
-                    })}
-                className={cn(sieraCardClass, "overflow-hidden", soldOut && "opacity-60")}
+                className={cn(
+                  sieraCardClass,
+                  "flex h-full flex-col overflow-hidden",
+                  soldOut && "opacity-60",
+                )}
               >
                 {(() => {
                   const body = (
@@ -268,14 +270,12 @@ export function KatalogList({
                           </span>
                         )}
                       </span>
-                      <span className="flex flex-col gap-0.5 p-4 pb-3">
+                      <span className="flex flex-1 flex-col gap-0.5 p-4">
                         <span className="line-clamp-2 text-[15px] leading-snug font-bold text-[#1C2826]">
                           {p.menuName}
                         </span>
                         <span className="truncate text-[13px] text-[#64746B]">{p.tenantName}</span>
-                      </span>
-                      <span className="flex flex-col gap-1 px-4 pt-3">
-                        <span className="flex items-center gap-1.5 text-[13px] text-[#64746B]">
+                        <span className="mt-1 flex items-center gap-1.5 text-[13px] text-[#64746B]">
                           <Clock3 className="size-4 shrink-0" aria-hidden />
                           Dimasak {formatDateTimeWIB(new Date(p.cookedAt))} · Sisa{" "}
                           {p.quantityRemaining}
@@ -295,7 +295,7 @@ export function KatalogList({
                       {!soldOut && (
                         <>
                           <span aria-hidden className="mx-4 border-t border-dashed border-line" />
-                          <span className="flex min-h-11 items-center justify-between px-4 pt-1 pb-4 text-sm font-bold text-[#1E5A36]">
+                          <span className="mt-auto flex min-h-11 items-center justify-between px-4 pt-1 pb-4 text-sm font-bold text-[#1E5A36]">
                             Lihat dan pesan
                             <ChevronRight className="size-5 shrink-0" aria-hidden />
                           </span>
@@ -304,14 +304,17 @@ export function KatalogList({
                     </>
                   );
                   return soldOut ? (
-                    <fieldset aria-label={`${p.menuName} habis`} className="flex min-h-11 flex-col">
+                    <div
+                      aria-label={`${p.menuName} habis`}
+                      className="flex min-h-11 flex-1 flex-col"
+                    >
                       {body}
-                    </fieldset>
+                    </div>
                   ) : (
                     <Link
                       href={katalogDetail(p.id)}
                       aria-label={`Lihat dan pesan ${p.menuName}`}
-                      className="flex min-h-11 flex-col"
+                      className="flex min-h-11 flex-1 flex-col"
                     >
                       {body}
                     </Link>
@@ -330,18 +333,7 @@ export function KatalogList({
             const soldOut = p.quantityRemaining <= 0;
             const leftMin = Math.max(0, Math.floor((+new Date(p.expiresAt) - now) / 60_000));
             return (
-              <motion.li
-                key={p.id}
-                layout={!reduce}
-                {...(reduce
-                  ? {}
-                  : {
-                      initial: { opacity: 0, y: 12 },
-                      animate: { opacity: 1, y: 0 },
-                      transition: { duration: 0.2, ease: "easeOut" as const },
-                    })}
-                className={soldOut ? "opacity-60" : undefined}
-              >
+              <motion.li key={p.id} layout={!reduce} className={cn(soldOut && "opacity-60")}>
                 {(() => {
                   const inner = (
                     <>
@@ -392,12 +384,12 @@ export function KatalogList({
                     </>
                   );
                   return soldOut ? (
-                    <fieldset
+                    <div
                       aria-label={`${p.menuName} habis`}
                       className="flex min-h-11 items-center gap-3 py-3"
                     >
                       {inner}
-                    </fieldset>
+                    </div>
                   ) : (
                     <Link
                       href={katalogDetail(p.id)}

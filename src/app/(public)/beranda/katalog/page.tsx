@@ -150,27 +150,29 @@ async function KatalogPageBody(
           </>
         }
         aside={
-          <SieraSection label="Segera habis">
-            {urgent.length === 0 ? (
-              <SieraEmpty
-                compact
-                title="Belum ada yang mepet."
-                hint="Semua porsi masih di atas 60 menit."
-              />
-            ) : (
-              <SieraList aria-label="Porsi segera habis">
-                {urgent.map((p) => (
-                  <SieraRowLink
-                    key={p.id}
-                    href={katalogDetail(p.id)}
-                    icon={Clock3}
-                    title={p.menuName}
-                    subtitle={`${p.tenantName} · ${urgentLabel(p.expiresAt)}`}
-                  />
-                ))}
-              </SieraList>
-            )}
-          </SieraSection>
+          <div className="hidden min-w-0 flex-col gap-4 lg:gap-5 xl:flex">
+            <SieraSection label="Segera habis">
+              {urgent.length === 0 ? (
+                <SieraEmpty
+                  compact
+                  title="Belum ada yang mepet."
+                  hint="Semua porsi masih di atas 60 menit."
+                />
+              ) : (
+                <SieraList aria-label="Porsi segera habis">
+                  {urgent.map((p) => (
+                    <SieraRowLink
+                      key={p.id}
+                      href={katalogDetail(p.id)}
+                      icon={Clock3}
+                      title={p.menuName}
+                      subtitle={`${p.tenantName} · ${urgentLabel(p.expiresAt)}`}
+                    />
+                  ))}
+                </SieraList>
+              )}
+            </SieraSection>
+          </div>
         }
       />
     </>
