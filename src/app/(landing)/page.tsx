@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "cn";
 import { SieraSectionTitle, SieraTile, sieraCardClass } from "@/components/siera";
-import { SiteFooter } from "@/components/site-footer";
 import {
   Accordion,
   AccordionContent,
@@ -171,8 +170,8 @@ export default async function Home() {
       : "Lihat Porsi Hari Ini";
   return (
     <>
-      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pt-20 sm:px-6 sm:pt-24">
-        {/* HERO: etalase sore — hook kiri, kaca kanan */}
+      <div className="ml-[calc(50%-50vw)] w-screen max-w-none flex-1 px-4 pt-20 sm:px-6 sm:pt-24 lg:px-8">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col">
         <section className="grid gap-8 py-10 sm:py-14 md:grid-cols-2 md:items-start lg:grid-cols-[1.05fr_1fr]">
           <div className="flex flex-col gap-5">
             <h1 className="max-w-xl text-balance text-4xl font-extrabold leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
@@ -478,8 +477,8 @@ export default async function Home() {
             Tahap awal SDG 12 di lingkungan kampus
           </p>
         </Reveal>
+        </div>
       </div>
-      <SiteFooter />
     </>
   );
 }
