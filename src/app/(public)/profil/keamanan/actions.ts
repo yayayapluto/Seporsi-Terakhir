@@ -30,7 +30,10 @@ export async function requestPasswordChange(
   if (!user) return { ok: false, error: "Sesi habis. Masuk ulang lalu coba lagi." };
   const provider = user.app_metadata?.provider ?? "email";
   if (provider !== "email")
-    return { ok: false, error: "Akun login Google tidak punya sandi. Ganti sandi di akun Googlemu." };
+    return {
+      ok: false,
+      error: "Akun login Google tidak punya sandi. Ganti sandi di akun Googlemu.",
+    };
   const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
   if (error) return { ok: false, error: "Gagal ubah sandi. Coba lagi." };
   revalidatePath(ROUTES.profilKeamanan);
