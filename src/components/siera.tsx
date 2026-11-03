@@ -57,7 +57,7 @@ export function SieraField({
 /** Judul seksi kecil di atas grup card. */
 export function SieraSectionTitle({ id, children }: { id?: string; children: ReactNode }) {
   return (
-    <h2 id={id} className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
+    <h2 id={id} className="px-4 text-xs font-medium uppercase tracking-[0.08em] text-[#64746B]">
       {children}
     </h2>
   );
@@ -148,7 +148,7 @@ export function SieraRowLink({
       <Link
         href={href}
         onClick={onNavigate}
-        className={cn(sieraRowLayoutClass, sieraRowActionClass, "w-full text-left")}
+        className={cn(sieraRowLayoutClass, sieraRowActionClass, "group w-full text-left")}
       >
         <SieraTile>
           <Icon className="size-5" strokeWidth={1.75} aria-hidden />
@@ -161,7 +161,10 @@ export function SieraRowLink({
             <span className="truncate text-[12px] leading-[1.4] text-[#64746B]">{subtitle}</span>
           )}
         </span>
-        <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+        <ChevronRight
+          className="size-5 shrink-0 text-[#64746B] transition-transform group-hover:translate-x-0.5"
+          aria-hidden
+        />
       </Link>
     </li>
   );

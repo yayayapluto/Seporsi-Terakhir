@@ -1,5 +1,6 @@
 import {
   History,
+  LayoutGrid,
   Leaf,
   Map as MapIcon,
   PackageCheck,
@@ -91,13 +92,14 @@ async function loadProfile(userId: string, includeOrders: boolean): Promise<Prof
 import {
   SieraAlert,
   SieraList,
-  SieraRailPage,
   SieraRowLink,
   SieraSection,
   SieraSectionTitle,
   SieraTile,
   sieraCardClass,
+  sieraCountText,
 } from "@/components/siera";
+import { SignOutButton } from "./sign-out-button";
 
 function roleLabel(p: ProfileData): string | null {
   if (p.role == null) return null;
@@ -129,40 +131,51 @@ export default async function ProfilPage({
   const tenantStatus =
     p.tenantName == null ? null : p.tenantApproved ? "tenant aktif" : "menunggu persetujuan";
   const initials = namaToInitials(p.fullName);
+  let pendingTenants = 0;
+  if (current.role === "admin") {
+    const supabase = await createClient();
+    const { count } = await supabase
+      .from("tenants")
+      .select("id", { count: "exact", head: true })
+      .eq("is_approved", false);
+    pendingTenants = count ?? 0;
+  }
 
   return (
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
-      {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
-      <section aria-label="Identitas" className={`${sieraCardClass} p-3`}>
-        <div className="flex items-center gap-3">
-          {p.avatarPath ? (
-            <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
-          ) : (
-            <span
-              aria-hidden
-              className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-base font-extrabold text-[#1E5A36]"
-            >
-              {initials || "•"}
-            </span>
-          )}
-          <div className="min-w-0">
-            <h1 className="truncate text-[16px] leading-[1.3] font-extrabold">{p.fullName}</h1>
-            {p.email && <p className="truncate text-[13px] text-[#64746B]">{p.email}</p>}
-            {label && (
-              <p className="mt-1 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
-                {label}
-              </p>
+      <div className="mx-auto grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-8">
+        {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
+        <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
+          <div className="flex items-center gap-4">
+            {p.avatarPath ? (
+              <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
+            ) : (
+              <span
+                aria-hidden
+                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-lg font-extrabold text-[#1E5A36] md:size-16 md:text-xl"
+              >
+                {initials || "•"}
+              </span>
             )}
+            <div className="min-w-0">
+              <h1 className="truncate text-[18px] leading-snug font-semibold md:text-[20px]">
+                {p.fullName}
+              </h1>
+              {p.email && <p className="truncate text-sm text-[#64746B]">{p.email}</p>}
+              {label && (
+                <p className="mt-1.5 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
+                  {label}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
-      <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-2 lg:gap-5">
-        <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
+        </section>
+        <div className="flex min-w-0 flex-col gap-8">
           {/* Dampak — khusus student */}
           {isStudent && (
             <section aria-labelledby="dampak-heading" className="flex min-w-0 flex-col gap-2">
-              <div className="flex min-h-11 items-center">
+              <div className="flex min-h-11 items-center px-1">
                 <SieraSectionTitle id="dampak-heading">Dampakmu</SieraSectionTitle>
               </div>
               {p.loadFailed && (
@@ -221,36 +234,31 @@ export default async function ProfilPage({
               </p>
             </section>
           )}
-        </div>
-        <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
           {/* Kelola platform — khusus admin */}
           {!isStudent && !isTenant && (
             <SieraSection id="kelola-heading" label="Kelola platform">
-              <SieraList aria-label="Kelola platform">
-                {(
-                  [
-                    {
-                      href: ROUTES.adminTenant,
-                      icon: Store,
-                      title: "Persetujuan tenant",
-                      desc: "Daftar menunggu verifikasi",
-                    },
-                    {
-                      href: ROUTES.admin,
-                      icon: Leaf,
-                      title: "Dampak",
-                      desc: "Angka rescue & unduhan",
-                    },
-                  ] as const
-                ).map((r) => (
-                  <SieraRowLink
-                    key={r.href}
-                    href={r.href}
-                    icon={r.icon}
-                    title={r.title}
-                    subtitle={r.desc}
-                  />
-                ))}
+              <SieraList aria-label="Kelola platform" className="divide-solid">
+                <SieraRowLink
+                  href={ROUTES.adminTenant}
+                  icon={Store}
+                  title={
+                    <span className="flex items-center gap-2">
+                      <span className="truncate">Persetujuan tenant</span>
+                      {pendingTenants > 0 && (
+                        <span className="shrink-0 rounded-full bg-[#DCEBE0] px-2 py-0.5 text-[11px] font-bold text-[#1E5A36]">
+                          {sieraCountText(pendingTenants)}
+                        </span>
+                      )}
+                    </span>
+                  }
+                  subtitle="Daftar menunggu verifikasi"
+                />
+                <SieraRowLink
+                  href={ROUTES.admin}
+                  icon={LayoutGrid}
+                  title="Dampak"
+                  subtitle="Angka rescue & unduhan"
+                />
               </SieraList>
             </SieraSection>
           )}
@@ -260,7 +268,10 @@ export default async function ProfilPage({
             id="riwayat-heading"
             label={isStudent ? "Pesanan & pengaturan" : "Pengaturan"}
           >
-            <SieraList aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}>
+            <SieraList
+              aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}
+              className="divide-solid"
+            >
               {isStudent && (
                 <SieraRowLink
                   href={ROUTES.pesanan}
@@ -320,7 +331,7 @@ export default async function ProfilPage({
             <div className="flex min-h-11 items-center">
               <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
             </div>
-            <SieraList aria-label="Bantuan">
+            <SieraList aria-label="Bantuan" className="divide-solid">
               <SieraRowLink
                 href={
                   isTenant
@@ -341,6 +352,9 @@ export default async function ProfilPage({
               />
             </SieraList>
           </section>
+          <div className="mt-8">
+            <SignOutButton />
+          </div>
         </div>
       </div>
       {isStudent && (
