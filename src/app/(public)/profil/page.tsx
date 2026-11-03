@@ -221,13 +221,11 @@ export default async function ProfilPage({
               </div>
             </dl>
             <p
-              className={`${sieraCardClass} flex items-center gap-1.5 px-4 py-2 text-[11px] text-[#64746B]`}
+              className="px-1 text-[11px] leading-relaxed text-[#64746B]"
               title="Berat = estimasi sampling tenant"
             >
-              <span>
-                *estimasi. Pickup:{" "}
-                {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
-              </span>
+              *estimasi. Pickup:{" "}
+              {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
             </p>
           </section>
         )}
