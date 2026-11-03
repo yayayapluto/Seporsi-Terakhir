@@ -6,14 +6,14 @@ import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
-import { sieraCardClass } from "@/components/siera";
+import { SieraHero, SieraSection, SieraTile, sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
+import { pesananDetail, ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
-import { ROUTES, pesananDetail } from "@/lib/routes";
 import { OnboardBanner } from "./onboard-banner";
 import { SoonScroller } from "./soon-scroller";
 
@@ -113,21 +113,14 @@ export default async function BerandaPage({
       <AppHeader title="Beranda" trail={[{ label: "Beranda" }]} />
       <div className="flex-1 bg-background">
         <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-x-8">
-          <section
-            className="flex w-full flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5 lg:col-span-2 lg:p-6"
-            id="tour-hero"
-          >
-            <p className="text-xs font-bold tracking-wide text-[#1E5A36]">
-              {greet}
-              {firstName ? `, ${firstName}` : ""}
-            </p>
-            <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
-              Kantin hampir tutup, masih ada yang enak.
-            </h1>
-            <p className="text-sm text-[#1E5A36]">
-              Sisa dagangan hari ini dijual miring. Ambil jam 16.30–18.30, bayar di tempat.
-            </p>
-          </section>
+          <div id="tour-hero" className="lg:col-span-2">
+            <SieraHero
+              eyebrow={firstName ? `${greet}, ${firstName}` : greet}
+              title="Kantin hampir tutup, masih ada yang enak."
+            >
+              <p>Sisa dagangan hari ini dijual miring. Ambil jam 16.30–18.30, bayar di tempat.</p>
+            </SieraHero>
+          </div>
           {showOnboard && <OnboardBanner />}
           <Suspense fallback={<LoadingSkeleton variant="grouped-list" />}>
             <ActiveOrdersBody />
@@ -143,7 +136,9 @@ export default async function BerandaPage({
             userId={user.id}
             fresh={sp.fresh === "1"}
             entryStep={tourEntry}
-            next={tourJourney || autoChain ? (getJourneyNext(ROUTES.beranda) ?? undefined) : undefined}
+            next={
+              tourJourney || autoChain ? (getJourneyNext(ROUTES.beranda) ?? undefined) : undefined
+            }
             journeyLabel="Bagian 1 dari 4 · Beranda"
             intro={{
               title: "Mau lihat panduan singkat beranda?",
@@ -193,59 +188,59 @@ async function ActiveOrdersBody() {
   if (orders.length === 0) return null;
   const now = Date.now();
   return (
-    <section
-      aria-label="Pesanan aktif"
+    <div
       id="tour-orders"
-      className="flex flex-col gap-2 lg:sticky lg:top-[76px] lg:col-start-2 lg:row-span-2 lg:row-start-2 lg:self-start"
+      className="lg:sticky lg:top-[76px] lg:col-start-2 lg:row-span-2 lg:row-start-2 lg:self-start"
     >
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h2 className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
-          Pesanan aktif ({orders.length})
-        </h2>
-        <Link
-          href={ROUTES.pesanan}
-          className="min-h-11 content-center text-sm font-bold text-[#2E7D4F] underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
-        >
-          Lihat Semua
-        </Link>
-      </div>
-      <ul className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-line px-4")}>
-        {orders.map((o) => {
-          const left = o.slotEnd
-            ? Math.max(0, Math.floor((+new Date(o.slotEnd) - now) / 60_000))
-            : null;
-          return (
-            <li key={o.orderId}>
-              <Link
-                href={pesananDetail(o.orderId)}
-                className="flex min-h-11 items-center gap-3 py-3"
-              >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#DCEBE0] text-[#1E5A36]">
-                  <Store className="size-5" strokeWidth={1.75} aria-hidden />
-                </span>
-                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span className="truncate text-sm font-bold text-[#1C2826]">{o.menuName}</span>
-                  <span className="truncate text-xs text-[#64746B]">
-                    {o.tenantName}
-                    {o.slotEnd ? ` · Ambil sampai ${formatDateTimeWIB(new Date(o.slotEnd))}` : ""}
+      <SieraSection
+        label={`Pesanan aktif (${orders.length})`}
+        action={
+          <Link
+            href={ROUTES.pesanan}
+            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
+          >
+            Lihat Semua
+          </Link>
+        }
+      >
+        <ul className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-line px-4")}>
+          {orders.map((o) => {
+            const left = o.slotEnd
+              ? Math.max(0, Math.floor((+new Date(o.slotEnd) - now) / 60_000))
+              : null;
+            return (
+              <li key={o.orderId}>
+                <Link
+                  href={pesananDetail(o.orderId)}
+                  className="flex min-h-11 items-center gap-3 py-3"
+                >
+                  <SieraTile>
+                    <Store className="size-5" strokeWidth={1.75} aria-hidden />
+                  </SieraTile>
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="truncate text-sm font-bold text-[#1C2826]">{o.menuName}</span>
+                    <span className="truncate text-xs text-[#64746B]">
+                      {o.tenantName}
+                      {o.slotEnd ? ` · Ambil sampai ${formatDateTimeWIB(new Date(o.slotEnd))}` : ""}
+                    </span>
                   </span>
-                </span>
-                {left !== null && left < 60 && (
-                  <span className="shrink-0 rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
-                    {left <= 5 ? "Segera ambil" : `Sisa ${left} mnt`}
-                  </span>
-                )}
-                <ChevronRight
-                  className="size-5 shrink-0 text-[#64746B]"
-                  strokeWidth={1.75}
-                  aria-hidden
-                />
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
+                  {left !== null && left < 60 && (
+                    <span className="shrink-0 rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
+                      {left <= 5 ? "Segera ambil" : `Sisa ${left} mnt`}
+                    </span>
+                  )}
+                  <ChevronRight
+                    className="size-5 shrink-0 text-[#64746B]"
+                    strokeWidth={1.75}
+                    aria-hidden
+                  />
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </SieraSection>
+    </div>
   );
 }
 
@@ -276,28 +271,31 @@ async function SoonBody() {
     );
   }
   return (
-    <section aria-label="Katalog sore ini" className="flex flex-col gap-2" id="tour-catalog">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h2 className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
-          Katalog sore ini ({portions.length})
-        </h2>
-        <Link
-          href={ROUTES.katalog}
-          className="min-h-11 content-center text-sm font-bold text-[#2E7D4F] underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
-        >
-          Lihat Semua
-        </Link>
-      </div>
-      <SoonScroller portions={portions} />
-      <Link
-        href={ROUTES.katalog}
-        className={buttonVariants({
-          className:
-            "mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
-        })}
+    <div id="tour-catalog">
+      <SieraSection
+        label={`Katalog sore ini (${portions.length})`}
+        action={
+          <Link
+            href={ROUTES.katalog}
+            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
+          >
+            Lihat Semua
+          </Link>
+        }
       >
-        Lihat katalog
-      </Link>
-    </section>
+        <div className="flex flex-col gap-2">
+          <SoonScroller portions={portions} />
+          <Link
+            href={ROUTES.katalog}
+            className={buttonVariants({
+              className:
+                "mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+            })}
+          >
+            Lihat katalog
+          </Link>
+        </div>
+      </SieraSection>
+    </div>
   );
 }
