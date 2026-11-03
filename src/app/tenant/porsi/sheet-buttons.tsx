@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FormSheet } from "@/components/form-sheet";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 /**
  * PortionForm sukses via router.push("/tenant")+router.refresh() tanpa callback —
@@ -13,14 +13,14 @@ export function TambahPorsiButton({ sheet }: { sheet: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button
+      <Button
         type="button"
         data-tour="tambah-porsi"
         onClick={() => setOpen(true)}
-        className={buttonVariants({ className: "min-h-11 w-full text-[15px]" })}
+        className="min-h-11 w-full text-[15px]"
       >
         + Tambah porsi
-      </button>
+      </Button>
       {open && (
         <FormSheet
           open={open}
@@ -45,14 +45,15 @@ export function UbahPorsiButton({
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button
+      <Button
         type="button"
+        variant="outline"
         data-tour={`ubah-porsi-${portionId}`}
         onClick={() => setOpen(true)}
-        className={buttonVariants({ variant: "outline", className: "min-h-11" })}
+        className="min-h-11"
       >
         Edit cepat
-      </button>
+      </Button>
       {open && (
         <FormSheet open={open} onOpenChange={setOpen} title="Edit porsi">
           {sheet}

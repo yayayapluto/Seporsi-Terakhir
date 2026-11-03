@@ -290,9 +290,14 @@ export function PortionForm({
         {draftRestored && isNew && (
           <p className="flex min-h-11 items-center justify-between gap-2 rounded-2xl border border-input px-4 py-2 text-sm text-muted-foreground">
             Draf terakhir dipulihkan.
-            <button type="button" className="underline" onClick={clearDraft}>
+            <Button
+              type="button"
+              variant="link"
+              onClick={clearDraft}
+              className="h-auto min-h-0 p-0"
+            >
               Buang draf
-            </button>
+            </Button>
           </p>
         )}
         <div className="flex flex-col gap-2">
@@ -332,13 +337,14 @@ export function PortionForm({
             </p>
           )}
           {isNew && yesterday && menus.some((m) => m.id === yesterday.menuItemId) && (
-            <button
+            <Button
               type="button"
-              className="min-h-11 self-start text-sm text-muted-foreground underline"
+              variant="link"
               onClick={applyYesterday}
+              className="min-h-11 self-start px-0 text-sm"
             >
               Pakai postingan terakhir
-            </button>
+            </Button>
           )}
         </div>
 

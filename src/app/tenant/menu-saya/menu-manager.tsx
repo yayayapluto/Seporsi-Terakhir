@@ -300,9 +300,9 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
                     onChange={(e) => onPhotoChange(e.target.files?.[0] ?? null)}
                   />
                   {photoPreview && (
-                    <button
+                    <Button
                       type="button"
-                      className="min-h-11 self-start text-sm text-muted-foreground underline"
+                      variant="link"
                       onClick={() => {
                         setPhotoFile(null);
                         setPhotoPreview(null);
@@ -312,9 +312,10 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
                           objectUrl.current = null;
                         }
                       }}
+                      className="min-h-11 self-start px-0 text-sm"
                     >
                       Hapus foto
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>

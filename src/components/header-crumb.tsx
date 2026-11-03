@@ -1,9 +1,9 @@
 "use client";
 
-import { Fragment } from "react";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Fragment } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,6 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Button } from "./ui/button";
 
 export interface Crumb {
   label: string;
@@ -24,14 +25,16 @@ export function HeaderCrumb({ trail }: { trail: Crumb[] }) {
   const current = trail[trail.length - 1];
   return (
     <nav aria-label="Navigasi halaman" className="flex min-w-0 items-center gap-2">
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="icon"
         onClick={() => router.back()}
         aria-label={`Kembali dari ${current?.label ?? "halaman ini"}`}
-        className="flex size-11 shrink-0 items-center justify-center rounded-full text-[#1E5A36] outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-[#2E7D4F] md:hidden"
+        className="size-11 shrink-0 rounded-full text-[#1E5A36] hover:bg-muted md:hidden"
       >
         <ArrowLeft className="size-5" aria-hidden />
-      </button>
+      </Button>
       <Breadcrumb>
         <BreadcrumbList className="sm:gap-2.5">
           {trail.map((c, i) => {

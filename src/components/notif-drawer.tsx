@@ -101,13 +101,14 @@ export function NotifDrawer({
                 Perubahan status pesanan dan pendaftaran.
               </SheetDescription>
               {newCount > 0 && (
-                <button
+                <Button
                   type="button"
+                  variant="link"
                   onClick={markAll}
-                  className="mt-0.5 min-h-11 text-left text-[13px] font-bold text-[#2E7D4F] underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+                  className="mt-0.5 min-h-11 justify-start px-0 text-left text-[13px] font-bold text-[#2E7D4F]"
                 >
                   Tandai semua dibaca
-                </button>
+                </Button>
               )}
             </div>
           </SheetHeader>
@@ -127,16 +128,18 @@ export function NotifDrawer({
                     <div className="min-w-0 flex-1">
                       <NotifRow n={n} onNavigate={() => setOpen(false)} />
                     </div>
-                    <button
+                    <Button
                       type="button"
+                      variant="outline"
+                      size="icon"
                       onClick={() => markOne(n.id)}
                       disabled={read}
                       aria-label={read ? "Sudah dibaca" : `Tandai "${n.title}" sudah dibaca`}
                       title={read ? "Sudah dibaca" : "Tandai sudah dibaca"}
-                      className="flex size-11 shrink-0 items-center justify-center rounded-full border border-line bg-white text-[#2E7D4F] outline-none transition-colors hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] disabled:opacity-40"
+                      className="size-11 shrink-0 rounded-full text-[#2E7D4F]"
                     >
                       <Check className="size-5" strokeWidth={2} aria-hidden />
-                    </button>
+                    </Button>
                   </div>
                 );
               })
