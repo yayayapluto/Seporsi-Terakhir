@@ -1,7 +1,6 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageOff, Minus, Plus } from "lucide-react";
+import { Circle, CircleCheck, ImageOff, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -599,39 +598,64 @@ export function PortionForm({
           </Button>
         </div>
       </form>
-      <aside aria-label="Pratinjau katalog" className="min-w-0 md:sticky md:top-20">
-        <p className="text-xs font-bold tracking-widest text-primary">PRATINJAU</p>
-        <div className={`${sieraCardClass} mt-2 flex flex-col overflow-hidden`}>
-          <div className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 bg-muted text-muted-foreground">
-            <ImageOff className="size-8" aria-hidden />
-            <span className="text-xs">tidak ada gambar</span>
+      <aside className="flex min-w-0 flex-col gap-4 md:sticky md:top-20">
+        <section aria-label="Pratinjau katalog" className="min-w-0">
+          <p className="text-xs font-bold tracking-widest text-primary">PRATINJAU</p>
+          <div className={`${sieraCardClass} mt-2 flex flex-col overflow-hidden`}>
+            <div className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 bg-muted text-muted-foreground">
+              <ImageOff className="size-8" aria-hidden />
+              <span className="text-xs">tidak ada gambar</span>
+            </div>
+            <div className="flex flex-1 flex-col gap-1 p-3">
+              <p className="line-clamp-2 min-h-10 break-words text-sm font-bold leading-snug">
+                {selected != null ? selected.name : "Pilih menu dulu"}
+              </p>
+              <p className="truncate text-xs text-muted-foreground">
+                {selected != null
+                  ? `${tenantName ? `${tenantName} · ` : ""}Dimasak ${cookedAtLocal ? formatCookedShort(cookedAtLocal) : "–"}${quantity > 0 ? ` · Sisa ${quantity}` : ""}`
+                  : "Nama tenant · jam masak · sisa tampil di sini"}
+              </p>
+              <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-sm">
+                <s className="text-xs text-muted-foreground">
+                  {selected != null ? formatIDR(selected.normalPrice) : "–"}
+                </s>
+                <strong className="text-base">
+                  {discountPrice > 0 ? formatIDR(discountPrice) : "–"}
+                </strong>
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {total > 0
+                  ? `Potensi ${formatIDR(total)} — bayar di tempat, tanpa biaya platform.`
+                  : endsAt
+                    ? `Hilang dari katalog sekitar pukul ${endsAt} WIB.`
+                    : "Isi harga untuk melihat potensi penerimaan."}
+              </p>
+            </div>
           </div>
-          <div className="flex flex-1 flex-col gap-1 p-3">
-            <p className="line-clamp-2 min-h-10 break-words text-sm font-bold leading-snug">
-              {selected != null ? selected.name : "Pilih menu dulu"}
-            </p>
-            <p className="truncate text-xs text-muted-foreground">
-              {selected != null
-                ? `${tenantName ? `${tenantName} · ` : ""}Dimasak ${cookedAtLocal ? formatCookedShort(cookedAtLocal) : "–"}${quantity > 0 ? ` · Sisa ${quantity}` : ""}`
-                : "Nama tenant · jam masak · sisa tampil di sini"}
-            </p>
-            <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 text-sm">
-              <s className="text-xs text-muted-foreground">
-                {selected != null ? formatIDR(selected.normalPrice) : "–"}
-              </s>
-              <strong className="text-base">
-                {discountPrice > 0 ? formatIDR(discountPrice) : "–"}
-              </strong>
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {total > 0
-                ? `Potensi ${formatIDR(total)} — bayar di tempat, tanpa biaya platform.`
-                : endsAt
-                  ? `Hilang dari katalog sekitar pukul ${endsAt} WIB.`
-                  : "Isi harga untuk melihat potensi penerimaan."}
-            </p>
+        </section>
+        <section aria-label="Cek sebelum posting" aria-live="polite" className="min-w-0">
+          <p className="text-xs font-bold tracking-widest text-primary">CEK</p>
+          <div className={`${sieraCardClass} mt-2 flex flex-col gap-2 p-3`}>
+            {[
+              { ok: selected != null, label: "Menu dipilih" },
+              { ok: quantity > 0, label: "Jumlah > 0" },
+              {
+                ok: selected != null && discountPrice > 0 && !invalidDiscount,
+                label: "Diskon < harga normal",
+              },
+              { ok: cookedAtLocal.trim().length > 0, label: "Jam masak terisi" },
+            ].map((r) => (
+              <p key={r.label} className="flex items-center gap-2 text-[13px] font-medium">
+                {r.ok ? (
+                  <CircleCheck className="size-4 shrink-0 text-[#1E5A36]" aria-hidden />
+                ) : (
+                  <Circle className="size-4 shrink-0 text-[#9AA5A1]" aria-hidden />
+                )}
+                <span className={r.ok ? "text-[#1C2826]" : "text-[#64746B]"}>{r.label}</span>
+              </p>
+            ))}
           </div>
-        </div>
+        </section>
       </aside>
     </div>
   );
