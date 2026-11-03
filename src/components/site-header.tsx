@@ -10,12 +10,12 @@ import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/cara-kerja", label: "Cara Kerja" },
+  { href: "/#cara-kerja", label: "Cara Kerja" },
   { href: "/#keamanan", label: "Keamanan Pangan" },
   { href: "/#faq", label: "FAQ" },
 ];
 
-/** Floating pill landing "/" + "/cara-kerja". Panel hamburger mengambang tepat di bawah pill. */
+/** Floating pill landing "/". Panel hamburger mengambang tepat di bawah pill. */
 export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
@@ -47,7 +47,7 @@ export function SiteHeader() {
     return () => unsubscribe?.();
   }, [router]);
 
-  if (pathname !== "/" && pathname !== "/cara-kerja") return null;
+  if (pathname !== "/") return null;
 
   return (
     <div className="pointer-events-none fixed inset-x-0 top-3 z-30 px-4 sm:top-5">

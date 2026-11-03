@@ -34,7 +34,7 @@ export function OnboardBanner() {
         </Link>{" "}
         atau{" "}
         <Link
-          href="/cara-kerja"
+          href="/#cara-kerja"
           className="font-bold text-[#1E5A36] underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
         >
           lihat cara kerja

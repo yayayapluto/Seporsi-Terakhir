@@ -1,6 +1,8 @@
-import { BarChart3, Store, Wallet } from "lucide-react";
+import { BarChart3, ChartColumn, PackageCheck, QrCode, Scale, Store, Wallet } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "cn";
+import { SieraTile, sieraCardClass } from "@/components/siera";
 import { SiteFooter } from "@/components/site-footer";
 import {
   Accordion,
@@ -92,6 +94,34 @@ const AMAN = [
   },
 ];
 
+const CARA_KERJA_STEPS = [
+  {
+    icon: Store,
+    title: "Tenant unggah surplus layak makan",
+    body: "Menjelang tutup, tenant catat jam masak, jumlah, harga diskon. Batas jual 120–240 menit.",
+  },
+  {
+    icon: QrCode,
+    title: "Mahasiswa pesan, dapat QR",
+    body: "Reservasi gratis. Kuota berkurang, QR pickup terbit. Tanpa data pribadi di QR.",
+  },
+  {
+    icon: Wallet,
+    title: "Ambil di gerai, bayar di tempat",
+    body: "Tunjukkan QR sebelum batas waktu. Tenant pindai + konfirmasi. Bayar tunai/QRIS ke kasir.",
+  },
+] as const;
+
+const DAMPAK = [
+  { name: "Porsi terselamatkan", plain: "Satu QR terpindai = satu porsi." },
+  { name: "Berat dicegah (kg)", plain: "Porsi × rata-rata berat menu sampel." },
+  { name: "Uang hemat", plain: "Selisih normal–diskon × porsi." },
+  { name: "Omzet tenant", plain: "Harga diskon × porsi, 100% ke kasir." },
+  { name: "Porsi laku", plain: "Diambil dibagi diunggah hari itu." },
+] as const;
+
+const DAMPAK_ICONS = [PackageCheck, Scale, Wallet, Store, ChartColumn] as const;
+
 const FAQS = [
   {
     q: "Apakah ini sisa dari piring orang lain?",
@@ -108,6 +138,22 @@ const FAQS = [
   {
     q: "Bagaimana higienitas dipastikan?",
     a: "Usia konsumsi dibatasi 2–4 jam pasca matang, wadah tertutup panas/hangat, dan jam masak transparan.",
+  },
+  {
+    q: "Terlambat ambil?",
+    a: "Batalkan dari halaman pesanan agar kuota kembali. Lewat batas waktu, sistem tolak pickup.",
+  },
+  {
+    q: "Bawa wadah sendiri?",
+    a: "Boleh. Tanya tenant saat ambil — sebagian besar gerai menyambut.",
+  },
+  {
+    q: "Menu beda tiap hari?",
+    a: "Ikut sisa higienis etalase hari itu, bukan katering.",
+  },
+  {
+    q: "Tenant dipungut biaya?",
+    a: "Tidak. Sukarela, tanpa potongan selama pilot, bisa berhenti kapan saja.",
   },
 ];
 
@@ -149,7 +195,7 @@ export default async function Home() {
               </Pressable>
               <Pressable className="w-full sm:w-auto">
                 <Link
-                  href="/cara-kerja"
+                  href={ROUTES.caraKerja}
                   className={buttonVariants({
                     variant: "outline",
                     size: "lg",
@@ -284,6 +330,65 @@ export default async function Home() {
           </p>
         </Reveal>
 
+        {/* CARA KERJA DETAIL */}
+        <Reveal id="cara-kerja-detail" className="flex scroll-mt-24 flex-col gap-3 py-10">
+          <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
+            Cara kerja penyelamatan porsi
+          </h2>
+          <ol
+            className={cn(
+              sieraCardClass,
+              "flex flex-col divide-y divide-dashed divide-line px-4 sm:px-5",
+            )}
+          >
+            {CARA_KERJA_STEPS.map((s) => (
+              <li key={s.title} className="flex min-h-11 items-center gap-3 py-4">
+                <SieraTile>
+                  <s.icon className="size-5" strokeWidth={1.75} />
+                </SieraTile>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-[15px] leading-snug font-bold text-[#1C2826]">{s.title}</h3>
+                  <p className="mt-0.5 text-[13px] text-[#64746B]">{s.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <p className="py-2 text-xs text-muted-foreground">
+            Hanya makanan matang layak simpan • Jam masak selalu tampil • Tenant tanggung jawab mutu.
+          </p>
+        </Reveal>
+
+        {/* DAMPAK */}
+        <Reveal id="dampak" className="flex scroll-mt-24 flex-col gap-3 py-10">
+          <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
+            Angka nyata dari transaksi tercatat.
+          </h2>
+          <ul
+            className={cn(
+              sieraCardClass,
+              "flex flex-col divide-y divide-dashed divide-line px-4 sm:px-5",
+            )}
+          >
+            {DAMPAK.map((f, i) => {
+              const Icon = DAMPAK_ICONS[i] ?? PackageCheck;
+              return (
+                <li key={f.name} className="flex min-h-11 items-center gap-3 py-4">
+                  <SieraTile>
+                    <Icon className="size-5" strokeWidth={1.75} />
+                  </SieraTile>
+                  <div className="flex min-w-0 flex-1 flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+                    <h3 className="text-[15px] leading-snug font-bold text-[#1C2826]">{f.name}</h3>
+                    <p className="text-[13px] text-[#64746B]">{f.plain}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="py-2 text-xs text-muted-foreground">
+            Berat pakai rata-rata sampel berkala. Tanpa klaim karbon.
+          </p>
+        </Reveal>
+
         {/* KEAMANAN */}
         <Reveal id="keamanan" className="flex scroll-mt-24 flex-col gap-2 py-10">
           <p className="text-xs font-bold tracking-[0.2em] text-primary">KEAMANAN PANGAN</p>
@@ -300,7 +405,7 @@ export default async function Home() {
           </ul>
           <p className="text-sm text-muted-foreground">
             Tenant bertanggung jawab atas kualitas dan higienitas. Detail lengkap di{" "}
-            <Link href="/cara-kerja" className="font-semibold text-foreground underline">
+            <Link href={ROUTES.caraKerja} className="font-semibold text-foreground underline">
               Cara Kerja
             </Link>
             .

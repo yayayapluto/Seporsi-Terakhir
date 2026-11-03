@@ -5,10 +5,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.supabase.co",
+        hostname: "**.supabase.co",
         pathname: "/storage/v1/object/public/menu-images/**",
       },
     ],
+  },
+  async redirects() {
+    return [{ source: "/cara-kerja", destination: "/#cara-kerja", permanent: true }];
   },
   allowedDevOrigins: [
     "dev.seporsi-terakhir.my.id",

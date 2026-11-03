@@ -7,7 +7,7 @@ export const ROUTES = {
   profil: "/profil",
   notifikasi: "/notifikasi",
   masuk: "/masuk",
-  caraKerja: "/cara-kerja",
+  caraKerja: "/#cara-kerja",
   admin: "/admin",
   adminTenant: "/admin/tenant",
   tenant: "/tenant",

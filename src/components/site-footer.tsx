@@ -34,7 +34,7 @@ export function SiteFooter() {
             Lihat Porsi Hari Ini
           </Link>
           <Link
-            href="/cara-kerja"
+            href="/#cara-kerja"
             className="inline-flex min-h-11 w-fit items-center text-muted-foreground hover:text-foreground"
           >
             Cara Kerja &amp; Jadi Tenant
@@ -83,7 +83,7 @@ export function SiteFooterMini({ bare = false }: { bare?: boolean }) {
             Katalog
           </Link>
           <Link
-            href="/cara-kerja"
+            href="/#cara-kerja"
             className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
           >
             Cara kerja
