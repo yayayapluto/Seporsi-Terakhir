@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { SieraList, SieraSectionTitle } from "@/components/siera";
+import { SieraAlert, SieraList, SieraPhotoPicker, SieraSectionTitle } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DISCOUNT_PRICE_RATIO_DEFAULT } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
 import { formatIDR } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
@@ -262,64 +263,26 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
             <DialogTitle>{editing ? "Edit menu" : "Tambah menu"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
-            {formError && (
-              <p
-                role="alert"
-                className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-              >
-                {formError}
-              </p>
-            )}
+            {formError && <SieraAlert variant="error">{formError}</SieraAlert>}
             <div className="flex flex-col gap-1">
-              <Label htmlFor="menu-photo" className="font-semibold">
+              <Label className="font-semibold">
                 Foto <span className="font-normal text-muted-foreground">(opsional)</span>
               </Label>
-              <div className="flex items-center gap-3">
-                {photoPreview ? (
-                  <Image
-                    src={photoPreview}
-                    alt="Pratinjau foto menu"
-                    width={80}
-                    height={80}
-                    className="size-20 shrink-0 rounded-lg object-cover"
-                  />
-                ) : (
-                  <div
-                    aria-hidden="true"
-                    className="flex size-20 shrink-0 items-center justify-center rounded-lg bg-muted text-xs text-muted-foreground"
-                  >
-                    Tanpa foto
-                  </div>
-                )}
-                <div className="flex min-w-0 flex-1 flex-col gap-2">
-                  <Input
-                    id="menu-photo"
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="h-11"
-                    onChange={(e) => onPhotoChange(e.target.files?.[0] ?? null)}
-                  />
-                  {photoPreview && (
-                    <Button
-                      type="button"
-                      variant="link"
-                      onClick={() => {
-                        setPhotoFile(null);
-                        setPhotoPreview(null);
-                        setRemovePhoto(editing?.imagePath != null);
-                        if (objectUrl.current) {
-                          URL.revokeObjectURL(objectUrl.current);
-                          objectUrl.current = null;
-                        }
-                      }}
-                      className="min-h-11 self-start px-0 text-sm"
-                    >
-                      Hapus foto
-                    </Button>
-                  )}
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground">JPG/PNG/WebP, maksimal 2 MB.</p>
+              <SieraPhotoPicker
+                photoPreview={photoPreview}
+                previewAlt="Pratinjau foto menu"
+                inputId="menu-photo"
+                onFile={onPhotoChange}
+                onRemove={() => {
+                  setPhotoFile(null);
+                  setPhotoPreview(null);
+                  setRemovePhoto(editing?.imagePath != null);
+                  if (objectUrl.current) {
+                    URL.revokeObjectURL(objectUrl.current);
+                    objectUrl.current = null;
+                  }
+                }}
+              />
             </div>
             <div className="flex flex-col gap-1">
               <Label htmlFor="menu-name" className="font-semibold">
@@ -345,8 +308,9 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
               )}
               {suggestion != null && (
                 <p className="text-xs text-muted-foreground">
-                  Rekomendasi diskon 45% saat posting: <strong>{formatIDR(suggestion)}</strong>.
-                  Diskon final ditentukan saat posting porsi.
+                  Rekomendasi diskon {Math.round(DISCOUNT_PRICE_RATIO_DEFAULT * 100)}% saat posting:{" "}
+                  <strong>{formatIDR(suggestion)}</strong>. Diskon final ditentukan saat posting
+                  porsi.
                 </p>
               )}
             </div>

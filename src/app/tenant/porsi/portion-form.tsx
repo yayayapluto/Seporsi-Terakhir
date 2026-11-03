@@ -8,7 +8,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { DateField } from "@/components/date-field";
-import { sieraCardClass } from "@/components/siera";
+import { SieraAlert, sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { TimeField } from "@/components/time-field";
 import {
@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  DISCOUNT_PRICE_RATIO_DEFAULT,
   SELL_WINDOW_DEFAULT_MINUTES,
   SELL_WINDOW_MAX_MINUTES,
   SELL_WINDOW_MIN_MINUTES,
@@ -279,14 +280,7 @@ export function PortionForm({
   return (
     <div className="grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_320px]">
       <form onSubmit={handleSubmit(onSubmit)} className="flex min-w-0 flex-col gap-6">
-        {formError && (
-          <p
-            role="alert"
-            className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-          >
-            {formError}
-          </p>
-        )}
+        {formError && <SieraAlert variant="error">{formError}</SieraAlert>}
         {draftRestored && isNew && (
           <p className="flex min-h-11 items-center justify-between gap-2 rounded-2xl border border-input px-4 py-2 text-sm text-muted-foreground">
             Draf terakhir dipulihkan.
@@ -476,7 +470,8 @@ export function PortionForm({
           ) : (
             selected != null && (
               <p id="discount-hint" className="text-xs text-muted-foreground" aria-live="polite">
-                Saran 45% dari {selected != null ? formatIDR(selected.normalPrice) : "–"}:{" "}
+                Saran {Math.round(DISCOUNT_PRICE_RATIO_DEFAULT * 100)}% dari{" "}
+                {selected != null ? formatIDR(selected.normalPrice) : "–"}:{" "}
                 <strong>{formatIDR(suggested)}</strong> — boleh disesuaikan, wajib di bawah harga
                 normal.
               </p>
@@ -581,12 +576,15 @@ export function PortionForm({
         <p className="text-xs text-muted-foreground">Semua kolom wajib kecuali jadwal tampil.</p>
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Link
-            href="/tenant"
-            className="inline-flex min-h-11 items-center justify-center rounded-md border border-input px-4 text-sm font-medium"
+          <Button
+            type="button"
+            variant="outline"
+            render={
+              <Link href="/tenant" className="inline-flex min-h-11 items-center justify-center" />
+            }
           >
             Kembali ke dasbor
-          </Link>
+          </Button>
           <Button type="submit" disabled={isSubmitting || menus.length === 0 || !!invalidDiscount}>
             {isSubmitting ? (
               <>

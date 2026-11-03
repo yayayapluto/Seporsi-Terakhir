@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
-import { SieraAlert } from "@/components/siera";
+import { SieraAlert, SieraPhotoPicker } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -115,52 +114,22 @@ export function MyProfileForm({
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       {error && <SieraAlert variant="error">{error}</SieraAlert>}
       {saved && <SieraAlert variant="success">Tersimpan. Profilmu sudah diperbarui.</SieraAlert>}
-      <div className="flex items-center gap-3">
-        {photoPreview ? (
-          <Image
-            src={photoPreview}
-            alt="Pratinjau foto profil"
-            width={64}
-            height={64}
-            className="size-16 shrink-0 rounded-full object-cover"
-          />
-        ) : (
-          <div
-            aria-hidden="true"
-            className="flex size-16 shrink-0 items-center justify-center rounded-full bg-muted text-xs text-muted-foreground"
-          >
-            Tanpa foto
-          </div>
-        )}
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <Input
-            id="my-photo"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            className="h-11"
-            onChange={(e) => onPhotoChange(e.target.files?.[0] ?? null)}
-          />
-          {photoPreview && (
-            <Button
-              type="button"
-              variant="link"
-              onClick={() => {
-                setPhotoFile(null);
-                setPhotoPreview(null);
-                setRemovePhoto(initialAvatarPath != null);
-                if (objectUrl.current) {
-                  URL.revokeObjectURL(objectUrl.current);
-                  objectUrl.current = null;
-                }
-              }}
-              className="min-h-11 self-start px-0 text-sm"
-            >
-              Hapus foto
-            </Button>
-          )}
-        </div>
-      </div>
-      <p className="text-xs text-muted-foreground">JPG/PNG/WebP, maksimal 2 MB.</p>
+      <SieraPhotoPicker
+        photoPreview={photoPreview}
+        previewAlt="Pratinjau foto profil"
+        inputId="my-photo"
+        onFile={onPhotoChange}
+        round
+        onRemove={() => {
+          setPhotoFile(null);
+          setPhotoPreview(null);
+          setRemovePhoto(initialAvatarPath != null);
+          if (objectUrl.current) {
+            URL.revokeObjectURL(objectUrl.current);
+            objectUrl.current = null;
+          }
+        }}
+      />
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="my-name">Nama tampilan</Label>
         <Input

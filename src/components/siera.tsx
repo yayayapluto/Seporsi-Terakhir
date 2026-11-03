@@ -1,8 +1,11 @@
 import { cn } from "cn";
 import type { LucideIcon } from "lucide-react";
-import { ChevronRight, CircleAlert } from "lucide-react";
+import { ArrowLeft, ChevronRight, CircleAlert } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 /** Token class card Siera — untuk section ber-label yang wajib pertahankan tag + aria. */
 export const sieraCardClass =
@@ -187,6 +190,91 @@ export function SieraAlert({
       {error && icon && <CircleAlert className="mt-0.5 size-5 shrink-0" aria-hidden />}
       <span className="min-w-0 flex-1">{children}</span>
     </p>
+  );
+}
+
+/** Badge peringatan kuning (stok menipis, batas harian): bg soft + teks gelap. */
+export function SieraWarningBadge({ children }: { children: ReactNode }) {
+  return (
+    <p className="w-fit rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
+      {children}
+    </p>
+  );
+}
+
+/** Link kembali halaman: panah + label, satu baris min-h-11. */
+export function SieraBackLink({ href, label }: { href: string; label: string }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex min-h-11 w-fit items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
+    >
+      <ArrowLeft className="size-4" aria-hidden />
+      {label}
+    </Link>
+  );
+}
+
+/** Input foto + pratinjau + hapus: satu pola untuk avatar & menu. */
+export function SieraPhotoPicker({
+  photoPreview,
+  previewAlt,
+  inputId,
+  onFile,
+  onRemove,
+  round = false,
+}: {
+  photoPreview: string | null;
+  previewAlt: string;
+  inputId: string;
+  onFile: (file: File | null) => void;
+  onRemove: () => void;
+  round?: boolean;
+}) {
+  const shape = round ? "rounded-full" : "rounded-lg";
+  const box = round ? "size-16" : "size-20";
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-3">
+        {photoPreview ? (
+          <Image
+            src={photoPreview}
+            alt={previewAlt}
+            width={round ? 64 : 80}
+            height={round ? 64 : 80}
+            unoptimized
+            className={`${box} shrink-0 object-cover ${shape}`}
+          />
+        ) : (
+          <div
+            aria-hidden="true"
+            className={`flex ${box} shrink-0 items-center justify-center ${shape} bg-muted text-xs text-muted-foreground`}
+          >
+            Tanpa foto
+          </div>
+        )}
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <Input
+            id={inputId}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="h-11"
+            onChange={(e) => onFile(e.target.files?.[0] ?? null)}
+          />
+          {photoPreview && (
+            <Button
+              type="button"
+              variant="link"
+              onClick={onRemove}
+              className="min-h-11 self-start px-0 text-sm"
+            >
+              Hapus foto
+            </Button>
+          )}
+        </div>
+      </div>
+      <p className="text-xs text-muted-foreground">JPG/PNG/WebP, maksimal 2 MB.</p>
+    </div>
   );
 }
 
