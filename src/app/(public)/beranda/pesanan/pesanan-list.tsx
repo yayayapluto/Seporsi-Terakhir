@@ -31,7 +31,6 @@ import { pesananDetail, ROUTES } from "@/lib/routes";
 import { cancelOrder } from "./actions";
 import { OrderLiveStatus } from "./order-live-status";
 import type { MyOrder } from "./page";
-import { QrModal } from "./qr-modal";
 
 const FILTERS = [
   { value: "semua", label: "Semua" },
@@ -116,10 +115,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
           ctaLabel="Lihat katalog"
         />
       ) : (
-        <SieraSection
-          id="list-heading"
-          label={`Daftar pesanan${filtered.length > 0 ? ` (${filtered.length})` : ""}`}
-        >
+        <SieraSection id="list-heading" label="Daftar pesanan">
           <OrderLiveStatus
             orderIds={filtered.filter((o) => o.status === "reserved").map((o) => o.orderId)}
           />
@@ -170,7 +166,6 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                     {formatIDR(o.discountPriceSnapshot * o.quantity)}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {o.status === "reserved" && <QrModal order={o} />}
                     <Link
                       href={pesananDetail(o.orderId)}
                       className={cn(buttonVariants({ variant: "outline" }), "h-11 px-5")}

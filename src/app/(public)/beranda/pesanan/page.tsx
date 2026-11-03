@@ -1,7 +1,15 @@
 import { cn } from "cn";
+import { Check, Clock3, X } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { SieraHero, SieraRailPage, SieraSection, sieraCardClass } from "@/components/siera";
+import {
+  SieraHero,
+  SieraRailPage,
+  SieraSection,
+  SieraStat,
+  SieraStatStrip,
+  sieraCardClass,
+} from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
@@ -74,12 +82,37 @@ export default async function PesananPage({
       <SieraRailPage
         asideLabel="QR pickup aktif"
         main={
-          <>
-            <SieraHero eyebrow="Riwayat & aktif" title="Pesanan saya">
-              Porsi yang kamu kunci. Tunjukkan QR saat ambil, bayar di tempat.
-            </SieraHero>
-            <OrdersList orders={orders} loadError={error} />
-          </>
+          <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-2 lg:gap-5">
+            <div className="flex min-w-0 flex-col gap-4 lg:max-h-[calc(100dvh-220px)] lg:gap-5">
+              <SieraHero eyebrow="Riwayat & aktif" title="Pesanan saya">
+                Porsi yang kamu kunci. Tunjukkan QR saat ambil, bayar di tempat.
+              </SieraHero>
+              <div className="min-h-0 flex-1 lg:overflow-y-auto">
+                <OrdersList orders={orders} loadError={error} />
+              </div>
+            </div>
+            <div className="min-h-0 lg:sticky lg:top-[76px] lg:max-h-[calc(100dvh-220px)] lg:overflow-y-auto">
+              <SieraSection id="status-heading" label="Status ringkas">
+                <SieraStatStrip>
+                  <SieraStat
+                    icon={Clock3}
+                    value={orders.filter((o) => o.status === "reserved").length}
+                    label="Menunggu pickup"
+                  />
+                  <SieraStat
+                    icon={Check}
+                    value={orders.filter((o) => o.status === "picked_up").length}
+                    label="Selesai"
+                  />
+                  <SieraStat
+                    icon={X}
+                    value={orders.filter((o) => o.status === "cancelled").length}
+                    label="Dibatalkan"
+                  />
+                </SieraStatStrip>
+              </SieraSection>
+            </div>
+          </div>
         }
         aside={
           <SieraSection id="qr-aktif-heading" label="QR pickup aktif">
