@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { getCurrentUser } from "@/lib/auth";
 import { loadNotifs } from "@/lib/notifs";
 import { getOwnTenant } from "@/lib/tenant";
@@ -24,16 +23,8 @@ export async function AppHeader({
   const crumbs = trail ?? [{ label: title }];
   return (
     <header className="sticky top-0 z-30 flex h-[60px] items-center justify-between gap-2 border-b border-line bg-white px-4 md:px-8">
-      <span className="flex min-w-0 items-center gap-2">
+      <span className="flex min-w-0 flex-1 items-center">
         <HeaderCrumb trail={crumbs} />
-        <Image
-          src="/images/Logo_UPNVJ.png"
-          alt="Logo UPN Veteran Jakarta"
-          width={28}
-          height={28}
-          className="size-7 shrink-0 object-contain"
-        />
-        <span className="truncate text-lg font-extrabold text-[#2E7D4F]">{title}</span>
       </span>
       <NotifDrawer
         notifs={notifs}

@@ -17,40 +17,38 @@ export interface Crumb {
   href?: string;
 }
 
-/** Crumb header: desktop breadcrumb, mobile tombol kembali. */
+/** Crumb header: breadcrumb + tombol kembali. */
 export function HeaderCrumb({ trail }: { trail: Crumb[] }) {
   const router = useRouter();
   const current = trail[trail.length - 1];
   return (
-    <>
-      <nav aria-label="Navigasi halaman" className="hidden min-w-0 items-center gap-2 md:flex">
-        <Breadcrumb>
-          <BreadcrumbList>
-            {trail.map((c, i) =>
-              i < trail.length - 1 && c.href ? (
-                <span key={c.label} className="contents">
-                  <BreadcrumbItem>
-                    <BreadcrumbLink render={<Link href={c.href} />}>{c.label}</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                </span>
-              ) : (
-                <BreadcrumbItem key={c.label}>
-                  <BreadcrumbPage>{c.label}</BreadcrumbPage>
-                </BreadcrumbItem>
-              ),
-            )}
-          </BreadcrumbList>
-        </Breadcrumb>
-      </nav>
+    <nav aria-label="Navigasi halaman" className="flex min-w-0 items-center gap-2">
       <button
         type="button"
         onClick={() => router.back()}
         aria-label={`Kembali dari ${current?.label ?? "halaman ini"}`}
-        className="flex size-11 shrink-0 items-center justify-center rounded-full text-[#1E5A36] hover:bg-muted md:hidden"
+        className="flex size-11 shrink-0 items-center justify-center rounded-full text-[#1E5A36] outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-[#2E7D4F] md:hidden"
       >
         <ArrowLeft className="size-5" aria-hidden />
       </button>
-    </>
+      <Breadcrumb>
+        <BreadcrumbList>
+          {trail.map((c, i) =>
+            i < trail.length - 1 && c.href ? (
+              <span key={c.label} className="contents">
+                <BreadcrumbItem>
+                  <BreadcrumbLink render={<Link href={c.href} />}>{c.label}</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+              </span>
+            ) : (
+              <BreadcrumbItem key={c.label}>
+                <BreadcrumbPage>{c.label}</BreadcrumbPage>
+              </BreadcrumbItem>
+            ),
+          )}
+        </BreadcrumbList>
+      </Breadcrumb>
+    </nav>
   );
 }
