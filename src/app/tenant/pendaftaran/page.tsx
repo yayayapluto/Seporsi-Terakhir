@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { SieraTenantHeader } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
-import { createClient } from "@/lib/supabase/server";
 import { getOwnTenant } from "@/lib/tenant";
 import { PendaftaranForm } from "./pendaftaran-form";
 
