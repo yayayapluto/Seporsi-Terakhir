@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { SieraAlert, SieraCard } from "@/components/siera";
 
 import { ROUTES } from "@/lib/routes";
+import { DevLoginCard } from "./dev-login-card";
 import { EmailSignIn } from "./email-sign-in";
 import { GoogleSignIn } from "./google-sign-in";
 
@@ -48,6 +49,7 @@ async function MasukContent({
           .
         </p>
       </SieraCard>
+      {process.env.NODE_ENV !== "production" && <DevLoginCard next={next} />}
     </div>
   );
 }

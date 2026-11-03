@@ -18,7 +18,6 @@ describe("isSafeNext", () => {
     expect(isSafeNext("/akun/pengaturan")).toBe(true); // LEGACY: proxy 308 → ROUTES.profilPengaturan
   });
 
-
   it("rejects external, protocol-relative, and escaped targets", () => {
     expect(isSafeNext("https://evil.test")).toBe(false);
     expect(isSafeNext("//evil.test/x")).toBe(false);

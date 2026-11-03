@@ -58,8 +58,6 @@ describe("getJourneyNext", () => {
   });
 });
 
-
-
 describe("shouldAutoChain", () => {
   it("true only for new users on clean URLs", () => {
     expect(shouldAutoChain(true, false)).toBe(true);
