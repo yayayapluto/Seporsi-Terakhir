@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/accordion";
 import { buttonVariants } from "@/components/ui/button";
 import { getCurrentUser, homeForRole } from "@/lib/auth";
+import { ROUTES } from "@/lib/routes";
 import { ChalkRow, PickupCountdown, Pressable, Reveal } from "./reveal";
 
 const BOARD = [
@@ -114,7 +115,7 @@ export default async function Home() {
   const primaryHref =
     current?.role === "tenant" || current?.role === "admin"
       ? homeForRole(current.role)
-      : "/katalog";
+      : ROUTES.katalog;
   const primaryLabel =
     current?.role === "tenant" || current?.role === "admin"
       ? "Buka Dasbor"

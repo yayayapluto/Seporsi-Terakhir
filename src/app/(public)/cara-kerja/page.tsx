@@ -1,3 +1,4 @@
+import { ROUTES } from "@/lib/routes";
 import { cn } from "cn";
 import { ChartColumn, CircleHelp, PackageCheck, Scale, Store, Wallet } from "lucide-react";
 import Image from "next/image";
@@ -70,7 +71,7 @@ export default function CaraKerjaPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Pressable className="w-full sm:w-auto">
               <Link
-                href="/katalog"
+                href={ROUTES.katalog}
                 className={buttonVariants({ size: "lg", className: "w-full sm:w-auto" })}
               >
                 Lihat Porsi Hari Ini
@@ -205,7 +206,7 @@ export default function CaraKerjaPage() {
         <div className="mx-auto mt-6 flex w-full max-w-md flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
           <Pressable className="w-full sm:w-auto">
             <Link
-              href="/katalog"
+              href={ROUTES.katalog}
               className="inline-flex h-9 min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-transparent bg-primary-foreground px-2.5 text-sm font-medium whitespace-nowrap text-primary transition-colors outline-none select-none hover:bg-primary-foreground/90 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-auto"
             >
               Lihat Porsi Hari Ini

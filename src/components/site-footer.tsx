@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-
+import { ROUTES } from "@/lib/routes";
 export function SiteFooter() {
   return (
     <footer className="relative left-1/2 w-screen max-w-none -translate-x-1/2 bg-card">
@@ -28,7 +28,7 @@ export function SiteFooter() {
         <nav className="flex flex-col gap-2 text-sm" aria-label="Eksplorasi">
           <p className="font-bold">Eksplorasi</p>
           <Link
-            href="/katalog"
+            href={ROUTES.katalog}
             className="inline-flex min-h-11 w-fit items-center text-muted-foreground hover:text-foreground"
           >
             Lihat Porsi Hari Ini
@@ -78,7 +78,7 @@ export function SiteFooterMini() {
         </p>
         <nav className="flex flex-wrap gap-x-5" aria-label="Tautan bawah">
           <Link
-            href="/katalog"
+            href={ROUTES.katalog}
             className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
           >
             Katalog

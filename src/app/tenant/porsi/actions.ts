@@ -1,5 +1,6 @@
 "use server";
 
+import { ROUTES } from "@/lib/routes";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
@@ -78,7 +79,7 @@ export async function postPortion(
     return { ok: false, error: "Gagal memposting porsi. Coba lagi." };
   }
   revalidatePath("/tenant");
-  revalidatePath("/katalog");
+  revalidatePath(ROUTES.katalog);
   return { ok: true };
 }
 
@@ -135,6 +136,6 @@ export async function updatePortion(
     return { ok: false, error: "Gagal menyimpan porsi. Coba lagi." };
   }
   revalidatePath("/tenant");
-  revalidatePath("/katalog");
+  revalidatePath(ROUTES.katalog);
   return { ok: true };
 }
