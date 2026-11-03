@@ -6,12 +6,16 @@ import { PushToggle } from "./push-toggle";
 
 /** Notifikasi: toggle push browser + status izin + contoh. */
 export default async function NotifikasiSettingPage() {
-  const current = await requireRole(ROUTES.akunNotifikasi, "student", "tenant", "admin");
+  const current = await requireRole(ROUTES.profilNotifikasi, "student", "tenant", "admin");
   return (
     <>
       <AppHeader
         title="Notifikasi"
-        trail={[{ label: "Pengaturan", href: ROUTES.akunPengaturan }, { label: "Notifikasi" }]}
+        trail={[
+          { label: "Profil", href: ROUTES.profil },
+          { label: "Pengaturan", href: ROUTES.profilPengaturan },
+          { label: "Notifikasi" },
+        ]}
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
       <SieraHero eyebrow="Notifikasi" title="Kabar sampai bunyi">

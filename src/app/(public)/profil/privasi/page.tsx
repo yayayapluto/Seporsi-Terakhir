@@ -6,12 +6,16 @@ import { ExportButton } from "./export-button";
 
 /** Privasi & data: unduh data sendiri + info hapus via admin. */
 export default async function PrivasiPage() {
-  const current = await requireRole(ROUTES.akunPrivasi, "student", "tenant", "admin");
+  const current = await requireRole(ROUTES.profilPrivasi, "student", "tenant", "admin");
   return (
     <>
       <AppHeader
         title="Privasi & Data"
-        trail={[{ label: "Pengaturan", href: ROUTES.akunPengaturan }, { label: "Privasi & Data" }]}
+        trail={[
+          { label: "Profil", href: ROUTES.profil },
+          { label: "Pengaturan", href: ROUTES.profilPengaturan },
+          { label: "Privasi & Data" },
+        ]}
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
       <SieraHero eyebrow="Privasi & data" title="Data kamu milik kamu">
