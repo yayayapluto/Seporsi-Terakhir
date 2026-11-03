@@ -1,5 +1,4 @@
-"use client";
-
+import { Fragment } from "react";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -32,21 +31,22 @@ export function HeaderCrumb({ trail }: { trail: Crumb[] }) {
         <ArrowLeft className="size-5" aria-hidden />
       </button>
       <Breadcrumb>
-        <BreadcrumbList>
-          {trail.map((c, i) =>
-            i < trail.length - 1 && c.href ? (
-              <span key={c.label} className="contents">
+        <BreadcrumbList className="sm:gap-2.5">
+          {trail.map((c, i) => {
+            const last = i === trail.length - 1;
+            return (
+              <Fragment key={c.label}>
                 <BreadcrumbItem>
-                  <BreadcrumbLink render={<Link href={c.href} />}>{c.label}</BreadcrumbLink>
+                  {last || !c.href ? (
+                    <BreadcrumbPage>{c.label}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink render={<Link href={c.href} />}>{c.label}</BreadcrumbLink>
+                  )}
                 </BreadcrumbItem>
-                <BreadcrumbSeparator />
-              </span>
-            ) : (
-              <BreadcrumbItem key={c.label}>
-                <BreadcrumbPage>{c.label}</BreadcrumbPage>
-              </BreadcrumbItem>
-            ),
-          )}
+                {!last && <BreadcrumbSeparator />}
+              </Fragment>
+            );
+          })}
         </BreadcrumbList>
       </Breadcrumb>
     </nav>
