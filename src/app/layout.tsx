@@ -49,9 +49,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="flex min-h-full flex-col">
         <SwRegister />
         <SiteHeader />
-        <div className="mx-auto flex w-full max-w-6xl flex-1 gap-4">
+        <div className="flex w-full flex-1">
           <BottomNav />
-          <main className="flex min-w-0 flex-1 flex-col">
+          <main className="mx-auto flex w-full min-w-0 max-w-5xl flex-1 flex-col">
             <SmoothProvider>{children}</SmoothProvider>
           </main>
         </div>
