@@ -5,7 +5,7 @@ import { CameraOff, CheckIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { sieraCardClass } from "@/components/siera";
+import { SieraHero, sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -234,18 +234,8 @@ export function ScannerClient() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <section
-        aria-labelledby="scan-hero"
-        className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5"
-      >
-        <p className="text-xs font-bold tracking-wide text-[#1E5A36]">SCAN PICKUP</p>
-        <h1
-          id="scan-hero"
-          className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl"
-        >
-          Serahkan porsi dalam 3 langkah
-        </h1>
+    <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
+      <SieraHero eyebrow="SCAN PICKUP" title="Serahkan porsi dalam 3 langkah">
         <ol className="mt-2 flex flex-col gap-1 text-sm text-[#1E5A36] sm:flex-row sm:gap-4">
           <li>
             <strong className="font-extrabold">1.</strong> Bidik QR mahasiswa
@@ -257,7 +247,7 @@ export function ScannerClient() {
             <strong className="font-extrabold">3.</strong> Konfirmasi pickup
           </li>
         </ol>
-      </section>
+      </SieraHero>
       {phase.kind === "scanning" && (
         <div
           data-tour="scanner"
