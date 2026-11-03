@@ -1,7 +1,8 @@
-import { AppHeader } from "@/components/app-header";
-import { ROUTES } from "@/lib/routes";
 import { notFound } from "next/navigation";
+import { AppHeader } from "@/components/app-header";
+import { SieraTenantHeader } from "@/components/siera";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../../../guard";
 import { PortionForm, type PortionFormMenu } from "../../portion-form";
@@ -56,27 +57,23 @@ export default async function EditPorsiPage({
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Ubah Porsi" }]}
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">POSTING PORSI</p>
-        <h1 className="text-3xl font-bold">Edit porsi</h1>
-        <p className="text-muted-foreground">
+        <SieraTenantHeader kicker="EDIT PORSI" title="Edit porsi">
           Sisa {data.quantity_remaining} dari {data.quantity_posted} porsi belum terpesan.
-        </p>
-      </div>
-      <PortionForm
-        tenantName={tenant.name}
-        menus={menus}
-        initial={{
-          portionId: data.id,
-          menuItemId: data.menu_item_id,
-          quantity: data.quantity_posted,
-          cookedAtLocal,
-          sellWindowMinutes: data.sell_window_minutes ?? SELL_WINDOW_DEFAULT_MINUTES,
-          releaseAtLocal,
-          discountPrice: data.discount_price,
-          normalPrice,
-        }}
-      />
+        </SieraTenantHeader>
+        <PortionForm
+          tenantName={tenant.name}
+          menus={menus}
+          initial={{
+            portionId: data.id,
+            menuItemId: data.menu_item_id,
+            quantity: data.quantity_posted,
+            cookedAtLocal,
+            sellWindowMinutes: data.sell_window_minutes ?? SELL_WINDOW_DEFAULT_MINUTES,
+            releaseAtLocal,
+            discountPrice: data.discount_price,
+            normalPrice,
+          }}
+        />
       </div>
     </>
   );
