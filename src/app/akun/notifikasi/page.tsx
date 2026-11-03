@@ -1,12 +1,19 @@
 import { SieraHero } from "@/components/siera";
+import { AppHeader } from "@/components/app-header";
 import { requireRole } from "@/lib/auth";
+import { ROUTES } from "@/lib/routes";
 import { PushToggle } from "./push-toggle";
 
 /** Notifikasi: toggle push browser + status izin + contoh. */
 export default async function NotifikasiSettingPage() {
-  const current = await requireRole("/akun/notifikasi", "student", "tenant", "admin");
+  const current = await requireRole(ROUTES.akunNotifikasi, "student", "tenant", "admin");
   return (
-    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl">
+    <>
+      <AppHeader
+        title="Notifikasi"
+        trail={[{ label: "Pengaturan", href: ROUTES.akunPengaturan }, { label: "Notifikasi" }]}
+      />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
       <SieraHero eyebrow="Notifikasi" title="Kabar sampai bunyi">
         Nyalakan agar kabar pesanan muncul sebagai notifikasi browser di perangkat ini.
       </SieraHero>
@@ -16,5 +23,6 @@ export default async function NotifikasiSettingPage() {
         halaman Notifikasi.
       </p>
     </div>
+    </>
   );
 }

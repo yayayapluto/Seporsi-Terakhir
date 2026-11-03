@@ -12,6 +12,7 @@ import { AppHeader } from "@/components/app-header";
 import { InstallPwa } from "@/components/install-pwa";
 import { SieraList, SieraRowLink, SieraSectionTitle } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
+import { ROUTES } from "@/lib/routes";
 
 interface Row {
   href: string;
@@ -42,24 +43,24 @@ function Group({ heading, label, rows }: { heading: string; label: string; rows:
 
 /** Pengaturan per role: standar lengkap + menu sesuai peran. Tanpa backend baru. */
 export default async function PengaturanPage() {
-  const current = await requireRole("/akun/pengaturan", "student", "tenant", "admin");
+  const current = await requireRole(ROUTES.akunPengaturan, "student", "tenant", "admin");
 
   const akun: Row[] = [
-    { href: "/profil", icon: UserRound, title: "Profil", desc: "Nama dan info akunmu" },
+    { href: ROUTES.profil, icon: UserRound, title: "Profil", desc: "Ubah nama dan info akunmu" },
     {
-      href: "/akun/keamanan",
+      href: ROUTES.akunKeamanan,
       icon: ShieldCheck,
       title: "Keamanan",
-      desc: "Email dan cara masuk",
+      desc: "Ubah sandi dan keluar perangkat",
     },
     {
-      href: "/akun/notifikasi",
+      href: ROUTES.akunNotifikasi,
       icon: Bell,
       title: "Notifikasi",
       desc: "Bunyi untuk kabar pesanan",
     },
     {
-      href: "/akun/privasi",
+      href: ROUTES.akunPrivasi,
       icon: Database,
       title: "Privasi & data",
       desc: "Ambil data kamu (JSON)",
@@ -70,53 +71,59 @@ export default async function PengaturanPage() {
     current.role === "tenant"
       ? [
           {
-            href: "/tenant/profil",
+            href: ROUTES.tenantProfil,
             icon: Store,
             title: "Profil kantin",
             desc: "Nama gerai dan lokasimu",
           },
           {
-            href: "/tenant/pesanan",
+            href: ROUTES.tenantOperasional,
             icon: ReceiptText,
             title: "Operasional",
-            desc: "Pesanan dan jam posting",
+            desc: "Jam posting dan ringkasan hari ini",
           },
         ]
-      : current.role === "admin"
-        ? [
-            {
-              href: "/admin/tenant",
-              icon: Store,
-              title: "Persetujuan tenant",
-              desc: "Pendaftar yang menunggu verifikasi",
-            },
-            {
-              href: "/admin",
-              icon: ReceiptText,
-              title: "Kebijakan jendela jual",
-              desc: "120 sampai 240 menit setelah masak",
-            },
-          ]
-        : [
-            {
-              href: "/cara-kerja",
-              icon: CircleHelp,
-              title: "Bantuan & lapor",
-              desc: "Cara kerja dan keamanan makanan",
-            },
-          ];
+      : [
+          {
+            href: ROUTES.akunBantuan,
+            icon: CircleHelp,
+            title: "Bantuan & lapor",
+            desc: "Jawaban cepat dan lapor masalah",
+          },
+        ];
+
+  const pintas: Row[] =
+    current.role === "admin"
+      ? [
+          {
+            href: ROUTES.adminTenant,
+            icon: Store,
+            title: "Persetujuan tenant",
+            desc: "Pendaftar yang menunggu verifikasi",
+          },
+          {
+            href: ROUTES.admin,
+            icon: ReceiptText,
+            title: "Kebijakan jendela jual",
+            desc: "120 sampai 240 menit setelah masak",
+          },
+        ]
+      : [];
 
   return (
     <>
-      <AppHeader title="Pengaturan" trail={[{ label: "Pengaturan", href: "/akun/pengaturan" }]} />
-      <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl md:grid-cols-2 md:px-6 lg:max-w-6xl lg:px-8">
+      <AppHeader title="Pengaturan" trail={[{ label: "Pengaturan", href: ROUTES.akunPengaturan }]} />
+      <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-6 px-4 py-6 md:grid-cols-2 md:px-8">
         <div className="flex flex-col gap-1 md:col-span-2">
           <h1 className="text-[18px] leading-[1.3] font-extrabold">Pengaturan</h1>
           <p className="text-[13px] text-[#64746B]">Kelola akun dan pilihan notifikasimu.</p>
         </div>
 
         <Group heading="Akun & preferensi" label="Akun dan preferensi" rows={akun} />
-        <Group heading="Khusus peran kamu" label="Menu khusus peran" rows={peran} />
+        {peran.length > 0 && (
+          <Group heading="Khusus peran kamu" label="Menu khusus peran" rows={peran} />
+        )}
+        {pintas.length > 0 && <Group heading="Pintas peran" label="Pintas peran" rows={pintas} />}
         <div className="md:col-span-2">
           <InstallPwa />
         </div>

@@ -1,12 +1,19 @@
 import { SieraCard, SieraHero } from "@/components/siera";
+import { AppHeader } from "@/components/app-header";
 import { requireRole } from "@/lib/auth";
+import { ROUTES } from "@/lib/routes";
 import { ExportButton } from "./export-button";
 
 /** Privasi & data: unduh data sendiri + info hapus via admin. */
 export default async function PrivasiPage() {
-  const current = await requireRole("/akun/privasi", "student", "tenant", "admin");
+  const current = await requireRole(ROUTES.akunPrivasi, "student", "tenant", "admin");
   return (
-    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl">
+    <>
+      <AppHeader
+        title="Privasi & Data"
+        trail={[{ label: "Pengaturan", href: ROUTES.akunPengaturan }, { label: "Privasi & Data" }]}
+      />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
       <SieraHero eyebrow="Privasi & data" title="Data kamu milik kamu">
         Unduh seluruh data akunmu kapan saja. Isinya: profil, pesanan, dan data kantin bila kamu
         tenant.
@@ -19,5 +26,6 @@ export default async function PrivasiPage() {
         permanen dan tidak bisa dibatalkan.
       </p>
     </div>
+    </>
   );
 }
