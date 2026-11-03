@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { homeForRole } from "@/lib/auth";
 import { getEnv } from "@/lib/env";
-import { LEGACY_REDIRECTS, legacyPorsiUbah } from "@/lib/routes";
+import { LEGACY_REDIRECTS, legacyKatalogPesanan, legacyPorsiUbah } from "@/lib/routes";
 
 async function refreshSession(request: NextRequest) {
   const response = NextResponse.next({ request });
@@ -52,7 +52,7 @@ export async function updateSession(request: NextRequest) {
   const url = request.nextUrl.clone();
   const path = url.pathname;
   // Redirect 308 path lama → baru (bookmark/QR lama). Sebelum guard proteksi.
-  const legacy = LEGACY_REDIRECTS[path] ?? legacyPorsiUbah(path);
+  const legacy = LEGACY_REDIRECTS[path] ?? legacyPorsiUbah(path) ?? legacyKatalogPesanan(path);
   if (legacy) {
     const dest = new URL(legacy + url.search, request.url);
     const redirect = NextResponse.redirect(dest, 308);
@@ -61,16 +61,7 @@ export async function updateSession(request: NextRequest) {
   }
   // Alias /dasbor/* → rute dalam: URL cantik di browser, file tak pindah.
   // Guard dinilai dari path dalam, rewrite jalan setelah lolos guard.
-  const DASBOR_PREFIXES = [
-    "/beranda",
-    "/katalog",
-    "/pesanan",
-    "/profil",
-    "/tenant",
-    "/admin",
-    "/akun",
-    "/notifikasi",
-  ];
+  const DASBOR_PREFIXES = ["/beranda", "/profil", "/tenant", "/admin", "/notifikasi"];
   const isDasborAlias = path === "/dasbor" || path.startsWith("/dasbor/");
   const inner = isDasborAlias ? path.replace(/^\/dasbor/, "") || "/" : path;
   const isKnownAlias =
@@ -79,8 +70,7 @@ export async function updateSession(request: NextRequest) {
   const isAuthPage = path === "/masuk";
   const isProtected =
     inner === "/beranda" ||
-    inner.startsWith("/katalog") ||
-    inner.startsWith("/pesanan") ||
+    inner.startsWith("/beranda/") ||
     inner.startsWith("/profil") ||
     inner.startsWith("/tenant") ||
     inner.startsWith("/admin");

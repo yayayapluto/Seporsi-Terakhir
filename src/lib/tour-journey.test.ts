@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { ROUTES } from "@/lib/routes";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 
 describe("parseTourParams", () => {
@@ -38,18 +39,26 @@ describe("parseTourParams", () => {
 
 describe("getJourneyNext", () => {
   it("chains with pretty params", () => {
-    expect(getJourneyNext("/beranda")).toBe("/katalog?panduan=rantai&langkah=0");
-    expect(getJourneyNext("/katalog")).toBe("/pesanan?panduan=rantai&langkah=0");
-    expect(getJourneyNext("/pesanan")).toBe("/profil?panduan=rantai&langkah=0");
-    expect(getJourneyNext("/profil")).toBeNull();
+    expect(getJourneyNext(ROUTES.beranda)).toBe(`${ROUTES.katalog}?panduan=rantai&langkah=0`);
+    expect(getJourneyNext(ROUTES.katalog)).toBe(`${ROUTES.pesanan}?panduan=rantai&langkah=0`);
+    expect(getJourneyNext(ROUTES.pesanan)).toBe(`${ROUTES.profil}?panduan=rantai&langkah=0`);
+    expect(getJourneyNext(ROUTES.profil)).toBeNull();
+  });
+
+  it("ignores legacy top-level paths (redirected by proxy)", () => {
+    expect(getJourneyNext("/katalog")).toBeNull(); // LEGACY: proxy 308 → ROUTES.katalog
+    expect(getJourneyNext("/pesanan")).toBeNull(); // LEGACY: proxy 308 → ROUTES.pesanan
+    expect(getJourneyNext("/akun/pengaturan")).toBeNull(); // LEGACY: proxy 308 → ROUTES.profilPengaturan
   });
 
   it("returns null outside the chain", () => {
     expect(getJourneyNext("/")).toBeNull();
     expect(getJourneyNext("/tenant")).toBeNull();
-    expect(getJourneyNext("/katalog/abc")).toBeNull();
+    expect(getJourneyNext(`${ROUTES.katalog}/abc`)).toBeNull();
   });
 });
+
+
 
 describe("shouldAutoChain", () => {
   it("true only for new users on clean URLs", () => {

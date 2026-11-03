@@ -71,10 +71,7 @@ export function NavTabs({ tabs, asideTabs }: { tabs: NavTab[]; asideTabs?: NavTa
   const path = pathname;
   const inApp =
     path.startsWith("/beranda") ||
-    path.startsWith("/katalog") ||
-    path.startsWith("/pesanan") ||
     path.startsWith("/notifikasi") ||
-    path.startsWith("/akun") ||
     path.startsWith("/profil") ||
     path.startsWith("/tenant") ||
     path.startsWith("/admin");
