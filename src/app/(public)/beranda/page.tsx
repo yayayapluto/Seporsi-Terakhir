@@ -168,7 +168,17 @@ export default async function BerandaPage({
           }
           aside={
             <div className="hidden min-w-0 flex-col gap-4 lg:gap-5 xl:flex">
-              <SoonRailCard portions={portions.slice(0, 3)} failed={soonFailed} />
+              <SieraSection id="ambil-heading" label="Jam ambil">
+                <div
+                  className={cn(
+                    sieraCardClass,
+                    "flex flex-col gap-1 p-4 text-[13px] text-[#64746B]",
+                  )}
+                >
+                  <p className="text-sm font-bold text-[#1C2826]">16.30 sampai 18.30 WIB</p>
+                  <p>Tunjukkan QR saat ambil, bayar tunai di tempat.</p>
+                </div>
+              </SieraSection>
             </div>
           }
         />
@@ -268,52 +278,6 @@ function ActiveOrdersSection({ orders }: { orders: ActiveOrder[] }) {
         <ActiveOrderList orders={orders} />
       </SieraSection>
     </div>
-  );
-}
-
-function SoonRailCard({ portions, failed }: { portions: SoonPortion[]; failed: boolean }) {
-  if (failed || portions.length === 0) return null;
-  const now = Date.now();
-  return (
-    <SieraSection
-      label={`Segera habis (${portions.length})`}
-      action={
-        <Link
-          href={ROUTES.katalog}
-          className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
-        >
-          Lihat Semua
-        </Link>
-      }
-    >
-      <ul className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-line px-4")}>
-        {portions.map((p) => {
-          const left = Math.max(0, Math.floor((+new Date(p.expiresAt) - now) / 60_000));
-          return (
-            <li key={p.id}>
-              <Link href={katalogDetail(p.id)} className="flex min-h-11 items-center gap-3 py-3">
-                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span className="truncate text-sm font-bold text-[#1C2826]">{p.menuName}</span>
-                  <span className="truncate text-xs text-[#64746B]">
-                    {p.tenantName} · {formatIDR(p.discountPrice)}
-                  </span>
-                </span>
-                {left < 60 && (
-                  <span className="shrink-0 rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
-                    {left <= 5 ? "Segera habis" : `Sisa ${left} mnt`}
-                  </span>
-                )}
-                <ChevronRight
-                  className="size-5 shrink-0 text-[#64746B]"
-                  strokeWidth={1.75}
-                  aria-hidden
-                />
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </SieraSection>
   );
 }
 
