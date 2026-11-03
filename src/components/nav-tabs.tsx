@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Bell,
   House,
   LayoutGrid,
   Plus,
@@ -19,7 +18,7 @@ import { sieraCountText as badgeText } from "./siera";
 export interface NavTab {
   href: string;
   label: string;
-  icon: "home" | "store" | "orders" | "bell" | "account" | "dashboard" | "scan" | "shield" | "plus";
+  icon: "home" | "store" | "orders" | "account" | "dashboard" | "scan" | "shield" | "plus";
   badge?: number;
 }
 
@@ -27,7 +26,6 @@ const ICONS = {
   home: House,
   store: Store,
   orders: ReceiptText,
-  bell: Bell,
   account: UserRound,
   dashboard: LayoutGrid,
   scan: QrCode,

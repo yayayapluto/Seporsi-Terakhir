@@ -39,30 +39,27 @@ export async function unreadFor(role: string | null, userId: string | null): Pro
 }
 
 function tabsFor(role: string | null, unread: number): NavTab[] {
-  // ponytail: satu angka unread, satu lokasi badge per role. Header bell
-  // tetap satu-satunya indikator global; tab Notifikasi tanpa badge agar
-  // tidak ganda dengan tab Pesanan/Tenant.
   const badge = unread > 0 ? unread : undefined;
   if (role === "tenant")
     return [
-      { href: "/dasbor/tenant", label: "Dasbor", icon: "dashboard" },
-      { href: "/dasbor/tenant/scan", label: "Pindai", icon: "scan" },
-      { href: "/dasbor/tenant/pesanan", label: "Pesanan", icon: "orders", badge },
-      { href: "/dasbor/profil", label: "Akun", icon: "account" },
+      { href: "/tenant", label: "Dasbor", icon: "dashboard" },
+      { href: "/tenant/scan", label: "Pindai", icon: "scan" },
+      { href: "/tenant/pesanan", label: "Pesanan", icon: "orders", badge },
+      { href: "/profil", label: "Akun", icon: "account" },
     ];
   if (role === "admin")
     return [
-      { href: "/dasbor/admin", label: "Dampak", icon: "dashboard" },
-      { href: "/dasbor/admin/tenant", label: "Tenant", icon: "shield", badge },
-      { href: "/dasbor/katalog", label: "Katalog", icon: "store" },
-      { href: "/dasbor/profil", label: "Akun", icon: "account" },
+      { href: "/admin", label: "Dampak", icon: "dashboard" },
+      { href: "/admin/tenant", label: "Tenant", icon: "shield", badge },
+      { href: "/katalog", label: "Katalog", icon: "store" },
+      { href: "/profil", label: "Akun", icon: "account" },
     ];
   if (role === "student")
     return [
-      { href: "/dasbor/beranda", label: "Beranda", icon: "home" },
-      { href: "/dasbor/katalog", label: "Katalog", icon: "store" },
-      { href: "/dasbor/pesanan", label: "Pesanan", icon: "orders", badge },
-      { href: "/dasbor/profil", label: "Akun", icon: "account" },
+      { href: "/beranda", label: "Beranda", icon: "home" },
+      { href: "/katalog", label: "Katalog", icon: "store" },
+      { href: "/pesanan", label: "Pesanan", icon: "orders", badge },
+      { href: "/profil", label: "Akun", icon: "account" },
     ];
   return [
     { href: "/beranda", label: "Beranda", icon: "home" },
