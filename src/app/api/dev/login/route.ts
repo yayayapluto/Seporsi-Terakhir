@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -65,6 +66,7 @@ async function handleLogin(request: NextRequest) {
   if (profile?.role === "tenant" || profile?.role === "admin") role = profile.role;
 
   response.headers.set("Location", resolveNext(parsed.data.next, homeForRole(role)));
+  revalidatePath("/", "layout");
   return response;
 }
 
