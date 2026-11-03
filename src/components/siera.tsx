@@ -343,7 +343,7 @@ export function SieraSection({
 }) {
   return (
     <section aria-label={label} className="flex min-w-0 flex-col gap-2">
-      <div className="flex min-h-11 items-center justify-between gap-3">
+      <div className="flex min-h-11 items-center justify-between gap-3 px-5 md:px-6">
         <SieraSectionTitle id={id}>
           <span className="block truncate whitespace-nowrap">{label}</span>
         </SieraSectionTitle>

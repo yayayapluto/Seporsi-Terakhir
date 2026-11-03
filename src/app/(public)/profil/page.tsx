@@ -174,7 +174,7 @@ export default async function ProfilPage({
           {/* Dampak — khusus student */}
           {isStudent && (
             <section aria-labelledby="dampak-heading" className="flex min-w-0 flex-col gap-2">
-              <div className="flex min-h-11 items-center px-1">
+              <div className="flex min-h-11 items-center px-5 md:px-6">
                 <SieraSectionTitle id="dampak-heading">Dampakmu</SieraSectionTitle>
               </div>
               {p.loadFailed && (
@@ -327,7 +327,7 @@ export default async function ProfilPage({
           )}
           {/* Bantuan — panduan sesuai peran */}
           <section aria-labelledby="bantuan-heading" className="flex min-w-0 flex-col gap-2">
-            <div className="flex min-h-11 items-center">
+            <div className="flex min-h-11 items-center px-5 md:px-6">
               <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
             </div>
             <SieraList aria-label="Bantuan" className="divide-solid">
