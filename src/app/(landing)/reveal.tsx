@@ -42,7 +42,9 @@ export function Reveal({
       id={id}
       className={cn(
         "transition-[opacity,translate] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none",
-        shown ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100",
+        shown
+          ? "translate-y-0 opacity-100"
+          : "translate-y-5 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100",
         className,
       )}
     >
@@ -159,7 +161,9 @@ export function ChalkRow({
       style={delay ? { transitionDelay: `${Math.round(delay * 1000)}ms` } : undefined}
       className={cn(
         "transition-[opacity,translate] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none",
-        shown ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100",
+        shown
+          ? "translate-y-0 opacity-100"
+          : "translate-y-4 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100",
         "[&_strong[data-pop]]:inline-block [&_strong[data-pop]]:transition-transform [&_strong[data-pop]]:duration-150",
         shown && "[&_strong[data-pop]]:scale-100",
         !shown && "[&_strong[data-pop]]:scale-[.98]",
