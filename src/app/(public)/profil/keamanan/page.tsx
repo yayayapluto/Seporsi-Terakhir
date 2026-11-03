@@ -4,7 +4,8 @@ import { SieraCard, SieraField } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
-import { SecurityForm } from "./security-form";
+import { SignOutEverywhereButton } from "./signout-everywhere-button";
+import { UbahSandiButton } from "./ubah-sandi-button";
 
 /** Keamanan: info sesi + ubah sandi + keluar semua perangkat. */
 export default async function KeamananPage() {
@@ -34,13 +35,14 @@ export default async function KeamananPage() {
               {formatDateTimeWIB(new Date(current.user.created_at ?? Date.now()))}
             </SieraField>
           </dl>
-          <div className="lg:border-l lg:border-dashed lg:border-line lg:pl-4">
-            <SecurityForm />
+          <div className="flex flex-col gap-2 lg:border-l lg:border-dashed lg:border-line lg:pl-4">
+            <UbahSandiButton />
+            <SignOutEverywhereButton />
           </div>
         </SieraCard>
         <p className="text-[11px] leading-relaxed text-[#64746B]">
-          Ada perangkat asing? Ubah sandi di atas lalu keluar dari semua perangkat. Butuh bantuan?
-          Tulis ke admin lewat halaman Bantuan.
+          Ada perangkat asing? Ubah sandi lalu keluar dari semua perangkat. Butuh bantuan? Tulis ke
+          admin lewat halaman Bantuan.
         </p>
       </div>
     </>

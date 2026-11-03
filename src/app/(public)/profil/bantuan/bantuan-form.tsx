@@ -42,7 +42,15 @@ const FAQS = [
 ] as const;
 
 /** FAQ + formulir lapor via email admin (tanpa tabel baru). */
-export function BantuanForm({ userEmail }: { userEmail: string | null }) {
+export function BantuanForm({
+  userEmail,
+  reportOnly = false,
+  faqOnly = false,
+}: {
+  userEmail: string | null;
+  reportOnly?: boolean;
+  faqOnly?: boolean;
+}) {
   const [kategori, setKategori] = useState("Masalah pesanan");
   const [pesan, setPesan] = useState("");
 
@@ -50,53 +58,57 @@ export function BantuanForm({ userEmail }: { userEmail: string | null }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <Accordion defaultValue={FAQS[0] ? [`faq-0`] : []}>
-        {FAQS.map((f, i) => (
-          <AccordionItem key={f.q} value={`faq-${i}`}>
-            <AccordionTrigger className="text-left font-semibold">{f.q}</AccordionTrigger>
-            <AccordionContent>{f.a}</AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-      <form
-        className="flex flex-col gap-3"
-        onSubmit={(e) => {
-          e.preventDefault();
-          window.location.href = mailto;
-        }}
-      >
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="lapor-kategori">Kategori</Label>
-          <Select value={kategori} onValueChange={(v) => v != null && setKategori(String(v))}>
-            <SelectTrigger id="lapor-kategori" className="min-h-11">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {["Masalah pesanan", "Daftar tenant", "Hapus akun", "Lainnya"].map((k) => (
-                <SelectItem key={k} value={k}>
-                  {k}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="lapor-pesan">Pesan</Label>
-          <Textarea
-            id="lapor-pesan"
-            value={pesan}
-            onChange={(e) => setPesan(e.target.value)}
-            required
-            minLength={10}
-            maxLength={1000}
-            rows={4}
-            placeholder="Tulis kronologi singkat: kapan, pesanan apa, apa yang terjadi…"
-          />
-        </div>
-        <Button type="submit" className="min-h-11 w-full">
-          Kirim laporan via email
-        </Button>
-      </form>
+      {!reportOnly && (
+        <Accordion defaultValue={FAQS[0] ? [`faq-0`] : []}>
+          {FAQS.map((f, i) => (
+            <AccordionItem key={f.q} value={`faq-${i}`}>
+              <AccordionTrigger className="text-left font-semibold">{f.q}</AccordionTrigger>
+              <AccordionContent>{f.a}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
+      {!faqOnly && (
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            window.location.href = mailto;
+          }}
+        >
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="lapor-kategori">Kategori</Label>
+            <Select value={kategori} onValueChange={(v) => v != null && setKategori(String(v))}>
+              <SelectTrigger id="lapor-kategori" className="min-h-11">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {["Masalah pesanan", "Daftar tenant", "Hapus akun", "Lainnya"].map((k) => (
+                  <SelectItem key={k} value={k}>
+                    {k}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="lapor-pesan">Pesan</Label>
+            <Textarea
+              id="lapor-pesan"
+              value={pesan}
+              onChange={(e) => setPesan(e.target.value)}
+              required
+              minLength={10}
+              maxLength={1000}
+              rows={4}
+              placeholder="Tulis kronologi singkat: kapan, pesanan apa, apa yang terjadi…"
+            />
+          </div>
+          <Button type="submit" className="min-h-11 w-full">
+            Kirim laporan via email
+          </Button>
+        </form>
+      )}
     </div>
   );
 }
