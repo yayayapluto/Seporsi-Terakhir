@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
-import { SieraEmpty, SieraList } from "@/components/siera";
+import { SieraAlert, SieraEmpty, SieraList } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -45,14 +45,7 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
 
   return (
     <div className="flex flex-col gap-4">
-      {error && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
-          {error}
-        </p>
-      )}
+      {error && <SieraAlert variant="error">{error}</SieraAlert>}
       <SieraList>
         {tenants.map((t) => {
           const open = openId === t.id;

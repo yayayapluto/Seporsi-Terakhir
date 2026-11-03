@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SieraList } from "@/components/siera";
+import { SieraAlert, SieraList } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { setTenantListed } from "../actions";
@@ -36,14 +36,7 @@ export function ListedList({ tenants }: { tenants: ListedTenant[] }) {
 
   return (
     <div className="flex flex-col gap-3">
-      {error && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
-          {error}
-        </p>
-      )}
+      {error && <SieraAlert variant="error">{error}</SieraAlert>}
       <SieraList>
         {tenants.map((t) => (
           <li key={t.id} className="flex items-center gap-3 px-4 py-3">

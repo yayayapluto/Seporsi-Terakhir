@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { DateField } from "@/components/date-field";
 import { GuidedTour } from "@/components/guided-tour";
-import { SieraCard, SieraEmpty } from "@/components/siera";
+import { SieraAlert, SieraCard, SieraEmpty } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { percentSold } from "@/lib/domain/metrics";
@@ -170,14 +170,7 @@ export function ImpactClient({
         </SieraCard>
       </section>
 
-      {csvError && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
-          {csvError}
-        </p>
-      )}
+      {csvError && <SieraAlert variant="error">{csvError}</SieraAlert>}
 
       {rows.length === 0 ? (
         <SieraEmpty

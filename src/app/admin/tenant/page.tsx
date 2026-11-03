@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
+import { SieraAlert } from "@/components/siera";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
@@ -98,14 +99,7 @@ async function PendingBody() {
   await requireRole("/admin/tenant", "admin");
   const { tenants, error } = await loadPending();
   if (error) {
-    return (
-      <p
-        role="alert"
-        className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-      >
-        {error}
-      </p>
-    );
+    return <SieraAlert variant="error">{error}</SieraAlert>;
   }
   return <ApproveList tenants={tenants} />;
 }
