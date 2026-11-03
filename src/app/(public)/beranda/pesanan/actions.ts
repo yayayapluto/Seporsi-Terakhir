@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 
 const CancelSchema = z.object({ orderId: z.string().uuid() });
@@ -28,7 +29,7 @@ export async function cancelOrder(
       return { ok: false, error: "Kamu tidak punya akses ke pesanan ini." };
     return { ok: false, error: "Gagal membatalkan. Coba lagi." };
   }
-  revalidatePath("/pesanan");
+  revalidatePath(ROUTES.pesanan);
   return { ok: true };
 }
 
