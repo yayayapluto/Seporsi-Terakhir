@@ -133,35 +133,35 @@ export default async function ProfilPage({
   return (
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
-      <div className="grid w-full min-w-0 grid-cols-1 content-start gap-4 px-4 pt-6 md:px-8 lg:gap-5">
-        {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
-        <section aria-label="Identitas" className={`${sieraCardClass} p-3`}>
-          <div className="flex items-center gap-3">
-            {p.avatarPath ? (
-              <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
-            ) : (
-              <span
-                aria-hidden
-                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-base font-extrabold text-[#1E5A36]"
-              >
-                {initials || "•"}
-              </span>
+      {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
+      <section aria-label="Identitas" className={`${sieraCardClass} p-3`}>
+        <div className="flex items-center gap-3">
+          {p.avatarPath ? (
+            <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
+          ) : (
+            <span
+              aria-hidden
+              className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-base font-extrabold text-[#1E5A36]"
+            >
+              {initials || "•"}
+            </span>
+          )}
+          <div className="min-w-0">
+            <h1 className="truncate text-[16px] leading-[1.3] font-extrabold">{p.fullName}</h1>
+            {p.email && <p className="truncate text-[13px] text-[#64746B]">{p.email}</p>}
+            {label && (
+              <p className="mt-1 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
+                {label}
+              </p>
             )}
-            <div className="min-w-0">
-              <h1 className="truncate text-[16px] leading-[1.3] font-extrabold">{p.fullName}</h1>
-              {p.email && <p className="truncate text-[13px] text-[#64746B]">{p.email}</p>}
-              {label && (
-                <p className="mt-1 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
-                  {label}
-                </p>
-              )}
-            </div>
           </div>
-        </section>
-        <SieraRailPage
-          asideLabel="Pelengkap profil"
-          main={
-            <>
+        </div>
+      </section>
+      <SieraRailPage
+        asideLabel="Pelengkap profil"
+        main={
+          <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-2 lg:gap-5">
+            <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
               {/* Dampak — khusus student */}
               {isStudent && (
                 <section aria-labelledby="dampak-heading" className="flex min-w-0 flex-col gap-2">
@@ -227,27 +227,8 @@ export default async function ProfilPage({
                   </p>
                 </section>
               )}
-
-              {/* Navigasi akun — khusus tenant */}
-              {isTenant && (
-                <SieraSection id="akun-heading" label="Pengaturan">
-                  <SieraList aria-label="Pengaturan">
-                    <SieraRowLink
-                      href={ROUTES.tenantProfil}
-                      icon={Store}
-                      title="Profil kantin"
-                      subtitle="Nama gerai dan lokasi"
-                    />
-                    <SieraRowLink
-                      href={ROUTES.profilPengaturan}
-                      icon={Settings}
-                      title="Pengaturan"
-                      subtitle="Keamanan, notifikasi, privasi"
-                    />
-                  </SieraList>
-                </SieraSection>
-              )}
-
+            </div>
+            <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
               {/* Kelola platform — khusus admin */}
               {!isStudent && !isTenant && (
                 <SieraSection id="kelola-heading" label="Kelola platform">
@@ -302,6 +283,14 @@ export default async function ProfilPage({
                       subtitle="Katalog rescue hari ini"
                     />
                   )}
+                  {isTenant && (
+                    <SieraRowLink
+                      href={ROUTES.tenantProfil}
+                      icon={Store}
+                      title="Profil kantin"
+                      subtitle="Nama gerai dan lokasi"
+                    />
+                  )}
                   <SieraRowLink
                     href={ROUTES.profilPengaturan}
                     icon={Settings}
@@ -310,64 +299,62 @@ export default async function ProfilPage({
                   />
                 </SieraList>
               </SieraSection>
-            </>
-          }
-          aside={
-            <>
-              {isStudent && (
-                <SieraSection id="tenant-heading" label="Aplikasi tenant">
-                  {tenantStatus == null ? (
-                    <div className={`${sieraCardClass} border-dashed p-3 text-center`}>
-                      <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
-                      <p className="mt-1 text-[13px] text-[#64746B]">
-                        Jual sisa masakanmu, gratis untuk saat ini.
-                      </p>
-                      <DaftarTenantButton />
-                    </div>
-                  ) : (
-                    <SieraList>
-                      <SieraRowLink
-                        href={p.tenantApproved ? ROUTES.tenant : ROUTES.tenantMenunggu}
-                        icon={Store}
-                        title={p.tenantName ?? "Kantinmu"}
-                        subtitle={tenantStatus}
-                      />
-                    </SieraList>
-                  )}
-                </SieraSection>
-              )}
-              {/* Bantuan — panduan sesuai peran */}
-              <section aria-labelledby="bantuan-heading" className="flex min-w-0 flex-col gap-2">
-                <div className="flex min-h-11 items-center">
-                  <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
-                </div>
-                <SieraList aria-label="Bantuan">
-                  <SieraRowLink
-                    href={
-                      isTenant
-                        ? `${ROUTES.tenant}?panduan=rantai&fresh=1`
-                        : isStudent
-                          ? `${ROUTES.beranda}?panduan=rantai&fresh=1`
-                          : ROUTES.caraKerja
-                    }
-                    icon={MapIcon}
-                    title={
-                      isTenant ? "Panduan kelola" : isStudent ? "Panduan beranda" : "Cara kerja"
-                    }
-                    subtitle={
-                      isTenant
-                        ? "Tur singkat dasbor sampai scan"
-                        : isStudent
-                          ? "Lihat lagi cara membaca Beranda dan memesan porsi"
-                          : "Alur rescue & keamanan pangan"
-                    }
-                  />
-                </SieraList>
-              </section>
-            </>
-          }
-        />
-      </div>
+            </div>
+          </div>
+        }
+        aside={
+          <>
+            {isStudent && (
+              <SieraSection id="tenant-heading" label="Aplikasi tenant">
+                {tenantStatus == null ? (
+                  <div className={`${sieraCardClass} border-dashed p-3 text-center`}>
+                    <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
+                    <p className="mt-1 text-[13px] text-[#64746B]">
+                      Jual sisa masakanmu, gratis untuk saat ini.
+                    </p>
+                    <DaftarTenantButton />
+                  </div>
+                ) : (
+                  <SieraList>
+                    <SieraRowLink
+                      href={p.tenantApproved ? ROUTES.tenant : ROUTES.tenantMenunggu}
+                      icon={Store}
+                      title={p.tenantName ?? "Kantinmu"}
+                      subtitle={tenantStatus}
+                    />
+                  </SieraList>
+                )}
+              </SieraSection>
+            )}
+            {/* Bantuan — panduan sesuai peran */}
+            <section aria-labelledby="bantuan-heading" className="flex min-w-0 flex-col gap-2">
+              <div className="flex min-h-11 items-center">
+                <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
+              </div>
+              <SieraList aria-label="Bantuan">
+                <SieraRowLink
+                  href={
+                    isTenant
+                      ? `${ROUTES.tenant}?panduan=rantai&fresh=1`
+                      : isStudent
+                        ? `${ROUTES.beranda}?panduan=rantai&fresh=1`
+                        : ROUTES.caraKerja
+                  }
+                  icon={MapIcon}
+                  title={isTenant ? "Panduan kelola" : isStudent ? "Panduan beranda" : "Cara kerja"}
+                  subtitle={
+                    isTenant
+                      ? "Tur singkat dasbor sampai scan"
+                      : isStudent
+                        ? "Lihat lagi cara membaca Beranda dan memesan porsi"
+                        : "Alur rescue & keamanan pangan"
+                  }
+                />
+              </SieraList>
+            </section>
+          </>
+        }
+      />
       {isStudent && (
         <GuidedTour
           tourKey="profil"
