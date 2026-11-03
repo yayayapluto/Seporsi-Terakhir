@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraCard, SieraEmpty, SieraSectionTitle, sieraCardClass } from "@/components/siera";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -16,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Toggle } from "@/components/ui/toggle";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { katalogDetail, ROUTES } from "@/lib/routes";
 import { getJourneyNext } from "@/lib/tour-journey";
@@ -172,13 +174,12 @@ export function KatalogList({
           ].map(({ value, label, Icon }) => {
             const active = view === value;
             return (
-              <button
+              <Toggle
                 key={value}
-                type="button"
-                aria-pressed={active}
+                pressed={active}
+                onPressedChange={() => setView(value)}
                 aria-label={label}
-                onClick={() => setView(value)}
-                className="relative flex min-h-11 min-w-11 items-center justify-center rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+                className="relative min-h-11 min-w-11 rounded-lg data-[state=on]:bg-transparent focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
               >
                 {active &&
                   (reduce ? (
@@ -195,7 +196,7 @@ export function KatalogList({
                   className={`relative size-5 ${active ? "text-[#1E5A36]" : "text-[#64746B]"}`}
                   aria-hidden
                 />
-              </button>
+              </Toggle>
             );
           })}
         </fieldset>
@@ -205,13 +206,13 @@ export function KatalogList({
           title="Belum ada porsi sore ini."
           hint="Biasanya tenant posting sekitar 15.30–16.30. Cek lagi nanti sore."
           action={
-            <button
+            <Button
               type="button"
               onClick={() => window.location.reload()}
-              className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#2E7D4F] px-2.5 text-[15px] font-bold text-white outline-none transition-colors hover:bg-[#256B41] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] focus-visible:ring-offset-2 active:translate-y-px"
+              className="flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold"
             >
               Muat ulang
-            </button>
+            </Button>
           }
         />
       ) : view === "grid" ? (

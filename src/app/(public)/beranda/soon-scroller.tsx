@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { sieraCardClass } from "@/components/siera";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { katalogDetail } from "@/lib/routes";
@@ -149,22 +150,26 @@ export function SoonScroller({ portions }: { portions: SoonPortion[] }) {
             />
           </div>
           <div className="hidden shrink-0 gap-1 lg:flex">
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="icon"
               onClick={() => nudge(1)}
               aria-label="Geser katalog ke kiri"
-              className="flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-line bg-white text-[#1C2826] outline-none transition-colors hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+              className="min-h-11 min-w-11 rounded-xl"
             >
               <ChevronLeft className="size-5" strokeWidth={1.75} aria-hidden />
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="outline"
+              size="icon"
               onClick={() => nudge(-1)}
               aria-label="Geser katalog ke kanan"
-              className="flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-line bg-white text-[#1C2826] outline-none transition-colors hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+              className="min-h-11 min-w-11 rounded-xl"
             >
               <ChevronRight className="size-5" strokeWidth={1.75} aria-hidden />
-            </button>
+            </Button>
           </div>
         </div>
       )}
