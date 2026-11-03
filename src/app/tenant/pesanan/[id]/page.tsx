@@ -1,10 +1,18 @@
-import { Timer } from "lucide-react";
+import { History, QrCode, Timer, UserRound } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { OrderStatusBadge } from "@/components/order-status-badge";
-import { sieraCardClass } from "@/components/siera";
+import {
+  SieraList,
+  SieraRailPage,
+  SieraRowLink,
+  SieraSection,
+  SieraStat,
+  SieraStatStrip,
+  sieraCardClass,
+} from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
@@ -79,6 +87,150 @@ export default async function TenantOrderDetailPage({
   if (!z.string().uuid().safeParse(id).success) notFound();
   const o = await loadDetail(id);
 
+  const main = (
+    <>
+      <div className={`${sieraCardClass} flex flex-col gap-1 p-4`}>
+        <p className="text-xs font-bold tracking-wide text-[#1E5A36]">RESERVASI</p>
+        <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
+          {o.menuName} × {o.quantity}
+        </h1>
+        <p className="text-sm text-[#1E5A36]">
+          Dipesan {o.buyerName} · {formatDateTimeWIB(new Date(o.createdAt))} WIB
+        </p>
+        <p className="mt-1">
+          <OrderStatusBadge status={o.status} />
+          {o.status === "picked_up" && o.pickedUpAt && (
+            <span className="ml-2 text-sm text-muted-foreground">
+              Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
+            </span>
+          )}
+        </p>
+      </div>
+      {o.expiresAt && (
+        <section
+          aria-label="Batas ambil"
+          className="flex items-center gap-3 rounded-2xl border border-[#B45309]/20 bg-[#FEF3C7] p-4"
+        >
+          <span
+            aria-hidden
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#B45309]"
+          >
+            <Timer className="size-5" />
+          </span>
+          <p className="text-sm font-semibold text-[#1C2826]">
+            Ambil sebelum {formatDateTimeWIB(new Date(o.expiresAt))} WIB
+          </p>
+        </section>
+      )}
+      <section aria-labelledby="pemesan-heading" className={`${sieraCardClass} p-5 text-center`}>
+        <h2 id="pemesan-heading" className="text-2xl font-bold">
+          {o.buyerName}
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {o.buyerPickups === 0 && o.buyerCancelled === 0 ? (
+            "Pemesan baru — belum ada riwayat."
+          ) : (
+            <>
+              {o.buyerPickups} pickup selesai · {o.buyerCancelled} batal
+              {o.buyerCancelled >= 2 &&
+                " · sering membatalkan — konfirmasi ulang saat serah terima"}
+            </>
+          )}
+        </p>
+      </section>
+      <dl className={`${sieraCardClass} divide-y divide-dashed divide-line px-5`}>
+        {o.cookedAt && <Row label="Dimasak">{formatDateTimeWIB(new Date(o.cookedAt))} WIB</Row>}
+        <Row label="Harga/porsi">
+          <span>
+            <s className="mr-2 font-normal text-muted-foreground">
+              {formatIDR(o.normalPriceSnapshot)}
+            </s>
+            {formatIDR(o.discountPriceSnapshot)}
+          </span>
+        </Row>
+        <Row label="Harga normal">
+          <s className="font-normal text-muted-foreground">
+            {formatIDR(o.normalPriceSnapshot * o.quantity)}
+          </s>
+        </Row>
+        <Row label="Total bayar di tempat">
+          <span className="text-lg font-bold">
+            {formatIDR(o.discountPriceSnapshot * o.quantity)}
+          </span>
+        </Row>
+      </dl>
+      {o.status === "reserved" && (
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <Link
+            href="/tenant/scan"
+            className={buttonVariants({ className: "min-h-12 w-full text-[15px]" })}
+          >
+            Scan pickup
+          </Link>
+          <TenantCancelButton
+            orderId={o.orderId}
+            menuName={o.menuName}
+            quantity={o.quantity}
+            buyerName={o.buyerName}
+          />
+        </div>
+      )}
+      {o.status !== "reserved" && (
+        <p className="text-sm text-muted-foreground">
+          {o.status === "picked_up"
+            ? "Pesanan selesai. Pembayaran sudah diterima di tempat."
+            : "Pesanan dibatalkan. Stok porsi dikembalikan ke katalog."}
+        </p>
+      )}
+    </>
+  );
+
+  const aside = (
+    <>
+      {o.pickupCode && (
+        <SieraSection id="pickup-heading" label="Kode pickup">
+          <div className={`${sieraCardClass} flex flex-col items-center gap-1 p-5 text-center`}>
+            <SieraStat
+              icon={QrCode}
+              value={o.pickupCode}
+              label="Ketik di Scan pickup bila kamera gagal"
+            />
+            <CopyTokenButton token={o.pickupCode} />
+          </div>
+        </SieraSection>
+      )}
+      <SieraSection id="riwayat-heading" label="Riwayat pemesan">
+        <SieraStatStrip>
+          <SieraStat icon={History} value={String(o.buyerPickups)} label="Selesai" />
+          <SieraStat icon={UserRound} value={String(o.buyerCancelled)} label="Batal" />
+          <SieraStat
+            icon={Timer}
+            value={`${o.quantity}×`}
+            label={o.status === "reserved" ? "Menunggu" : "Porsi"}
+          />
+        </SieraStatStrip>
+      </SieraSection>
+      {o.status === "reserved" && (
+        <SieraSection id="lanjut-heading" label="Langkah lanjut">
+          <SieraList aria-label="Langkah lanjut">
+            <SieraRowLink
+              href="/tenant/scan"
+              icon={QrCode}
+              title="Scan pickup"
+              subtitle="Konfirmasi serah terima di kasir"
+            />
+            <SieraRowLink
+              href="/tenant/pesanan"
+              icon={History}
+              title="Kembali ke pesanan"
+              subtitle="Lihat antrean pickup"
+            />
+          </SieraList>
+        </SieraSection>
+      )}
+    </>
+  );
+
   return (
     <>
       <AppHeader
@@ -89,119 +241,7 @@ export default async function TenantOrderDetailPage({
           { label: `Detail ${o.menuName}` },
         ]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
-        <div className={`${sieraCardClass} flex flex-col gap-1 p-4`}>
-          <p className="text-xs font-bold tracking-wide text-[#1E5A36]">RESERVASI</p>
-          <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
-            {o.menuName} × {o.quantity}
-          </h1>
-          <p className="text-sm text-[#1E5A36]">
-            Dipesan {o.buyerName} · {formatDateTimeWIB(new Date(o.createdAt))} WIB
-          </p>
-          <p className="mt-1">
-            <OrderStatusBadge status={o.status} />
-            {o.status === "picked_up" && o.pickedUpAt && (
-              <span className="ml-2 text-sm text-muted-foreground">
-                Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
-              </span>
-            )}
-          </p>
-        </div>
-        {o.pickupCode && (
-          <section aria-labelledby="pickup-heading" className={`${sieraCardClass} p-5`}>
-            <p className="text-xs font-bold tracking-wide text-[#64746B]">KODE PICKUP</p>
-            <h2
-              id="pickup-heading"
-              className="mt-1 text-4xl font-extrabold tracking-[0.2em] text-[#1C2826] tabular-nums"
-            >
-              {o.pickupCode}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Ketik di kolom kode manual halaman Scan pickup bila kamera bermasalah.
-            </p>
-            <CopyTokenButton token={o.pickupCode} />
-          </section>
-        )}
-        {o.expiresAt && (
-          <section
-            aria-label="Batas ambil"
-            className="flex items-center gap-3 rounded-2xl border border-[#B45309]/20 bg-[#FEF3C7] p-4"
-          >
-            <span
-              aria-hidden
-              className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#B45309]"
-            >
-              <Timer className="size-5" />
-            </span>
-            <p className="text-sm font-semibold text-[#1C2826]">
-              Ambil sebelum {formatDateTimeWIB(new Date(o.expiresAt))} WIB
-            </p>
-          </section>
-        )}
-
-        <section aria-labelledby="pemesan-heading" className={`${sieraCardClass} p-5 text-center`}>
-          <h2 id="pemesan-heading" className="text-2xl font-bold">
-            {o.buyerName}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {o.buyerPickups === 0 && o.buyerCancelled === 0 ? (
-              "Pemesan baru — belum ada riwayat."
-            ) : (
-              <>
-                {o.buyerPickups} pickup selesai · {o.buyerCancelled} batal
-                {o.buyerCancelled >= 2 &&
-                  " · sering membatalkan — konfirmasi ulang saat serah terima"}
-              </>
-            )}
-          </p>
-        </section>
-
-        <dl className={`${sieraCardClass} divide-y divide-dashed divide-line px-5`}>
-          {o.cookedAt && <Row label="Dimasak">{formatDateTimeWIB(new Date(o.cookedAt))} WIB</Row>}
-          <Row label="Harga/porsi">
-            <span>
-              <s className="mr-2 font-normal text-muted-foreground">
-                {formatIDR(o.normalPriceSnapshot)}
-              </s>
-              {formatIDR(o.discountPriceSnapshot)}
-            </span>
-          </Row>
-          <Row label="Harga normal">
-            <s className="font-normal text-muted-foreground">
-              {formatIDR(o.normalPriceSnapshot * o.quantity)}
-            </s>
-          </Row>
-          <Row label="Total bayar di tempat">
-            <span className="text-lg font-bold">
-              {formatIDR(o.discountPriceSnapshot * o.quantity)}
-            </span>
-          </Row>
-        </dl>
-
-        {o.status === "reserved" && (
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <Link
-              href="/tenant/scan"
-              className={buttonVariants({ className: "min-h-12 w-full text-[15px]" })}
-            >
-              Scan pickup
-            </Link>
-            <TenantCancelButton
-              orderId={o.orderId}
-              menuName={o.menuName}
-              quantity={o.quantity}
-              buyerName={o.buyerName}
-            />
-          </div>
-        )}
-        {o.status !== "reserved" && (
-          <p className="text-sm text-muted-foreground">
-            {o.status === "picked_up"
-              ? "Pesanan selesai. Pembayaran sudah diterima di tempat."
-              : "Pesanan dibatalkan. Stok porsi dikembalikan ke katalog."}
-          </p>
-        )}
-      </div>
+      <SieraRailPage main={main} asideLabel="Pelengkap detail pesanan" aside={aside} />
     </>
   );
 }
