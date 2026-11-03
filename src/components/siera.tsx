@@ -409,7 +409,7 @@ export function SieraStatStrip({ children }: { children: ReactNode }) {
   );
 }
 
-/** Rel kanan desktop: kolom utama max 720 rata kiri + aside 340 sticky, hanya xl ke atas.
+/** Rel kanan desktop: konten full-width rata kiri, aside 340 sticky, hanya xl ke atas.
 Di bawah xl satu kolom persis seperti sekarang (aside menumpuk di bawah main). */
 export function SieraRailPage({
   main,
@@ -421,8 +421,8 @@ export function SieraRailPage({
   aside: ReactNode;
 }) {
   return (
-    <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-6">
-      <div className="flex min-w-0 flex-col gap-4 lg:gap-5 xl:max-w-[720px]">{main}</div>
+    <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-6">
+      <div className="flex min-w-0 flex-col gap-4 lg:gap-5">{main}</div>
       <aside
         aria-label={asideLabel}
         className="flex min-w-0 flex-col gap-4 lg:gap-5 xl:sticky xl:top-20 xl:self-start"
