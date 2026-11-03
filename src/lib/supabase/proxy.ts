@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { homeForRole } from "@/lib/auth";
 import { getEnv } from "@/lib/env";
+import { LEGACY_REDIRECTS, legacyPorsiUbah } from "@/lib/routes";
 
 async function refreshSession(request: NextRequest) {
   const response = NextResponse.next({ request });
@@ -50,6 +51,14 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
   const url = request.nextUrl.clone();
   const path = url.pathname;
+  // Redirect 308 path lama → baru (bookmark/QR lama). Sebelum guard proteksi.
+  const legacy = LEGACY_REDIRECTS[path] ?? legacyPorsiUbah(path);
+  if (legacy) {
+    const dest = new URL(legacy + url.search, request.url);
+    const redirect = NextResponse.redirect(dest, 308);
+    for (const c of response.cookies.getAll()) redirect.cookies.set(c.name, c.value, c);
+    return redirect;
+  }
   // Alias /dasbor/* → rute dalam: URL cantik di browser, file tak pindah.
   // Guard dinilai dari path dalam, rewrite jalan setelah lolos guard.
   const DASBOR_PREFIXES = [
