@@ -89,24 +89,15 @@ export default async function AdminPage({
   return (
     <>
       <AppHeader title="Dampak" trail={[{ label: "Dampak" }]} />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
-        <div className="flex flex-col gap-2">
-          <p className="text-xs font-bold tracking-widest text-primary">DAMPAK KAMPUS</p>
-          <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>
-          <p className="text-muted-foreground">
-            Halo {user.user.email ?? "Admin"}. Angka dari pickup yang discan — bukan estimasi. Berat
-            = estimasi sampling per menu.
-          </p>
-        </div>
-        <Suspense fallback={<LoadingSkeleton variant="report" />}>
-          <ReportBody from={from} to={to} />
-        </Suspense>
-      </div>
+      <Suspense fallback={<LoadingSkeleton variant="report" />}>
+        <ReportBody from={from} to={to} email={user.user.email ?? "Admin"} />
+      </Suspense>
     </>
   );
 }
-
-async function ReportBody({ from, to }: { from: string; to: string }) {
+async function ReportBody({ from, to, email }: { from: string; to: string; email: string }) {
   const { summary, rows, daily } = await loadReport(from, to);
-  return <ImpactClient summary={summary} rows={rows} daily={daily} from={from} to={to} />;
+  return (
+    <ImpactClient summary={summary} rows={rows} daily={daily} from={from} to={to} email={email} />
+  );
 }
