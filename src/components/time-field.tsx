@@ -1,6 +1,7 @@
 "use client";
 
 import { XIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -84,14 +85,16 @@ export function TimeField({
           </SelectContent>
         </Select>
         {allowClear && value !== "" && (
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
             onClick={() => onChange("")}
             aria-label={`Hapus ${label.toLowerCase()}`}
-            className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="min-h-11 min-w-11 shrink-0"
           >
             <XIcon className="size-4" />
-          </button>
+          </Button>
         )}
       </div>
     </div>
