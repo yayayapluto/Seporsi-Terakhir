@@ -23,6 +23,7 @@ export const ROUTES = {
   profilNotifikasi: "/profil/notifikasi",
   profilPrivasi: "/profil/privasi",
   profilBantuan: "/profil/bantuan",
+  profilEdit: "/profil/pengaturan/profil",
   tenantOperasional: "/tenant/operasional",
 } as const;
 

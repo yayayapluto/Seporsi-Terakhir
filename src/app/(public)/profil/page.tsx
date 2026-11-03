@@ -20,7 +20,6 @@ import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
-import { MyProfileForm } from "./profile-form";
 
 /** Profil student: identitas, aplikasi tenant, dampak dari pesanan picked_up. */
 
@@ -131,18 +130,18 @@ export default async function ProfilPage({
   return (
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
-      <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-6 px-4 py-6 md:grid-cols-2 md:px-8 md:pb-12">
-        {/* Identitas — avatar + form edit nama */}
-        <section aria-label="Identitas" className={`${sieraCardClass} p-4 md:col-span-2`}>
-          <div className="flex items-center gap-3 pb-4">
+      <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-4 px-4 py-6 md:grid-cols-2 md:px-8 md:pb-8 lg:gap-5">
+        {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
+        <section aria-label="Identitas" className={`${sieraCardClass} p-3 md:col-span-2`}>
+          <div className="flex items-center gap-3">
             <span
               aria-hidden
-              className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-lg font-extrabold text-[#1E5A36]"
+              className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-base font-extrabold text-[#1E5A36]"
             >
               {initials || "•"}
             </span>
             <div className="min-w-0">
-              <h1 className="truncate text-[18px] leading-[1.3] font-extrabold">{p.fullName}</h1>
+              <h1 className="truncate text-[16px] leading-[1.3] font-extrabold">{p.fullName}</h1>
               {p.email && <p className="truncate text-[13px] text-[#64746B]">{p.email}</p>}
               {label && (
                 <p className="mt-1 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
@@ -151,12 +150,11 @@ export default async function ProfilPage({
               )}
             </div>
           </div>
-          <MyProfileForm initialName={p.fullName} />
         </section>
 
         {/* Dampak — khusus student */}
         {isStudent && (
-          <section aria-labelledby="dampak-heading" className="flex flex-col gap-3">
+          <section aria-labelledby="dampak-heading" className="flex flex-col gap-2">
             <SieraSectionTitle id="dampak-heading">Dampak kamu sejauh ini</SieraSectionTitle>
             {p.loadFailed && (
               <p
@@ -175,49 +173,44 @@ export default async function ProfilPage({
                 </span>
               </p>
             )}
-            <dl className={`${sieraCardClass} divide-y divide-line overflow-hidden`}>
-              <div className="flex min-h-16 items-center gap-3 px-4 py-3.5">
+            <dl className={`${sieraCardClass} grid grid-cols-1 divide-y divide-line overflow-hidden lg:grid-cols-3 lg:divide-x lg:divide-y-0`}>
+              <div className="flex min-h-0 items-center gap-3 px-4 py-2 lg:flex-col lg:gap-1 lg:px-2 lg:text-center">
                 <SieraTile>
                   <PackageCheck className="size-5" />
                 </SieraTile>
-                <div className="min-w-0 flex-1">
-                  <dt className="text-[12px] font-semibold text-[#64746B]">Porsi terselamatkan</dt>
-                  <dd className="text-[16px] font-extrabold">{p.savedPortions}</dd>
-                </div>
+                <dd className="text-[16px] font-extrabold">{p.savedPortions}</dd>
+                <dt className="text-[12px] font-semibold text-[#64746B]">Porsi selamat</dt>
               </div>
-              <div className="flex min-h-16 items-center gap-3 px-4 py-3.5">
+              <div className="flex min-h-0 items-center gap-3 px-4 py-2 lg:flex-col lg:gap-1 lg:px-2 lg:text-center">
                 <SieraTile>
                   <Wallet className="size-5" />
                 </SieraTile>
-                <div className="min-w-0 flex-1">
-                  <dt className="text-[12px] font-semibold text-[#64746B]">Uang hemat</dt>
-                  <dd className="text-[16px] font-extrabold">{formatIDR(p.moneySavedIdr)}</dd>
-                </div>
+                <dd className="text-[16px] font-extrabold">{formatIDR(p.moneySavedIdr)}</dd>
+                <dt className="text-[12px] font-semibold text-[#64746B]">Uang hemat</dt>
               </div>
-              <div className="flex min-h-16 items-center gap-3 px-4 py-3.5">
+              <div
+                className="flex min-h-0 items-center gap-3 px-4 py-2 lg:flex-col lg:gap-1 lg:px-2 lg:text-center"
+                title="Berat = estimasi sampling tenant"
+              >
                 <SieraTile>
                   <Leaf className="size-5" />
                 </SieraTile>
-                <div className="min-w-0 flex-1">
-                  <dt className="text-[12px] font-semibold text-[#64746B]">
-                    Sampah makanan dicegah
-                  </dt>
-                  <dd className="text-[16px] font-extrabold">
-                    {p.wasteKg == null ? (
-                      <span className="text-sm font-normal text-[#64746B]">
-                        Belum ada data berat
-                      </span>
-                    ) : (
-                      `${p.wasteKg.toLocaleString("id-ID", { maximumFractionDigits: 1 })} kg`
-                    )}
-                  </dd>
-                </div>
+                <dd className="text-[16px] font-extrabold">
+                  {p.wasteKg == null ? (
+                    <span className="text-sm font-normal text-[#64746B]">Belum ada</span>
+                  ) : (
+                    `${p.wasteKg.toLocaleString("id-ID", { maximumFractionDigits: 1 })} kg`
+                  )}
+                </dd>
+                <dt className="text-[12px] font-semibold text-[#64746B]">Sampah cegah*</dt>
               </div>
             </dl>
-            <p className="flex items-center gap-1.5 px-1 text-[12px] text-[#64746B]">
-              <Clock3 className="size-3.5 shrink-0" aria-hidden />
+            <p
+              className="flex items-center gap-1.5 px-1 text-[11px] text-[#64746B]"
+              title="Berat = estimasi sampling tenant"
+            >
               <span>
-                Berat = estimasi sampling tenant. Terakhir pickup:{" "}
+                *estimasi. Pickup:{" "}
                 {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
               </span>
             </p>
@@ -226,17 +219,17 @@ export default async function ProfilPage({
 
         {/* Aplikasi tenant — khusus student */}
         {isStudent && (
-          <section aria-labelledby="tenant-heading" className="flex flex-col gap-3">
+          <section aria-labelledby="tenant-heading" className="flex flex-col gap-2">
             <SieraSectionTitle id="tenant-heading">Aplikasi tenant</SieraSectionTitle>
             {tenantStatus == null ? (
-              <div className={`${sieraCardClass} border-dashed p-4 text-center`}>
+              <div className={`${sieraCardClass} border-dashed p-3 text-center`}>
                 <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
                 <p className="mt-1 text-[13px] text-[#64746B]">
-                  Jual sisa masakanmu lewat Seporsi Terakhir — gratis untuk saat ini.
+                  Jual sisa masakanmu — gratis untuk saat ini.
                 </p>
                 <Link
                   href={ROUTES.tenantPendaftaran}
-                  className={`${buttonVariants()} mt-4 min-h-12 w-full`}
+                  className={`${buttonVariants()} mt-3 min-h-11 w-full`}
                 >
                   Daftar jadi tenant
                 </Link>
@@ -256,7 +249,7 @@ export default async function ProfilPage({
 
         {/* Navigasi akun — khusus tenant */}
         {isTenant && (
-          <section aria-labelledby="akun-heading" className="flex flex-col gap-3">
+          <section aria-labelledby="akun-heading" className="flex flex-col gap-2">
             <SieraSectionTitle id="akun-heading">Pengaturan</SieraSectionTitle>
             <SieraList aria-label="Pengaturan">
               <SieraRowLink
@@ -277,7 +270,7 @@ export default async function ProfilPage({
 
         {/* Kelola platform — khusus admin */}
         {!isStudent && !isTenant && (
-          <section aria-labelledby="kelola-heading" className="flex flex-col gap-3">
+          <section aria-labelledby="kelola-heading" className="flex flex-col gap-2">
             <SieraSectionTitle id="kelola-heading">Kelola platform</SieraSectionTitle>
             <SieraList aria-label="Kelola platform">
               {(
@@ -304,7 +297,7 @@ export default async function ProfilPage({
         )}
 
         {/* Navigasi — Grouped List Card */}
-        <section aria-labelledby="riwayat-heading" className="flex flex-col gap-3">
+        <section aria-labelledby="riwayat-heading" className="flex flex-col gap-2">
           <SieraSectionTitle id="riwayat-heading">
             {isStudent ? "Pesanan, katalog & pengaturan" : "Pengaturan"}
           </SieraSectionTitle>
@@ -335,7 +328,7 @@ export default async function ProfilPage({
         </section>
 
         {/* Bantuan — panduan sesuai peran */}
-        <section aria-labelledby="bantuan-heading" className="flex flex-col gap-3">
+        <section aria-labelledby="bantuan-heading" className="flex flex-col gap-2">
           <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
           <SieraList aria-label="Bantuan">
             <SieraRowLink
@@ -359,7 +352,7 @@ export default async function ProfilPage({
           </SieraList>
         </section>
 
-        <p className="pb-4 text-center text-[11px] font-semibold text-[#64746B] md:col-span-2">
+        <p className="hidden text-center text-[11px] font-semibold text-[#64746B] md:col-span-2">
           Seporsi Terakhir v0.1.0
         </p>
       </div>

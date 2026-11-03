@@ -1,6 +1,6 @@
 import { AtSign, CalendarCheck, KeyRound } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
-import { SieraCard, SieraField, SieraHero } from "@/components/siera";
+import { SieraCard, SieraField } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
@@ -21,11 +21,8 @@ export default async function KeamananPage() {
           { label: "Keamanan" },
         ]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
-        <SieraHero eyebrow="Keamanan" title="Sesi masuk kamu">
-          Cara kamu masuk dan sejak kapan akun ini aktif.
-        </SieraHero>
-        <SieraCard className="p-4">
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-4 px-4 py-6 md:px-8">
+        <SieraCard className="grid grid-cols-1 gap-4 p-4 lg:grid-cols-[1fr_1.2fr]">
           <dl className="divide-y divide-dashed divide-line">
             <SieraField icon={AtSign} label="Email">
               {current.user.email ?? "—"}
@@ -37,11 +34,11 @@ export default async function KeamananPage() {
               {formatDateTimeWIB(new Date(current.user.created_at ?? Date.now()))}
             </SieraField>
           </dl>
+          <div className="lg:border-l lg:border-dashed lg:border-line lg:pl-4">
+            <SecurityForm />
+          </div>
         </SieraCard>
-        <SieraCard className="p-4">
-          <SecurityForm />
-        </SieraCard>
-        <p className="text-[12px] leading-relaxed text-[#64746B]">
+        <p className="text-[11px] leading-relaxed text-[#64746B]">
           Ada perangkat asing? Ubah sandi di atas lalu keluar dari semua perangkat. Butuh bantuan?
           Tulis ke admin lewat halaman Bantuan.
         </p>

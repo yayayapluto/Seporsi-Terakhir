@@ -6,7 +6,6 @@ import {
   SieraList,
   SieraRowLink,
   SieraSectionTitle,
-  SieraTenantHeader,
   SieraTile,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
@@ -163,42 +162,43 @@ export default async function TenantDashboardPage({
   return (
     <>
       <AppHeader title="Dasbor" trail={[{ label: "Dasbor" }]} />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
-        <SieraTenantHeader kicker="DASBOR TENANT" title="Kantinmu hari ini">
-          <p className="text-sm">
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-4 px-4 py-8 md:px-8">
+        <SieraCard className="p-3">
+          <p className="text-xs font-bold tracking-widest text-primary">DASBOR TENANT</p>
+          <h1 className="mt-0.5 text-xl leading-tight font-bold">Kantinmu hari ini</h1>
+          <p className="mt-0.5 text-xs text-muted-foreground">
             {totalRemaining} porsi aktif · {pickupsToday} pickup · {formatIDR(revenueToday)} omzet
             hari ini
           </p>
-        </SieraTenantHeader>
-
-        <SieraCard className="grid grid-cols-3 divide-x divide-dashed divide-line p-4">
-          <div className="flex items-center gap-3 pr-2">
-            <SieraTile>
-              <Package className="size-5" strokeWidth={1.75} aria-hidden />
-            </SieraTile>
-            <div className="min-w-0">
-              <p className="text-lg leading-none font-extrabold">{totalRemaining}</p>
-              <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Porsi aktif</p>
+          <div className="mt-2 grid grid-cols-3 divide-x divide-dashed divide-line border-t border-dashed border-line pt-2">
+            <div className="flex items-center gap-2 pr-2">
+              <SieraTile>
+                <Package className="size-4" strokeWidth={1.75} aria-hidden />
+              </SieraTile>
+              <div className="min-w-0">
+                <p className="text-base leading-none font-extrabold">{totalRemaining}</p>
+                <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Porsi aktif</p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3 px-4">
-            <SieraTile>
-              <ScanLine className="size-5" strokeWidth={1.75} aria-hidden />
-            </SieraTile>
-            <div className="min-w-0">
-              <p className="text-lg leading-none font-extrabold">{pickupsToday}</p>
-              <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Pickup</p>
+            <div className="flex items-center gap-2 px-3">
+              <SieraTile>
+                <ScanLine className="size-4" strokeWidth={1.75} aria-hidden />
+              </SieraTile>
+              <div className="min-w-0">
+                <p className="text-base leading-none font-extrabold">{pickupsToday}</p>
+                <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Pickup</p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3 pl-4">
-            <SieraTile>
-              <Wallet className="size-5" strokeWidth={1.75} aria-hidden />
-            </SieraTile>
-            <div className="min-w-0">
-              <p className="truncate text-lg leading-none font-extrabold">
-                {formatIDR(revenueToday)}
-              </p>
-              <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Omzet</p>
+            <div className="flex items-center gap-2 pl-3">
+              <SieraTile>
+                <Wallet className="size-4" strokeWidth={1.75} aria-hidden />
+              </SieraTile>
+              <div className="min-w-0">
+                <p className="truncate text-base leading-none font-extrabold">
+                  {formatIDR(revenueToday)}
+                </p>
+                <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Omzet</p>
+              </div>
             </div>
           </div>
         </SieraCard>
@@ -206,15 +206,17 @@ export default async function TenantDashboardPage({
         <Link
           href="/tenant/scan"
           data-tour="scan"
-          className={buttonVariants({ className: "min-h-12 w-full text-[15px]" })}
+          className={buttonVariants({ className: "min-h-11 w-full text-[15px]" })}
         >
           Scan pickup
         </Link>
 
+        <div className="grid gap-4 lg:grid-cols-2">
+
         <section
           aria-labelledby="reservasi-heading"
           data-tour="reservasi"
-          className="flex flex-col gap-3"
+          className="flex flex-col gap-2"
         >
           <div className="flex items-center justify-between gap-3">
             <SieraSectionTitle id="reservasi-heading">
@@ -258,7 +260,7 @@ export default async function TenantDashboardPage({
           )}
         </section>
 
-        <section aria-labelledby="porsi-heading" className="flex flex-col gap-3">
+        <section aria-labelledby="porsi-heading" className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-3">
             <SieraSectionTitle id="porsi-heading">Porsi aktif</SieraSectionTitle>
             <Link
@@ -338,8 +340,9 @@ export default async function TenantDashboardPage({
             </>
           )}
         </section>
+      </div>
 
-        <section aria-labelledby="bantuan-heading" className="flex flex-col gap-3">
+        <section aria-labelledby="bantuan-heading" className="flex flex-col gap-2">
           <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
           <SieraList>
             <SieraRowLink

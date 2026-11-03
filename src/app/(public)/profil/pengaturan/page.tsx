@@ -24,7 +24,7 @@ interface Row {
 function Group({ heading, label, rows }: { heading: string; label: string; rows: Row[] }) {
   const id = `${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-heading`;
   return (
-    <section aria-labelledby={id} className="flex flex-col gap-3">
+    <section aria-labelledby={id} className="flex flex-col gap-2">
       <SieraSectionTitle id={id}>{heading}</SieraSectionTitle>
       <SieraList aria-label={label}>
         {rows.map((r) => (
@@ -46,7 +46,12 @@ export default async function PengaturanPage() {
   const current = await requireRole(ROUTES.profilPengaturan, "student", "tenant", "admin");
 
   const akun: Row[] = [
-    { href: ROUTES.profil, icon: UserRound, title: "Profil", desc: "Ubah nama dan info akunmu" },
+    {
+      href: ROUTES.profilEdit,
+      icon: UserRound,
+      title: "Profil",
+      desc: "Ubah nama dan info akunmu",
+    },
     {
       href: ROUTES.profilKeamanan,
       icon: ShieldCheck,
@@ -116,8 +121,8 @@ export default async function PengaturanPage() {
         title="Pengaturan"
         trail={[{ label: "Profil", href: ROUTES.profil }, { label: "Pengaturan" }]}
       />
-      <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-6 px-4 py-6 md:grid-cols-2 md:px-8">
-        <div className="flex flex-col gap-1 md:col-span-2">
+      <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-4 px-4 py-6 md:grid-cols-2 md:px-8 lg:grid-cols-3">
+        <div className="flex flex-row flex-wrap items-baseline gap-x-2 md:col-span-2 lg:col-span-3">
           <h1 className="text-[18px] leading-[1.3] font-extrabold">Pengaturan</h1>
           <p className="text-[13px] text-[#64746B]">Kelola akun dan pilihan notifikasimu.</p>
         </div>
@@ -127,15 +132,15 @@ export default async function PengaturanPage() {
           <Group heading="Khusus peran kamu" label="Menu khusus peran" rows={peran} />
         )}
         {pintas.length > 0 && <Group heading="Pintas peran" label="Pintas peran" rows={pintas} />}
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 lg:col-span-3">
           <InstallPwa />
         </div>
 
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 lg:col-span-3">
           <SignOutButton />
         </div>
 
-        <p className="pb-4 text-center text-[11px] font-semibold text-[#64746B] md:col-span-2">
+        <p className="pb-4 text-center text-[11px] font-semibold text-[#64746B] md:col-span-2 lg:col-span-3">
           Seporsi Terakhir v0.1.0
         </p>
       </div>
