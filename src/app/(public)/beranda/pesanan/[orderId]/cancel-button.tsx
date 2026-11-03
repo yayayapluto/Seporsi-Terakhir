@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { SieraAlert } from "@/components/siera";
 import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
@@ -32,14 +33,7 @@ export function CancelButton({ orderId }: { orderId: string }) {
 
   return (
     <div className="flex flex-col gap-2">
-      {error && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
-          {error}
-        </p>
-      )}
+      {error && <SieraAlert variant="error">{error}</SieraAlert>}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger
           render={

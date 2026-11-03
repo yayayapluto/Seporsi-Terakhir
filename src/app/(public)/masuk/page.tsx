@@ -1,7 +1,7 @@
-import { CircleAlert } from "lucide-react";
+import { SieraAlert, SieraCard } from "@/components/siera";
 import Link from "next/link";
 import { Suspense } from "react";
-import { SieraCard } from "@/components/siera";
+
 import { ROUTES } from "@/lib/routes";
 import { EmailSignIn } from "./email-sign-in";
 import { GoogleSignIn } from "./google-sign-in";
@@ -21,15 +21,11 @@ async function MasukContent({
         <p className="text-sm text-[#1E5A36]">Pilih cara masuk favoritmu. Tanpa kata sandi.</p>
       </div>
       {(error === "oauth" || error === "magic-link") && (
-        <p
-          role="alert"
-          className="flex items-start gap-2 rounded-2xl border border-[#F3C2C2] bg-[#FDECEC] px-4 py-3 text-sm font-semibold text-[#BA1A1A]"
-        >
-          <CircleAlert className="mt-0.5 size-5 shrink-0" aria-hidden />
+        <SieraAlert variant="error">
           {error === "oauth"
             ? "Login Google gagal. Silakan coba lagi."
             : "Tautan tidak valid atau kedaluwarsa. Minta tautan baru di bawah."}
-        </p>
+        </SieraAlert>
       )}
       <SieraCard className="p-4">
         <GoogleSignIn next={next} />

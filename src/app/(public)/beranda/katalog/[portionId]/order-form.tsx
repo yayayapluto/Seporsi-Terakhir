@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { SieraAlert } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -59,17 +60,9 @@ export function OrderForm({
       setSubmitting(false);
     }
   }
-
   return (
     <form onSubmit={submit} className="flex flex-col gap-4" aria-label="Form pesan porsi">
-      {error && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
-          {error}
-        </p>
-      )}
+      {error && <SieraAlert variant="error">{error}</SieraAlert>}
       <fieldset className="flex flex-col gap-2">
         <legend className="text-sm font-semibold">Jumlah porsi</legend>
         <div className="flex gap-2">

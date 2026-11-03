@@ -2,7 +2,7 @@
 
 import { cn } from "cn";
 import { QRCode } from "react-qr-code";
-import { sieraCardClass } from "@/components/siera";
+import { SieraAlert, sieraCardClass } from "@/components/siera";
 import { formatIDR } from "@/lib/format";
 
 /**
@@ -24,12 +24,9 @@ export function QrPanel({
 }) {
   if (!pickupToken) {
     return (
-      <p
-        role="alert"
-        className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-      >
+      <SieraAlert variant="error">
         Gagal memuat QR. Muat ulang halaman atau hubungi tenant di lokasi pickup.
-      </p>
+      </SieraAlert>
     );
   }
   return (
