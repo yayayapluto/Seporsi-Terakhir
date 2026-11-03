@@ -1,7 +1,7 @@
 import { AppHeader } from "@/components/app-header";
-import { ROUTES } from "@/lib/routes";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraTenantHeader } from "@/components/siera";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 import { MenuManager } from "./menu-manager";
@@ -58,31 +58,31 @@ export default async function MenuPage({
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Menu Kantin" }]}
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
-      <SieraTenantHeader kicker="MENU KANTIN" title="Menu saya">
-        Daftar menu yang bisa diposting sebagai porsi sisa. Harga diskon disarankan otomatis saat
-        posting.
-      </SieraTenantHeader>
-      <MenuManager items={items} tenantId={tenant.id} />
-      <GuidedTour
-        tourKey="tenant-menu"
-        forced={tourForced}
-        intro={{
-          title: "Kelola menu?",
-          body: "Daftarkan menu sekali, pakai berkali-kali tiap posting porsi.",
-        }}
-        steps={[
-          {
-            target: '[data-tour="tambah-menu"]',
-            title: "Tambah menu",
-            body: "Nama, harga normal, bahan, dan alergen. Harga diskon disarankan otomatis.",
-          },
-          {
-            target: '[data-tour="menu-list"] li:first-child',
-            title: "Daftar menumu",
-            body: "Ketuk Edit buat ubah harga atau nonaktifkan menu yang lagi libur.",
-          },
-        ]}
-      />
+        <SieraTenantHeader kicker="MENU KANTIN" title="Menu saya">
+          Daftar menu yang bisa diposting sebagai porsi sisa. Harga diskon disarankan otomatis saat
+          posting.
+        </SieraTenantHeader>
+        <MenuManager items={items} tenantId={tenant.id} />
+        <GuidedTour
+          tourKey="tenant-menu"
+          forced={tourForced}
+          intro={{
+            title: "Kelola menu?",
+            body: "Daftarkan menu sekali, pakai berkali-kali tiap posting porsi.",
+          }}
+          steps={[
+            {
+              target: '[data-tour="tambah-menu"]',
+              title: "Tambah menu",
+              body: "Nama, harga normal, bahan, dan alergen. Harga diskon disarankan otomatis.",
+            },
+            {
+              target: '[data-tour="menu-list"] li:first-child',
+              title: "Daftar menumu",
+              body: "Ketuk Edit buat ubah harga atau nonaktifkan menu yang lagi libur.",
+            },
+          ]}
+        />
       </div>
     </>
   );
