@@ -133,33 +133,31 @@ export default async function ProfilPage({
   return (
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
-      <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-4">
-        <div className="mx-auto grid w-full min-w-0 max-w-3xl grid-cols-1 content-start gap-4 px-4 pt-6 md:px-8 lg:gap-5">
-          {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
-          <section aria-label="Identitas" className={`${sieraCardClass} p-3`}>
-            <div className="flex items-center gap-3">
-              {p.avatarPath ? (
-                <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
-              ) : (
-                <span
-                  aria-hidden
-                  className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-base font-extrabold text-[#1E5A36]"
-                >
-                  {initials || "•"}
-                </span>
+      <div className="grid w-full min-w-0 grid-cols-1 content-start gap-4">
+        {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
+        <section aria-label="Identitas" className={`${sieraCardClass} p-3`}>
+          <div className="flex items-center gap-3">
+            {p.avatarPath ? (
+              <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
+            ) : (
+              <span
+                aria-hidden
+                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-base font-extrabold text-[#1E5A36]"
+              >
+                {initials || "•"}
+              </span>
+            )}
+            <div className="min-w-0">
+              <h1 className="truncate text-[16px] leading-[1.3] font-extrabold">{p.fullName}</h1>
+              {p.email && <p className="truncate text-[13px] text-[#64746B]">{p.email}</p>}
+              {label && (
+                <p className="mt-1 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
+                  {label}
+                </p>
               )}
-              <div className="min-w-0">
-                <h1 className="truncate text-[16px] leading-[1.3] font-extrabold">{p.fullName}</h1>
-                {p.email && <p className="truncate text-[13px] text-[#64746B]">{p.email}</p>}
-                {label && (
-                  <p className="mt-1 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
-                    {label}
-                  </p>
-                )}
-              </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
         <SieraRailPage
           asideLabel="Pelengkap profil"
           main={
