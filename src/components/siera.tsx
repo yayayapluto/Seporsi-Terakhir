@@ -7,11 +7,11 @@ import type { ReactNode } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-/** Token class card Siera — untuk section ber-label yang wajib pertahankan tag + aria. */
+/** Token class card Siera di atas primitif shadcn `card` — untuk section ber-label yang wajib pertahankan tag + aria. */
 export const sieraCardClass =
   "overflow-hidden rounded-[20px] border border-line bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]";
 
-/** Card Siera standar: putih, radius 20, border #E8ECE9, shadow 1px. */
+/** Card Siera standar di atas primitif shadcn `card`: putih, radius 20, border #E8ECE9, shadow 1px. */
 export function SieraCard({ className, children }: { className?: string; children: ReactNode }) {
   return <div className={cn(sieraCardClass, className)}>{children}</div>;
 }
