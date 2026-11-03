@@ -1,11 +1,14 @@
+import { cn } from "cn";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { SieraHero } from "@/components/siera";
+import { SieraHero, SieraRailPage, SieraSection, sieraCardClass } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
+import { formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { OrdersList } from "./pesanan-list";
+import { QrModal } from "./qr-modal";
 
 export interface MyOrder {
   orderId: string;
@@ -59,18 +62,53 @@ export default async function PesananPage({
   const { orders, error } = await loadOrders();
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
+  const nextActive = orders.find((o) => o.status === "reserved") ?? null;
   return (
     <>
       <AppHeader
         title="Pesanan"
         trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Pesanan" }]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
-        <SieraHero eyebrow="Riwayat & aktif" title="Pesanan saya">
-          Porsi yang kamu kunci. Tunjukkan QR saat ambil, bayar di tempat.
-        </SieraHero>
-        <OrdersList orders={orders} loadError={error} />
-      </div>
+      <SieraRailPage
+        asideLabel="QR pickup aktif"
+        main={
+          <>
+            <SieraHero eyebrow="Riwayat & aktif" title="Pesanan saya">
+              Porsi yang kamu kunci. Tunjukkan QR saat ambil, bayar di tempat.
+            </SieraHero>
+            <OrdersList orders={orders} loadError={error} />
+          </>
+        }
+        aside={
+          <SieraSection id="qr-aktif-heading" label="QR pickup aktif">
+            {nextActive ? (
+              <div className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}>
+                <div className="min-w-0">
+                  <p className="truncate text-[15px] font-bold text-[#1C2826]">
+                    {nextActive.menuName}{" "}
+                    <span className="font-semibold">× {nextActive.quantity}</span>
+                  </p>
+                  <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
+                    {nextActive.tenantName}
+                    {nextActive.tenantLocation ? ` · ${nextActive.tenantLocation}` : ""}
+                  </p>
+                  <p className="mt-1 text-base font-extrabold text-accent-strong">
+                    {formatIDR(nextActive.discountPriceSnapshot * nextActive.quantity)}
+                  </p>
+                </div>
+                <QrModal order={nextActive} />
+              </div>
+            ) : (
+              <div className={cn(sieraCardClass, "border-dashed p-4 text-center")}>
+                <p className="text-sm font-bold text-[#1C2826]">Tidak ada pickup aktif</p>
+                <p className="mt-1 text-[13px] text-[#64746B]">
+                  Pesanan aktif akan muncul di sini.
+                </p>
+              </div>
+            )}
+          </SieraSection>
+        }
+      />
       <GuidedTour
         tourKey="pesanan"
         forced={tourForced}
