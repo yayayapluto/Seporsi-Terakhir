@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { EmptyLine } from "@/components/shared/empty-line";
-import { SieraList, SieraSection, SieraTile, sieraRowLayoutClass } from "@/components/siera";
+import { SieraAlert, SieraList, SieraSection, SieraTile, sieraRowLayoutClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
@@ -138,16 +138,10 @@ export default async function TenantPesananPage({
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
         {failed ? (
-          <div
-            role="alert"
-            className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3"
-          >
-            <p className="font-bold text-destructive">Gagal memuat pesanan</p>
-            <p className="mt-1 text-sm text-destructive">
-              Koneksi bermasalah. Muat ulang halaman untuk mencoba lagi — jangan posting ulang
-              porsi.
-            </p>
-          </div>
+          <SieraAlert variant="error">
+            Gagal memuat pesanan. Koneksi bermasalah. Muat ulang halaman untuk mencoba lagi —
+            jangan posting ulang porsi.
+          </SieraAlert>
         ) : orders.length === 0 ? (
           <EmptyState
             title="Belum ada pesanan"
