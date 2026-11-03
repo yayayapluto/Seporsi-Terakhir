@@ -168,3 +168,9 @@ async function TenantRail() {
     />
   );
 }
+
+async function ListedBody() {
+  await requireRole("/admin/tenant", "admin");
+  const { tenants } = await loadListed();
+  return <ListedList tenants={tenants} />;
+}

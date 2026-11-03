@@ -1,3 +1,5 @@
+import { GuidedTour } from "@/components/guided-tour";
+import { SieraTenantHeader } from "@/components/siera";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
 import { nowInWib } from "@/lib/format";
