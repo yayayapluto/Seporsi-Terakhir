@@ -166,7 +166,7 @@ export default async function ProfilPage({
         {/* Dampak — khusus student */}
         {isStudent && (
           <section aria-labelledby="dampak-heading" className="flex flex-col gap-2">
-            <SieraSectionTitle id="dampak-heading">Dampak kamu sejauh ini</SieraSectionTitle>
+            <SieraSectionTitle id="dampak-heading">Dampakmu</SieraSectionTitle>
             {p.loadFailed && (
               <p
                 role="alert"
@@ -185,24 +185,26 @@ export default async function ProfilPage({
               </p>
             )}
             <dl
-              className={`${sieraCardClass} grid grid-cols-1 divide-y divide-dashed divide-line overflow-hidden lg:grid-cols-3 lg:divide-x lg:divide-y-0`}
+              className={`${sieraCardClass} grid grid-cols-3 divide-x divide-dashed divide-line overflow-hidden`}
             >
-              <div className="flex min-h-0 items-center gap-3 px-4 py-2 lg:flex-col lg:gap-1 lg:px-2 lg:text-center">
+              <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
                 <SieraTile>
                   <PackageCheck className="size-5" />
                 </SieraTile>
                 <dd className="text-[16px] font-extrabold">{p.savedPortions}</dd>
                 <dt className="text-[12px] font-semibold text-[#64746B]">Porsi selamat</dt>
               </div>
-              <div className="flex min-h-0 items-center gap-3 px-4 py-2 lg:flex-col lg:gap-1 lg:px-2 lg:text-center">
+              <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
                 <SieraTile>
                   <Wallet className="size-5" />
                 </SieraTile>
-                <dd className="text-[16px] font-extrabold">{formatIDR(p.moneySavedIdr)}</dd>
+                <dd className="truncate text-[16px] font-extrabold">
+                  {formatIDR(p.moneySavedIdr)}
+                </dd>
                 <dt className="text-[12px] font-semibold text-[#64746B]">Uang hemat</dt>
               </div>
               <div
-                className="flex min-h-0 items-center gap-3 px-4 py-2 lg:flex-col lg:gap-1 lg:px-2 lg:text-center"
+                className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center"
                 title="Berat = estimasi sampling tenant"
               >
                 <SieraTile>
@@ -219,13 +221,11 @@ export default async function ProfilPage({
               </div>
             </dl>
             <p
-              className="flex items-center gap-1.5 px-1 text-[11px] text-[#64746B]"
+              className="px-1 text-[11px] leading-relaxed text-[#64746B]"
               title="Berat = estimasi sampling tenant"
             >
-              <span>
-                *estimasi. Pickup:{" "}
-                {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
-              </span>
+              *estimasi. Pickup:{" "}
+              {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
             </p>
           </section>
         )}
@@ -308,7 +308,7 @@ export default async function ProfilPage({
         {/* Navigasi — Grouped List Card */}
         <SieraSection
           id="riwayat-heading"
-          label={isStudent ? "Pesanan, katalog & pengaturan" : "Pengaturan"}
+          label={isStudent ? "Pesanan & pengaturan" : "Pengaturan"}
         >
           <SieraList aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}>
             {isStudent && (
