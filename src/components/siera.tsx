@@ -421,7 +421,7 @@ export function SieraRailPage({
   aside: ReactNode;
 }) {
   return (
-    <div className="mx-auto grid w-full min-w-0 max-w-screen-2xl flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-6">
+    <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-6">
       <div className="flex min-w-0 flex-col gap-4 lg:gap-5">{main}</div>
       <aside
         aria-label={asideLabel}
