@@ -251,7 +251,7 @@ export function SieraSection({
   children: ReactNode;
 }) {
   return (
-    <section aria-label={label}>
+    <section aria-label={label} className="flex min-w-0 flex-col gap-2">
       <div className="flex min-h-11 items-center justify-between gap-3">
         <SieraSectionTitle id={id}>
           <span className="block truncate whitespace-nowrap">{label}</span>
