@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 
 const PasswordSchema = z
@@ -32,7 +33,7 @@ export async function requestPasswordChange(
     return { ok: false, error: "Akun login Google tidak punya sandi. Ganti sandi di akun Googlemu." };
   const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
   if (error) return { ok: false, error: "Gagal ubah sandi. Coba lagi." };
-  revalidatePath("/akun/keamanan");
+  revalidatePath(ROUTES.profilKeamanan);
   return { ok: true };
 }
 

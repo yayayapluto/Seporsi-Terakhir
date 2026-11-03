@@ -8,14 +8,18 @@ import { SecurityForm } from "./security-form";
 
 /** Keamanan: info sesi + ubah sandi + keluar semua perangkat. */
 export default async function KeamananPage() {
-  const current = await requireRole(ROUTES.akunKeamanan, "student", "tenant", "admin");
+  const current = await requireRole(ROUTES.profilKeamanan, "student", "tenant", "admin");
   const provider = current.user.app_metadata?.provider ?? "email";
   const method = provider === "google" ? "Login Google" : `Login ${provider}`;
   return (
     <>
       <AppHeader
         title="Keamanan"
-        trail={[{ label: "Pengaturan", href: ROUTES.akunPengaturan }, { label: "Keamanan" }]}
+        trail={[
+          { label: "Profil", href: ROUTES.profil },
+          { label: "Pengaturan", href: ROUTES.profilPengaturan },
+          { label: "Keamanan" },
+        ]}
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
         <SieraHero eyebrow="Keamanan" title="Sesi masuk kamu">
