@@ -1,5 +1,6 @@
 import { cn } from "cn";
 import { Clock3, ImageOff, Store, Timer, TriangleAlert, Wheat } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
@@ -12,7 +13,7 @@ import {
 } from "@/lib/domain/portion-detail";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
-import { ROUTES } from "@/lib/routes";
+import { katalogDetail, ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { OrderForm } from "./order-form";
 import { PortionImage } from "./portion-image";
@@ -271,7 +272,9 @@ function DetailBody({
         aside={
           <>
             {/* Panel pesan */}
-            <aside aria-label="Panel pesan" className={cn(sieraCardClass, "h-fit p-4")}>
+            <div
+              className={cn(sieraCardClass, "h-fit max-h-[calc(100dvh-220px)] overflow-y-auto p-4")}
+            >
               <h2 className="text-[15px] font-bold text-[#1C2826]">Atur jumlah</h2>
               <p className="mt-0.5 text-[13px] text-[#64746B]">Stok tersisa: {remaining}</p>
               <span aria-hidden className="my-3 block border-t border-dashed border-line" />
@@ -283,7 +286,7 @@ function DetailBody({
                   expiresAt={portion.expiresAt}
                 />
               </div>
-            </aside>
+            </div>
 
             {/* Cara ambil */}
             <SieraSection id="cara-ambil" label="Cara ambil">
@@ -303,8 +306,8 @@ function DetailBody({
                 >
                   {related.map((r) => (
                     <li key={r.id}>
-                      <a
-                        href={`${ROUTES.katalog}/${r.id}`}
+                      <Link
+                        href={katalogDetail(r.id)}
                         className="flex min-h-11 items-center justify-between gap-3 px-4 py-2.5"
                       >
                         <span className="truncate text-sm font-bold text-[#1C2826]">
@@ -313,7 +316,7 @@ function DetailBody({
                         <span className="shrink-0 text-sm font-extrabold text-accent-strong">
                           {formatIDR(r.discountPrice)}
                         </span>
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
