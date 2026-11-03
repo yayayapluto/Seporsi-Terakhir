@@ -11,6 +11,7 @@ import {
   Store,
   UserRound,
 } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -47,7 +48,24 @@ function activeHref(tabs: readonly NavTab[], path: string): string | null {
 }
 
 const LINK_BASE =
-  "relative flex min-h-11 items-center gap-3 rounded-[14px] px-3 py-2 text-sm font-semibold";
+  "relative flex min-h-11 items-center gap-3 rounded-[14px] px-3 py-2 text-sm font-semibold transition-colors duration-200 active:scale-[0.99]";
+
+const PILL_SPRING = { type: "spring", stiffness: 550, damping: 38 } as const;
+
+function ActivePill({ id, rounded }: { id: string; rounded: string }) {
+  const reduce = useReducedMotion();
+  if (reduce) {
+    return <span aria-hidden className={cn("absolute inset-0", rounded, "bg-[#DCEBE0]")} />;
+  }
+  return (
+    <motion.span
+      aria-hidden
+      layoutId={id}
+      className={cn("absolute inset-0", rounded, "bg-[#DCEBE0]")}
+      transition={PILL_SPRING}
+    />
+  );
+}
 
 /** Mobile floating bottom nav + desktop sidebar. Active dari segmen path. */
 export function NavTabs({ tabs, asideTabs }: { tabs: NavTab[]; asideTabs?: NavTab[] }) {
@@ -83,10 +101,13 @@ export function NavTabs({ tabs, asideTabs }: { tabs: NavTab[]; asideTabs?: NavTa
                   href={t.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1.5 text-[11px] font-semibold",
-                    isActive ? "bg-[#DCEBE0] text-[#1E5A36]" : "text-muted-foreground",
+                    "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1.5 text-[11px] font-semibold transition-colors duration-200 active:scale-[0.98]",
+                    isActive
+                      ? "text-[#1E5A36]"
+                      : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
                   )}
                 >
+                  {isActive && <ActivePill id="nav-pill-mobile" rounded="rounded-2xl" />}
                   <span className="relative z-10">
                     <Icon className="size-5" strokeWidth={isActive ? 2.25 : 1.75} aria-hidden />
                     {t.badge != null && (
@@ -127,9 +148,12 @@ export function NavTabs({ tabs, asideTabs }: { tabs: NavTab[]; asideTabs?: NavTa
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
                     LINK_BASE,
-                    isActive ? "bg-[#DCEBE0] text-[#1E5A36]" : "text-muted-foreground hover:bg-muted",
+                    isActive
+                      ? "text-[#1E5A36]"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   )}
                 >
+                  {isActive && <ActivePill id="nav-pill-side" rounded="rounded-[14px]" />}
                   <span className="relative z-10">
                     <Icon className="size-5" strokeWidth={isActive ? 2.25 : 1.75} aria-hidden />
                     {t.badge != null && (
@@ -162,10 +186,11 @@ export function NavTabs({ tabs, asideTabs }: { tabs: NavTab[]; asideTabs?: NavTa
                       className={cn(
                         LINK_BASE,
                         isActive
-                          ? "bg-[#DCEBE0] text-[#1E5A36]"
-                          : "text-muted-foreground hover:bg-muted",
+                          ? "text-[#1E5A36]"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
                       )}
                     >
+                      {isActive && <ActivePill id="nav-pill-side" rounded="rounded-[14px]" />}
                       <span className="relative z-10">
                         <Icon className="size-5" strokeWidth={isActive ? 2.25 : 1.75} aria-hidden />
                       </span>
