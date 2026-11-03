@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { buttonVariants } from "@/components/ui/button";
+import { DaftarTenantButton } from "./daftar-tenant-button";
 import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
@@ -227,12 +227,7 @@ export default async function ProfilPage({
                 <p className="mt-1 text-[13px] text-[#64746B]">
                   Jual sisa masakanmu — gratis untuk saat ini.
                 </p>
-                <Link
-                  href={ROUTES.tenantPendaftaran}
-                  className={`${buttonVariants()} mt-3 min-h-11 w-full`}
-                >
-                  Daftar jadi tenant
-                </Link>
+                <DaftarTenantButton />
               </div>
             ) : (
               <SieraList>
