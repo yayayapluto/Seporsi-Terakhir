@@ -1,0 +1,26 @@
+#!/bin/sh
+# Micro-commit gate: tolak commit raksasa, paksa split per concern.
+# Bypass darurat: MICRO_BIG=1 git commit ... (catat di docs/decisions.md bila dipakai).
+. "$(dirname "$0")/micro-limits.sh"
+
+if [ "$MICRO_BIG" = "1" ]; then
+  echo "[micro] MICRO_BIG=1: lewati batas ukuran."
+  exit 0
+fi
+
+# shellcheck disable=SC2046
+set -- $(git diff --cached --numstat -- . | micro_sum)
+files=${1:-0}; adds=${2:-0}
+
+if [ "$files" -gt "$MICRO_MAX_FILES" ] || [ "$adds" -gt "$MICRO_MAX_ADD" ]; then
+  cat <<EOF
+[micro] commit kebesaran: $files file, +$adds baris (batas: $MICRO_MAX_FILES file, +$MICRO_MAX_ADD).
+Split per concern:
+  git reset -q            # turunkan semua, stage ulang per topik
+  git add <path-topik-1> && git commit -m "type(scope): ..."
+  git add <path-topik-2> && git commit -m "type(scope): ..."
+Darurat: MICRO_BIG=1 git commit ...
+EOF
+  exit 1
+fi
+exit 0
