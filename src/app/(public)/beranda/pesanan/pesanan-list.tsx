@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
-import { ROUTES, pesananDetail } from "@/lib/routes";
+import { pesananDetail, ROUTES } from "@/lib/routes";
 import { cancelOrder } from "./actions";
 import { OrderLiveStatus } from "./order-live-status";
 import type { MyOrder } from "./page";
@@ -130,7 +130,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
             layout={!reduce}
             className={cn(
               sieraCardClass,
-              "flex flex-col divide-y divide-line px-4 overflow-hidden",
+              "flex flex-col divide-y divide-dashed divide-line px-4 overflow-hidden",
             )}
           >
             {filtered.map((o) => (
