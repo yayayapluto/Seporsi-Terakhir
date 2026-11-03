@@ -166,7 +166,7 @@ export default async function ProfilPage({
         {/* Dampak — khusus student */}
         {isStudent && (
           <section aria-labelledby="dampak-heading" className="flex flex-col gap-2">
-            <SieraSectionTitle id="dampak-heading">Dampak kamu sejauh ini</SieraSectionTitle>
+            <SieraSectionTitle id="dampak-heading">Dampakmu</SieraSectionTitle>
             {p.loadFailed && (
               <p
                 role="alert"
@@ -284,11 +284,11 @@ export default async function ProfilPage({
           </SieraSection>
         )}
 
-        <div className="grid grid-cols-1 content-start gap-4 md:grid-cols-2 lg:gap-5">
+        <div className="grid grid-cols-1 content-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-5">
           {/* Navigasi — Grouped List Card */}
           <SieraSection
             id="riwayat-heading"
-            label={isStudent ? "Pesanan, katalog & pengaturan" : "Pengaturan"}
+            label={isStudent ? "Pesanan & pengaturan" : "Pengaturan"}
           >
             <SieraList aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}>
               {isStudent && (
