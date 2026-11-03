@@ -1,11 +1,11 @@
 import {
   History,
+  LayoutGrid,
   Leaf,
   Map as MapIcon,
   PackageCheck,
   Settings,
   Store,
-  TriangleAlert,
   UtensilsCrossed,
   Wallet,
 } from "lucide-react";
@@ -14,7 +14,7 @@ import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
 import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
-import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { formatDateTimeWIB, formatIDR, namaToInitials } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
@@ -90,13 +90,16 @@ async function loadProfile(userId: string, includeOrders: boolean): Promise<Prof
 }
 
 import {
+  SieraAlert,
   SieraList,
   SieraRowLink,
   SieraSection,
   SieraSectionTitle,
   SieraTile,
   sieraCardClass,
+  sieraCountText,
 } from "@/components/siera";
+import { SignOutButton } from "./sign-out-button";
 
 function roleLabel(p: ProfileData): string | null {
   if (p.role == null) return null;
@@ -127,53 +130,56 @@ export default async function ProfilPage({
   const label = roleLabel(p);
   const tenantStatus =
     p.tenantName == null ? null : p.tenantApproved ? "tenant aktif" : "menunggu persetujuan";
-  const initials = p.fullName
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
+  const initials = namaToInitials(p.fullName);
+  let pendingTenants = 0;
+  if (current.role === "admin") {
+    const supabase = await createClient();
+    const { count } = await supabase
+      .from("tenants")
+      .select("id", { count: "exact", head: true })
+      .eq("is_approved", false);
+    pendingTenants = count ?? 0;
+  }
 
   return (
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
-      <div className="mx-auto grid w-full min-w-0 max-w-3xl flex-1 grid-cols-1 content-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5">
+      <div className="mx-auto grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-8">
         {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
-        <section aria-label="Identitas" className={`${sieraCardClass} p-3 md:col-span-2`}>
-          <div className="flex items-center gap-3">
+        <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
+          <div className="flex items-center gap-4">
             {p.avatarPath ? (
               <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
             ) : (
               <span
                 aria-hidden
-                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-base font-extrabold text-[#1E5A36]"
+                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-lg font-extrabold text-[#1E5A36] md:size-16 md:text-xl"
               >
                 {initials || "•"}
               </span>
             )}
             <div className="min-w-0">
-              <h1 className="truncate text-[16px] leading-[1.3] font-extrabold">{p.fullName}</h1>
-              {p.email && <p className="truncate text-[13px] text-[#64746B]">{p.email}</p>}
+              <h1 className="truncate text-[18px] leading-snug font-semibold md:text-[20px]">
+                {p.fullName}
+              </h1>
+              {p.email && <p className="truncate text-sm text-[#64746B]">{p.email}</p>}
               {label && (
-                <p className="mt-1 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
+                <p className="mt-1.5 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
                   {label}
                 </p>
               )}
             </div>
           </div>
         </section>
-
-        {/* Dampak — khusus student */}
-        {isStudent && (
-          <section aria-labelledby="dampak-heading" className="flex flex-col gap-2">
-            <SieraSectionTitle id="dampak-heading">Dampakmu</SieraSectionTitle>
-            {p.loadFailed && (
-              <p
-                role="alert"
-                className="flex items-start gap-2 rounded-2xl bg-[#FEE2E2] p-4 text-sm font-semibold text-[#BA1A1A]"
-              >
-                <TriangleAlert className="mt-0.5 size-5 shrink-0" aria-hidden />
-                <span>
+        <div className="flex min-w-0 flex-col gap-8">
+          {/* Dampak — khusus student */}
+          {isStudent && (
+            <section aria-labelledby="dampak-heading" className="flex min-w-0 flex-col gap-2">
+              <div className="flex min-h-11 items-center px-1">
+                <SieraSectionTitle id="dampak-heading">Dampakmu</SieraSectionTitle>
+              </div>
+              {p.loadFailed && (
+                <SieraAlert variant="error">
                   Gagal memuat data dampak. Angka di bawah mungkin tidak akurat.{" "}
                   <Link
                     href={ROUTES.profil}
@@ -181,114 +187,91 @@ export default async function ProfilPage({
                   >
                     Coba lagi
                   </Link>
-                </span>
-              </p>
-            )}
-            <dl
-              className={`${sieraCardClass} grid grid-cols-3 divide-x divide-dashed divide-line overflow-hidden`}
-            >
-              <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
-                <SieraTile>
-                  <PackageCheck className="size-5" />
-                </SieraTile>
-                <dd className="text-[16px] font-extrabold">{p.savedPortions}</dd>
-                <dt className="text-[12px] font-semibold text-[#64746B]">Porsi selamat</dt>
-              </div>
-              <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
-                <SieraTile>
-                  <Wallet className="size-5" />
-                </SieraTile>
-                <dd className="truncate text-[16px] font-extrabold">
-                  {formatIDR(p.moneySavedIdr)}
-                </dd>
-                <dt className="text-[12px] font-semibold text-[#64746B]">Uang hemat</dt>
-              </div>
-              <div
-                className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center"
+                </SieraAlert>
+              )}
+              <dl
+                className={`${sieraCardClass} grid grid-cols-3 divide-x divide-dashed divide-line overflow-hidden`}
+              >
+                <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
+                  <SieraTile>
+                    <PackageCheck className="size-5" />
+                  </SieraTile>
+                  <dd className="text-[16px] font-extrabold">{p.savedPortions}</dd>
+                  <dt className="text-[12px] font-semibold text-[#64746B]">Porsi selamat</dt>
+                </div>
+                <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
+                  <SieraTile>
+                    <Wallet className="size-5" />
+                  </SieraTile>
+                  <dd className="truncate text-[16px] font-extrabold">
+                    {formatIDR(p.moneySavedIdr)}
+                  </dd>
+                  <dt className="text-[12px] font-semibold text-[#64746B]">Uang hemat</dt>
+                </div>
+                <div
+                  className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center"
+                  title="Berat = estimasi sampling tenant"
+                >
+                  <SieraTile>
+                    <Leaf className="size-5" />
+                  </SieraTile>
+                  <dd className="text-[16px] font-extrabold">
+                    {p.wasteKg == null ? (
+                      <span className="text-sm font-normal text-[#64746B]">Belum ada</span>
+                    ) : (
+                      `${p.wasteKg.toLocaleString("id-ID", { maximumFractionDigits: 1 })} kg`
+                    )}
+                  </dd>
+                  <dt className="text-[12px] font-semibold text-[#64746B]">Sampah cegah*</dt>
+                </div>
+              </dl>
+              <p
+                className="px-1 text-[11px] leading-relaxed text-[#64746B]"
                 title="Berat = estimasi sampling tenant"
               >
-                <SieraTile>
-                  <Leaf className="size-5" />
-                </SieraTile>
-                <dd className="text-[16px] font-extrabold">
-                  {p.wasteKg == null ? (
-                    <span className="text-sm font-normal text-[#64746B]">Belum ada</span>
-                  ) : (
-                    `${p.wasteKg.toLocaleString("id-ID", { maximumFractionDigits: 1 })} kg`
-                  )}
-                </dd>
-                <dt className="text-[12px] font-semibold text-[#64746B]">Sampah cegah*</dt>
-              </div>
-            </dl>
-            <p
-              className="px-1 text-[11px] leading-relaxed text-[#64746B]"
-              title="Berat = estimasi sampling tenant"
-            >
-              *estimasi. Pickup:{" "}
-              {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
-            </p>
-          </section>
-        )}
-
-        {/* Navigasi akun — khusus tenant */}
-        {isTenant && (
-          <SieraSection id="akun-heading" label="Pengaturan">
-            <SieraList aria-label="Pengaturan">
-              <SieraRowLink
-                href={ROUTES.tenantProfil}
-                icon={Store}
-                title="Profil kantin"
-                subtitle="Nama gerai dan lokasi"
-              />
-              <SieraRowLink
-                href={ROUTES.profilPengaturan}
-                icon={Settings}
-                title="Pengaturan"
-                subtitle="Keamanan, notifikasi, privasi"
-              />
-            </SieraList>
-          </SieraSection>
-        )}
-
-        {/* Kelola platform — khusus admin */}
-        {!isStudent && !isTenant && (
-          <SieraSection id="kelola-heading" label="Kelola platform">
-            <SieraList aria-label="Kelola platform">
-              {(
-                [
-                  {
-                    href: ROUTES.adminTenant,
-                    icon: Store,
-                    title: "Persetujuan tenant",
-                    desc: "Daftar menunggu verifikasi",
-                  },
-                  {
-                    href: ROUTES.admin,
-                    icon: Leaf,
-                    title: "Dampak",
-                    desc: "Angka rescue & unduhan",
-                  },
-                ] as const
-              ).map((r) => (
+                *estimasi. Pickup:{" "}
+                {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
+              </p>
+            </section>
+          )}
+          {/* Kelola platform — khusus admin */}
+          {!isStudent && !isTenant && (
+            <SieraSection id="kelola-heading" label="Kelola platform">
+              <SieraList aria-label="Kelola platform" className="divide-solid">
                 <SieraRowLink
-                  key={r.href}
-                  href={r.href}
-                  icon={r.icon}
-                  title={r.title}
-                  subtitle={r.desc}
+                  href={ROUTES.adminTenant}
+                  icon={Store}
+                  title={
+                    <span className="flex items-center gap-2">
+                      <span className="truncate">Persetujuan tenant</span>
+                      {pendingTenants > 0 && (
+                        <span className="shrink-0 rounded-full bg-[#DCEBE0] px-2 py-0.5 text-[11px] font-bold text-[#1E5A36]">
+                          {sieraCountText(pendingTenants)}
+                        </span>
+                      )}
+                    </span>
+                  }
+                  subtitle="Daftar menunggu verifikasi"
                 />
-              ))}
-            </SieraList>
-          </SieraSection>
-        )}
+                <SieraRowLink
+                  href={ROUTES.admin}
+                  icon={LayoutGrid}
+                  title="Dampak"
+                  subtitle="Angka rescue & unduhan"
+                />
+              </SieraList>
+            </SieraSection>
+          )}
 
-        <div className="grid grid-cols-1 content-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-5">
           {/* Navigasi — Grouped List Card */}
           <SieraSection
             id="riwayat-heading"
             label={isStudent ? "Pesanan & pengaturan" : "Pengaturan"}
           >
-            <SieraList aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}>
+            <SieraList
+              aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}
+              className="divide-solid"
+            >
               {isStudent && (
                 <SieraRowLink
                   href={ROUTES.pesanan}
@@ -305,6 +288,14 @@ export default async function ProfilPage({
                   subtitle="Katalog rescue hari ini"
                 />
               )}
+              {isTenant && (
+                <SieraRowLink
+                  href={ROUTES.tenantProfil}
+                  icon={Store}
+                  title="Profil kantin"
+                  subtitle="Nama gerai dan lokasi"
+                />
+              )}
               <SieraRowLink
                 href={ROUTES.profilPengaturan}
                 icon={Settings}
@@ -313,14 +304,13 @@ export default async function ProfilPage({
               />
             </SieraList>
           </SieraSection>
-
           {isStudent && (
             <SieraSection id="tenant-heading" label="Aplikasi tenant">
               {tenantStatus == null ? (
                 <div className={`${sieraCardClass} border-dashed p-3 text-center`}>
                   <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
                   <p className="mt-1 text-[13px] text-[#64746B]">
-                    Jual sisa masakanmu — gratis untuk saat ini.
+                    Jual sisa masakanmu, gratis untuk saat ini.
                   </p>
                   <DaftarTenantButton />
                 </div>
@@ -336,37 +326,36 @@ export default async function ProfilPage({
               )}
             </SieraSection>
           )}
-          <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
-            {/* Bantuan — panduan sesuai peran */}
-            <section aria-labelledby="bantuan-heading" className="flex flex-col gap-2">
+          {/* Bantuan — panduan sesuai peran */}
+          <section aria-labelledby="bantuan-heading" className="flex min-w-0 flex-col gap-2">
+            <div className="flex min-h-11 items-center">
               <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
-              <SieraList aria-label="Bantuan">
-                <SieraRowLink
-                  href={
-                    isTenant
-                      ? `${ROUTES.tenant}?panduan=rantai&fresh=1`
-                      : isStudent
-                        ? `${ROUTES.beranda}?panduan=rantai&fresh=1`
-                        : ROUTES.caraKerja
-                  }
-                  icon={MapIcon}
-                  title={isTenant ? "Panduan kelola" : isStudent ? "Panduan beranda" : "Cara kerja"}
-                  subtitle={
-                    isTenant
-                      ? "Tur singkat dasbor sampai scan"
-                      : isStudent
-                        ? "Lihat lagi cara membaca Beranda dan memesan porsi"
-                        : "Alur rescue & keamanan pangan"
-                  }
-                />
-              </SieraList>
-            </section>
+            </div>
+            <SieraList aria-label="Bantuan" className="divide-solid">
+              <SieraRowLink
+                href={
+                  isTenant
+                    ? `${ROUTES.tenant}?panduan=rantai&fresh=1`
+                    : isStudent
+                      ? `${ROUTES.beranda}?panduan=rantai&fresh=1`
+                      : ROUTES.caraKerja
+                }
+                icon={MapIcon}
+                title={isTenant ? "Panduan kelola" : isStudent ? "Panduan beranda" : "Cara kerja"}
+                subtitle={
+                  isTenant
+                    ? "Tur singkat dasbor sampai scan"
+                    : isStudent
+                      ? "Lihat lagi cara membaca Beranda dan memesan porsi"
+                      : "Alur rescue & keamanan pangan"
+                }
+              />
+            </SieraList>
+          </section>
+          <div className="mt-8">
+            <SignOutButton />
           </div>
         </div>
-
-        <p className="hidden text-center text-[11px] font-semibold text-[#64746B] md:col-span-2">
-          Seporsi Terakhir v0.1.0
-        </p>
       </div>
       {isStudent && (
         <GuidedTour
@@ -382,13 +371,13 @@ export default async function ProfilPage({
           finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}
           intro={{
             title: "Ada apa di akun?",
-            body: "Dampakmu, jalan jadi tenant, dan semua pengaturan — sekilas saja.",
+            body: "Dampakmu, jalan jadi tenant, dan semua pengaturan, sekilas saja.",
           }}
           steps={[
             {
               target: '[aria-label="Identitas"]',
               title: "Kamu siapa di sini",
-              body: "Nama, email, dan peranmu — mahasiswa, atau tenant yang sudah disetujui.",
+              body: "Nama, email, dan peranmu: mahasiswa, atau tenant yang sudah disetujui.",
             },
             {
               target: '[aria-labelledby="dampak-heading"]',
