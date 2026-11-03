@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { ROUTES, katalogDetail } from "@/lib/routes";
 import { getJourneyNext } from "@/lib/tour-journey";
 import type { CatalogPortion } from "./page";
 
@@ -294,7 +295,7 @@ export function KatalogList({
                     </fieldset>
                   ) : (
                     <Link
-                      href={`/katalog/${p.id}`}
+                      href={katalogDetail(p.id)}
                       aria-label={`Lihat dan pesan ${p.menuName}`}
                       className="flex min-h-11 flex-col"
                     >
@@ -385,7 +386,7 @@ export function KatalogList({
                     </fieldset>
                   ) : (
                     <Link
-                      href={`/katalog/${p.id}`}
+                      href={katalogDetail(p.id)}
                       aria-label={`Lihat dan pesan ${p.menuName}`}
                       className="flex min-h-11 items-center gap-3 py-3"
                     >
@@ -413,7 +414,7 @@ export function KatalogList({
         auto={false}
         journey={tourJourney}
         entryStep={tourEntry}
-        next={tourJourney ? (getJourneyNext("/katalog") ?? undefined) : undefined}
+        next={tourJourney ? (getJourneyNext(ROUTES.katalog) ?? undefined) : undefined}
         journeyLabel="Bagian 2 dari 4 · Katalog"
         intro={{
           title: "Cara baca katalog?",

@@ -5,6 +5,7 @@ import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { SieraHero } from "@/components/siera";
 import { wibTodayRange } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
 import { KatalogList } from "./katalog-list";
@@ -100,7 +101,10 @@ async function KatalogPageBody(
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
     <>
-      <AppHeader title="Katalog" trail={[{ label: "Katalog" }]} />
+      <AppHeader
+        title="Katalog"
+        trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Katalog" }]}
+      />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
         <SieraHero eyebrow="Katalog sore ini" title="Porsi hari ini">
           Sisa dagangan yang masih layak makan. Jam masaknya tertulis jelas, bayar langsung di
