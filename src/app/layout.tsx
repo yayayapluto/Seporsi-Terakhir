@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
+import { AppContent } from "@/components/app-content";
+import { AppFooter } from "@/components/app-footer";
+import { AppHeaderShell } from "@/components/app-header-shell";
 import { BottomNav } from "@/components/bottom-nav";
-import { SiteHeader } from "@/components/site-header";
-import { SmoothProvider } from "@/components/smooth-provider";
 import { SwRegister } from "@/components/sw-register";
 import "./globals.css";
 
@@ -48,13 +49,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     >
       <body className="flex min-h-full flex-col">
         <SwRegister />
-        <SiteHeader />
+        <AppHeaderShell />
         <div className="flex w-full flex-1">
           <BottomNav />
-          <main className="mx-auto flex w-full min-w-0 max-w-5xl flex-1 flex-col">
-            <SmoothProvider>{children}</SmoothProvider>
-          </main>
+          <AppContent>{children}</AppContent>
         </div>
+        <AppFooter />
       </body>
     </html>
   );
