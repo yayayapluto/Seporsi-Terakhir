@@ -1,6 +1,6 @@
-import { SieraAlert, SieraCard } from "@/components/siera";
 import Link from "next/link";
 import { Suspense } from "react";
+import { SieraAlert, SieraCard } from "@/components/siera";
 
 import { ROUTES } from "@/lib/routes";
 import { EmailSignIn } from "./email-sign-in";
