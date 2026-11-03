@@ -72,35 +72,31 @@ export function SiteFooter() {
 export function SiteFooterMini({ bare = false }: { bare?: boolean }) {
   const inner = (
     <div className="flex w-full flex-col gap-1 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:px-8">
-        <p className="text-xs font-semibold text-[#64746B]">
-          © 2026 Seporsi Terakhir · UPN Veteran Jakarta
-        </p>
-        <nav className="flex flex-wrap gap-x-5" aria-label="Tautan bawah">
-          <Link
-            href={ROUTES.katalog}
-            className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
-          >
-            Katalog
-          </Link>
-          <Link
-            href="/#cara-kerja"
-            className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
-          >
-            Cara kerja
-          </Link>
-          <Link
-            href="/profil"
-            className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
-          >
+      <p className="text-xs font-semibold text-[#64746B]">
+        © 2026 Seporsi Terakhir · UPN Veteran Jakarta
+      </p>
+      <nav className="flex flex-wrap gap-x-5" aria-label="Tautan bawah">
+        <Link
+          href={ROUTES.katalog}
+          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
+        >
+          Katalog
+        </Link>
+        <Link
+          href="/#cara-kerja"
+          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
+        >
+          Cara kerja
+        </Link>
+        <Link
+          href="/profil"
+          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
+        >
           Akun
         </Link>
       </nav>
     </div>
   );
   if (bare) return inner;
-  return (
-    <footer className="border-t border-line bg-white">
-      {inner}
-    </footer>
-  );
+  return <footer className="border-t border-line bg-white">{inner}</footer>;
 }

@@ -15,4 +15,3 @@ export function ProfilEditButton({ children }: { children: React.ReactNode }) {
     </>
   );
 }
-

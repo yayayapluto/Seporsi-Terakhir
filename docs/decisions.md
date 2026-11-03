@@ -228,3 +228,8 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 - Format 6 file milik QA/smoke/onboarding yang merah format: `api/dev/login/route.ts`, `tests/e2e/helpers/dev-login.ts`, `tour-journey.test.ts`, `auth/redirect.test.ts`, `masuk/page.tsx`, `masuk/dev-login-card.tsx`. Alasan: file asing penyebab `bun run lint`/`check` merah sudah di-ignore; sisa merah hanya format di file src. Bukan keputusan desain — murni Biome --write.
 - Revert 2 file helper e2e (`magic-link.ts`, `yopmail.ts`) yang ikut ke-format di luar scope (organize-imports churn) — bukan milik gate ini.
 - `globals.css` (`noImportantStyles` reduced-motion) + `notifs.ts/site-footer/app-bottomnav/edit-button/porsi-actions/cancel-button/operasional` (lint rules milik shard lain) TIDAK disentuh — dikembalikan ke pemilik shard.
+
+## Merge-gate format massal 2 (koordinator, lint src tersisa)
+- Format 8 file (Biome safe fix: organize-imports + formatter): `notifs.ts`, `app-bottomnav.tsx`, `site-footer.tsx` (indent Mini), `profil/edit-button.tsx`, `porsi/actions.ts`, `pesanan/[id]/cancel-button.tsx`, `operasional/page.tsx`, `akun/pengaturan/page.tsx` (untracked milik D). Bukan keputusan desain — murni Biome --write.
+- `globals.css` (`noImportantStyles` 141-142, reduced-motion `!important`) TIDAK disentuh — perlu keputusan desain pemilik (hapus `!important` = ubah perilaku reduced-motion). Satu-satunya sisa lint.
+- Hasil: `bun run check` hijau KECUALI 1 file itu; `bun run build` exit 0; test 106/106.

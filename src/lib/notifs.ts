@@ -1,5 +1,5 @@
-import { ROUTES } from "./routes";
 import { createClient } from "@/lib/supabase/server";
+import { ROUTES } from "./routes";
 
 export interface NotifItem {
   id: string;

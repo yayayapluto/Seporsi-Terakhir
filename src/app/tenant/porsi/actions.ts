@@ -1,8 +1,8 @@
 "use server";
 
-import { ROUTES } from "@/lib/routes";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 
 const PostSchema = z.object({
