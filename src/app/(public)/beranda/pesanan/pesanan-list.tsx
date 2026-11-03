@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { OrderStatusBadge } from "@/components/order-status-badge";
-import { SieraTile, sieraCardClass } from "@/components/siera";
+import { SieraAlert, SieraSection, SieraTile, sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -68,46 +68,41 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
 
   return (
     <div className="flex flex-col gap-4">
-      <div data-tour="order-filter" className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}>
-        <div className="flex items-center gap-2">
-          <Label
-            htmlFor="status-filter"
-            className="w-12 shrink-0 text-[13px] font-semibold text-[#64746B]"
-          >
-            Status
-          </Label>
-          <Select value={filter} onValueChange={(v) => setFilter(String(v))}>
-            <SelectTrigger id="status-filter" className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {FILTERS.map((f) => (
-                <SelectItem key={f.value} value={f.value}>
-                  {f.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <SieraSection
+        id="filter-heading"
+        label="Saring pesanan"
+        action={
+          <output className="inline-flex min-h-11 items-center text-sm font-bold text-[#1E5A36]">
+            {filtered.length} pesanan
+          </output>
+        }
+      >
+        <div data-tour="order-filter" className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}>
+          <div className="flex items-center gap-2">
+            <Label
+              htmlFor="status-filter"
+              className="w-12 shrink-0 text-[13px] font-semibold text-[#64746B]"
+            >
+              Status
+            </Label>
+            <Select value={filter} onValueChange={(v) => setFilter(String(v))}>
+              <SelectTrigger id="status-filter" className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {FILTERS.map((f) => (
+                  <SelectItem key={f.value} value={f.value}>
+                    {f.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <output className="text-[13px] text-[#64746B]">{filtered.length} pesanan</output>
-      </div>
+      </SieraSection>
 
-      {loadError && (
-        <p
-          role="alert"
-          className="rounded-2xl bg-[#FEE2E2] p-4 text-sm font-semibold text-[#BA1A1A]"
-        >
-          {loadError}
-        </p>
-      )}
-      {error && (
-        <p
-          role="alert"
-          className="rounded-2xl bg-[#FEE2E2] p-4 text-sm font-semibold text-[#BA1A1A]"
-        >
-          {error}
-        </p>
-      )}
+      {loadError && <SieraAlert variant="error">{loadError}</SieraAlert>}
+      {error && <SieraAlert variant="error">{error}</SieraAlert>}
 
       {loadError ? null : filtered.length === 0 ? (
         <EmptyState
@@ -121,7 +116,10 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
           ctaLabel="Lihat katalog"
         />
       ) : (
-        <>
+        <SieraSection
+          id="list-heading"
+          label={`Daftar pesanan${filtered.length > 0 ? ` (${filtered.length})` : ""}`}
+        >
           <OrderLiveStatus
             orderIds={filtered.filter((o) => o.status === "reserved").map((o) => o.orderId)}
           />
@@ -204,7 +202,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
               </motion.li>
             ))}
           </motion.ul>
-        </>
+        </SieraSection>
       )}
       <Dialog open={confirmId !== null} onOpenChange={(open) => !open && setConfirmId(null)}>
         <DialogContent>
