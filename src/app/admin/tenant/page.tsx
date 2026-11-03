@@ -1,8 +1,8 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { SieraAlert } from "@/components/siera";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { SieraAlert } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
