@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { SieraTenantHeader, sieraCardClass } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB } from "@/lib/format";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getOwnTenant } from "@/lib/tenant";
 import { PeriksaStatus } from "./periksa-status";
@@ -9,17 +10,17 @@ import { SignOutButton } from "./sign-out-button";
 
 /** Status pendaftaran tenant yang belum disetujui. Approved → dashboard. */
 export default async function MenungguPersetujuanPage() {
-  await requireRole("/tenant/menunggu-persetujuan", "student", "tenant", "admin");
+  await requireRole(ROUTES.tenantMenunggu, "student", "tenant", "admin");
   const tenant = await getOwnTenant();
-  if (!tenant) redirect("/tenant/pendaftaran");
-  if (tenant.is_approved) redirect("/tenant");
+  if (!tenant) redirect(ROUTES.tenantPendaftaran);
+  if (tenant.is_approved) redirect(ROUTES.tenant);
 
   const supabase = await createClient();
   const { data } = await supabase.from("tenants").select("created_at").eq("id", tenant.id).single();
   const registeredAt = (data?.created_at as string | undefined) ?? null;
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+    <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
       <SieraTenantHeader kicker="MITRA KANTIN" title="Menunggu persetujuan">
         Pendaftaranmu sedang ditinjau admin.
       </SieraTenantHeader>

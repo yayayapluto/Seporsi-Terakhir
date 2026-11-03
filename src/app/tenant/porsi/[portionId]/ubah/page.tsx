@@ -1,3 +1,5 @@
+import { AppHeader } from "@/components/app-header";
+import { ROUTES } from "@/lib/routes";
 import { notFound } from "next/navigation";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { createClient } from "@/lib/supabase/server";
@@ -11,7 +13,7 @@ export default async function EditPorsiPage({
 }: {
   params: Promise<{ portionId: string }>;
 }) {
-  const tenant = await requireOwnTenant("/tenant/porsi/edit");
+  const tenant = await requireOwnTenant("/tenant/porsi/ubah");
   const { portionId } = await params;
   const supabase = await createClient();
   const { data } = await supabase
@@ -48,7 +50,12 @@ export default async function EditPorsiPage({
   const releaseAtLocal = data.release_at ? toLocalInput(data.release_at) : "";
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+    <>
+      <AppHeader
+        title="Ubah Porsi"
+        trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Ubah Porsi" }]}
+      />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
       <div className="flex flex-col gap-2">
         <p className="text-xs font-bold tracking-widest text-primary">POSTING PORSI</p>
         <h1 className="text-3xl font-bold">Edit porsi</h1>
@@ -70,6 +77,7 @@ export default async function EditPorsiPage({
           normalPrice,
         }}
       />
-    </div>
+      </div>
+    </>
   );
 }

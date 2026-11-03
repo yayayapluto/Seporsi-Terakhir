@@ -64,6 +64,6 @@ export async function saveMenuItem(
       return { ok: false, error: "Kamu tidak punya akses ke menu ini." };
     return { ok: false, error: "Gagal menyimpan menu. Coba lagi." };
   }
-  revalidatePath("/tenant/menu");
+  revalidatePath("/tenant/menu-saya");
   return { ok: true };
 }

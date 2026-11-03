@@ -1,3 +1,5 @@
+import { AppHeader } from "@/components/app-header";
+import { ROUTES } from "@/lib/routes";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraTenantHeader } from "@/components/siera";
 import { createClient } from "@/lib/supabase/server";
@@ -45,12 +47,17 @@ export default async function MenuPage({
 }: {
   searchParams?: Promise<{ mode?: string }>;
 }) {
-  const tenant = await requireOwnTenant("/tenant/menu");
+  const tenant = await requireOwnTenant("/tenant/menu-saya");
   const sp = (await searchParams) ?? {};
   const tourForced = sp.mode === "onboarding";
   const items = await loadMenu(tenant.id);
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+    <>
+      <AppHeader
+        title="Menu Kantin"
+        trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Menu Kantin" }]}
+      />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
       <SieraTenantHeader kicker="MENU KANTIN" title="Menu saya">
         Daftar menu yang bisa diposting sebagai porsi sisa. Harga diskon disarankan otomatis saat
         posting.
@@ -76,6 +83,7 @@ export default async function MenuPage({
           },
         ]}
       />
-    </div>
+      </div>
+    </>
   );
 }

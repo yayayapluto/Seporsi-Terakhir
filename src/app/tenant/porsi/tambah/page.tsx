@@ -1,3 +1,5 @@
+import { AppHeader } from "@/components/app-header";
+import { ROUTES } from "@/lib/routes";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraTenantHeader } from "@/components/siera";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
@@ -30,7 +32,7 @@ export default async function PorsiBaruPage({
     fresh?: string;
   }>;
 }) {
-  const tenant = await requireOwnTenant("/tenant/porsi/baru");
+  const tenant = await requireOwnTenant("/tenant/porsi/tambah");
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   const supabase = await createClient();
@@ -64,7 +66,12 @@ export default async function PorsiBaruPage({
         }
       : null;
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+    <>
+      <AppHeader
+        title="Tambah Porsi"
+        trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Tambah Porsi" }]}
+      />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
       <SieraTenantHeader kicker="POSTING PORSI" title="Tambah porsi">
         Unggah sisa masakan hari ini. Porsi kedaluwarsa otomatis keluar dari katalog.
       </SieraTenantHeader>
@@ -86,7 +93,7 @@ export default async function PorsiBaruPage({
         tourKey="tenant-porsi"
         forced={tourForced}
         journey={tourJourney}
-        next={tourJourney ? (getJourneyNext("/tenant/porsi/baru") ?? undefined) : undefined}
+        next={tourJourney ? (getJourneyNext("/tenant/porsi/tambah") ?? undefined) : undefined}
         journeyLabel="Bagian 3 dari 5 · Porsi"
         entryStep={tourEntry}
         fresh={sp.fresh === "1"}
@@ -113,6 +120,7 @@ export default async function PorsiBaruPage({
           },
         ]}
       />
-    </div>
+      </div>
+    </>
   );
 }
