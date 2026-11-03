@@ -1,6 +1,13 @@
+import { Lightbulb } from "lucide-react";
 import { notFound } from "next/navigation";
 import { AppHeader } from "@/components/app-header";
-import { SieraTenantHeader } from "@/components/siera";
+import {
+  SieraList,
+  SieraRailPage,
+  SieraRowLink,
+  SieraSection,
+  SieraTenantHeader,
+} from "@/components/siera";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -56,25 +63,45 @@ export default async function EditPorsiPage({
         title="Ubah Porsi"
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Ubah Porsi" }]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
-        <SieraTenantHeader kicker="EDIT PORSI" title="Edit porsi">
-          Sisa {data.quantity_remaining} dari {data.quantity_posted} porsi belum terpesan.
-        </SieraTenantHeader>
-        <PortionForm
-          tenantName={tenant.name}
-          menus={menus}
-          initial={{
-            portionId: data.id,
-            menuItemId: data.menu_item_id,
-            quantity: data.quantity_posted,
-            cookedAtLocal,
-            sellWindowMinutes: data.sell_window_minutes ?? SELL_WINDOW_DEFAULT_MINUTES,
-            releaseAtLocal,
-            discountPrice: data.discount_price,
-            normalPrice,
-          }}
-        />
-      </div>
+      <SieraRailPage
+        asideLabel="Cek sebelum posting"
+        main={
+          <>
+            <SieraTenantHeader kicker="EDIT PORSI" title="Edit porsi">
+              Sisa {data.quantity_remaining} dari {data.quantity_posted} porsi belum terpesan.
+            </SieraTenantHeader>
+            <PortionForm
+              tenantName={tenant.name}
+              menus={menus}
+              initial={{
+                portionId: data.id,
+                menuItemId: data.menu_item_id,
+                quantity: data.quantity_posted,
+                cookedAtLocal,
+                sellWindowMinutes: data.sell_window_minutes ?? SELL_WINDOW_DEFAULT_MINUTES,
+                releaseAtLocal,
+                discountPrice: data.discount_price,
+                normalPrice,
+              }}
+            />
+          </>
+        }
+        aside={
+          <SieraSection id="cek-posting-heading" label="Tips posting">
+            <SieraList>
+              <SieraRowLink
+                href={ROUTES.tenantMenu}
+                icon={Lightbulb}
+                title="Menu belum ada? Daftar dulu"
+                subtitle="Harga normal tentukan saran diskon"
+              />
+            </SieraList>
+            <p className="px-1 pt-2 text-[12px] leading-relaxed text-[#64746B]">
+              Checklist hidup tampil di samping form: menu, jumlah, diskon, jam masak.
+            </p>
+          </SieraSection>
+        }
+      />
     </>
   );
 }
