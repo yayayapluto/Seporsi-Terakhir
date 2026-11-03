@@ -1,6 +1,6 @@
 import { cn } from "cn";
 import type { LucideIcon } from "lucide-react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, CircleAlert } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -103,7 +103,7 @@ export function SieraTenantHeader({
 /** Wadah grouped list: radius tetap, overflow hidden, tanpa padding, divider solid. */
 export const sieraListClass = "overflow-hidden rounded-[20px] border border-line bg-white";
 
-/** List homogen: divider solid 1px antar baris, tanpa dashed. */
+/** List homogen: divider dashed 1px antar baris (PRODUCT-Siera §5.3). */
 export function SieraList({
   className,
   children,
@@ -113,7 +113,7 @@ export function SieraList({
   children: ReactNode;
 } & React.HTMLAttributes<HTMLUListElement>) {
   return (
-    <ul {...rest} className={cn(sieraListClass, "divide-y divide-line", className)}>
+    <ul {...rest} className={cn(sieraListClass, "divide-y divide-dashed divide-line", className)}>
       {children}
     </ul>
   );
@@ -161,5 +161,162 @@ export function SieraRowLink({
         <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
       </Link>
     </li>
+  );
+}
+
+/** Banner status Siera: error merah / sukses hijau. role bawaan sesuai varian. */
+export function SieraAlert({
+  variant,
+  children,
+  icon = true,
+}: {
+  variant: "error" | "success";
+  children: ReactNode;
+  icon?: boolean;
+}) {
+  const error = variant === "error";
+  return (
+    <p
+      role={error ? "alert" : "status"}
+      className={
+        error
+          ? "flex items-start gap-2 rounded-2xl border border-[#F3C2C2] bg-[#FDECEC] px-4 py-3 text-sm font-semibold text-[#BA1A1A]"
+          : "block rounded-xl border border-[#BFE3CF] bg-[#EAF5ED] px-4 py-3 text-sm font-semibold text-[#1E5A36]"
+      }
+    >
+      {error && icon && <CircleAlert className="mt-0.5 size-5 shrink-0" aria-hidden />}
+      <span className="min-w-0 flex-1">{children}</span>
+    </p>
+  );
+}
+
+/** Kerangka halaman auth/error tengah: kolom 430px + hero gradient + judul. */
+export function SieraAuthShell({
+  title,
+  intro,
+  children,
+  eyebrow,
+}: {
+  title: string;
+  intro?: ReactNode;
+  children: ReactNode;
+  eyebrow?: string;
+}) {
+  return (
+    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col justify-center gap-4 px-4 py-10">
+      <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5">
+        {eyebrow && <p className="text-xs font-bold tracking-wide text-[#1E5A36]">{eyebrow}</p>}
+        <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
+          {title}
+        </h1>
+        {intro && <div className="text-sm text-[#1E5A36]">{intro}</div>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/** Teks badge angka: 9+ untuk >9. Satu sumber untuk tab + bell. */
+export function sieraCountText(n: number): string {
+  return n > 9 ? "9+" : String(n);
+}
+
+/** Katalog varian card PRODUCT-Siera §5.3 (diskriminan dokumentasi, tanpa polymorphic prop). */
+export type SieraCardVariant =
+  | "hero"
+  | "banner"
+  | "grouped"
+  | "entity"
+  | "announcement"
+  | "detail"
+  | "collapsible"
+  | "field"
+  | "status"
+  | "settings"
+  | "stat"
+  | "empty"
+  | "disabled"
+  | "danger";
+
+/** Section berlabel: label di luar card + aksi kanan satu baris (PRODUCT-Siera §5.1, §8). */
+export function SieraSection({
+  id,
+  label,
+  action,
+  children,
+}: {
+  id?: string;
+  label: string;
+  action?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section aria-label={label}>
+      <div className="flex min-h-11 items-center justify-between gap-3">
+        <SieraSectionTitle id={id}>
+          <span className="block truncate whitespace-nowrap">{label}</span>
+        </SieraSectionTitle>
+        {action != null && <div className="flex shrink-0 items-center">{action}</div>}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+/** Empty Card dashed (PRODUCT-Siera §5.3): kondisi kosong wajib pakai ini. */
+export function SieraEmpty({
+  title,
+  hint,
+  action,
+  id,
+  compact = false,
+}: {
+  title: string;
+  hint?: string;
+  action?: ReactNode;
+  id?: string;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      id={id}
+      className={`flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 text-center ${compact ? "py-6" : "py-8"}`}
+    >
+      <p className="text-sm font-bold text-[#1C2826]">{title}</p>
+      {hint != null && <p className="text-sm text-[#64746B]">{hint}</p>}
+      {action}
+    </div>
+  );
+}
+
+/** Satu stat ringkas: ikon + angka + label (PRODUCT-Siera §5.3 Stat Pill/Card). */
+export function SieraStat({
+  icon: Icon,
+  value,
+  label,
+}: {
+  icon: LucideIcon;
+  value: ReactNode;
+  label: string;
+}) {
+  return (
+    <div className="flex min-w-0 items-center gap-3">
+      <SieraTile>
+        <Icon className="size-5" strokeWidth={1.75} aria-hidden />
+      </SieraTile>
+      <div className="min-w-0">
+        <p className="truncate text-lg leading-none font-extrabold">{value}</p>
+        <p className="mt-1 text-[11px] font-semibold text-[#64746B]">{label}</p>
+      </div>
+    </div>
+  );
+}
+
+/** Strip 3 stat: satu card dibagi divider dashed (bukan 3 card lepas). */
+export function SieraStatStrip({ children }: { children: ReactNode }) {
+  return (
+    <SieraCard className="grid grid-cols-3 divide-x divide-dashed divide-line p-4">
+      {children}
+    </SieraCard>
   );
 }
