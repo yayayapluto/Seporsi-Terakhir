@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { DateField } from "@/components/date-field";
 import { GuidedTour } from "@/components/guided-tour";
+import { SieraCard, SieraEmpty } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { percentSold } from "@/lib/domain/metrics";
@@ -135,36 +136,38 @@ export function ImpactClient({
 
       <section aria-label="Tren harian" className="flex flex-col gap-3">
         <h2 className="text-lg font-bold">Tren harian</h2>
-        {series.every((d) => d.saved === 0) ? (
-          <p className="text-sm text-muted-foreground">
-            Belum ada pickup pada rentang ini. Tren muncul setelah tenant memindai serah terima.
-          </p>
-        ) : (
-          <div data-tour="tren" className="overflow-x-auto">
-            <div
-              className="flex h-32 min-w-[480px] items-end gap-1"
-              role="img"
-              aria-label={`Tren pickup harian, tertinggi ${maxSaved} porsi dalam sehari`}
-            >
-              {series.map((d, i) => (
-                <div key={d.day} className="flex min-w-0 flex-1 flex-col items-center gap-1">
-                  <div
-                    title={`${d.day}: ${d.saved} porsi`}
-                    className="w-full max-w-6 rounded-t bg-[#2E7D4F]"
-                    style={{
-                      height: `${Math.max(d.saved > 0 ? 6 : 2, Math.round((d.saved / maxSaved) * 100))}%`,
-                    }}
-                  />
-                  {i % labelEvery === 0 && (
-                    <span className="text-[10px] tabular-nums text-muted-foreground">
-                      {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
-                    </span>
-                  )}
-                </div>
-              ))}
+        <SieraCard className="p-4">
+          {series.every((d) => d.saved === 0) ? (
+            <p className="text-sm text-muted-foreground">
+              Belum ada pickup pada rentang ini. Tren muncul setelah tenant memindai serah terima.
+            </p>
+          ) : (
+            <div data-tour="tren" className="overflow-x-auto">
+              <div
+                className="flex h-32 min-w-[480px] items-end gap-1"
+                role="img"
+                aria-label={`Tren pickup harian, tertinggi ${maxSaved} porsi dalam sehari`}
+              >
+                {series.map((d, i) => (
+                  <div key={d.day} className="flex min-w-0 flex-1 flex-col items-center gap-1">
+                    <div
+                      title={`${d.day}: ${d.saved} porsi`}
+                      className="w-full max-w-6 rounded-t bg-[#2E7D4F]"
+                      style={{
+                        height: `${Math.max(d.saved > 0 ? 6 : 2, Math.round((d.saved / maxSaved) * 100))}%`,
+                      }}
+                    />
+                    {i % labelEvery === 0 && (
+                      <span className="text-[10px] tabular-nums text-muted-foreground">
+                        {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </SieraCard>
       </section>
 
       {csvError && (
@@ -177,77 +180,77 @@ export function ImpactClient({
       )}
 
       {rows.length === 0 ? (
-        <div className="border-b py-10 text-center">
-          <p className="font-semibold">Belum ada aktivitas pada rentang ini</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Coba rentang yang lebih panjang, atau tunggu tenant mengunggah porsi.
-          </p>
-        </div>
+        <SieraEmpty
+          title="Belum ada aktivitas pada rentang ini"
+          hint="Coba rentang yang lebih panjang, atau tunggu tenant mengunggah porsi."
+        />
       ) : (
-        <div className="overflow-x-auto" data-tour="tabel-dampak">
-          <table className="w-full min-w-[640px] text-sm">
-            <caption className="sr-only">Rekap per gerai pada rentang terpilih</caption>
-            <thead>
-              <tr className="border-b text-left text-xs font-semibold text-muted-foreground">
-                <th scope="col" className="sticky left-0 bg-card py-2 pr-3">
-                  Gerai
-                </th>
-                <th scope="col" className="py-2 pr-3">
-                  Diunggah
-                </th>
-                <th scope="col" className="py-2 pr-3">
-                  Diambil
-                </th>
-                <th scope="col" className="py-2 pr-3">
-                  Sell-through
-                </th>
-                <th scope="col" className="py-2 pr-3 text-right">
-                  Revenue
-                </th>
-                <th scope="col" className="py-2 pr-3 text-right">
-                  Hemat
-                </th>
-                <th scope="col" className="py-2 text-right">
-                  Estimasi kg
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {rows.map((r) => (
-                <tr key={r.tenantName}>
-                  <td className="sticky left-0 bg-card py-3 pr-3 font-semibold">
-                    <Link
-                      href="/admin/tenant"
-                      className="rounded underline decoration-[#2E7D4F]/40 underline-offset-2 outline-none hover:text-[#1E5A36] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
-                    >
-                      {r.tenantName}
-                    </Link>
-                    {best > 0 && r.portionsPickedUp === best && (
-                      <span className="ml-2 inline-block rounded-full bg-[#DCEBE0] px-2 py-0.5 align-middle text-[11px] font-bold text-[#1E5A36]">
-                        Tertinggi
-                      </span>
-                    )}
-                    {r.portionsPosted > 0 && r.portionsPickedUp === 0 && (
-                      <span className="ml-2 inline-block rounded-full bg-[#FEF3C7] px-2 py-0.5 align-middle text-[11px] font-bold text-[#92400E]">
-                        Belum diambil
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 pr-3">{r.portionsPosted}</td>
-                  <td className="py-3 pr-3">{r.portionsPickedUp}</td>
-                  <td className="py-3 pr-3">
-                    {Math.round(percentSold(r.portionsPickedUp, r.portionsPosted) * 100)}%
-                  </td>
-                  <td className="py-3 pr-3 text-right">{formatIDR(r.revenue)}</td>
-                  <td className="py-3 pr-3 text-right">{formatIDR(r.moneySaved)}</td>
-                  <td className="py-3 text-right">
-                    {r.wasteKg == null ? "—" : `${r.wasteKg.toFixed(2)} kg`}
-                  </td>
+        <SieraCard className="p-4">
+          <div className="overflow-x-auto" data-tour="tabel-dampak">
+            <table className="w-full min-w-[640px] text-sm">
+              <caption className="sr-only">Rekap per gerai pada rentang terpilih</caption>
+              <thead>
+                <tr className="border-b text-left text-xs font-semibold text-muted-foreground">
+                  <th scope="col" className="sticky left-0 bg-card py-2 pr-3">
+                    Gerai
+                  </th>
+                  <th scope="col" className="py-2 pr-3">
+                    Diunggah
+                  </th>
+                  <th scope="col" className="py-2 pr-3">
+                    Diambil
+                  </th>
+                  <th scope="col" className="py-2 pr-3">
+                    Sell-through
+                  </th>
+                  <th scope="col" className="py-2 pr-3 text-right">
+                    Revenue
+                  </th>
+                  <th scope="col" className="py-2 pr-3 text-right">
+                    Hemat
+                  </th>
+                  <th scope="col" className="py-2 text-right">
+                    Estimasi kg
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-dashed divide-line">
+                {rows.map((r) => (
+                  <tr key={r.tenantName}>
+                    <td className="sticky left-0 bg-card py-3 pr-3 font-semibold">
+                      <Link
+                        href="/admin/tenant"
+                        className="rounded underline decoration-[#2E7D4F]/40 underline-offset-2 outline-none hover:text-[#1E5A36] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+                      >
+                        {r.tenantName}
+                      </Link>
+                      {best > 0 && r.portionsPickedUp === best && (
+                        <span className="ml-2 inline-block rounded-full bg-[#DCEBE0] px-2 py-0.5 align-middle text-[11px] font-bold text-[#1E5A36]">
+                          Tertinggi
+                        </span>
+                      )}
+                      {r.portionsPosted > 0 && r.portionsPickedUp === 0 && (
+                        <span className="ml-2 inline-block rounded-full bg-[#FEF3C7] px-2 py-0.5 align-middle text-[11px] font-bold text-[#92400E]">
+                          Belum diambil
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 pr-3">{r.portionsPosted}</td>
+                    <td className="py-3 pr-3">{r.portionsPickedUp}</td>
+                    <td className="py-3 pr-3">
+                      {Math.round(percentSold(r.portionsPickedUp, r.portionsPosted) * 100)}%
+                    </td>
+                    <td className="py-3 pr-3 text-right">{formatIDR(r.revenue)}</td>
+                    <td className="py-3 pr-3 text-right">{formatIDR(r.moneySaved)}</td>
+                    <td className="py-3 text-right">
+                      {r.wasteKg == null ? "—" : `${r.wasteKg.toFixed(2)} kg`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </SieraCard>
       )}
 
       <Button

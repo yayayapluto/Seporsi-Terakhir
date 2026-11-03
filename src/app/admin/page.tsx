@@ -91,7 +91,7 @@ export default async function AdminPage({
       <AppHeader title="Dampak" trail={[{ label: "Dampak" }]} />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-bold tracking-widest text-primary">DASBOR DAMPAK</p>
+          <p className="text-xs font-bold tracking-widest text-primary">DAMPAK KAMPUS</p>
           <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>
           <p className="text-muted-foreground">
             Halo {user.user.email ?? "Admin"}. Angka dari pickup yang discan — bukan estimasi. Berat
