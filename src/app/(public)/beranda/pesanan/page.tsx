@@ -3,6 +3,7 @@ import { GuidedTour } from "@/components/guided-tour";
 import { SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { ROUTES } from "@/lib/routes";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { OrdersList } from "./pesanan-list";
 
@@ -54,13 +55,16 @@ export default async function PesananPage({
     fresh?: string;
   }>;
 }) {
-  const { user } = await requireRole("/pesanan", "student");
+  const { user } = await requireRole(ROUTES.pesanan, "student");
   const { orders, error } = await loadOrders();
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
     <>
-      <AppHeader title="Pesanan" trail={[{ label: "Pesanan" }]} />
+      <AppHeader
+        title="Pesanan"
+        trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Pesanan" }]}
+      />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
         <SieraHero eyebrow="Riwayat & aktif" title="Pesanan saya">
           Porsi yang kamu kunci. Tunjukkan QR saat ambil, bayar di tempat.
@@ -75,7 +79,7 @@ export default async function PesananPage({
         userId={user.id}
         fresh={sp.fresh === "1"}
         entryStep={tourEntry}
-        next={tourJourney ? (getJourneyNext("/pesanan") ?? undefined) : undefined}
+        next={tourJourney ? (getJourneyNext(ROUTES.pesanan) ?? undefined) : undefined}
         journeyLabel="Bagian 3 dari 4 · Pesanan"
         intro={{
           title: "Lacak pesananmu?",
