@@ -25,10 +25,12 @@ export interface MyOrder {
 
 async function loadOrders(): Promise<{ orders: MyOrder[]; error: string | null }> {
   const supabase = await createClient();
+  const t0 = Date.now();
   const { data, error } = (await supabase.rpc("my_orders")) as {
     data: Array<Record<string, unknown>> | null;
     error: { message: string } | null;
   };
+  console.log(`[ukur] pesanan.my_orders ${Date.now() - t0}ms`);
   if (error) return { orders: [], error: "Gagal memuat pesanan. Coba lagi." };
   return {
     orders: (data ?? []).map((o) => ({
