@@ -1,6 +1,14 @@
+import { Lightbulb } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { SieraTenantHeader } from "@/components/siera";
+import {
+  SieraList,
+  SieraRailPage,
+  SieraRowLink,
+  SieraSection,
+  SieraTenantHeader,
+} from "@/components/siera";
+
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
 import { nowInWib } from "@/lib/format";
@@ -71,56 +79,76 @@ export default async function PorsiBaruPage({
         title="Tambah Porsi"
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Tambah Porsi" }]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
-        <SieraTenantHeader kicker="POSTING PORSI" title="Tambah porsi">
-          Unggah sisa masakan hari ini. Porsi kedaluwarsa otomatis keluar dari katalog.
-        </SieraTenantHeader>
-        <PortionForm
-          tenantName={tenant.name}
-          menus={menus}
-          yesterday={yesterday}
-          initial={{
-            menuItemId: "",
-            quantity: 1,
-            cookedAtLocal,
-            sellWindowMinutes: SELL_WINDOW_DEFAULT_MINUTES,
-            releaseAtLocal: "",
-            discountPrice: firstPrice > 1 ? (suggestDiscountPrice(firstPrice) ?? 0) : 0,
-            normalPrice: firstPrice,
-          }}
-        />
-        <GuidedTour
-          tourKey="tenant-porsi"
-          forced={tourForced}
-          journey={tourJourney}
-          next={tourJourney ? (getJourneyNext("/tenant/porsi/tambah") ?? undefined) : undefined}
-          journeyLabel="Bagian 3 dari 5 · Porsi"
-          entryStep={tourEntry}
-          fresh={sp.fresh === "1"}
-          userId={tenant.id}
-          intro={{
-            title: "Posting porsi?",
-            body: "Tiga langkah: pilih menu, isi jumlah dan jam masak, harga diskon tersugesti otomatis.",
-          }}
-          steps={[
-            {
-              target: "#portion-menu",
-              title: "Pilih menu",
-              body: "Dari daftar yang sudah kamu daftarkan. Belum ada? Daftarkan dulu di halaman Menu.",
-            },
-            {
-              target: "#portion-qty",
-              title: "Jumlah dan jam",
-              body: "Berapa porsi sisa dan kapan dimasak — jendela jual dihitung dari jam ini.",
-            },
-            {
-              target: 'button[type="submit"]',
-              title: "Terbitkan",
-              body: "Porsi tayang di katalog. Yang kedaluwarsa keluar sendiri, tanpa perlu dihapus.",
-            },
-          ]}
-        />
-      </div>
+      <SieraRailPage
+        asideLabel="Cek sebelum posting"
+        main={
+          <>
+            <SieraTenantHeader kicker="POSTING PORSI" title="Tambah porsi">
+              Unggah sisa masakan hari ini. Porsi kedaluwarsa otomatis keluar dari katalog.
+            </SieraTenantHeader>
+            <PortionForm
+              tenantName={tenant.name}
+              menus={menus}
+              yesterday={yesterday}
+              initial={{
+                menuItemId: "",
+                quantity: 1,
+                cookedAtLocal,
+                sellWindowMinutes: SELL_WINDOW_DEFAULT_MINUTES,
+                releaseAtLocal: "",
+                discountPrice: firstPrice > 1 ? (suggestDiscountPrice(firstPrice) ?? 0) : 0,
+                normalPrice: firstPrice,
+              }}
+            />
+            <GuidedTour
+              tourKey="tenant-porsi"
+              forced={tourForced}
+              journey={tourJourney}
+              next={tourJourney ? (getJourneyNext("/tenant/porsi/tambah") ?? undefined) : undefined}
+              journeyLabel="Bagian 3 dari 5 · Porsi"
+              entryStep={tourEntry}
+              fresh={sp.fresh === "1"}
+              userId={tenant.id}
+              intro={{
+                title: "Posting porsi?",
+                body: "Tiga langkah: pilih menu, isi jumlah dan jam masak, harga diskon tersugesti otomatis.",
+              }}
+              steps={[
+                {
+                  target: "#portion-menu",
+                  title: "Pilih menu",
+                  body: "Dari daftar yang sudah kamu daftarkan. Belum ada? Daftarkan dulu di halaman Menu.",
+                },
+                {
+                  target: "#portion-qty",
+                  title: "Jumlah dan jam",
+                  body: "Berapa porsi sisa dan kapan dimasak — jendela jual dihitung dari jam ini.",
+                },
+                {
+                  target: 'button[type="submit"]',
+                  title: "Terbitkan",
+                  body: "Porsi tayang di katalog. Yang kedaluwarsa keluar sendiri, tanpa perlu dihapus.",
+                },
+              ]}
+            />
+          </>
+        }
+        aside={
+          <SieraSection id="cek-posting-heading" label="Tips posting">
+            <SieraList>
+              <SieraRowLink
+                href={ROUTES.tenantMenu}
+                icon={Lightbulb}
+                title="Menu belum ada? Daftar dulu"
+                subtitle="Harga normal tentukan saran diskon"
+              />
+            </SieraList>
+            <p className="px-1 pt-2 text-[12px] leading-relaxed text-[#64746B]">
+              Checklist hidup tampil di samping form: menu, jumlah, diskon, jam masak.
+            </p>
+          </SieraSection>
+        }
+      />
     </>
   );
 }
