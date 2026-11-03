@@ -92,6 +92,7 @@ async function loadProfile(userId: string, includeOrders: boolean): Promise<Prof
 import {
   SieraList,
   SieraRowLink,
+  SieraSection,
   SieraSectionTitle,
   SieraTile,
   sieraCardClass,
@@ -184,7 +185,7 @@ export default async function ProfilPage({
               </p>
             )}
             <dl
-              className={`${sieraCardClass} grid grid-cols-1 divide-y divide-line overflow-hidden lg:grid-cols-3 lg:divide-x lg:divide-y-0`}
+              className={`${sieraCardClass} grid grid-cols-1 divide-y divide-dashed divide-line overflow-hidden lg:grid-cols-3 lg:divide-x lg:divide-y-0`}
             >
               <div className="flex min-h-0 items-center gap-3 px-4 py-2 lg:flex-col lg:gap-1 lg:px-2 lg:text-center">
                 <SieraTile>
@@ -229,10 +230,8 @@ export default async function ProfilPage({
           </section>
         )}
 
-        {/* Aplikasi tenant — khusus student */}
         {isStudent && (
-          <section aria-labelledby="tenant-heading" className="flex flex-col gap-2">
-            <SieraSectionTitle id="tenant-heading">Aplikasi tenant</SieraSectionTitle>
+          <SieraSection id="tenant-heading" label="Aplikasi tenant">
             {tenantStatus == null ? (
               <div className={`${sieraCardClass} border-dashed p-3 text-center`}>
                 <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
@@ -251,13 +250,12 @@ export default async function ProfilPage({
                 />
               </SieraList>
             )}
-          </section>
+          </SieraSection>
         )}
 
         {/* Navigasi akun — khusus tenant */}
         {isTenant && (
-          <section aria-labelledby="akun-heading" className="flex flex-col gap-2">
-            <SieraSectionTitle id="akun-heading">Pengaturan</SieraSectionTitle>
+          <SieraSection id="akun-heading" label="Pengaturan">
             <SieraList aria-label="Pengaturan">
               <SieraRowLink
                 href={ROUTES.tenantProfil}
@@ -272,13 +270,12 @@ export default async function ProfilPage({
                 subtitle="Keamanan, notifikasi, privasi"
               />
             </SieraList>
-          </section>
+          </SieraSection>
         )}
 
         {/* Kelola platform — khusus admin */}
         {!isStudent && !isTenant && (
-          <section aria-labelledby="kelola-heading" className="flex flex-col gap-2">
-            <SieraSectionTitle id="kelola-heading">Kelola platform</SieraSectionTitle>
+          <SieraSection id="kelola-heading" label="Kelola platform">
             <SieraList aria-label="Kelola platform">
               {(
                 [
@@ -305,14 +302,14 @@ export default async function ProfilPage({
                 />
               ))}
             </SieraList>
-          </section>
+          </SieraSection>
         )}
 
         {/* Navigasi — Grouped List Card */}
-        <section aria-labelledby="riwayat-heading" className="flex flex-col gap-2">
-          <SieraSectionTitle id="riwayat-heading">
-            {isStudent ? "Pesanan, katalog & pengaturan" : "Pengaturan"}
-          </SieraSectionTitle>
+        <SieraSection
+          id="riwayat-heading"
+          label={isStudent ? "Pesanan, katalog & pengaturan" : "Pengaturan"}
+        >
           <SieraList aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}>
             {isStudent && (
               <SieraRowLink
@@ -337,7 +334,7 @@ export default async function ProfilPage({
               subtitle="Keamanan, notifikasi, privasi"
             />
           </SieraList>
-        </section>
+        </SieraSection>
 
         {/* Bantuan — panduan sesuai peran */}
         <section aria-labelledby="bantuan-heading" className="flex flex-col gap-2">
