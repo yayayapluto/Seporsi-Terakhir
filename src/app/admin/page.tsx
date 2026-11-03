@@ -88,8 +88,8 @@ export default async function AdminPage({
   const { from, to } = resolveRange(sp.from, sp.to);
   return (
     <>
-      <AppHeader title="Dampak" trail={[{ label: "Dampak", href: "/admin" }]} />
-      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+      <AppHeader title="Dampak" trail={[{ label: "Dampak" }]} />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
         <div className="flex flex-col gap-2">
           <p className="text-xs font-bold tracking-widest text-primary">DASBOR DAMPAK</p>
           <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>

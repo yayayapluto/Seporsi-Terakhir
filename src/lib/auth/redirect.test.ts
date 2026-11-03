@@ -6,6 +6,7 @@ describe("isSafeNext", () => {
   it("accepts internal paths", () => {
     expect(isSafeNext("/katalog")).toBe(true);
     expect(isSafeNext("/tenant/porsi/baru?x=1")).toBe(true);
+    expect(isSafeNext("/tenant/porsi/tambah?x=1")).toBe(true);
   });
 
   it("rejects external, protocol-relative, and escaped targets", () => {
