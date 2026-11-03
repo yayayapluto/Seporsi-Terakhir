@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { getLenisHost } from "@/lib/lenis-host";
 import { placeTooltip } from "@/lib/tour-placement";
 import { isStale, resolveStart, stepIdFor, TOUR_VERSION } from "@/lib/tour-progress";
@@ -442,29 +443,6 @@ export function GuidedTour({
       prev?.focus?.();
     };
   }, [phase, step, reduce, order.length, tourKey, focusTitle, trapTab]);
-
-  // Esc + fokus + kunci scroll + Tab-trap untuk modal intro/konfirmasi/resume.
-  useEffect(() => {
-    if (phase !== "intro" && phase !== "confirm" && phase !== "resume") return;
-    const prev = document.activeElement as HTMLElement | null;
-    focusTitle();
-    const root = document.querySelector('#tour-root [role="dialog"]');
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") dismiss();
-      else trapTab(e, root);
-    };
-    document.addEventListener("keydown", onKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    setBgInert(true);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
-      setBgInert(false);
-      prev?.focus?.();
-    };
-  }, [phase, dismiss, focusTitle, trapTab]);
-
   if (typeof document === "undefined" || !phase) return null;
 
   const total = order.length;
@@ -475,14 +453,6 @@ export function GuidedTour({
         animate: { opacity: 1 },
         exit: { opacity: 0 },
         transition: { duration: 0.18 },
-      };
-  const cardMotion = reduce
-    ? {}
-    : {
-        initial: { opacity: 0, y: 16, scale: 0.97 },
-        animate: { opacity: 1, y: 0, scale: 1 },
-        exit: { opacity: 0, y: 8, scale: 0.98 },
-        transition: { duration: 0.22, ease: "easeOut" as const },
       };
   const holeAnim = reduce
     ? undefined
@@ -532,169 +502,145 @@ export function GuidedTour({
           </motion.div>
         )}
       </AnimatePresence>
-      <AnimatePresence>
-        {(phase === "intro" || phase === "confirm" || phase === "resume") && (
-          <motion.div
-            key={`tour-modal-${tourKey}-${phase}`}
-            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/45 p-4"
-            {...fade}
-          >
-            {phase === "intro" && intro ? (
-              <motion.div
-                role="dialog"
-                aria-modal="true"
-                aria-label={intro.title}
-                className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-line bg-white p-6 text-left"
-                {...cardMotion}
-              >
-                <span className="flex size-12 items-center justify-center rounded-2xl bg-[#DCEBE0] text-[#1E5A36]">
-                  <MapIcon className="size-6" strokeWidth={1.75} aria-hidden />
-                </span>
-                <h2
-                  ref={titleRef}
-                  tabIndex={-1}
-                  className="mt-4 text-lg font-extrabold text-[#1C2826] outline-none"
-                >
-                  {intro.title}
-                </h2>
-                <p className="mt-1 text-sm leading-relaxed text-[#64746B]">{intro.body}</p>
-                {journey && journeyLabel && (
-                  <p className="mt-2 text-xs font-bold text-[#2E7D4F]">{journeyLabel}</p>
-                )}
-                {order.length === 0 && totalSteps > 0 && (
-                  <p className="mt-2 text-xs font-semibold text-[#64746B]">
-                    Belum ada konten untuk bagian ini — lanjut ke berikutnya.
-                  </p>
-                )}
-                <div className="mt-5 flex gap-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setPhase("confirm")}
-                    className="h-12 flex-1 text-[15px] font-bold"
-                  >
-                    <X className="size-5" strokeWidth={1.75} aria-hidden />
-                    Lewati
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      if (order.length === 0) {
-                        complete();
-                      } else {
-                        setIdx(0);
-                        maxPos.current = 0;
-                        setPhase("step");
-                      }
-                    }}
-                    className="h-12 flex-1 text-[15px] font-bold"
-                  >
-                    <Play className="size-5" strokeWidth={1.75} aria-hidden />
-                    {order.length === 0 ? "Lanjut" : "Mulai panduan"}
-                  </Button>
-                </div>
-              </motion.div>
-            ) : phase === "resume" ? (
-              <motion.div
-                role="dialog"
-                aria-modal="true"
-                aria-label="Lanjutkan panduan?"
-                className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-line bg-white p-6 text-left"
-                {...cardMotion}
-              >
-                <h2
-                  ref={titleRef}
-                  tabIndex={-1}
-                  className="text-lg font-extrabold text-[#1C2826] outline-none"
-                >
-                  Lanjutkan panduan?
-                </h2>
-                <p className="mt-1 text-sm leading-relaxed text-[#64746B]">
-                  Terakhir berhenti di “{resumeTitle}”. Lanjut dari sana atau mulai dari awal?
+      <Dialog
+        open={phase === "intro" || phase === "confirm" || phase === "resume"}
+        onOpenChange={(open) => {
+          if (open) return;
+          if (phase === "confirm") dismiss();
+          else setPhase("confirm");
+        }}
+      >
+        <DialogContent
+          showCloseButton={false}
+          className="max-h-[calc(100dvh-2rem)] gap-0 overflow-y-auto rounded-2xl border border-line bg-white p-6 text-left ring-0"
+        >
+          {phase === "intro" && intro ? (
+            <>
+              <span className="flex size-12 items-center justify-center rounded-2xl bg-[#DCEBE0] text-[#1E5A36]">
+                <MapIcon className="size-6" strokeWidth={1.75} aria-hidden />
+              </span>
+              <DialogTitle className="mt-4 text-lg font-extrabold text-[#1C2826] outline-none">
+                {intro.title}
+              </DialogTitle>
+              <DialogDescription className="mt-1 text-sm leading-relaxed text-[#64746B]">
+                {intro.body}
+              </DialogDescription>
+              {journey && journeyLabel && (
+                <p className="mt-2 text-xs font-bold text-[#2E7D4F]">{journeyLabel}</p>
+              )}
+              {order.length === 0 && totalSteps > 0 && (
+                <p className="mt-2 text-xs font-semibold text-[#64746B]">
+                  Belum ada konten untuk bagian ini — lanjut ke berikutnya.
                 </p>
-                <div className="mt-5 flex gap-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      progress.reset();
+              )}
+              <div className="mt-5 flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setPhase("confirm")}
+                  className="h-12 flex-1 text-[15px] font-bold"
+                >
+                  <X className="size-5" strokeWidth={1.75} aria-hidden />
+                  Lewati
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    if (order.length === 0) {
+                      complete();
+                    } else {
                       setIdx(0);
                       maxPos.current = 0;
-                      setPhase(hasIntro ? "intro" : "step");
-                    }}
-                    className="h-12 flex-1 text-[15px] font-bold"
-                  >
-                    Mulai dari awal
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      const pos = Math.min(
-                        Math.max(0, resumeDefIdx.current ?? 0),
-                        Math.max(0, order.length - 1),
-                      );
-                      const mapped = (() => {
-                        if (resumeDefIdx.current == null) return pos;
-                        const at = orderDefIdx.current.indexOf(resumeDefIdx.current);
-                        if (at >= 0) return at;
-                        const after = orderDefIdx.current.findIndex(
-                          (d) => d > (resumeDefIdx.current as number),
-                        );
-                        return after >= 0 ? after : Math.max(0, order.length - 1);
-                      })();
-                      setIdx(mapped);
-                      maxPos.current = mapped;
                       setPhase("step");
-                    }}
-                    className="h-12 flex-1 text-[15px] font-bold"
-                  >
-                    <Play className="size-5" strokeWidth={1.75} aria-hidden />
-                    Lanjutkan
-                  </Button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                role="dialog"
-                aria-modal="true"
-                aria-label="Lewati panduan ini?"
-                className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-line bg-white p-6 text-left"
-                {...cardMotion}
-              >
-                <h2
-                  ref={titleRef}
-                  tabIndex={-1}
-                  className="text-lg font-extrabold text-[#1C2826] outline-none"
+                    }
+                  }}
+                  className="h-12 flex-1 text-[15px] font-bold"
                 >
-                  Lewati panduan ini?
-                </h2>
-                <p className="mt-1 text-sm leading-relaxed text-[#64746B]">
-                  Panduan berhenti di sini. Kamu tetap bisa mengulanginya kapan saja.
-                </p>
-                <div className="mt-5 flex gap-3">
-                  <Button
-                    type="button"
-                    onClick={() => setPhase(total > 0 ? "step" : "intro")}
-                    className="h-12 flex-1 text-[15px] font-bold"
-                  >
-                    <ArrowLeft className="size-5" strokeWidth={1.75} aria-hidden />
-                    Kembali
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => dismiss()}
-                    className="h-12 flex-1 text-[15px] font-bold"
-                  >
-                    <X className="size-5" strokeWidth={1.75} aria-hidden />
-                    Lewati
-                  </Button>
-                </div>
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  <Play className="size-5" strokeWidth={1.75} aria-hidden />
+                  {order.length === 0 ? "Lanjut" : "Mulai panduan"}
+                </Button>
+              </div>
+            </>
+          ) : phase === "resume" ? (
+            <>
+              <DialogTitle className="text-lg font-extrabold text-[#1C2826] outline-none">
+                Lanjutkan panduan?
+              </DialogTitle>
+              <DialogDescription className="mt-1 text-sm leading-relaxed text-[#64746B]">
+                Terakhir berhenti di “{resumeTitle}”. Lanjut dari sana atau mulai dari awal?
+              </DialogDescription>
+              <div className="mt-5 flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    progress.reset();
+                    setIdx(0);
+                    maxPos.current = 0;
+                    setPhase(hasIntro ? "intro" : "step");
+                  }}
+                  className="h-12 flex-1 text-[15px] font-bold"
+                >
+                  Mulai dari awal
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    const pos = Math.min(
+                      Math.max(0, resumeDefIdx.current ?? 0),
+                      Math.max(0, order.length - 1),
+                    );
+                    const mapped = (() => {
+                      if (resumeDefIdx.current == null) return pos;
+                      const at = orderDefIdx.current.indexOf(resumeDefIdx.current);
+                      if (at >= 0) return at;
+                      const after = orderDefIdx.current.findIndex(
+                        (d) => d > (resumeDefIdx.current as number),
+                      );
+                      return after >= 0 ? after : Math.max(0, order.length - 1);
+                    })();
+                    setIdx(mapped);
+                    maxPos.current = mapped;
+                    setPhase("step");
+                  }}
+                  className="h-12 flex-1 text-[15px] font-bold"
+                >
+                  <Play className="size-5" strokeWidth={1.75} aria-hidden />
+                  Lanjutkan
+                </Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <DialogTitle className="text-lg font-extrabold text-[#1C2826] outline-none">
+                Lewati panduan ini?
+              </DialogTitle>
+              <DialogDescription className="mt-1 text-sm leading-relaxed text-[#64746B]">
+                Panduan berhenti di sini. Kamu tetap bisa mengulanginya kapan saja.
+              </DialogDescription>
+              <div className="mt-5 flex gap-3">
+                <Button
+                  type="button"
+                  onClick={() => setPhase(total > 0 ? "step" : "intro")}
+                  className="h-12 flex-1 text-[15px] font-bold"
+                >
+                  <ArrowLeft className="size-5" strokeWidth={1.75} aria-hidden />
+                  Kembali
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => dismiss()}
+                  className="h-12 flex-1 text-[15px] font-bold"
+                >
+                  <X className="size-5" strokeWidth={1.75} aria-hidden />
+                  Lewati
+                </Button>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
       <AnimatePresence mode="wait">
         {phase === "step" && step && (
           <motion.div
