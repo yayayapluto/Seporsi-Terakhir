@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { ActivePill, ICONS, activeHref, badgeText, useInAppPath, type NavTab } from "./nav-shared";
+import { ActivePill, activeHref, badgeText, ICONS, type NavTab, useInAppPath } from "./nav-shared";
 
 /** Sidebar desktop: brand + tab utama + tab tambahan. */
 export function AppSidebar({ tabs, asideTabs }: { tabs: NavTab[]; asideTabs?: NavTab[] }) {

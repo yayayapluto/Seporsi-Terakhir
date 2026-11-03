@@ -11,7 +11,6 @@ import {
   SieraCard,
   SieraEmpty,
   SieraSection,
-  SieraSectionTitle,
   SieraWarningBadge,
   sieraCardClass,
 } from "@/components/siera";
@@ -305,6 +304,7 @@ export function KatalogList({
                   );
                   return soldOut ? (
                     <div
+                      role="img"
                       aria-label={`${p.menuName} habis`}
                       className="flex min-h-11 flex-1 flex-col"
                     >
@@ -385,6 +385,7 @@ export function KatalogList({
                   );
                   return soldOut ? (
                     <div
+                      role="img"
                       aria-label={`${p.menuName} habis`}
                       className="flex min-h-11 items-center gap-3 py-3"
                     >

@@ -145,250 +145,247 @@ export default async function ProfilPage({
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
       <div className="mx-auto grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-6">
-          {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
-          <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
-            <div className="flex items-center gap-4">
-              {p.avatarPath ? (
-                <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
-              ) : (
-                <span
-                  aria-hidden
-                  className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-lg font-extrabold text-[#1E5A36] md:size-16 md:text-xl"
-                >
-                  {initials || "•"}
-                </span>
-              )}
-              <div className="min-w-0">
-                <h1 className="truncate text-[18px] leading-snug font-semibold md:text-[20px]">
-                  {p.fullName}
-                </h1>
-                {p.email && <p className="truncate text-sm text-[#64746B]">{p.email}</p>}
-                {label && (
-                  <p className="mt-1.5 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
-                    {label}
-                  </p>
-                )}
-              </div>
-            </div>
-          </section>
-          {/* Dampak — khusus student */}
-          {isStudent && (
-            <section aria-labelledby="dampak-heading" className="flex min-w-0 flex-col gap-2">
-              <div className="flex min-h-11 items-center px-5 md:px-6">
-                <SieraSectionTitle id="dampak-heading">Dampakmu</SieraSectionTitle>
-              </div>
-              {p.loadFailed && (
-                <SieraAlert variant="error">
-                  Gagal memuat data dampak. Angka di bawah mungkin tidak akurat.{" "}
-                  <Link
-                    href={ROUTES.profil}
-                    className="inline-flex min-h-11 items-center font-bold underline underline-offset-4"
-                  >
-                    Coba lagi
-                  </Link>
-                </SieraAlert>
-              )}
-              <dl
-                className={`${sieraCardClass} grid grid-cols-3 divide-x divide-dashed divide-line overflow-hidden`}
+        {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
+        <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
+          <div className="flex items-center gap-4">
+            {p.avatarPath ? (
+              <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
+            ) : (
+              <span
+                aria-hidden
+                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-lg font-extrabold text-[#1E5A36] md:size-16 md:text-xl"
               >
-                <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
-                  <SieraTile>
-                    <PackageCheck className="size-5" />
-                  </SieraTile>
-                  <dd className="text-[16px] font-extrabold">{p.savedPortions}</dd>
-                  <dt className="text-[12px] font-semibold text-[#64746B]">Porsi selamat</dt>
-                </div>
-                <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
-                  <SieraTile>
-                    <Wallet className="size-5" />
-                  </SieraTile>
-                  <dd className="truncate text-[16px] font-extrabold">
-                    {formatIDR(p.moneySavedIdr)}
-                  </dd>
-                  <dt className="text-[12px] font-semibold text-[#64746B]">Uang hemat</dt>
-                </div>
-                <div
-                  className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center"
-                  title="Berat = estimasi sampling tenant"
+                {initials || "•"}
+              </span>
+            )}
+            <div className="min-w-0">
+              <h1 className="truncate text-[18px] leading-snug font-semibold md:text-[20px]">
+                {p.fullName}
+              </h1>
+              {p.email && <p className="truncate text-sm text-[#64746B]">{p.email}</p>}
+              {label && (
+                <p className="mt-1.5 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
+                  {label}
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+        {/* Dampak — khusus student */}
+        {isStudent && (
+          <section aria-labelledby="dampak-heading" className="flex min-w-0 flex-col gap-2">
+            <div className="flex min-h-11 items-center px-5 md:px-6">
+              <SieraSectionTitle id="dampak-heading">Dampakmu</SieraSectionTitle>
+            </div>
+            {p.loadFailed && (
+              <SieraAlert variant="error">
+                Gagal memuat data dampak. Angka di bawah mungkin tidak akurat.{" "}
+                <Link
+                  href={ROUTES.profil}
+                  className="inline-flex min-h-11 items-center font-bold underline underline-offset-4"
                 >
-                  <SieraTile>
-                    <Leaf className="size-5" />
-                  </SieraTile>
-                  <dd className="text-[16px] font-extrabold">
-                    {p.wasteKg == null ? (
-                      <span className="text-sm font-normal text-[#64746B]">Belum ada</span>
-                    ) : (
-                      `${p.wasteKg.toLocaleString("id-ID", { maximumFractionDigits: 1 })} kg`
-                    )}
-                  </dd>
-                  <dt className="text-[12px] font-semibold text-[#64746B]">Sampah cegah*</dt>
-                </div>
-              </dl>
-              <p
-                className="px-1 text-[11px] leading-relaxed text-[#64746B]"
+                  Coba lagi
+                </Link>
+              </SieraAlert>
+            )}
+            <dl
+              className={`${sieraCardClass} grid grid-cols-3 divide-x divide-dashed divide-line overflow-hidden`}
+            >
+              <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
+                <SieraTile>
+                  <PackageCheck className="size-5" />
+                </SieraTile>
+                <dd className="text-[16px] font-extrabold">{p.savedPortions}</dd>
+                <dt className="text-[12px] font-semibold text-[#64746B]">Porsi selamat</dt>
+              </div>
+              <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
+                <SieraTile>
+                  <Wallet className="size-5" />
+                </SieraTile>
+                <dd className="truncate text-[16px] font-extrabold">
+                  {formatIDR(p.moneySavedIdr)}
+                </dd>
+                <dt className="text-[12px] font-semibold text-[#64746B]">Uang hemat</dt>
+              </div>
+              <div
+                className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center"
                 title="Berat = estimasi sampling tenant"
               >
-                *estimasi. Pickup:{" "}
-                {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
-              </p>
-            </section>
-          )}
-          {/* Kelola platform — khusus admin */}
-          {!isStudent && !isTenant && (
-            <SieraSection id="kelola-heading" label="Kelola platform">
-              <SieraList aria-label="Kelola platform" className="divide-solid">
-                <SieraRowLink
-                  href={ROUTES.adminTenant}
-                  icon={Store}
-                  title={
-                    <span className="flex items-center gap-2">
-                      <span className="truncate">Persetujuan tenant</span>
-                      {pendingTenants > 0 && (
-                        <span className="shrink-0 rounded-full bg-[#DCEBE0] px-2 py-0.5 text-[11px] font-bold text-[#1E5A36]">
-                          {sieraCountText(pendingTenants)}
-                        </span>
-                      )}
-                    </span>
-                  }
-                  subtitle="Daftar menunggu verifikasi"
-                />
-                <SieraRowLink
-                  href={ROUTES.admin}
-                  icon={LayoutGrid}
-                  title="Dampak"
-                  subtitle="Angka rescue & unduhan"
-                />
-              </SieraList>
-            </SieraSection>
-          )}
-        </div>
-          {/* Navigasi — Grouped List Card */}
-          <SieraSection
-            id="riwayat-heading"
-            label={isStudent ? "Pesanan & pengaturan" : "Pengaturan"}
-          >
-            <SieraList
-              aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}
-              className="divide-solid"
+                <SieraTile>
+                  <Leaf className="size-5" />
+                </SieraTile>
+                <dd className="text-[16px] font-extrabold">
+                  {p.wasteKg == null ? (
+                    <span className="text-sm font-normal text-[#64746B]">Belum ada</span>
+                  ) : (
+                    `${p.wasteKg.toLocaleString("id-ID", { maximumFractionDigits: 1 })} kg`
+                  )}
+                </dd>
+                <dt className="text-[12px] font-semibold text-[#64746B]">Sampah cegah*</dt>
+              </div>
+            </dl>
+            <p
+              className="px-1 text-[11px] leading-relaxed text-[#64746B]"
+              title="Berat = estimasi sampling tenant"
             >
-              {isStudent && (
-                <SieraRowLink
-                  href={ROUTES.pesanan}
-                  icon={History}
-                  title="Riwayat pesanan"
-                  subtitle="Lihat QR pickup atau cek riwayat lengkap"
-                />
-              )}
-              {isStudent && !p.loadFailed && p.savedPortions === 0 && (
-                <SieraRowLink
-                  href={ROUTES.katalog}
-                  icon={UtensilsCrossed}
-                  title="Cari porsi sore ini"
-                  subtitle="Katalog rescue hari ini"
-                />
-              )}
-              {isTenant && (
-                <SieraRowLink
-                  href={ROUTES.tenantProfil}
-                  icon={Store}
-                  title="Profil kantin"
-                  subtitle="Nama gerai dan lokasi"
-                />
-              )}
+              *estimasi. Pickup:{" "}
+              {p.lastPickup ? `${formatDateTimeWIB(new Date(p.lastPickup))} WIB` : "belum ada"}.
+            </p>
+          </section>
+        )}
+        {/* Kelola platform — khusus admin */}
+        {!isStudent && !isTenant && (
+          <SieraSection id="kelola-heading" label="Kelola platform">
+            <SieraList aria-label="Kelola platform" className="divide-solid">
               <SieraRowLink
-                href={ROUTES.profilPengaturan}
-                icon={Settings}
-                title="Pengaturan"
-                subtitle="Keamanan, notifikasi, privasi"
+                href={ROUTES.adminTenant}
+                icon={Store}
+                title={
+                  <span className="flex items-center gap-2">
+                    <span className="truncate">Persetujuan tenant</span>
+                    {pendingTenants > 0 && (
+                      <span className="shrink-0 rounded-full bg-[#DCEBE0] px-2 py-0.5 text-[11px] font-bold text-[#1E5A36]">
+                        {sieraCountText(pendingTenants)}
+                      </span>
+                    )}
+                  </span>
+                }
+                subtitle="Daftar menunggu verifikasi"
+              />
+              <SieraRowLink
+                href={ROUTES.admin}
+                icon={LayoutGrid}
+                title="Dampak"
+                subtitle="Angka rescue & unduhan"
               />
             </SieraList>
           </SieraSection>
+        )}
+      </div>
+      {/* Navigasi — Grouped List Card */}
+      <SieraSection id="riwayat-heading" label={isStudent ? "Pesanan & pengaturan" : "Pengaturan"}>
+        <SieraList
+          aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}
+          className="divide-solid"
+        >
           {isStudent && (
-            <SieraSection id="tenant-heading" label="Aplikasi tenant">
-              {tenantStatus == null ? (
-                <div className={`${sieraCardClass} border-dashed p-3 text-center`}>
-                  <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
-                  <p className="mt-1 text-[13px] text-[#64746B]">
-                    Jual sisa masakanmu, gratis untuk saat ini.
-                  </p>
-                  <DaftarTenantButton />
-                </div>
-              ) : (
-                <SieraList>
-                  <SieraRowLink
-                    href={p.tenantApproved ? ROUTES.tenant : ROUTES.tenantMenunggu}
-                    icon={Store}
-                    title={p.tenantName ?? "Kantinmu"}
-                    subtitle={tenantStatus}
-                  />
-                </SieraList>
-              )}
-            </SieraSection>
+            <SieraRowLink
+              href={ROUTES.pesanan}
+              icon={History}
+              title="Riwayat pesanan"
+              subtitle="Lihat QR pickup atau cek riwayat lengkap"
+            />
           )}
-          {/* Bantuan — panduan sesuai peran */}
-          <section aria-labelledby="bantuan-heading" className="flex min-w-0 flex-col gap-2">
-            <div className="flex min-h-11 items-center px-5 md:px-6">
-              <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
+          {isStudent && !p.loadFailed && p.savedPortions === 0 && (
+            <SieraRowLink
+              href={ROUTES.katalog}
+              icon={UtensilsCrossed}
+              title="Cari porsi sore ini"
+              subtitle="Katalog rescue hari ini"
+            />
+          )}
+          {isTenant && (
+            <SieraRowLink
+              href={ROUTES.tenantProfil}
+              icon={Store}
+              title="Profil kantin"
+              subtitle="Nama gerai dan lokasi"
+            />
+          )}
+          <SieraRowLink
+            href={ROUTES.profilPengaturan}
+            icon={Settings}
+            title="Pengaturan"
+            subtitle="Keamanan, notifikasi, privasi"
+          />
+        </SieraList>
+      </SieraSection>
+      {isStudent && (
+        <SieraSection id="tenant-heading" label="Aplikasi tenant">
+          {tenantStatus == null ? (
+            <div className={`${sieraCardClass} border-dashed p-3 text-center`}>
+              <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
+              <p className="mt-1 text-[13px] text-[#64746B]">
+                Jual sisa masakanmu, gratis untuk saat ini.
+              </p>
+              <DaftarTenantButton />
             </div>
-            <SieraList aria-label="Bantuan" className="divide-solid">
+          ) : (
+            <SieraList>
               <SieraRowLink
-                href={
-                  isTenant
-                    ? `${ROUTES.tenant}?panduan=rantai&fresh=1`
-                    : isStudent
-                      ? `${ROUTES.beranda}?panduan=rantai&fresh=1`
-                      : ROUTES.caraKerja
-                }
-                icon={MapIcon}
-                title={isTenant ? "Panduan kelola" : isStudent ? "Panduan beranda" : "Cara kerja"}
-                subtitle={
-                  isTenant
-                    ? "Tur singkat dasbor sampai scan"
-                    : isStudent
-                      ? "Lihat lagi cara membaca Beranda dan memesan porsi"
-                      : "Alur rescue & keamanan pangan"
-                }
+                href={p.tenantApproved ? ROUTES.tenant : ROUTES.tenantMenunggu}
+                icon={Store}
+                title={p.tenantName ?? "Kantinmu"}
+                subtitle={tenantStatus}
               />
             </SieraList>
-          </section>
-          <div className="mt-8">
-            <SignOutButton />
-          </div>
-  {isStudent && (
-    <GuidedTour
-      tourKey="profil"
-      forced={tourForced}
-      auto={false}
-      journey={tourJourney}
-      userId={user.id}
-      fresh={sp.fresh === "1"}
-      entryStep={tourEntry}
-      next={tourJourney ? ROUTES.katalog : undefined}
-      journeyLabel="Bagian 4 dari 4 · Profil"
-      finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}
-      intro={{
-        title: "Ada apa di akun?",
-        body: "Dampakmu, jalan jadi tenant, dan semua pengaturan, sekilas saja.",
-      }}
-      steps={[
-        {
-          target: '[aria-label="Identitas"]',
-          title: "Kamu siapa di sini",
-          body: "Nama, email, dan peranmu: mahasiswa, atau tenant yang sudah disetujui.",
-        },
-        {
-          target: '[aria-labelledby="dampak-heading"]',
-          title: "Jejak rescue-mu",
-          body: "Porsi terselamatkan, uang hemat, dan sampah dicegah dari setiap pickup.",
-        },
-        {
-          target: '[aria-labelledby="bantuan-heading"]',
-          title: "Butuh panduan lagi",
-          body: "Putar ulang panduan beranda kapan saja dari sini.",
-        },
-      ]}
-      />
-    )}
+          )}
+        </SieraSection>
+      )}
+      {/* Bantuan — panduan sesuai peran */}
+      <section aria-labelledby="bantuan-heading" className="flex min-w-0 flex-col gap-2">
+        <div className="flex min-h-11 items-center px-5 md:px-6">
+          <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
+        </div>
+        <SieraList aria-label="Bantuan" className="divide-solid">
+          <SieraRowLink
+            href={
+              isTenant
+                ? `${ROUTES.tenant}?panduan=rantai&fresh=1`
+                : isStudent
+                  ? `${ROUTES.beranda}?panduan=rantai&fresh=1`
+                  : ROUTES.caraKerja
+            }
+            icon={MapIcon}
+            title={isTenant ? "Panduan kelola" : isStudent ? "Panduan beranda" : "Cara kerja"}
+            subtitle={
+              isTenant
+                ? "Tur singkat dasbor sampai scan"
+                : isStudent
+                  ? "Lihat lagi cara membaca Beranda dan memesan porsi"
+                  : "Alur rescue & keamanan pangan"
+            }
+          />
+        </SieraList>
+      </section>
+      <div className="mt-8">
+        <SignOutButton />
+      </div>
+      {isStudent && (
+        <GuidedTour
+          tourKey="profil"
+          forced={tourForced}
+          auto={false}
+          journey={tourJourney}
+          userId={user.id}
+          fresh={sp.fresh === "1"}
+          entryStep={tourEntry}
+          next={tourJourney ? ROUTES.katalog : undefined}
+          journeyLabel="Bagian 4 dari 4 · Profil"
+          finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}
+          intro={{
+            title: "Ada apa di akun?",
+            body: "Dampakmu, jalan jadi tenant, dan semua pengaturan, sekilas saja.",
+          }}
+          steps={[
+            {
+              target: '[aria-label="Identitas"]',
+              title: "Kamu siapa di sini",
+              body: "Nama, email, dan peranmu: mahasiswa, atau tenant yang sudah disetujui.",
+            },
+            {
+              target: '[aria-labelledby="dampak-heading"]',
+              title: "Jejak rescue-mu",
+              body: "Porsi terselamatkan, uang hemat, dan sampah dicegah dari setiap pickup.",
+            },
+            {
+              target: '[aria-labelledby="bantuan-heading"]',
+              title: "Butuh panduan lagi",
+              body: "Putar ulang panduan beranda kapan saja dari sini.",
+            },
+          ]}
+        />
+      )}
     </>
   );
 }

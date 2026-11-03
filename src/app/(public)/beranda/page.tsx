@@ -13,9 +13,9 @@ import {
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
-import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { formatDateTimeWIB } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
-import { katalogDetail, pesananDetail, ROUTES } from "@/lib/routes";
+import { pesananDetail, ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { OnboardBanner } from "./onboard-banner";

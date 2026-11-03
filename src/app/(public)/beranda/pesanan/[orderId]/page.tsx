@@ -1,5 +1,5 @@
 import { cn } from "cn";
-import { CalendarClock, Check, Clock3, Store, Tag, Wallet } from "lucide-react";
+import { CalendarClock, Check, Clock3, Store, Tag } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
@@ -154,8 +154,8 @@ export default async function OrderDetailPage({
                   <OrderStatusBadge status={order.status} />
                   {order.pickedUpAt && (
                     <span className="text-[13px] text-[#64746B]">
-                      Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB ·{" "}
-                      {order.quantity} porsi diselamatkan
+                      Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB · {order.quantity}{" "}
+                      porsi diselamatkan
                     </span>
                   )}
                 </div>
