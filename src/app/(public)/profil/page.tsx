@@ -266,7 +266,7 @@ export default async function ProfilPage({
                 subtitle="Nama gerai dan lokasi"
               />
               <SieraRowLink
-                href={ROUTES.akunPengaturan}
+                href={ROUTES.profilPengaturan}
                 icon={Settings}
                 title="Pengaturan"
                 subtitle="Keamanan, notifikasi, privasi"
@@ -326,7 +326,7 @@ export default async function ProfilPage({
               />
             )}
             <SieraRowLink
-              href={ROUTES.akunPengaturan}
+              href={ROUTES.profilPengaturan}
               icon={Settings}
               title="Pengaturan"
               subtitle="Keamanan, notifikasi, privasi"

@@ -7,9 +7,9 @@ test("landing memuat + CTA katalog", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /sisa layak makan/i })).toBeVisible();
   const cta = page.getByRole("link", { name: /lihat porsi hari ini/i }).first();
-  await expect(cta).toHaveAttribute("href", "/katalog");
+  await expect(cta).toHaveAttribute("href", "/beranda/katalog");
   await cta.click();
-  await expect(page).toHaveURL(/masuk\?next=%2Fkatalog/);
+  await expect(page).toHaveURL(/masuk\?next=%2Fberanda%2Fkatalog/);
 });
 
 test("cara-kerja publik", async ({ page }) => {
@@ -32,16 +32,16 @@ test("form magic link tampil dan validasi email", async ({ page }) => {
 });
 
 test("katalog + detail proteksi login → redirect masuk", async ({ page }) => {
-  await page.goto("/katalog");
-  await expect(page).toHaveURL(/masuk\?next=%2Fkatalog/);
-  await page.goto("/katalog/00000000-0000-0000-0000-000000000000");
+  await page.goto("/beranda/katalog");
+  await expect(page).toHaveURL(/masuk\?next=%2Fberanda%2Fkatalog/);
+  await page.goto("/beranda/katalog/00000000-0000-0000-0000-000000000000");
   await expect(page).toHaveURL(/masuk\?next=/);
 });
 
 test("RBAC anon: rute privat redirect ke masuk?next=", async ({ page }) => {
-  for (const path of ["/beranda", "/pesanan", "/admin"]) {
+  for (const path of ["/beranda", "/beranda/pesanan", "/admin"]) {
     await page.goto(path);
-    await expect(page).toHaveURL(new RegExp(`masuk\\?next=${path.replace("/", "%2F")}`));
+    await expect(page).toHaveURL(new RegExp(`masuk\\?next=${path.replace(/\//g, "%2F")}`));
   }
 });
 

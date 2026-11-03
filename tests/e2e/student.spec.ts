@@ -7,7 +7,7 @@ test("beranda student memuat", async ({ page }) => {
 });
 
 test("katalog student: filter + pesan 1 porsi", async ({ page }) => {
-  await page.goto("/katalog");
+  await page.goto("/beranda/katalog");
   await expect(page.getByText(/katalog sore ini/i).first()).toBeVisible();
   if ((await page.getByText(/batas 2\/hari tercapai/i).count()) > 0) {
     return;
@@ -20,13 +20,13 @@ test("katalog student: filter + pesan 1 porsi", async ({ page }) => {
     .getByRole("link", { name: /lihat dan pesan/i })
     .first()
     .getAttribute("href");
-  expect(href).toMatch(/\/katalog\/.+/);
-  await page.goto(href ?? "/katalog");
+  expect(href).toMatch(/\/beranda\/katalog\/.+/);
+  await page.goto(href ?? "/beranda/katalog");
   await expect(page.getByText(/jumlah porsi/i)).toBeVisible();
 });
 
 test("happy path: pesan 1 porsi dari katalog", async ({ page }) => {
-  await page.goto("/katalog");
+  await page.goto("/beranda/katalog");
   if ((await page.getByText(/lihat dan pesan/i).count()) === 0) {
     test.skip(true, "katalog kosong");
     return;
@@ -39,19 +39,19 @@ test("happy path: pesan 1 porsi dari katalog", async ({ page }) => {
     .getByRole("link", { name: /lihat dan pesan/i })
     .first()
     .getAttribute("href");
-  await page.goto(href ?? "/katalog");
+  await page.goto(href ?? "/beranda/katalog");
   if ((await page.getByRole("button", { name: /^habis$/i }).count()) > 0) {
     test.skip(true, "porsi habis");
     return;
   }
   await page.getByText("1 porsi").click();
   await page.getByRole("button", { name: /^pesan$/i }).click();
-  await page.waitForURL(/pesanan\/.+/, { timeout: 20_000 });
+  await page.waitForURL(/beranda\/pesanan\/.+/, { timeout: 20_000 });
   await expect(page.getByText(/menunggu pickup/i).first()).toBeVisible();
 });
 
 test("edge: over-cap harian ditolak dengan pesan", async ({ page }) => {
-  await page.goto("/katalog");
+  await page.goto("/beranda/katalog");
   if ((await page.getByText(/belum ada porsi sore ini/i).count()) > 0) {
     test.skip(true, "seed kosong");
     return;
@@ -71,7 +71,7 @@ test("edge: over-cap harian ditolak dengan pesan", async ({ page }) => {
   await expect
     .poll(
       async () => {
-        if (/pesanan\//.test(page.url())) return "ok";
+        if (/beranda\/pesanan\//.test(page.url())) return "ok";
         const t = await page
           .getByRole("alert")
           .first()
@@ -82,12 +82,12 @@ test("edge: over-cap harian ditolak dengan pesan", async ({ page }) => {
       { timeout: 20_000 },
     )
     .not.toBe("pending");
-  if (/pesanan\//.test(page.url())) return; // masih dalam kuota
+  if (/beranda\/pesanan\//.test(page.url())) return; // masih dalam kuota
   await expect(page.getByRole("alert").first()).toContainText(/batas harian|maksimal 2/i);
 });
 
 test("pesanan tampil + QR modal terbuka", async ({ page }) => {
-  await page.goto("/pesanan");
+  await page.goto("/beranda/pesanan");
   await expect(page.getByRole("heading", { name: /pesanan saya/i })).toBeVisible();
   const qr = page.getByRole("button", { name: /lihat qr pickup/i }).first();
   if ((await qr.count()) === 0) {
@@ -101,19 +101,19 @@ test("pesanan tampil + QR modal terbuka", async ({ page }) => {
 });
 
 test("detail pesanan pertama memuat", async ({ page }) => {
-  await page.goto("/pesanan");
+  await page.goto("/beranda/pesanan");
   const detail = page.getByRole("link", { name: "Detail" }).first();
   if ((await detail.count()) === 0) {
     test.skip(true, "tidak ada riwayat pesanan");
     return;
   }
   await detail.click();
-  await expect(page).toHaveURL(/pesanan\/.+/);
+  await expect(page).toHaveURL(/beranda\/pesanan\/.+/);
   await expect(page.getByText(/total/i).first()).toBeVisible();
 });
 
 test("batalkan pesanan reserved → Dibatalkan, tombol hilang", async ({ page }) => {
-  await page.goto("/pesanan");
+  await page.goto("/beranda/pesanan");
   await expect(page.getByRole("heading", { name: /pesanan saya/i })).toBeVisible();
   const before = await page.getByRole("button", { name: /^batalkan$/i }).count();
   if (before === 0) {
@@ -128,7 +128,7 @@ test("batalkan pesanan reserved → Dibatalkan, tombol hilang", async ({ page })
   await expect(page.getByText(/batalkan pesanan\?/i)).toBeVisible();
   await page.getByRole("button", { name: /ya, batalkan/i }).click();
   await page.waitForLoadState("networkidle");
-  await expect(page).toHaveURL(/pesanan/);
+  await expect(page).toHaveURL(/beranda\/pesanan/);
   const after = await page.getByRole("button", { name: /^batalkan$/i }).count();
   const cancelled = await page.getByText(/dibatalkan/i).count();
   expect(after).toBeLessThan(before);
