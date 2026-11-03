@@ -23,3 +23,46 @@ const dateTime = new Intl.DateTimeFormat("id-ID", {
 export function formatDateTimeWIB(date: Date): string {
   return dateTime.format(date);
 }
+
+function pad2(n: number): string {
+  return String(n).padStart(2, "0");
+}
+
+/** Sekarang sebagai jam dinding WIB (tanpa offset, untuk default form). */
+export function nowInWib(now: Date = new Date()): Date {
+  return new Date(now.toLocaleString("en-US", { timeZone: APP_TIMEZONE }));
+}
+
+/** Batas hari WIB [from 00:00, to+1d 00:00) → UTC ISO untuk filter query. */
+export function wibDayRangeUtc(
+  fromLocal: string,
+  toLocal: string,
+): { fromUtc: string; toExclusive: string } {
+  const fromUtc = new Date(`${fromLocal}T00:00:00+07:00`).toISOString();
+  const toExclusive = new Date(
+    new Date(`${toLocal}T00:00:00+07:00`).getTime() + 86_400_000,
+  ).toISOString();
+  return { fromUtc, toExclusive };
+}
+
+/** Inisial 2 huruf dari nama, mis. "Ayu Lestari" -> "AL". */
+export function namaToInitials(fullName: string): string {
+  return fullName
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase())
+    .join("");
+}
+
+/** Rentang hari ini WIB: todayLocal + dayStartUtc + dayEndIso. */
+export function wibTodayRange(now: Date = new Date()): {
+  todayLocal: string;
+  dayStartUtc: string;
+  dayEndIso: string;
+} {
+  const w = nowInWib(now);
+  const todayLocal = `${w.getFullYear()}-${pad2(w.getMonth() + 1)}-${pad2(w.getDate())}`;
+  const { fromUtc: dayStartUtc, toExclusive: dayEndIso } = wibDayRangeUtc(todayLocal, todayLocal);
+  return { todayLocal, dayStartUtc, dayEndIso };
+}

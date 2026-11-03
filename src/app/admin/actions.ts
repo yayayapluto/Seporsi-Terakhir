@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { buildTenantCsv } from "./csv";
 
@@ -54,6 +55,33 @@ export async function rejectTenant(
   }
   revalidatePath("/admin/tenant");
   revalidatePath("/admin");
+  return { ok: true };
+}
+
+/** Admin sembunyikan/tampilkan gerai di katalog (reversibel, tanpa hapus data). */
+export async function setTenantListed(
+  tenantId: string,
+  listed: boolean,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const parsed = IdSchema.safeParse({ tenantId });
+  if (!parsed.success) return { ok: false, error: "Data tenant tidak valid." };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Masuk dulu sebagai admin." };
+  const { error } = await supabase.rpc("set_tenant_listed", {
+    p_tenant_id: parsed.data.tenantId,
+    p_listed: listed,
+  });
+  if (error) {
+    const msg = error.message.toLowerCase();
+    if (msg.includes("admin only")) return { ok: false, error: "Khusus admin." };
+    if (msg.includes("not found")) return { ok: false, error: "Tenant tidak ditemukan." };
+    return { ok: false, error: "Gagal mengubah visibilitas. Coba lagi." };
+  }
+  revalidatePath("/admin/tenant");
+  revalidatePath(ROUTES.katalog);
   return { ok: true };
 }
 
@@ -118,7 +146,7 @@ export async function exportCsv(
   }));
   return {
     ok: true,
-    filename: `porsi-terakhir-laporan-${from || "awal"}-${to || "sekarang"}.csv`,
+    filename: `seporsi-terakhir-laporan-${from || "awal"}-${to || "sekarang"}.csv`,
     csv: buildTenantCsv(rows),
   };
 }

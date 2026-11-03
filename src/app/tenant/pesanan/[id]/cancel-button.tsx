@@ -2,13 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
+import { SieraAlert } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -45,18 +46,11 @@ export function TenantCancelButton({
 
   return (
     <div className="flex flex-col gap-2">
-      {error && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
-          {error}
-        </p>
-      )}
+      {error && <SieraAlert variant="error">{error}</SieraAlert>}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger
           render={
-            <Button type="button" variant="outline" className="min-h-11 px-6 text-destructive" />
+            <Button type="button" variant="outline" className="min-h-12 w-full text-destructive" />
           }
         >
           {pending ? (
@@ -75,32 +69,15 @@ export function TenantCancelButton({
           <DialogDescription>
             {buyerName} akan melihat status batal. Stok {quantity} porsi dikembalikan ke katalog.
           </DialogDescription>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              className="min-h-11"
-              onClick={() => setOpen(false)}
-            >
-              Kembali
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              className="min-h-11"
-              onClick={onConfirm}
-              disabled={pending}
-            >
-              {pending ? (
-                <>
-                  <Spinner />
-                  Membatalkan…
-                </>
-              ) : (
-                "Ya, batalkan"
-              )}
-            </Button>
-          </DialogFooter>
+          <ConfirmDialogFooter
+            confirmLabel="Ya, batalkan"
+            busyLabel="Membatalkan…"
+            cancelLabel="Kembali"
+            busy={pending}
+            onConfirm={onConfirm}
+            onCancel={() => setOpen(false)}
+            lockCancelWhenBusy={false}
+          />
         </DialogContent>
       </Dialog>
     </div>

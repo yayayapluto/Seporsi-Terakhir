@@ -2,8 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
+import { SieraAlert, SieraEmpty, SieraList } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { approveTenant, rejectTenant } from "../actions";
 import type { PendingTenant } from "./page";
 
@@ -12,6 +15,7 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
   const router = useRouter();
   const [openId, setOpenId] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<"approve" | "reject" | null>(null);
+  const [rejectId, setRejectId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function act(id: string, kind: "approve" | "reject") {
@@ -24,35 +28,29 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
       return;
     }
     setOpenId(null);
+    setRejectId(null);
     router.refresh();
   }
 
+  const rejectTarget = tenants.find((t) => t.id === rejectId) ?? null;
+
   if (tenants.length === 0) {
     return (
-      <div className="border-b py-10 text-center">
-        <p className="font-semibold">Tidak ada pendaftaran menunggu</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Semua pendaftaran mitra sudah diproses.
-        </p>
-      </div>
+      <SieraEmpty
+        title="Tidak ada pendaftaran menunggu"
+        hint="Semua pendaftaran mitra sudah diproses."
+      />
     );
   }
 
   return (
     <div className="flex flex-col gap-4">
-      {error && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
-          {error}
-        </p>
-      )}
-      <ul className="divide-y divide-border border-b">
+      {error && <SieraAlert variant="error">{error}</SieraAlert>}
+      <SieraList>
         {tenants.map((t) => {
           const open = openId === t.id;
           return (
-            <li key={t.id} className="py-4">
+            <li key={t.id} className="px-4 py-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                 <div className="min-w-0">
                   <h2 className="font-bold leading-snug">{t.name}</h2>
@@ -72,6 +70,7 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                     variant="outline"
                     onClick={() => setOpenId(open ? null : t.id)}
                     aria-expanded={open}
+                    className="min-h-11"
                   >
                     {open ? "Tutup" : "Tinjau"}
                   </Button>
@@ -112,16 +111,9 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                       type="button"
                       variant="destructive"
                       disabled={confirming !== null}
-                      onClick={() => act(t.id, "reject")}
+                      onClick={() => setRejectId(t.id)}
                     >
-                      {confirming === "reject" ? (
-                        <>
-                          <Spinner />
-                          Menolak…
-                        </>
-                      ) : (
-                        "Tolak pendaftar"
-                      )}
+                      Tolak pendaftar
                     </Button>
                     <Button
                       type="button"
@@ -137,7 +129,23 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
             </li>
           );
         })}
-      </ul>
+      </SieraList>
+      <Dialog open={rejectId !== null} onOpenChange={(open) => !open && setRejectId(null)}>
+        <DialogContent>
+          <DialogTitle>Tolak {rejectTarget ? `“${rejectTarget.name}”` : "pendaftar"}?</DialogTitle>
+          <DialogDescription>
+            Pendaftar bisa daftar ulang kapan saja. Tindakan ini berlaku langsung.
+          </DialogDescription>
+          <ConfirmDialogFooter
+            confirmLabel="Tolak pendaftar"
+            busyLabel="Menolak…"
+            cancelLabel="Batal"
+            busy={confirming !== null}
+            onConfirm={() => rejectId && act(rejectId, "reject")}
+            onCancel={() => setRejectId(null)}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth";
+import { ROUTES } from "@/lib/routes";
 import { getOwnTenant, type OwnTenant } from "@/lib/tenant";
 
 /**
@@ -9,7 +10,7 @@ import { getOwnTenant, type OwnTenant } from "@/lib/tenant";
 export async function requireOwnTenant(next: string): Promise<OwnTenant> {
   await requireRole(next, "tenant", "admin");
   const tenant = await getOwnTenant();
-  if (!tenant) redirect("/tenant/pendaftaran");
-  if (!tenant.is_approved) redirect("/tenant/menunggu-persetujuan");
+  if (!tenant) redirect(ROUTES.tenantPendaftaran);
+  if (!tenant.is_approved) redirect(ROUTES.tenantMenunggu);
   return tenant;
 }

@@ -1,9 +1,21 @@
+import { History, QrCode, Timer, UserRound } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { AppHeader } from "@/components/app-header";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import {
+  SieraList,
+  SieraRailPage,
+  SieraRowLink,
+  SieraSection,
+  SieraStat,
+  SieraStatStrip,
+  sieraCardClass,
+} from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../../guard";
 import { TenantCancelButton } from "./cancel-button";
@@ -25,6 +37,7 @@ interface TenantOrderDetail {
   buyerPickups: number;
   buyerCancelled: number;
   pickupToken: string | null;
+  pickupCode: string | null;
   expiresAt: string | null;
 }
 
@@ -50,6 +63,7 @@ async function loadDetail(orderId: string): Promise<TenantOrderDetail> {
     buyerPickups: Number(r.buyer_pickups),
     buyerCancelled: Number(r.buyer_cancelled),
     pickupToken: r.pickup_token == null ? null : String(r.pickup_token),
+    pickupCode: r.pickup_code == null ? null : String(r.pickup_code),
     expiresAt: r.expires_at == null ? null : String(r.expires_at),
   };
 }
@@ -73,51 +87,42 @@ export default async function TenantOrderDetailPage({
   if (!z.string().uuid().safeParse(id).success) notFound();
   const o = await loadDetail(id);
 
-  return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <Link
-        href="/tenant/pesanan"
-        className="inline-flex min-h-11 w-fit items-center text-sm font-medium text-muted-foreground hover:text-foreground"
-      >
-        ← Semua pesanan
-      </Link>
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-widest text-primary">RESERVASI</p>
-        <h1 className="text-3xl font-bold">
-          {o.menuName} <span className="text-muted-foreground">× {o.quantity}</span>
+  const main = (
+    <>
+      <div className={`${sieraCardClass} flex flex-col gap-1 p-4`}>
+        <p className="text-xs font-bold tracking-wide text-[#1E5A36]">RESERVASI</p>
+        <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
+          {o.menuName} × {o.quantity}
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm text-[#1E5A36]">
           Dipesan {o.buyerName} · {formatDateTimeWIB(new Date(o.createdAt))} WIB
         </p>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-3 border-b pb-4">
-        <OrderStatusBadge status={o.status} />
-        {o.status === "picked_up" && o.pickedUpAt && (
-          <span className="text-sm text-muted-foreground">
-            Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
-          </span>
-        )}
-      </div>
-
-      {o.pickupToken && (
-        <section aria-labelledby="pickup-heading" className="rounded-xl border bg-card p-5">
-          <h2 id="pickup-heading" className="text-lg font-bold">
-            Kode pickup: <span className="font-mono break-all">{o.pickupToken}</span>
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Tempel di kolom kode manual halaman Scan pickup bila kamera bermasalah.
-          </p>
-          <CopyTokenButton token={o.pickupToken} />
-          {o.expiresAt && (
-            <p className="mt-2 text-sm">
-              Ambil sebelum {formatDateTimeWIB(new Date(o.expiresAt))} WIB
-            </p>
+        <p className="mt-1">
+          <OrderStatusBadge status={o.status} />
+          {o.status === "picked_up" && o.pickedUpAt && (
+            <span className="ml-2 text-sm text-muted-foreground">
+              Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
+            </span>
           )}
+        </p>
+      </div>
+      {o.expiresAt && (
+        <section
+          aria-label="Batas ambil"
+          className="flex items-center gap-3 rounded-2xl border border-[#B45309]/20 bg-[#FEF3C7] p-4"
+        >
+          <span
+            aria-hidden
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#B45309]"
+          >
+            <Timer className="size-5" />
+          </span>
+          <p className="text-sm font-semibold text-[#1C2826]">
+            Ambil sebelum {formatDateTimeWIB(new Date(o.expiresAt))} WIB
+          </p>
         </section>
       )}
-
-      <section aria-labelledby="pemesan-heading" className="rounded-xl border bg-card p-5">
+      <section aria-labelledby="pemesan-heading" className={`${sieraCardClass} p-5 text-center`}>
         <h2 id="pemesan-heading" className="text-2xl font-bold">
           {o.buyerName}
         </h2>
@@ -133,8 +138,7 @@ export default async function TenantOrderDetailPage({
           )}
         </p>
       </section>
-
-      <dl className="divide-y divide-border border-b">
+      <dl className={`${sieraCardClass} divide-y divide-dashed divide-line px-5`}>
         {o.cookedAt && <Row label="Dimasak">{formatDateTimeWIB(new Date(o.cookedAt))} WIB</Row>}
         <Row label="Harga/porsi">
           <span>
@@ -155,10 +159,12 @@ export default async function TenantOrderDetailPage({
           </span>
         </Row>
       </dl>
-
       {o.status === "reserved" && (
-        <div className="flex flex-wrap items-center gap-3">
-          <Link href="/tenant/scan" className={buttonVariants({ className: "min-h-11" })}>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <Link
+            href="/tenant/scan"
+            className={buttonVariants({ className: "min-h-12 w-full text-[15px]" })}
+          >
             Scan pickup
           </Link>
           <TenantCancelButton
@@ -176,6 +182,66 @@ export default async function TenantOrderDetailPage({
             : "Pesanan dibatalkan. Stok porsi dikembalikan ke katalog."}
         </p>
       )}
-    </div>
+    </>
+  );
+
+  const aside = (
+    <>
+      {o.pickupCode && (
+        <SieraSection id="pickup-heading" label="Kode pickup">
+          <div className={`${sieraCardClass} flex flex-col items-center gap-1 p-5 text-center`}>
+            <SieraStat
+              icon={QrCode}
+              value={o.pickupCode}
+              label="Ketik di Scan pickup bila kamera gagal"
+            />
+            <CopyTokenButton token={o.pickupCode} />
+          </div>
+        </SieraSection>
+      )}
+      <SieraSection id="riwayat-heading" label="Riwayat pemesan">
+        <SieraStatStrip>
+          <SieraStat icon={History} value={String(o.buyerPickups)} label="Selesai" />
+          <SieraStat icon={UserRound} value={String(o.buyerCancelled)} label="Batal" />
+          <SieraStat
+            icon={Timer}
+            value={`${o.quantity}×`}
+            label={o.status === "reserved" ? "Menunggu" : "Porsi"}
+          />
+        </SieraStatStrip>
+      </SieraSection>
+      {o.status === "reserved" && (
+        <SieraSection id="lanjut-heading" label="Langkah lanjut">
+          <SieraList aria-label="Langkah lanjut">
+            <SieraRowLink
+              href="/tenant/scan"
+              icon={QrCode}
+              title="Scan pickup"
+              subtitle="Konfirmasi serah terima di kasir"
+            />
+            <SieraRowLink
+              href="/tenant/pesanan"
+              icon={History}
+              title="Kembali ke pesanan"
+              subtitle="Lihat antrean pickup"
+            />
+          </SieraList>
+        </SieraSection>
+      )}
+    </>
+  );
+
+  return (
+    <>
+      <AppHeader
+        title={`${o.menuName} x ${o.quantity}`}
+        trail={[
+          { label: "Kantin", href: ROUTES.tenant },
+          { label: "Pesanan", href: ROUTES.tenantPesanan },
+          { label: `Detail ${o.menuName}` },
+        ]}
+      />
+      <SieraRailPage main={main} asideLabel="Pelengkap detail pesanan" aside={aside} />
+    </>
   );
 }

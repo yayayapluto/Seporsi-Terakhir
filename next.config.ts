@@ -10,7 +10,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  allowedDevOrigins: ["dev.seporsi-terakhir.my.id", "seporsi-terakhir.my.id", "localhost:3000"],
+  async redirects() {
+    return [{ source: "/cara-kerja", destination: "/#cara-kerja", permanent: true }];
+  },
+  allowedDevOrigins: [
+    "dev.seporsi-terakhir.my.id",
+    "re.seporsi-terakhir.my.id",
+    "seporsi-terakhir.my.id",
+    "localhost:3000",
+  ],
 };
 
 export default nextConfig;

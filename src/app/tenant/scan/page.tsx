@@ -1,8 +1,74 @@
+import { GuidedTour } from "@/components/guided-tour";
+import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 import { ScannerClient } from "./scanner-client";
 
+export interface LastPickup {
+  menuName: string;
+  quantity: number;
+  pickedUpAt: string;
+  totalPrice: number;
+}
+
+/** Pickup terakhir tenant untuk rel kanan. Query ringan limit 1. */
+async function loadLastPickup(tenantId: string): Promise<LastPickup | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("orders")
+    .select(
+      "quantity, picked_up_at, discount_price_snapshot, portions!inner(menu_item_id, menu_items!inner(name), tenant_id)",
+    )
+    .eq("portions.tenant_id", tenantId)
+    .eq("status", "picked_up")
+    .order("picked_up_at", { ascending: false })
+    .limit(1);
+  const row = (data as unknown as Record<string, unknown>[] | null)?.[0];
+  if (!row || row.picked_up_at == null) return null;
+  const portion = row.portions as unknown as {
+    menu_items?: { name: string } | { name: string }[] | null;
+  } | null;
+  const menu = Array.isArray(portion?.menu_items) ? portion.menu_items[0] : portion?.menu_items;
+  return {
+    menuName: menu?.name ?? "Menu",
+    quantity: Number(row.quantity ?? 0),
+    pickedUpAt: String(row.picked_up_at),
+    totalPrice: Number(row.quantity ?? 0) * Number(row.discount_price_snapshot ?? 0),
+  };
+}
+
 /** Scanner pickup: kamera mobile-first, konfirmasi via Server Action. */
-export default async function ScanPage() {
-  await requireOwnTenant("/tenant/scan");
-  return <ScannerClient />;
+export default async function ScanPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
+  const tenant = await requireOwnTenant("/tenant/scan");
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
+  const lastPickup = await loadLastPickup(tenant.id);
+  return (
+    <>
+      <ScannerClient lastPickup={lastPickup} />
+      <GuidedTour
+        tourKey="tenant-scan"
+        forced={tourForced}
+        intro={{
+          title: "Scan pickup?",
+          body: "Arahkan kamera ke QR mahasiswa, konfirmasi setelah terima bayar. Itu saja.",
+        }}
+        steps={[
+          {
+            target: '[data-tour="scanner"]',
+            title: "Bidik QR-nya",
+            body: "Kamera membaca kode pickup dari layar mahasiswa otomatis.",
+          },
+          {
+            target: '[data-tour="manual"]',
+            title: "Kamera bermasalah?",
+            body: "Minta kode pickup dari layar mahasiswa, tempel manual di sini.",
+          },
+        ]}
+      />
+    </>
+  );
 }

@@ -74,3 +74,17 @@
   approach: predev wipe .next + prestart guard BUILD_ID
   risk_level: low
   commit_message: "fix(dev): predev wipe cache + prestart guard cegah serve dev-cache"
+- bug_id: BUG-2026-10-30T062654
+  date: 2026-10-30
+  severity: low
+  priority: medium
+  scope: layout/footer
+  summary: scrollbar X di landing Windows — footer w-screen 100vw > viewport saat Y-scrollbar klasik tampil
+  file: specs/bugs/BUG-2026-10-30T062654-scrollbar-horizontal-footer.md
+- bug_id: BUG-2026-10-30T063905
+  date: 2026-10-30
+  severity: low
+  priority: medium
+  scope: layout/landing
+  summary: gutter kiri-kanan lebar di desktop — kolom max-w-6xl terpusat di viewport lebar
+  file: specs/bugs/BUG-2026-10-30T063905-gutter-desktop-landing.md

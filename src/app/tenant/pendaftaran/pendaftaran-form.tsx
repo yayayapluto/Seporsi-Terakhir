@@ -1,15 +1,18 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "cn";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { SieraAlert, sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/client";
 
 const schema = z.object({
@@ -48,30 +51,27 @@ export function PendaftaranForm() {
       }
       return;
     }
-    router.push("/tenant/menunggu-persetujuan");
+    router.push(ROUTES.tenantMenunggu);
     router.refresh();
   }
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-5 rounded-lg border border-border bg-card p-5 sm:p-6"
+      className={cn(sieraCardClass, "flex flex-col gap-5 p-5 sm:p-6")}
     >
       {formError && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
+        <SieraAlert variant="error">
           {formError}{" "}
           {alreadyApplied && (
             <Link
-              href="/tenant/menunggu-persetujuan"
+              href={ROUTES.tenantMenunggu}
               className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
             >
               Lihat status pendaftaran
             </Link>
           )}
-        </p>
+        </SieraAlert>
       )}
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="tenant-name" className="font-semibold">

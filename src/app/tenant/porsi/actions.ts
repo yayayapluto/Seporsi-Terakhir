@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 
 const PostSchema = z.object({
@@ -78,7 +79,7 @@ export async function postPortion(
     return { ok: false, error: "Gagal memposting porsi. Coba lagi." };
   }
   revalidatePath("/tenant");
-  revalidatePath("/katalog");
+  revalidatePath(ROUTES.katalog);
   return { ok: true };
 }
 
@@ -135,6 +136,6 @@ export async function updatePortion(
     return { ok: false, error: "Gagal menyimpan porsi. Coba lagi." };
   }
   revalidatePath("/tenant");
-  revalidatePath("/katalog");
+  revalidatePath(ROUTES.katalog);
   return { ok: true };
 }

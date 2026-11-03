@@ -5,6 +5,10 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 
 const TokenSchema = z.string().trim().uuid();
+const CodeSchema = z
+  .string()
+  .trim()
+  .regex(/^[0-9]{4}$/);
 
 /** Decode hasil scan → preview order (tanpa mengonfirmasi). */
 export async function lookupOrderByToken(token: string): Promise<
@@ -85,6 +89,69 @@ export async function confirmPickup(
     if (msg.includes("already")) return { ok: false, error: "QR ini sudah dipakai." };
     if (msg.includes("expired")) return { ok: false, error: "Porsi sudah kedaluwarsa." };
     if (msg.includes("cancelled")) return { ok: false, error: "Pesanan sudah dibatalkan." };
+    return { ok: false, error: "Gagal konfirmasi pickup. Coba lagi." };
+  }
+  revalidatePath("/tenant");
+  revalidatePath("/tenant/pesanan");
+  return { ok: true };
+}
+
+/** Lookup order by kode 4 digit (ketik manual) → preview order. */
+export async function lookupOrderByCode(code: string): Promise<
+  | {
+      ok: true;
+      order: {
+        menuName: string;
+        quantity: number;
+        status: string;
+        totalPrice: number;
+      };
+    }
+  | { ok: false; error: string }
+> {
+  const parsed = CodeSchema.safeParse(code);
+  if (!parsed.success) return { ok: false, error: "Kode harus 4 digit angka." };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Masuk dulu sebagai tenant." };
+  const { data, error } = await supabase.rpc("lookup_order_by_code", {
+    p_code: parsed.data,
+  });
+  if (error || !data) return { ok: false, error: "Kode tidak dikenali." };
+  const row = (Array.isArray(data) ? data[0] : data) as unknown as Record<string, unknown> | null;
+  if (!row) return { ok: false, error: "Kode tidak dikenali." };
+  return {
+    ok: true,
+    order: {
+      menuName: String(row.menu_name ?? "Menu"),
+      quantity: Number(row.quantity ?? 0),
+      status: String(row.status ?? ""),
+      totalPrice: Number(row.quantity ?? 0) * Number(row.discount_price_snapshot ?? 0),
+    },
+  };
+}
+
+/** Konfirmasi pickup by kode 4 digit setelah preview. */
+export async function confirmPickupByCode(
+  code: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const parsed = CodeSchema.safeParse(code);
+  if (!parsed.success) return { ok: false, error: "Kode harus 4 digit angka." };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Masuk dulu sebagai tenant." };
+  const { error } = await supabase.rpc("confirm_pickup_by_code", {
+    p_code: parsed.data,
+  });
+  if (error) {
+    const msg = error.message.toLowerCase();
+    if (msg.includes("not found")) return { ok: false, error: "Kode tidak dikenali." };
+    if (msg.includes("not_reserved")) return { ok: false, error: "Pesanan ini sudah tidak aktif." };
+    if (msg.includes("expired")) return { ok: false, error: "Porsi sudah kedaluwarsa." };
     return { ok: false, error: "Gagal konfirmasi pickup. Coba lagi." };
   }
   revalidatePath("/tenant");

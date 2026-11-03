@@ -21,6 +21,13 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-border: var(--border);
+  --color-siera-primary-dark: var(--siera-primary-dark);
+  --color-siera-primary-soft: var(--siera-primary-soft);
+  --color-siera-mint: var(--siera-mint);
+  --color-siera-chip: var(--siera-chip);
+  --color-siera-warning: var(--siera-warning);
+  --color-siera-warning-soft: var(--siera-warning-soft);
+  --color-siera-danger-soft: var(--siera-danger-soft);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --font-sans: var(--font-sans);
@@ -31,9 +38,9 @@
   --radius-xl: calc(var(--radius) * 1.4);
 }
 
-/* Stitch "Campus Harvest & Rescue" tokens (strictly light mode). */
+/* PRODUCT-Siera.MD tokens §3 (strictly light mode). */
 :root {
-  --background: #fffbf5;
+  --background: #ffffff;
   --foreground: #1c2826;
   --card: #ffffff;
   --card-foreground: #1c2826;
@@ -49,31 +56,23 @@
   --accent-strong: #9a520a;
   --accent-foreground: #ffffff;
   --border: #e5e1d8;
+  --line: #e8ece9;
+  --siera-primary-dark: #1e5a36;
+  --siera-primary-soft: #dcebe0;
+  --siera-mint: #e6f4ea;
+  --siera-chip: #f1f5f2;
+  --siera-warning: #b45309;
+  --siera-warning-soft: #fef3c7;
+  --siera-danger-soft: #fee2e2;
+  --siera-shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --siera-shadow-nav: 0 8px 24px rgba(16, 24, 40, 0.1);
   --destructive: #ba1a1a;
   --input: #e5e1d8;
   --ring: #2e7d4f;
   --radius: 0.5rem;
 }
 
-/* ponytail: sonner tak punya API animasi; satu keyframe untuk semua toast. */
-.cn-toast {
-  animation: toast-in 200ms ease-out;
-}
-@keyframes toast-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cn-toast {
-    animation: none;
-  }
-}
+/* Toast dinonaktifkan: tidak ada pemakaian sonner; jangan tambah tanpa Motion. */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -81,18 +80,23 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* ponytail: ruang bottom-nav mobile — hanya rute in-app (nav ter-render), hanya <md. */
+  @media (max-width: 767px) {
+    body:has(nav[aria-label="Navigasi utama"]) main {
+      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+    }
+  }
   html {
     @apply font-sans;
-    scroll-behavior: smooth;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
   }
   html.lenis,
   html.lenis body {
     height: auto;
+  }
+  /* ponytail: full-bleed aman — potong overflow-X sisa 100vw rounding tanpa sembunyikan konten. */
+  html,
+  body {
+    overflow-x: clip;
   }
   .lenis.lenis-smooth {
     scroll-behavior: auto;
@@ -111,20 +115,31 @@
   }
 }
 
-/* Base UI accordion: tw-animate keyframes tak kenal --accordion-panel-height → snap. */
-@keyframes porsi-accordion-down {
-  from {
-    height: 0;
-  }
-  to {
-    height: var(--accordion-panel-height, auto);
-  }
+/* Base UI accordion: tinggi + opacity dianimasikan Motion (ui/accordion). */
+
+/* Scanner tenant: pindahkan tombol flash bawaan ke sudut kanan-bawah dengan
+   target sentuh 44px. Selektor meniru DOM lib (tanpa API gaya sendiri). */
+.siera-scanner > button {
+  top: auto;
+  bottom: 12px;
+  right: 12px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.92);
+  color: #1c2826;
 }
-@keyframes porsi-accordion-up {
-  from {
-    height: var(--accordion-panel-height, auto);
-  }
-  to {
-    height: 0;
+.siera-scanner > button > svg {
+  width: 20px;
+  height: 20px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
   }
 }

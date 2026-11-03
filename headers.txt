@@ -1,0 +1,20 @@
+HTTP/1.1 403 Forbidden
+Date: Fri, 30 Oct 2026 00:30:01 GMT
+Content-Type: application/json
+Content-Length: 79
+Connection: keep-alive
+CF-Ray: a5264f182aa1d846-SIN
+CF-Cache-Status: DYNAMIC
+Server: cloudflare
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Vary: Origin
+X-Content-Type-Options: nosniff
+sb-gateway-version: 1
+sb-project-ref: czvrxkzxgvjfmmbbfdrv
+sb-request-id: 01a18a36-ab1f-7739-932d-ba730e5fc735
+x-envoy-attempt-count: 1
+x-envoy-upstream-service-time: 10
+x-sb-error-code: otp_expired
+set-cookie: __cf_bm=5PusGKstXIgrupEcDUOOw0vHtB620kboYls0j0jujiU-1793320200.9880934-1.0.1.1-wqZVyY.XrLH06F_nbczJy0K7P020KNRh9ysP_zKacs1JNSWIZXHr7c0fGrjf_NCNG5Lpxh411lWBnx.7iOqmjGFWVqLGtbnQJFMs97SclCfK_nImMiMThOBK51er_itC; HttpOnly; SameSite=None; Secure; Path=/; Domain=supabase.co; Expires=Fri, 30 Oct 2026 01:00:01 GMT
+alt-svc: h3=":443"; ma=86400
+

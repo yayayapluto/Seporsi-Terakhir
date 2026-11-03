@@ -1,0 +1,92 @@
+[browser] Image with src "/images/foto_kantin.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/images/foto_kantin.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/images/foto_kantin.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Uncaught Error: Module [project]/node_modules/next/dist/client/image-component.js [app-client] (ecmascript) <export Image as default> was instantiated because it was required from module [project]/src/components/site-header.tsx [app-client] (ecmascript), but the module factory is not available.
+This is often caused by a stale browser cache, misconfigured Cache-Control headers, or a service worker serving outdated responses.
+To fix this, make sure your Cache-Control headers allow revalidation of chunks and review your service worker configuration. As an immediate workaround, try hard-reloading the page, clearing the browser cache, or unregistering any service workers.
+    at module evaluation (src/components/nav-tabs.tsx:59:31)
+    at RootLayout (src\app\layout.tsx:33:9)
+  57 | /** Mobile floating bottom nav + desktop sidebar. Active from pathname segment. */
+  58 | export function NavTabs({ tabs }: { tabs: NavTab[] }) {
+> 59 |   const pathname = usePathname();
+     |                               ^
+  60 |   const inApp =
+  61 |     pathname.startsWith("/beranda") ||
+  62 |     pathname.startsWith("/katalog") ||
+[browser] Image with src "/images/foto_kantin.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/images/foto_kantin.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/images/foto_kantin.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/images/foto_kantin.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload when ./src/components/site-header.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload when ./src/components/site-header.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload when ./src/components/site-header.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[browser] Uncaught Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+      <HTTPAccessFallbackErrorBoundary pathname="/beranda" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+        <RedirectBoundary>
+          <RedirectErrorBoundary router={{...}}>
+            <Head>
+            <__next_root_layout_boundary__>
+              <SegmentViewNode type="layout" pagePath="layout.tsx">
+                <SegmentTrieNode>
+                <link>
+                <script>
+                <script>
+                <script>
+                <script>
+                <script>
+                <script>
+                <script>
+                <script>
+                <script>
+                <RootLayout>
+                  <html lang="id" data-scroll-behavior="smooth" className="plus_jakar...">
+                    <body className="flex min-h...">
+                      <SiteHeader>
+                        <header className="sticky top...">
+                          <div className="mx-auto fl...">
+                            <LinkComponent href="/" className="flex items...">
+                              <a className="flex items..." ref={function} onClick={function onClick} ...>
+                                <img>
++                               Seporsi Terakhir
+-                               Porsi Terakhir
+                            ...
+                      ...
+            ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at a (<anonymous>)
+    at SiteHeader (src/components/site-header.tsx:28:6)
+    at RootLayout (src\app\layout.tsx:33:9)
+  26 |   useEffect(() => {
+  27 |     setOpen(false);
+> 28 |   }, [pathname]);
+     |      ^
+  29 |
+  30 |   useEffect(() => {
+  31 |     let unsubscribe: (() => void) | null = null;

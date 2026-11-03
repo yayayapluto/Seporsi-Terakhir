@@ -247,6 +247,7 @@ export type Database = {
           created_at: string
           id: string
           is_approved: boolean
+          is_listed: boolean
           location_note: string | null
           name: string
           owner_id: string
@@ -256,6 +257,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_approved?: boolean
+          is_listed?: boolean
           location_note?: string | null
           name: string
           owner_id: string
@@ -265,6 +267,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_approved?: boolean
+          is_listed?: boolean
           location_note?: string | null
           name?: string
           owner_id?: string
@@ -279,6 +282,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tour_progress: {
+        Row: {
+          completed_at: string | null
+          current_step_id: string | null
+          furthest_step_id: string | null
+          status: string
+          tour_id: string
+          updated_at: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          completed_at?: string | null
+          current_step_id?: string | null
+          furthest_step_id?: string | null
+          status?: string
+          tour_id: string
+          updated_at?: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          completed_at?: string | null
+          current_step_id?: string | null
+          furthest_step_id?: string | null
+          status?: string
+          tour_id?: string
+          updated_at?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -302,6 +338,7 @@ export type Database = {
           created_at: string
           id: string
           is_approved: boolean
+          is_listed: boolean
           location_note: string | null
           name: string
           owner_id: string
@@ -320,6 +357,7 @@ export type Database = {
           created_at: string
           id: string
           is_approved: boolean
+          is_listed: boolean
           location_note: string | null
           name: string
           owner_id: string
@@ -379,6 +417,13 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      impact_daily: {
+        Args: { p_from?: string; p_to?: string }
+        Returns: {
+          day: string
+          saved: number
+        }[]
       }
       impact_summary: {
         Args: { p_from?: string; p_to?: string }
@@ -470,6 +515,27 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      reject_tenant: { Args: { p_tenant_id: string }; Returns: undefined }
+      set_tenant_listed: {
+        Args: { p_listed: boolean; p_tenant_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          is_approved: boolean
+          is_listed: boolean
+          location_note: string | null
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "tenants"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      sweep_expired_orders: { Args: never; Returns: number }
       tenant_cancel_order: {
         Args: { p_order_id: string }
         Returns: {
@@ -545,6 +611,25 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      update_tenant_profile: {
+        Args: { p_location_note?: string; p_name: string }
+        Returns: {
+          created_at: string
+          id: string
+          is_approved: boolean
+          is_listed: boolean
+          location_note: string | null
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "tenants"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       upsert_menu_item: {
         Args: {
           p_allergen_note?: string
@@ -579,7 +664,7 @@ export type Database = {
       }
     }
     Enums: {
-      order_status: "reserved" | "picked_up" | "cancelled"
+      order_status: "reserved" | "picked_up" | "cancelled" | "unpicked"
       user_role: "student" | "tenant" | "admin"
     }
     CompositeTypes: {
@@ -711,7 +796,7 @@ export const Constants = {
   },
   public: {
     Enums: {
-      order_status: ["reserved", "picked_up", "cancelled"],
+      order_status: ["reserved", "picked_up", "cancelled", "unpicked"],
       user_role: ["student", "tenant", "admin"],
     },
   },

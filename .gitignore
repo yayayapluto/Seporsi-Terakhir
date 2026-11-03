@@ -54,3 +54,12 @@ next-env.d.ts
 .omp/
 .pi/
 .impeccable/
+# Added by code-review-graph
+.code-review-graph/
+# playwright e2e artefacts
+/test-results/
+/playwright-report/
+/playwright/.cache/
+tests/.auth/
+# research artefacts (local-only, not linted)
+/research-result/

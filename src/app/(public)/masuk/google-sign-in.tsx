@@ -63,7 +63,12 @@ export function GoogleSignIn({ next }: { next?: string }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <Button type="button" onClick={signIn} disabled={busy} className="min-h-11 w-full">
+      <Button
+        type="button"
+        onClick={signIn}
+        disabled={busy}
+        className="min-h-12 w-full text-[15px]"
+      >
         <GoogleMark />
         {busy ? (
           <>
