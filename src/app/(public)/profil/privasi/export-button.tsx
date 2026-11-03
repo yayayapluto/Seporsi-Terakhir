@@ -2,6 +2,7 @@
 
 import { Download } from "lucide-react";
 import { useState, useTransition } from "react";
+import { SieraAlert } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { buildDataExport } from "@/lib/data-export";
@@ -79,14 +80,7 @@ export function ExportButton({ role }: { role: string }) {
 
   return (
     <div className="flex flex-col gap-2">
-      {error && (
-        <p
-          role="alert"
-          className="rounded-xl border border-[#F3C2C2] bg-[#FDECEC] px-4 py-3 text-sm text-[#BA1A1A]"
-        >
-          {error}
-        </p>
-      )}
+      {error && <SieraAlert variant="error">{error}</SieraAlert>}
       <Button type="button" onClick={onExport} disabled={pending} className="min-h-11 w-full">
         {pending ? (
           <>
