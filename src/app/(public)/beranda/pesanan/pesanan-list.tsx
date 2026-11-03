@@ -126,10 +126,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
           <motion.ul
             data-tour="order-list"
             layout={!reduce}
-            className={cn(
-              sieraCardClass,
-              "flex flex-col divide-y divide-dashed divide-line px-4 overflow-hidden",
-            )}
+            className="flex min-w-0 flex-col gap-3"
           >
             {filtered.map((o) => (
               <motion.li
@@ -142,7 +139,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                       animate: { opacity: 1, y: 0 },
                       transition: { duration: 0.2, ease: "easeOut" as const },
                     })}
-                className="flex flex-col gap-3 py-4"
+                className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}
               >
                 <div className="flex items-center gap-3">
                   <SieraTile>
@@ -167,6 +164,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                     )}
                   </div>
                 </div>
+                <div className="border-t border-dashed border-line" />
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-base font-extrabold text-accent-strong">
                     {formatIDR(o.discountPriceSnapshot * o.quantity)}
