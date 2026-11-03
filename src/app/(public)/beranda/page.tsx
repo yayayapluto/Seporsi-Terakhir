@@ -13,6 +13,7 @@ import { formatDateTimeWIB } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
+import { ROUTES, pesananDetail } from "@/lib/routes";
 import { OnboardBanner } from "./onboard-banner";
 import { SoonScroller } from "./soon-scroller";
 
@@ -109,9 +110,9 @@ export default async function BerandaPage({
   const autoChain = shouldAutoChain(showOnboard, tourForced || tourJourney);
   return (
     <>
-      <AppHeader title="Beranda" trail={[{ label: "Beranda", href: "/beranda" }]} />
+      <AppHeader title="Beranda" trail={[{ label: "Beranda" }]} />
       <div className="flex-1 bg-background">
-        <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl lg:max-w-6xl lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-x-8 lg:px-8">
+        <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-x-8">
           <section
             className="flex w-full flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5 lg:col-span-2 lg:p-6"
             id="tour-hero"
@@ -142,7 +143,7 @@ export default async function BerandaPage({
             userId={user.id}
             fresh={sp.fresh === "1"}
             entryStep={tourEntry}
-            next={tourJourney || autoChain ? (getJourneyNext("/beranda") ?? undefined) : undefined}
+            next={tourJourney || autoChain ? (getJourneyNext(ROUTES.beranda) ?? undefined) : undefined}
             journeyLabel="Bagian 1 dari 4 · Beranda"
             intro={{
               title: "Mau lihat panduan singkat beranda?",
@@ -202,7 +203,7 @@ async function ActiveOrdersBody() {
           Pesanan aktif ({orders.length})
         </h2>
         <Link
-          href="/pesanan"
+          href={ROUTES.pesanan}
           className="min-h-11 content-center text-sm font-bold text-[#2E7D4F] underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
         >
           Lihat Semua
@@ -216,7 +217,7 @@ async function ActiveOrdersBody() {
           return (
             <li key={o.orderId}>
               <Link
-                href={`/pesanan/${o.orderId}`}
+                href={pesananDetail(o.orderId)}
                 className="flex min-h-11 items-center gap-3 py-3"
               >
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#DCEBE0] text-[#1E5A36]">
@@ -252,22 +253,14 @@ async function SoonBody() {
   const { portions, failed } = await loadSoon();
   if (failed) {
     return (
-      <div
+      <EmptyState
         id="tour-catalog"
-        className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-8 text-center"
-      >
-        <p className="text-sm font-bold text-[#1C2826]">Katalog gagal dimuat.</p>
-        <p className="text-sm text-[#64746B]">Koneksi bermasalah. Muat ulang buat coba lagi.</p>
-        <Link
-          href="/beranda"
-          className={buttonVariants({
-            className:
-              "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
-          })}
-        >
-          Muat ulang
-        </Link>
-      </div>
+        compact
+        title="Katalog gagal dimuat."
+        hint="Koneksi bermasalah. Muat ulang buat coba lagi."
+        ctaHref="/beranda"
+        ctaLabel="Muat ulang"
+      />
     );
   }
   if (portions.length === 0) {
@@ -277,7 +270,7 @@ async function SoonBody() {
         compact
         title="Belum ada porsi sore ini."
         hint="Biasanya kantin mulai posting sekitar 15.30–16.30. Cek lagi nanti sore."
-        ctaHref="/katalog"
+        ctaHref={ROUTES.katalog}
         ctaLabel="Buka katalog"
       />
     );
@@ -289,7 +282,7 @@ async function SoonBody() {
           Katalog sore ini ({portions.length})
         </h2>
         <Link
-          href="/katalog"
+          href={ROUTES.katalog}
           className="min-h-11 content-center text-sm font-bold text-[#2E7D4F] underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
         >
           Lihat Semua
@@ -297,7 +290,7 @@ async function SoonBody() {
       </div>
       <SoonScroller portions={portions} />
       <Link
-        href="/katalog"
+        href={ROUTES.katalog}
         className={buttonVariants({
           className:
             "mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",

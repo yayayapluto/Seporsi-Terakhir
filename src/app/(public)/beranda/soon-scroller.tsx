@@ -9,6 +9,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { sieraCardClass } from "@/components/siera";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { katalogDetail } from "@/lib/routes";
 import type { SoonPortion } from "./page";
 
 /** Row katalog geser: drag Motion + progress bar + tombol (desktop). Fallback scroll native bila reduced-motion. */
@@ -66,7 +67,7 @@ export function SoonScroller({ portions }: { portions: SoonPortion[] }) {
         key={p.id}
         className={cn(sieraCardClass, "w-[240px] shrink-0 snap-start overflow-hidden")}
       >
-        <Link href={`/katalog/${p.id}`} className="flex min-h-11 flex-col">
+        <Link href={katalogDetail(p.id)} className="flex min-h-11 flex-col">
           <span className="relative block h-28 w-full shrink-0 overflow-hidden bg-[#F4EFE6]">
             {p.imageUrl && !broken.has(p.id) ? (
               <Image
