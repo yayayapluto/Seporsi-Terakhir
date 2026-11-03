@@ -195,3 +195,4 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 - Profil anti-overlap `tablet`: label "Dampak kamu sejauh ini" -> "Dampakmu", "Pesanan, katalog & pengaturan" -> "Pesanan & pengaturan"; grid 2 kolom naik ke `lg` + `minmax(0,1fr)` (tablet 1 kolom). Copy dipadatkan, bukan dihapus; tour anchors utuh.
 - Profil keterangan estimasi: kartu `sieraCardClass` dilepas -> teks kecil `px-1 text-[11px] text-muted` tanpa kartu (boleh tanpa kartu, hanya bila diperlukan). Dampak `dl` tetap card 3 kolom.
 - Profil revert `sejajarkan` (atas permintaan user, numpuk di tablet): `page.tsx` + `siera.tsx` kembali ke `f50c433`. Label panjang, dampak responsif 1->3 kolom, nav/bantuan susun lama. Log adopsi + footnote tetap tercatat; perbaikan numpuk ditunda sampai arahan baru.
+- Profil grid rata: label "Dampakmu" + "Pesanan & pengaturan", `dl` selalu 3 kolom simetris, footnote teks kecil tanpa kartu, `SieraSection` gap-2 global. Tanpa dep baru.
