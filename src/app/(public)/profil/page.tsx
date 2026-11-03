@@ -144,34 +144,34 @@ export default async function ProfilPage({
   return (
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
-      <div className="grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-8">
-        {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
-        <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
-          <div className="flex items-center gap-4">
-            {p.avatarPath ? (
-              <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
-            ) : (
-              <span
-                aria-hidden
-                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-lg font-extrabold text-[#1E5A36] md:size-16 md:text-xl"
-              >
-                {initials || "•"}
-              </span>
-            )}
-            <div className="min-w-0">
-              <h1 className="truncate text-[18px] leading-snug font-semibold md:text-[20px]">
-                {p.fullName}
-              </h1>
-              {p.email && <p className="truncate text-sm text-[#64746B]">{p.email}</p>}
-              {label && (
-                <p className="mt-1.5 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
-                  {label}
-                </p>
-              )}
-            </div>
-          </div>
-        </section>
+      <div className="grid w-full min-w-0 max-w-[1280px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-6 lg:grid-cols-2 lg:gap-6">
         <div className="flex min-w-0 flex-col gap-8">
+          {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
+          <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
+            <div className="flex items-center gap-4">
+              {p.avatarPath ? (
+                <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
+              ) : (
+                <span
+                  aria-hidden
+                  className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-lg font-extrabold text-[#1E5A36] md:size-16 md:text-xl"
+                >
+                  {initials || "•"}
+                </span>
+              )}
+              <div className="min-w-0">
+                <h1 className="truncate text-[18px] leading-snug font-semibold md:text-[20px]">
+                  {p.fullName}
+                </h1>
+                {p.email && <p className="truncate text-sm text-[#64746B]">{p.email}</p>}
+                {label && (
+                  <p className="mt-1.5 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
+                    {label}
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
           {/* Dampak — khusus student */}
           {isStudent && (
             <section aria-labelledby="dampak-heading" className="flex min-w-0 flex-col gap-2">
@@ -262,7 +262,8 @@ export default async function ProfilPage({
               </SieraList>
             </SieraSection>
           )}
-
+        </div>
+        <div className="flex min-w-0 flex-col gap-8">
           {/* Navigasi — Grouped List Card */}
           <SieraSection
             id="riwayat-heading"
