@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GuidedTour } from "@/components/guided-tour";
-import { SieraCard, SieraSectionTitle, sieraCardClass } from "@/components/siera";
+import { SieraCard, SieraEmpty, SieraSectionTitle, sieraCardClass } from "@/components/siera";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
-import { ROUTES, katalogDetail } from "@/lib/routes";
+import { katalogDetail, ROUTES } from "@/lib/routes";
 import { getJourneyNext } from "@/lib/tour-journey";
 import type { CatalogPortion } from "./page";
 
@@ -201,19 +201,19 @@ export function KatalogList({
         </fieldset>
       </div>
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center">
-          <p className="text-sm font-bold text-[#1C2826]">Belum ada porsi sore ini.</p>
-          <p className="text-sm text-[#64746B]">
-            Biasanya tenant posting sekitar 15.30–16.30. Cek lagi nanti sore.
-          </p>
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#2E7D4F] px-2.5 text-[15px] font-bold text-white outline-none transition-colors hover:bg-[#256B41] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] focus-visible:ring-offset-2 active:translate-y-px"
-          >
-            Muat ulang
-          </button>
-        </div>
+        <SieraEmpty
+          title="Belum ada porsi sore ini."
+          hint="Biasanya tenant posting sekitar 15.30–16.30. Cek lagi nanti sore."
+          action={
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#2E7D4F] px-2.5 text-[15px] font-bold text-white outline-none transition-colors hover:bg-[#256B41] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] focus-visible:ring-offset-2 active:translate-y-px"
+            >
+              Muat ulang
+            </button>
+          }
+        />
       ) : view === "grid" ? (
         <motion.ul
           layout={!reduce}
@@ -268,8 +268,7 @@ export function KatalogList({
                         </span>
                         <span className="truncate text-[13px] text-[#64746B]">{p.tenantName}</span>
                       </span>
-                      <span aria-hidden className="mx-4 border-t border-dashed border-line" />
-                      <span className="flex flex-col gap-1 p-4 pt-3">
+                      <span className="flex flex-col gap-1 px-4 pt-3">
                         <span className="flex items-center gap-1.5 text-[13px] text-[#64746B]">
                           <Clock3 className="size-4 shrink-0" aria-hidden />
                           Dimasak {formatDateTimeWIB(new Date(p.cookedAt))} · Sisa{" "}
@@ -287,6 +286,15 @@ export function KatalogList({
                           </span>
                         )}
                       </span>
+                      {!soldOut && (
+                        <>
+                          <span aria-hidden className="mx-4 border-t border-dashed border-line" />
+                          <span className="flex min-h-11 items-center justify-between px-4 pt-1 pb-4 text-sm font-bold text-[#1E5A36]">
+                            Lihat &amp; Pesan
+                            <ChevronRight className="size-5 shrink-0" aria-hidden />
+                          </span>
+                        </>
+                      )}
                     </>
                   );
                   return soldOut ? (
