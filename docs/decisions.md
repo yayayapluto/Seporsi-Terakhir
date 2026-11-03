@@ -233,3 +233,10 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 - Format 8 file (Biome safe fix: organize-imports + formatter): `notifs.ts`, `app-bottomnav.tsx`, `site-footer.tsx` (indent Mini), `profil/edit-button.tsx`, `porsi/actions.ts`, `pesanan/[id]/cancel-button.tsx`, `operasional/page.tsx`, `akun/pengaturan/page.tsx` (untracked milik D). Bukan keputusan desain — murni Biome --write.
 - `globals.css` (`noImportantStyles` 141-142, reduced-motion `!important`) TIDAK disentuh — perlu keputusan desain pemilik (hapus `!important` = ubah perilaku reduced-motion). Satu-satunya sisa lint.
 - Hasil: `bun run check` hijau KECUALI 1 file itu; `bun run build` exit 0; test 106/106.
+
+## Merge-gate HIJAU PENUH (koordinator, verifikasi eksplisit)
+- `bun run lint` LINT-EXIT:0 (244 file, 2 warnings `globals.css` noImportantStyles 141-142 — warning, bukan error; perilaku reduced-motion dipertahankan).
+- `bun run check` CHECK-EXIT:0 (lint + typecheck + test 19/106).
+- `bun run build` BUILD-EXIT:0 (0 error).
+- serve `:3001` `/` 200.
+- Artinya: worktree 29+7 file SAAT INI lolos semua gerbang. Satu-satunya merah tersisa = 2 warning yang disengaja (reduced-motion guard).
