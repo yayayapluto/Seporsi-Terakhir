@@ -43,24 +43,24 @@ function Group({ heading, label, rows }: { heading: string; label: string; rows:
 
 /** Pengaturan per role: standar lengkap + menu sesuai peran. Tanpa backend baru. */
 export default async function PengaturanPage() {
-  const current = await requireRole(ROUTES.akunPengaturan, "student", "tenant", "admin");
+  const current = await requireRole(ROUTES.profilPengaturan, "student", "tenant", "admin");
 
   const akun: Row[] = [
     { href: ROUTES.profil, icon: UserRound, title: "Profil", desc: "Ubah nama dan info akunmu" },
     {
-      href: ROUTES.akunKeamanan,
+      href: ROUTES.profilKeamanan,
       icon: ShieldCheck,
       title: "Keamanan",
       desc: "Ubah sandi dan keluar perangkat",
     },
     {
-      href: ROUTES.akunNotifikasi,
+      href: ROUTES.profilNotifikasi,
       icon: Bell,
       title: "Notifikasi",
       desc: "Bunyi untuk kabar pesanan",
     },
     {
-      href: ROUTES.akunPrivasi,
+      href: ROUTES.profilPrivasi,
       icon: Database,
       title: "Privasi & data",
       desc: "Ambil data kamu (JSON)",
@@ -85,7 +85,7 @@ export default async function PengaturanPage() {
         ]
       : [
           {
-            href: ROUTES.akunBantuan,
+            href: ROUTES.profilBantuan,
             icon: CircleHelp,
             title: "Bantuan & lapor",
             desc: "Jawaban cepat dan lapor masalah",
@@ -112,7 +112,10 @@ export default async function PengaturanPage() {
 
   return (
     <>
-      <AppHeader title="Pengaturan" trail={[{ label: "Pengaturan", href: ROUTES.akunPengaturan }]} />
+      <AppHeader
+        title="Pengaturan"
+        trail={[{ label: "Profil", href: ROUTES.profil }, { label: "Pengaturan" }]}
+      />
       <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-6 px-4 py-6 md:grid-cols-2 md:px-8">
         <div className="flex flex-col gap-1 md:col-span-2">
           <h1 className="text-[18px] leading-[1.3] font-extrabold">Pengaturan</h1>
