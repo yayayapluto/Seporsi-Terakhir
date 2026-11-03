@@ -222,3 +222,9 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 ## Merge-gate dev-login (koordinator, file QA/smoke untracked)
 - `src/app/(public)/masuk/dev-login-card.tsx` + `src/app/api/dev/*` + `src/lib/auth/dev-login*.ts` = untracked milik QA/smoke (prompt-qa-smoke), bukan shard tabel mana pun. Per 2026-11-03: sintaks pulih, TS hijau. Dibiarkan untracked; keputusan commit = pemilik QA, bukan koordinator.
 - `globals.css` + `src/app/akun/**` kembali merah di lint milik paralel (RailD-Admin) — bukan milik koordinator, dikembalikan ke pemilik shard D.
+- Dev-login E2E: `GET/POST /api/dev/login` (dev-only, 404 di prod; allowlist `SEED_ACCOUNTS`; `next` via `isSafeNext`; password `SEED_PASSWORD` server-side, anon key, tanpa service-role) + `DevLoginCard` di `/masuk` (dev-only) + helper `loginAsDev` + prompt `prompts/dev-login-e2e.md`. Alasan: hilangkan flaky Yopmail/Google dari E2E. `magic-link.ts`/`yopmail.ts` deprecated, dihapus setelah semua spec migrasi.
+
+## Merge-gate format massal (koordinator, lint src bersih)
+- Format 6 file milik QA/smoke/onboarding yang merah format: `api/dev/login/route.ts`, `tests/e2e/helpers/dev-login.ts`, `tour-journey.test.ts`, `auth/redirect.test.ts`, `masuk/page.tsx`, `masuk/dev-login-card.tsx`. Alasan: file asing penyebab `bun run lint`/`check` merah sudah di-ignore; sisa merah hanya format di file src. Bukan keputusan desain — murni Biome --write.
+- Revert 2 file helper e2e (`magic-link.ts`, `yopmail.ts`) yang ikut ke-format di luar scope (organize-imports churn) — bukan milik gate ini.
+- `globals.css` (`noImportantStyles` reduced-motion) + `notifs.ts/site-footer/app-bottomnav/edit-button/porsi-actions/cancel-button/operasional` (lint rules milik shard lain) TIDAK disentuh — dikembalikan ke pemilik shard.
