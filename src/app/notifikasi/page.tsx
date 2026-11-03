@@ -3,8 +3,8 @@ import { EmptyState } from "@/components/empty-state";
 import { NotifLive } from "@/components/notif-live";
 import { NotifRow } from "@/components/notif-row";
 import { requireRole } from "@/lib/auth";
-import { ROUTES } from "@/lib/routes";
 import { loadNotifs } from "@/lib/notifs";
+import { ROUTES } from "@/lib/routes";
 import { getOwnTenant } from "@/lib/tenant";
 
 /** Notifikasi per role dari tabel yang sudah ada: student = status pesanannya, tenant = reservasi masuk, admin = pendaftaran menunggu. */
