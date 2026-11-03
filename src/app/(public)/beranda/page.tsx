@@ -43,7 +43,6 @@ interface ActiveOrder {
 async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }> {
   const supabase = await createClient();
   const now = new Date();
-  const t0 = Date.now();
   const { data, error } = await supabase
     .from("portions")
     .select(
@@ -53,8 +52,6 @@ async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }>
     .lte("release_at", now.toISOString())
     .order("expires_at", { ascending: true })
     .limit(6);
-  // ponytail: log sementara Fase 1 ukur ms query; hapus sebelum Fase 2.
-  console.log(`[ukur] beranda.soon ${Date.now() - t0}ms`);
   if (error || !data) return { portions: [], failed: true };
   const out: SoonPortion[] = [];
   for (const row of data) {
@@ -81,13 +78,10 @@ async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }>
 
 async function loadActiveOrders(): Promise<ActiveOrder[]> {
   const supabase = await createClient();
-  const t1 = Date.now();
   const { data, error } = (await supabase.rpc("my_orders")) as {
     data: Array<Record<string, unknown>> | null;
     error: { message: string } | null;
   };
-  // ponytail: log sementara Fase 1 ukur ms query; hapus sebelum Fase 2.
-  console.log(`[ukur] beranda.my_orders ${Date.now() - t1}ms`);
   if (error || !data) return [];
   return data
     .filter((o) => String(o.status) === "reserved")
@@ -155,65 +149,68 @@ export default async function BerandaPage({
         <SieraRailPage
           asideLabel="Ringkasan beranda"
           main={
-            <>
-              <div id="tour-hero">
-                <SieraHero
-                  eyebrow={firstName ? `${greet}, ${firstName}` : greet}
-                  title="Kantin hampir tutup, masih ada yang enak."
-                >
-                  <p>
-                    Sisa dagangan hari ini dijual miring. Ambil jam 16.30 sampai 18.30, bayar di
-                    tempat.
-                  </p>
-                </SieraHero>
+            <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-5">
+              <div className="flex min-w-0 flex-col gap-4 lg:max-h-[calc(100dvh-220px)] lg:gap-5">
+                <div id="tour-hero">
+                  <SieraHero
+                    eyebrow={firstName ? `${greet}, ${firstName}` : greet}
+                    title="Kantin hampir tutup, masih ada yang enak."
+                  >
+                    <p>
+                      Sisa dagangan hari ini dijual miring. Ambil jam 16.30 sampai 18.30, bayar di
+                      tempat.
+                    </p>
+                  </SieraHero>
+                </div>
+                {showOnboard && <OnboardBanner />}
+                <div className="min-h-0 flex-1 lg:overflow-y-auto">
+                  <SoonSection portions={portions} failed={soonFailed} />
+                </div>
               </div>
-              {showOnboard && <OnboardBanner />}
-              <ActiveOrdersSection orders={activeOrders} />
-              <SoonSection portions={portions} failed={soonFailed} />
-              <GuidedTour
-                tourKey="beranda"
-                forced={tourForced}
-                auto={autoChain}
-                journey={tourJourney || autoChain}
-                userId={user.id}
-                fresh={sp.fresh === "1"}
-                entryStep={tourEntry}
-                next={
-                  tourJourney || autoChain
-                    ? (getJourneyNext(ROUTES.beranda) ?? undefined)
-                    : undefined
-                }
-                journeyLabel="Bagian 1 dari 4 · Beranda"
-                intro={{
-                  title: "Mau lihat panduan singkat beranda?",
-                  body: "Kami tunjukkan bagian yang penting buat kamu. Lewati atau ulangi kapan saja.",
-                }}
-                steps={[
-                  {
-                    target: "#tour-hero",
-                    title: "Mulai dari sini",
-                    body: "Sapaan dan info pengambilan hari ini ada di kartu ini. Jam ambil dan cara bayar selalu tertulis di sini.",
-                  },
-                  {
-                    target: "#tour-orders",
-                    title: "Pesananmu yang aktif",
-                    body: "Semua pesanan yang menunggu diambil kumpul di sini. Buka salah satu buat lihat QR dan detailnya.",
-                  },
-                  {
-                    target: "#tour-catalog",
-                    title: "Katalog sore ini",
-                    body: "Porsi yang dijual hari ini muncul di sini. Lihat semuanya, lalu buka kartunya buat pesan.",
-                  },
-                ]}
-              />
-            </>
+              <div className="min-h-0 lg:sticky lg:top-[76px] lg:max-h-[calc(100dvh-220px)] lg:overflow-y-auto">
+                <ActiveOrdersSection orders={activeOrders} />
+              </div>
+            </div>
           }
           aside={
             <div className="hidden min-w-0 flex-col gap-4 lg:gap-5 xl:flex">
               <SoonRailCard portions={portions.slice(0, 3)} failed={soonFailed} />
-              <OrdersRailCard orders={activeOrders} />
             </div>
           }
+        />
+        <GuidedTour
+          tourKey="beranda"
+          forced={tourForced}
+          auto={autoChain}
+          journey={tourJourney || autoChain}
+          userId={user.id}
+          fresh={sp.fresh === "1"}
+          entryStep={tourEntry}
+          next={
+            tourJourney || autoChain ? (getJourneyNext(ROUTES.beranda) ?? undefined) : undefined
+          }
+          journeyLabel="Bagian 1 dari 4 · Beranda"
+          intro={{
+            title: "Mau lihat panduan singkat beranda?",
+            body: "Kami tunjukkan bagian yang penting buat kamu. Lewati atau ulangi kapan saja.",
+          }}
+          steps={[
+            {
+              target: "#tour-hero",
+              title: "Mulai dari sini",
+              body: "Sapaan dan info pengambilan hari ini ada di kartu ini. Jam ambil dan cara bayar selalu tertulis di sini.",
+            },
+            {
+              target: "#tour-orders",
+              title: "Pesananmu yang aktif",
+              body: "Semua pesanan yang menunggu diambil kumpul di sini. Buka salah satu buat lihat QR dan detailnya.",
+            },
+            {
+              target: "#tour-catalog",
+              title: "Katalog sore ini",
+              body: "Porsi yang dijual hari ini muncul di sini. Lihat semuanya, lalu buka kartunya buat pesan.",
+            },
+          ]}
         />
       </div>
     </>
@@ -277,25 +274,6 @@ function ActiveOrdersSection({ orders }: { orders: ActiveOrder[] }) {
         <ActiveOrderList orders={orders} />
       </SieraSection>
     </div>
-  );
-}
-
-function OrdersRailCard({ orders }: { orders: ActiveOrder[] }) {
-  if (orders.length === 0) return null;
-  return (
-    <SieraSection
-      label={`Pesanan aktif (${orders.length})`}
-      action={
-        <Link
-          href={ROUTES.pesanan}
-          className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
-        >
-          Lihat Semua
-        </Link>
-      }
-    >
-      <ActiveOrderList orders={orders} />
-    </SieraSection>
   );
 }
 

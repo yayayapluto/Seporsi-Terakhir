@@ -240,3 +240,4 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 - `bun run build` BUILD-EXIT:0 (0 error).
 - serve `:3001` `/` 200.
 - Artinya: worktree 29+7 file SAAT INI lolos semua gerbang. Satu-satunya merah tersisa = 2 warning yang disengaja (reduced-motion guard).
+- Beranda 3 kolom compact: `OrdersRailCard` (duplikat pesanan aktif) dibuang; rel hanya `SoonRailCard` (kosong bila tak ada porsi). Main = grid A hero+katalog | B pesanan (scroll internal `100dvh-220px`, sticky B).
