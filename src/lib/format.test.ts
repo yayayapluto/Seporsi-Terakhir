@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nowInWib, wibDayRangeUtc, wibTodayRange } from "./format";
+import { namaToInitials, nowInWib, wibDayRangeUtc, wibTodayRange } from "./format";
 
 describe("wibDayRangeUtc", () => {
   it("memetakan batas hari WIB ke UTC", () => {
@@ -29,5 +29,13 @@ describe("wibTodayRange", () => {
 describe("nowInWib", () => {
   it("menggeser ke jam dinding Jakarta", () => {
     expect(nowInWib(new Date("2026-10-30T10:00:00Z")).getHours()).toBe(17);
+  });
+});
+
+describe("namaToInitials", () => {
+  it("ambil 2 huruf depan kapital", () => {
+    expect(namaToInitials("Ayu Lestari Putri")).toBe("AL");
+    expect(namaToInitials("  budi ")).toBe("B");
+    expect(namaToInitials("")).toBe("");
   });
 });

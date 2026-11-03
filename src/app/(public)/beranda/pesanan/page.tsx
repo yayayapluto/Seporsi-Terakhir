@@ -1,0 +1,176 @@
+import { cn } from "cn";
+import { Check, Clock3, X } from "lucide-react";
+import { AppHeader } from "@/components/app-header";
+import { GuidedTour } from "@/components/guided-tour";
+import {
+  SieraHero,
+  SieraRailPage,
+  SieraSection,
+  SieraStat,
+  SieraStatStrip,
+  sieraCardClass,
+} from "@/components/siera";
+import { requireRole } from "@/lib/auth";
+import { formatIDR } from "@/lib/format";
+import { ROUTES } from "@/lib/routes";
+import { createClient } from "@/lib/supabase/server";
+import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
+import { OrdersList } from "./pesanan-list";
+import { QrModal } from "./qr-modal";
+
+export interface MyOrder {
+  orderId: string;
+  status: string;
+  quantity: number;
+  createdAt: string;
+  pickedUpAt: string | null;
+  normalPriceSnapshot: number;
+  discountPriceSnapshot: number;
+  menuName: string;
+  tenantName: string;
+  tenantLocation: string | null;
+}
+
+async function loadOrders(): Promise<{ orders: MyOrder[]; error: string | null }> {
+  const supabase = await createClient();
+  const t0 = Date.now();
+  const { data, error } = (await supabase.rpc("my_orders")) as {
+    data: Array<Record<string, unknown>> | null;
+    error: { message: string } | null;
+  };
+  console.log(`[ukur] pesanan.my_orders ${Date.now() - t0}ms`);
+  if (error) return { orders: [], error: "Gagal memuat pesanan. Coba lagi." };
+  return {
+    orders: (data ?? []).map((o) => ({
+      orderId: String(o.order_id),
+      status: String(o.status),
+      quantity: Number(o.quantity),
+      createdAt: String(o.created_at),
+      pickedUpAt: (o.picked_up_at as string | null) ?? null,
+      normalPriceSnapshot: Number(o.normal_price_snapshot),
+      discountPriceSnapshot: Number(o.discount_price_snapshot),
+      menuName: String(o.menu_name),
+      tenantName: String(o.tenant_name),
+      tenantLocation: (o.tenant_location as string | null) ?? null,
+    })),
+    error: null,
+  };
+}
+
+export default async function PesananPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    mode?: string;
+    tour?: string;
+    panduan?: string;
+    langkah?: string;
+    fresh?: string;
+  }>;
+}) {
+  const { user } = await requireRole(ROUTES.pesanan, "student");
+  const { orders, error } = await loadOrders();
+  const sp = (await searchParams) ?? {};
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
+  const nextActive = orders.find((o) => o.status === "reserved") ?? null;
+  return (
+    <>
+      <AppHeader
+        title="Pesanan"
+        trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Pesanan" }]}
+      />
+      <SieraRailPage
+        asideLabel="QR pickup aktif"
+        main={
+          <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-2 lg:gap-5">
+            <div className="flex min-w-0 flex-col gap-4 lg:max-h-[calc(100dvh-220px)] lg:gap-5">
+              <SieraHero eyebrow="Riwayat & aktif" title="Pesanan saya">
+                Porsi yang kamu kunci. Tunjukkan QR saat ambil, bayar di tempat.
+              </SieraHero>
+              <div className="min-h-0 flex-1 lg:overflow-y-auto">
+                <OrdersList orders={orders} loadError={error} />
+              </div>
+            </div>
+            <div className="min-h-0 lg:sticky lg:top-[76px] lg:max-h-[calc(100dvh-220px)] lg:overflow-y-auto">
+              <SieraSection id="status-heading" label="Status ringkas">
+                <SieraStatStrip>
+                  <SieraStat
+                    icon={Clock3}
+                    value={orders.filter((o) => o.status === "reserved").length}
+                    label="Menunggu pickup"
+                  />
+                  <SieraStat
+                    icon={Check}
+                    value={orders.filter((o) => o.status === "picked_up").length}
+                    label="Selesai"
+                  />
+                  <SieraStat
+                    icon={X}
+                    value={orders.filter((o) => o.status === "cancelled").length}
+                    label="Dibatalkan"
+                  />
+                </SieraStatStrip>
+              </SieraSection>
+            </div>
+          </div>
+        }
+        aside={
+          <SieraSection id="qr-aktif-heading" label="QR pickup aktif">
+            {nextActive ? (
+              <div className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}>
+                <div className="min-w-0">
+                  <p className="truncate text-[15px] font-bold text-[#1C2826]">
+                    {nextActive.menuName}{" "}
+                    <span className="font-semibold">× {nextActive.quantity}</span>
+                  </p>
+                  <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
+                    {nextActive.tenantName}
+                    {nextActive.tenantLocation ? ` · ${nextActive.tenantLocation}` : ""}
+                  </p>
+                  <p className="mt-1 text-base font-extrabold text-accent-strong">
+                    {formatIDR(nextActive.discountPriceSnapshot * nextActive.quantity)}
+                  </p>
+                </div>
+                <QrModal order={nextActive} />
+              </div>
+            ) : (
+              <div className={cn(sieraCardClass, "border-dashed p-4 text-center")}>
+                <p className="text-sm font-bold text-[#1C2826]">Tidak ada pickup aktif</p>
+                <p className="mt-1 text-[13px] text-[#64746B]">
+                  Pesanan aktif akan muncul di sini.
+                </p>
+              </div>
+            )}
+          </SieraSection>
+        }
+      />
+      <GuidedTour
+        tourKey="pesanan"
+        forced={tourForced}
+        auto={false}
+        journey={tourJourney}
+        userId={user.id}
+        fresh={sp.fresh === "1"}
+        entryStep={tourEntry}
+        next={tourJourney ? (getJourneyNext(ROUTES.pesanan) ?? undefined) : undefined}
+        journeyLabel="Bagian 3 dari 4 · Pesanan"
+        intro={{
+          title: "Lacak pesananmu?",
+          body: "Semua porsi yang kamu kunci ada di sini. Saring status, buka QR, atau batalkan bila berubah pikiran.",
+        }}
+        steps={[
+          {
+            target: '[data-tour="order-filter"]',
+            title: "Saring status",
+            body: "Pisahkan yang menunggu pickup, sudah selesai, atau dibatalkan.",
+          },
+          {
+            target: '[data-tour="order-list"] li:first-child',
+            title: "Satu pesanan",
+            body: "Buka QR pickup, lihat detail, atau batalkan selagi masih menunggu.",
+          },
+        ]}
+      />
+    </>
+  );
+}

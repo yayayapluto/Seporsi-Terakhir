@@ -1,6 +1,9 @@
 import { getCurrentUser } from "@/lib/auth";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
-import { type NavTab, NavTabs } from "./nav-tabs";
+import { AppBottomNav } from "./app-bottomnav";
+import { AppSidebar } from "./app-sidebar";
+import type { NavTab } from "./nav-shared";
 
 export async function unreadFor(role: string | null, userId: string | null): Promise<number> {
   if (!userId) return 0;
@@ -39,35 +42,32 @@ export async function unreadFor(role: string | null, userId: string | null): Pro
 }
 
 function tabsFor(role: string | null, unread: number): NavTab[] {
-  // ponytail: satu angka unread, satu lokasi badge per role. Header bell
-  // tetap satu-satunya indikator global; tab Notifikasi tanpa badge agar
-  // tidak ganda dengan tab Pesanan/Tenant.
   const badge = unread > 0 ? unread : undefined;
   if (role === "tenant")
     return [
-      { href: "/dasbor/tenant", label: "Dasbor", icon: "dashboard" },
-      { href: "/dasbor/tenant/scan", label: "Pindai", icon: "scan" },
-      { href: "/dasbor/tenant/pesanan", label: "Pesanan", icon: "orders", badge },
-      { href: "/dasbor/profil", label: "Akun", icon: "account" },
+      { href: ROUTES.tenant, label: "Dasbor", icon: "dashboard" },
+      { href: ROUTES.tenantScan, label: "Pindai", icon: "scan" },
+      { href: ROUTES.tenantPesanan, label: "Pesanan", icon: "orders", badge },
+      { href: ROUTES.profil, label: "Profil", icon: "account" },
     ];
   if (role === "admin")
     return [
-      { href: "/dasbor/admin", label: "Dampak", icon: "dashboard" },
-      { href: "/dasbor/admin/tenant", label: "Tenant", icon: "shield", badge },
-      { href: "/dasbor/katalog", label: "Katalog", icon: "store" },
-      { href: "/dasbor/profil", label: "Akun", icon: "account" },
+      { href: ROUTES.admin, label: "Dampak", icon: "dashboard" },
+      { href: ROUTES.adminTenant, label: "Tenant", icon: "shield", badge },
+      { href: ROUTES.katalog, label: "Katalog", icon: "store" },
+      { href: ROUTES.profil, label: "Profil", icon: "account" },
     ];
   if (role === "student")
     return [
-      { href: "/dasbor/beranda", label: "Beranda", icon: "home" },
-      { href: "/dasbor/katalog", label: "Katalog", icon: "store" },
-      { href: "/dasbor/pesanan", label: "Pesanan", icon: "orders", badge },
-      { href: "/dasbor/profil", label: "Akun", icon: "account" },
+      { href: ROUTES.beranda, label: "Beranda", icon: "home" },
+      { href: ROUTES.katalog, label: "Katalog", icon: "store" },
+      { href: ROUTES.pesanan, label: "Pesanan", icon: "orders", badge },
+      { href: ROUTES.profil, label: "Profil", icon: "account" },
     ];
   return [
-    { href: "/beranda", label: "Beranda", icon: "home" },
-    { href: "/katalog", label: "Katalog", icon: "store" },
-    { href: "/masuk", label: "Masuk", icon: "account" },
+    { href: ROUTES.beranda, label: "Beranda", icon: "home" },
+    { href: ROUTES.katalog, label: "Katalog", icon: "store" },
+    { href: ROUTES.masuk, label: "Masuk", icon: "account" },
   ];
 }
 
@@ -75,5 +75,11 @@ function tabsFor(role: string | null, unread: number): NavTab[] {
 export async function BottomNav() {
   const current = await getCurrentUser();
   const unread = await unreadFor(current?.role ?? null, current?.user.id ?? null);
-  return <NavTabs tabs={tabsFor(current?.role ?? null, unread)} />;
+  const tabs = tabsFor(current?.role ?? null, unread);
+  return (
+    <>
+      <AppBottomNav tabs={tabs} />
+      <AppSidebar tabs={tabs} />
+    </>
+  );
 }

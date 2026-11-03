@@ -21,3 +21,6 @@ export const APP_TIMEZONE = "Asia/Jakarta";
 
 /** Max quantity per order [usulan — see docs/decisions.md]. */
 export const MAX_QUANTITY_PER_ORDER = 2;
+
+/** Max portions per day per student (sinkron API + UI katalog). */
+export const MAX_PORTIONS_PER_DAY = 2;

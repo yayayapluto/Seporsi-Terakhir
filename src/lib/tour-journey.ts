@@ -1,3 +1,5 @@
+import { ROUTES } from "./routes";
+
 /**
  * Rantai onboarding student: beranda -> katalog -> pesanan -> profil.
  *
@@ -7,9 +9,9 @@
  */
 
 const JOURNEY_CHAIN: Record<string, string> = {
-  "/beranda": "/katalog?panduan=rantai&langkah=0",
-  "/katalog": "/pesanan?panduan=rantai&langkah=0",
-  "/pesanan": "/profil?panduan=rantai&langkah=0",
+  [ROUTES.beranda]: `${ROUTES.katalog}?panduan=rantai&langkah=0`,
+  [ROUTES.katalog]: `${ROUTES.pesanan}?panduan=rantai&langkah=0`,
+  [ROUTES.pesanan]: `${ROUTES.profil}?panduan=rantai&langkah=0`,
 };
 
 export function parseTourParams(sp: {

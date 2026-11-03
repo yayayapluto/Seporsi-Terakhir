@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { getJourneyResume } from "@/components/guided-tour";
+import { Button } from "@/components/ui/button";
 
 const KEY = "onboard-beranda-v1";
 
@@ -34,20 +35,22 @@ export function OnboardBanner() {
         </Link>{" "}
         atau{" "}
         <Link
-          href="/cara-kerja"
+          href="/#cara-kerja"
           className="font-bold text-[#1E5A36] underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
         >
           lihat cara kerja
         </Link>
       </p>
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="icon"
         onClick={dismiss}
         aria-label="Tutup panduan"
-        className="absolute top-2 right-2 flex size-11 items-center justify-center rounded-full text-[#1E5A36] outline-none hover:bg-white/60 focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+        className="absolute top-2 right-2 size-11 rounded-full text-[#1E5A36] hover:bg-white/60"
       >
         <X className="size-6" strokeWidth={1.75} aria-hidden />
-      </button>
+      </Button>
     </section>
   );
 }

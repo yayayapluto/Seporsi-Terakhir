@@ -1,0 +1,28 @@
+#!/bin/sh
+# Conventional Commits: type(scope): deskripsi. Contoh: feat(katalog): tambah toggle grid
+# Bypass: --no-verify (hanya darurat, catat di docs/decisions.md).
+subject=$(grep -v '^#' "$1" | grep -v '^$' | head -n 1)
+
+case "$subject" in
+  Merge*|Revert*) exit 0;;
+esac
+
+if ! printf '%s' "$subject" | grep -Eq '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([^)]+\))?!?: [a-z]'; then
+  cat <<EOF
+[commit-msg] format salah: "$subject"
+Wajib: type(scope): deskripsi — huruf kecil sesudah ": ", misal:
+  feat(katalog): tambah toggle grid
+  fix(pesanan): qr modal tutup saat esc
+Type: feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert. Breaking: tambah "!" sebelum ":".
+EOF
+  exit 1
+fi
+
+case "$subject" in
+  *.) echo "[commit-msg] judul jangan diakhiri titik."; exit 1;;
+esac
+
+if [ "${#subject}" -gt 72 ]; then
+  echo "[commit-msg] peringatan: judul ${#subject} char (>72), usahakan ringkas."
+fi
+exit 0

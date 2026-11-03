@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { ROUTES } from "./routes";
 
 export interface NotifItem {
   id: string;
@@ -21,7 +22,7 @@ async function studentNotifs(): Promise<NotifItem[]> {
         id: String(o.order_id),
         title: picked ? "Pesanan selesai" : "Pesanan dibatalkan",
         desc: `${String(o.menu_name)} × ${Number(o.quantity)} — ${String(o.tenant_name)}`,
-        href: "/pesanan",
+        href: ROUTES.pesanan,
         time: String(o.picked_up_at ?? o.created_at),
       };
     })

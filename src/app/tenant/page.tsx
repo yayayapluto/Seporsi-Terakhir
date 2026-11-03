@@ -1,19 +1,35 @@
-import { CircleHelp, Package, ReceiptText, ScanLine, Wallet } from "lucide-react";
+import {
+  CircleCheck,
+  CircleHelp,
+  Hourglass,
+  Package,
+  ReceiptText,
+  ScanLine,
+  Timer,
+  TriangleAlert,
+  UtensilsCrossed,
+  Wallet,
+} from "lucide-react";
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import {
-  SieraCard,
+  SieraEmpty,
   SieraList,
+  SieraRailPage,
   SieraRowLink,
-  SieraSectionTitle,
+  SieraSection,
+  SieraStat,
+  SieraStatStrip,
   SieraTenantHeader,
-  SieraTile,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR, wibTodayRange } from "@/lib/format";
+import { ROUTES, tenantPorsiUbah } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { requireOwnTenant } from "./guard";
+import { TambahPorsiButton } from "./porsi/sheet-buttons";
+import TambahSheet from "./porsi/tambah-sheet";
 import { TenantTour } from "./tenant-tour";
 
 /** Dashboard tenant: porsi aktif, reservasi, pickup & omzet hari ini (WIB). */
@@ -43,7 +59,7 @@ async function loadData() {
 
   const nowIso = new Date().toISOString();
   const hourAgoIso = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  const [portionsRes, ordersRes, expiredRes, menuCountRes] = await Promise.all([
+  const [portionsRes, ordersRes, expiredRes, menusRes] = await Promise.all([
     supabase
       .from("portions")
       .select(
@@ -70,10 +86,7 @@ async function loadData() {
       .lt("expires_at", nowIso)
       .order("expires_at", { ascending: false })
       .limit(5),
-    supabase
-      .from("menu_items")
-      .select("id", { count: "exact", head: true })
-      .eq("tenant_id", tenant.id),
+    supabase.from("menu_items").select("id,is_active").eq("tenant_id", tenant.id).limit(200),
   ]);
 
   const activePortions: ActivePortion[] = (
@@ -122,6 +135,7 @@ async function loadData() {
     return { menuName: menu?.name ?? "Menu", expiresAt: String(p.expires_at) };
   });
 
+  const menuRows = (menusRes.data ?? []) as unknown as Array<{ is_active: boolean }>;
   return {
     activePortions,
     reservations,
@@ -130,7 +144,8 @@ async function loadData() {
     todayLocal,
     justExpired,
     tenantId: tenant.id,
-    menuCount: menuCountRes.count ?? 0,
+    menuTotal: menuRows.length,
+    menuInactive: menuRows.filter((m) => !m.is_active).length,
   };
 }
 
@@ -154,213 +169,267 @@ export default async function TenantDashboardPage({
     revenueToday,
     justExpired,
     tenantId,
-    menuCount,
+    menuTotal,
+    menuInactive,
   } = await loadData();
   // Pintu masuk rantai tenant: belum punya menu + URL bersih.
-  const autoChain = shouldAutoChain(menuCount === 0, tourForced || tourJourney);
+  const autoChain = shouldAutoChain(menuTotal === 0, tourForced || tourJourney);
   const totalRemaining = activePortions.reduce((sum, p) => sum + p.quantityRemaining, 0);
+
+  // Rel "Perlu perhatian": 1 item = porsi tercepat kedaluwarsa + reservasi terlama + menu nonaktif.
+  const attention: { icon: typeof Timer; title: string; subtitle: string; href: string }[] = [];
+  const soonest = activePortions[0];
+  if (soonest) {
+    const mins = Math.max(
+      0,
+      Math.round((new Date(soonest.expiresAt).getTime() - Date.now()) / 60000),
+    );
+    attention.push({
+      icon: Timer,
+      title: `${soonest.menuName} · sisa ${soonest.quantityRemaining}`,
+      subtitle: `Habis ±${mins} mnt lagi`,
+      href: tenantPorsiUbah(soonest.id),
+    });
+  }
+  const oldest = reservations.length > 0 ? reservations[reservations.length - 1] : null;
+  if (oldest) {
+    attention.push({
+      icon: Hourglass,
+      title: `${oldest.menuName} ×${oldest.quantity}`,
+      subtitle: `Antre sejak ${formatDateTimeWIB(new Date(oldest.createdAt))}`,
+      href: `/tenant/pesanan/${oldest.id}`,
+    });
+  }
+  if (menuInactive > 0) {
+    attention.push({
+      icon: UtensilsCrossed,
+      title: `${menuInactive} menu nonaktif`,
+      subtitle: "Aktifkan di Menu saya",
+      href: ROUTES.tenantMenu,
+    });
+  }
+
   return (
     <>
-      <AppHeader title="Dasbor" trail={[{ label: "Dasbor", href: "/tenant" }]} />
-      <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-        <SieraTenantHeader kicker="DASBOR TENANT" title="Kantinmu hari ini">
-          <p className="text-sm">
-            {totalRemaining} porsi aktif · {pickupsToday} pickup · {formatIDR(revenueToday)} omzet
-            hari ini
-          </p>
-        </SieraTenantHeader>
-
-        <SieraCard className="grid grid-cols-3 divide-x divide-dashed divide-line p-4">
-          <div className="flex items-center gap-3 pr-2">
-            <SieraTile>
-              <Package className="size-5" strokeWidth={1.75} aria-hidden />
-            </SieraTile>
-            <div className="min-w-0">
-              <p className="text-lg leading-none font-extrabold">{totalRemaining}</p>
-              <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Porsi aktif</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 px-4">
-            <SieraTile>
-              <ScanLine className="size-5" strokeWidth={1.75} aria-hidden />
-            </SieraTile>
-            <div className="min-w-0">
-              <p className="text-lg leading-none font-extrabold">{pickupsToday}</p>
-              <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Pickup</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 pl-4">
-            <SieraTile>
-              <Wallet className="size-5" strokeWidth={1.75} aria-hidden />
-            </SieraTile>
-            <div className="min-w-0">
-              <p className="truncate text-lg leading-none font-extrabold">
-                {formatIDR(revenueToday)}
+      <AppHeader title="Dasbor" trail={[{ label: "Dasbor" }]} />
+      <SieraRailPage
+        asideLabel="Perlu perhatian"
+        main={
+          <>
+            <SieraTenantHeader kicker="DASBOR TENANT" title="Kantinmu hari ini">
+              <p className="text-sm">
+                {totalRemaining} porsi aktif · {pickupsToday} pickup · {formatIDR(revenueToday)}{" "}
+                omzet hari ini
               </p>
-              <p className="mt-1 text-[11px] font-semibold text-[#64746B]">Omzet</p>
-            </div>
-          </div>
-        </SieraCard>
+            </SieraTenantHeader>
 
-        <Link
-          href="/tenant/scan"
-          data-tour="scan"
-          className={buttonVariants({ className: "min-h-12 w-full text-[15px]" })}
-        >
-          Scan pickup
-        </Link>
+            <SieraStatStrip>
+              <SieraStat icon={Package} value={totalRemaining} label="Porsi aktif" />
+              <SieraStat icon={ScanLine} value={pickupsToday} label="Pickup" />
+              <SieraStat icon={Wallet} value={formatIDR(revenueToday)} label="Omzet" />
+            </SieraStatStrip>
 
-        <section
-          aria-labelledby="reservasi-heading"
-          data-tour="reservasi"
-          className="flex flex-col gap-3"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <SieraSectionTitle id="reservasi-heading">
-              Menunggu pickup{reservations.length > 0 ? ` (${reservations.length})` : ""}
-            </SieraSectionTitle>
-            {reservations.length > 5 && (
-              <Link
-                href="/tenant/pesanan"
-                className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
-              >
-                Lihat Semua
-              </Link>
-            )}
-          </div>
-          {reservations.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
-              <p className="text-sm text-[#64746B]">Tidak ada reservasi aktif.</p>
+            <div className="grid grid-cols-2 gap-2">
               <Link
                 href="/tenant/scan"
-                className={buttonVariants({ variant: "outline", className: "min-h-11" })}
+                data-tour="scan"
+                className={buttonVariants({ className: "min-h-11 w-full text-[15px]" })}
               >
-                Buka scanner
+                Scan pickup
               </Link>
+              <TambahPorsiButton sheet={<TambahSheet />} />
             </div>
-          ) : (
-            <SieraList>
-              {reservations.slice(0, 5).map((r) => (
-                <SieraRowLink
-                  key={r.id}
-                  href={`/tenant/pesanan/${r.id}`}
-                  icon={ReceiptText}
-                  title={
-                    <>
-                      {r.menuName} <span className="font-normal text-[#64746B]">×{r.quantity}</span>
-                    </>
-                  }
-                  subtitle={`Dipesan ${formatDateTimeWIB(new Date(r.createdAt))} WIB`}
-                />
-              ))}
-            </SieraList>
-          )}
-        </section>
 
-        <section aria-labelledby="porsi-heading" className="flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-3">
-            <SieraSectionTitle id="porsi-heading">Porsi aktif</SieraSectionTitle>
-            <Link
-              href="/tenant/porsi/baru"
-              data-tour="tambah-porsi"
-              className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
-            >
-              + Tambah
-            </Link>
-          </div>
-          {activePortions.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
-              <p className="text-sm text-[#64746B]">
-                Belum ada porsi aktif. Posting sisa masakan hari ini.
-              </p>
-              <Link
-                href="/tenant/porsi/baru"
-                className={buttonVariants({ variant: "outline", className: "min-h-11" })}
-              >
-                + Tambah porsi
-              </Link>
-            </div>
-          ) : (
-            <>
-              <SieraList>
-                {activePortions.map((p) => {
-                  const minutesLeft = Math.max(
-                    0,
-                    Math.round((new Date(p.expiresAt).getTime() - Date.now()) / 60000),
-                  );
-                  const nearExpiry = minutesLeft < 60;
-                  return (
-                    <li
-                      key={p.id}
-                      className="flex min-h-16 flex-col justify-center gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-                    >
-                      <div className="min-w-0">
-                        <h3 className="truncate font-bold leading-snug">
-                          {p.menuName}{" "}
-                          <span className="font-normal text-[#64746B]">
-                            sisa {p.quantityRemaining}/{p.quantityPosted}
-                          </span>
-                        </h3>
-                        <p className="mt-0.5 text-xs text-[#64746B]">
-                          <strong className="text-sm font-bold text-primary">
-                            {formatIDR(p.discountPrice)}
-                          </strong>{" "}
-                          · Habis {formatDateTimeWIB(new Date(p.expiresAt))} WIB
-                        </p>
-                      </div>
-                      <div className="flex shrink-0 items-center gap-3">
-                        {nearExpiry && (
-                          <span className="inline-flex items-center rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-semibold text-[#B45309]">
-                            Batas ambil {minutesLeft} mnt lagi
-                          </span>
-                        )}
+            <div className="grid gap-4 lg:grid-cols-2">
+              <div data-tour="reservasi">
+                <SieraSection
+                  id="reservasi-heading"
+                  label={`Menunggu pickup${reservations.length > 0 ? ` (${reservations.length})` : ""}`}
+                  action={
+                    reservations.length > 5 ? (
+                      <Link
+                        href="/tenant/pesanan"
+                        className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
+                      >
+                        Lihat Semua
+                      </Link>
+                    ) : undefined
+                  }
+                >
+                  {reservations.length === 0 ? (
+                    <SieraEmpty
+                      title="Tidak ada reservasi aktif."
+                      action={
                         <Link
-                          href={`/tenant/porsi/${p.id}/edit`}
+                          href="/tenant/scan"
                           className={buttonVariants({ variant: "outline", className: "min-h-11" })}
                         >
-                          Edit
+                          Buka scanner
                         </Link>
-                      </div>
-                    </li>
-                  );
-                })}
+                      }
+                    />
+                  ) : (
+                    <SieraList>
+                      {reservations.slice(0, 5).map((r) => (
+                        <SieraRowLink
+                          key={r.id}
+                          href={`/tenant/pesanan/${r.id}`}
+                          icon={ReceiptText}
+                          title={
+                            <>
+                              {r.menuName}{" "}
+                              <span className="font-normal text-[#64746B]">×{r.quantity}</span>
+                            </>
+                          }
+                          subtitle={`Dipesan ${formatDateTimeWIB(new Date(r.createdAt))} WIB`}
+                        />
+                      ))}
+                    </SieraList>
+                  )}
+                </SieraSection>
+              </div>
+
+              <SieraSection
+                id="porsi-heading"
+                label="Porsi aktif"
+                action={
+                  <Link
+                    href={ROUTES.tenantPorsiTambah}
+                    data-tour="tambah-porsi"
+                    className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
+                  >
+                    + Tambah
+                  </Link>
+                }
+              >
+                {activePortions.length === 0 ? (
+                  <SieraEmpty
+                    title="Belum ada porsi aktif. Posting sisa masakan hari ini."
+                    action={
+                      <Link
+                        href={ROUTES.tenantPorsiTambah}
+                        className={buttonVariants({ variant: "outline", className: "min-h-11" })}
+                      >
+                        + Tambah porsi
+                      </Link>
+                    }
+                  />
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <SieraList>
+                      {activePortions.map((p) => {
+                        const minutesLeft = Math.max(
+                          0,
+                          Math.round((new Date(p.expiresAt).getTime() - Date.now()) / 60000),
+                        );
+                        const nearExpiry = minutesLeft < 60;
+                        return (
+                          <li
+                            key={p.id}
+                            className="flex min-h-16 flex-col justify-center gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                          >
+                            <div className="min-w-0">
+                              <h3 className="truncate font-bold leading-snug">
+                                {p.menuName}{" "}
+                                <span className="font-normal text-[#64746B]">
+                                  sisa {p.quantityRemaining}/{p.quantityPosted}
+                                </span>
+                              </h3>
+                              <p className="mt-0.5 text-xs text-[#64746B]">
+                                <strong className="text-sm font-bold text-primary">
+                                  {formatIDR(p.discountPrice)}
+                                </strong>{" "}
+                                · Habis {formatDateTimeWIB(new Date(p.expiresAt))} WIB
+                              </p>
+                            </div>
+                            <div className="flex shrink-0 items-center gap-3">
+                              {nearExpiry && (
+                                <span className="inline-flex items-center rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-semibold text-[#B45309]">
+                                  Batas ambil {minutesLeft} mnt lagi
+                                </span>
+                              )}
+                              <Link
+                                href={tenantPorsiUbah(p.id)}
+                                className={buttonVariants({
+                                  variant: "outline",
+                                  className: "min-h-11",
+                                })}
+                              >
+                                Edit
+                              </Link>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </SieraList>
+                    {justExpired.length > 0 && (
+                      <output className="flex items-start gap-2 rounded-2xl border border-[#FDE68A] bg-[#FFFBEB] px-4 py-3 text-[13px] font-semibold text-[#92400E]">
+                        <TriangleAlert className="size-5 shrink-0" aria-hidden />
+                        <span>
+                          Baru saja kedaluwarsa (≤1 jam):{" "}
+                          {justExpired
+                            .map(
+                              (j) => `${j.menuName} (${formatDateTimeWIB(new Date(j.expiresAt))})`,
+                            )
+                            .join(" · ")}{" "}
+                          — posting ulang bila masih layak.
+                        </span>
+                      </output>
+                    )}
+                  </div>
+                )}
+              </SieraSection>
+            </div>
+
+            <SieraSection id="bantuan-heading" label="Bantuan">
+              <SieraList>
+                <SieraRowLink
+                  href="/tenant?panduan=rantai&fresh=1"
+                  icon={CircleHelp}
+                  title="Panduan kelola"
+                  subtitle="Tur singkat dasbor sampai scan"
+                />
               </SieraList>
-              {justExpired.length > 0 && (
-                <p className="px-1 text-xs text-muted-foreground">
-                  Baru saja kedaluwarsa (≤1 jam):{" "}
-                  {justExpired
-                    .map((j) => `${j.menuName} (${formatDateTimeWIB(new Date(j.expiresAt))})`)
-                    .join(" · ")}{" "}
-                  — posting ulang bila masih layak.
-                </p>
-              )}
-            </>
-          )}
-        </section>
+            </SieraSection>
 
-        <section aria-labelledby="bantuan-heading" className="flex flex-col gap-3">
-          <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
-          <SieraList>
-            <SieraRowLink
-              href="/tenant?panduan=rantai&fresh=1"
-              icon={CircleHelp}
-              title="Panduan kelola"
-              subtitle="Tur singkat dasbor sampai scan"
+            <TenantTour
+              forced={tourForced}
+              auto={autoChain}
+              userId={tenantId}
+              journey={tourJourney || autoChain}
+              next={tourJourney || autoChain ? (getJourneyNext("/tenant") ?? undefined) : undefined}
+              journeyLabel="Bagian 1 dari 5 · Dasbor"
+              entryStep={tourEntry}
+              fresh={sp.fresh === "1"}
             />
-          </SieraList>
-        </section>
-
-        <TenantTour
-          forced={tourForced}
-          auto={autoChain}
-          userId={tenantId}
-          journey={tourJourney || autoChain}
-          next={tourJourney || autoChain ? (getJourneyNext("/tenant") ?? undefined) : undefined}
-          journeyLabel="Bagian 1 dari 5 · Dasbor"
-          entryStep={tourEntry}
-          fresh={sp.fresh === "1"}
-        />
-      </div>
+          </>
+        }
+        aside={
+          <SieraSection id="perhatian-heading" label="Perlu perhatian">
+            {attention.length === 0 ? (
+              <SieraEmpty title="Semua aman." hint="Tak ada porsi/reservasi mendesak." compact />
+            ) : (
+              <SieraList>
+                {attention.map((a) => (
+                  <SieraRowLink
+                    key={a.title}
+                    href={a.href}
+                    icon={a.icon}
+                    title={a.title}
+                    subtitle={a.subtitle}
+                  />
+                ))}
+              </SieraList>
+            )}
+            {justExpired.length > 0 && (
+              <p className="flex items-start gap-1.5 px-1 text-[12px] leading-relaxed text-[#64746B]">
+                <CircleCheck className="mt-0.5 size-4 shrink-0 text-[#1E5A36]" aria-hidden />
+                {justExpired.length} porsi kedaluwarsa ≤1 jam — posting ulang bila layak.
+              </p>
+            )}
+          </SieraSection>
+        }
+      />
     </>
   );
 }

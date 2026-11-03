@@ -1,0 +1,7 @@
+#!/bin/sh
+# Phase gate repo: lint + typecheck + test. Gagal = push batal.
+# Bypass: git push --no-verify (hanya darurat, catat di docs/decisions.md).
+bun run check || {
+  echo "[pre-push] bun run check MERAH — perbaiki dulu, lalu push ulang."
+  exit 1
+}

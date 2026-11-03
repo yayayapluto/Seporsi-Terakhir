@@ -1,0 +1,149 @@
+import { TrendingUp } from "lucide-react";
+import { AppHeader } from "@/components/app-header";
+import { GuidedTour } from "@/components/guided-tour";
+import {
+  SieraList,
+  SieraRailPage,
+  SieraRowLink,
+  SieraSection,
+  SieraTenantHeader,
+} from "@/components/siera";
+import { ROUTES } from "@/lib/routes";
+import { createClient } from "@/lib/supabase/server";
+import { requireOwnTenant } from "../guard";
+import { MenuManager } from "./menu-manager";
+
+/** Daftar menu milik tenant + dialog tambah/edit via RPC upsert_menu_item. */
+
+export interface MenuItemRow {
+  id: string;
+  name: string;
+  normalPrice: number;
+  avgWeightGrams: number | null;
+  isActive: boolean;
+  ingredients: string | null;
+  allergenNote: string | null;
+  imagePath: string | null;
+}
+
+async function loadMenu(tenantId: string): Promise<MenuItemRow[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("menu_items")
+    .select(
+      "id, name, normal_price, avg_weight_grams, is_active, ingredients, allergen_note, image_path",
+    )
+    .eq("tenant_id", tenantId)
+    .order("name", { ascending: true });
+  if (error || !data) return [];
+  return data.map((m) => ({
+    id: m.id,
+    name: m.name,
+    normalPrice: m.normal_price,
+    avgWeightGrams: (m.avg_weight_grams as number | null) ?? null,
+    isActive: m.is_active,
+    ingredients: (m.ingredients as string | null) ?? null,
+    allergenNote: (m.allergen_note as string | null) ?? null,
+    imagePath: (m.image_path as string | null) ?? null,
+  }));
+}
+
+/** 1 query kecil: order 7 hari terakhir (pickup + reservasi), agregat di memori. */
+async function loadMenuPerf(tenantId: string): Promise<Record<string, number>> {
+  const supabase = await createClient();
+  const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { data } = await supabase
+    .from("orders")
+    .select("status, quantity, portions!inner(tenant_id, menu_item_id)")
+    .eq("portions.tenant_id", tenantId)
+    .gte("created_at", since)
+    .limit(200);
+  const pickedByMenu: Record<string, number> = {};
+  for (const o of (data ?? []) as unknown as Array<Record<string, unknown>>) {
+    if (o.status !== "picked_up") continue;
+    const portion = o.portions as { menu_item_id: string } | null;
+    if (!portion) continue;
+    const id = String(portion.menu_item_id);
+    pickedByMenu[id] = (pickedByMenu[id] ?? 0) + Number(o.quantity);
+  }
+  return pickedByMenu;
+}
+
+export default async function MenuPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ mode?: string }>;
+}) {
+  const tenant = await requireOwnTenant("/tenant/menu-saya");
+  const sp = (await searchParams) ?? {};
+  const tourForced = sp.mode === "onboarding";
+  const items = await loadMenu(tenant.id);
+  const pickedByMenu = await loadMenuPerf(tenant.id);
+  const ranked = items
+    .map((m) => ({ ...m, picked: pickedByMenu[m.id] ?? 0 }))
+    .sort((a, b) => b.picked - a.picked)
+    .slice(0, 3)
+    .filter((r) => r.picked > 0);
+  return (
+    <>
+      <AppHeader
+        title="Menu Kantin"
+        trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Menu Kantin" }]}
+      />
+      <SieraRailPage
+        asideLabel="Performa per menu"
+        main={
+          <>
+            <SieraTenantHeader kicker="MENU KANTIN" title="Menu saya">
+              Daftar menu yang bisa diposting sebagai porsi sisa. Harga diskon disarankan otomatis
+              saat posting.
+            </SieraTenantHeader>
+            <MenuManager items={items} tenantId={tenant.id} />
+            <GuidedTour
+              tourKey="tenant-menu"
+              forced={tourForced}
+              intro={{
+                title: "Kelola menu?",
+                body: "Daftarkan menu sekali, pakai berkali-kali tiap posting porsi.",
+              }}
+              steps={[
+                {
+                  target: '[data-tour="tambah-menu"]',
+                  title: "Tambah menu",
+                  body: "Nama, harga normal, bahan, dan alergen. Harga diskon disarankan otomatis.",
+                },
+                {
+                  target: '[data-tour="menu-list"] li:first-child',
+                  title: "Daftar menumu",
+                  body: "Ketuk Edit buat ubah harga atau nonaktifkan menu yang lagi libur.",
+                },
+              ]}
+            />
+          </>
+        }
+        aside={
+          <SieraSection id="menu-perf-heading" label="Performa 7 hari">
+            {ranked.length === 0 ? (
+              <p className="px-1 text-[13px] leading-relaxed text-[#64746B]">
+                Belum ada pickup 7 hari terakhir. Posting porsi biar menu mulai jalan.
+              </p>
+            ) : (
+              <SieraList>
+                {ranked.map((r) => (
+                  <SieraRowLink
+                    key={r.id}
+                    href={ROUTES.tenantPorsiTambah}
+                    icon={TrendingUp}
+                    title={`${r.name} · ${r.picked} pickup`}
+                    subtitle="Posting lagi dari menu ini"
+                  />
+                ))}
+              </SieraList>
+            )}
+          </SieraSection>
+        }
+      />
+    </>
+  );
+}

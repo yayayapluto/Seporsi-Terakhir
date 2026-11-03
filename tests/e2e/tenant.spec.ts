@@ -71,7 +71,7 @@ test("dashboard tenant memuat", async ({ page }) => {
 });
 
 test("menu: tambah + validasi kosong", async ({ page }) => {
-  await page.goto("/tenant/menu");
+  await page.goto("/tenant/menu-saya");
   await dismissTour(page);
   await expect(page.getByText(/menu saya/i).first()).toBeVisible();
   await act(page, /tambah menu/i);
@@ -89,7 +89,7 @@ test("menu: tambah + validasi kosong", async ({ page }) => {
 });
 
 test("posting porsi: validasi lalu sukses", async ({ page }) => {
-  await page.goto("/tenant/porsi/baru");
+  await page.goto("/tenant/porsi/tambah");
   await dismissTour(page);
   await act(page, /posting porsi/i);
   await expect(page.getByText(/pilih menu dulu/i).first()).toBeVisible();
@@ -133,11 +133,11 @@ test("edit porsi: kurangi jumlah, sisa berkurang", async ({ page }) => {
   const editLink = row.getByRole("link", { name: /^edit$/i });
   try {
     await editLink.click({ timeout: 5_000 });
-    await expect(page).toHaveURL(/\/tenant\/porsi\/.+\/edit/, { timeout: 5_000 });
+    await expect(page).toHaveURL(/\/tenant\/porsi\/.+\/ubah/, { timeout: 5_000 });
   } catch {
     await dismissTour(page);
     await editLink.evaluate((el) => (el as HTMLElement).click());
-    await expect(page).toHaveURL(/\/tenant\/porsi\/.+\/edit/);
+    await expect(page).toHaveURL(/\/tenant\/porsi\/.+\/ubah/);
   }
   const qty = page.locator("#portion-qty");
   const n = Number(await qty.inputValue());
@@ -189,7 +189,7 @@ test("scan manual: token sampah + konfirmasi + token terpakai", async ({ page })
   await page.goto("/tenant");
   await dismissTour(page);
   const portionIds = await page
-    .locator('a[href*="/tenant/porsi/"][href*="/edit"]')
+    .locator('a[href*="/tenant/porsi/"][href*="/ubah"]')
     .evaluateAll((els) => [
       ...new Set(
         els.map(

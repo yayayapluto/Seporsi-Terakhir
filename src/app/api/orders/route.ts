@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { MAX_PORTIONS_PER_DAY, MAX_QUANTITY_PER_ORDER } from "@/lib/domain/constants";
 import { createClient } from "@/lib/supabase/server";
 
 const Body = z.object({
   portionId: z.string().uuid(),
-  quantity: z.number().int().min(1).max(2).default(1),
+  quantity: z.number().int().min(1).max(MAX_QUANTITY_PER_ORDER).default(1),
 });
 
 /**
@@ -41,7 +42,7 @@ export async function POST(req: Request) {
     }
     if (msg.includes("daily limit")) {
       return NextResponse.json(
-        { error: "Batas harian tercapai: maksimal 2 porsi per hari." },
+        { error: `Batas harian tercapai: maksimal ${MAX_PORTIONS_PER_DAY} porsi per hari.` },
         { status: 429 },
       );
     }
@@ -49,7 +50,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Jadwal pickup tidak valid." }, { status: 400 });
     }
     if (msg.includes("quantity")) {
-      return NextResponse.json({ error: "Maksimal 2 porsi per pesanan." }, { status: 400 });
+      return NextResponse.json(
+        { error: `Maksimal ${MAX_QUANTITY_PER_ORDER} porsi per pesanan.` },
+        { status: 400 },
+      );
     }
     return NextResponse.json({ error: "Gagal memesan. Coba lagi." }, { status: 400 });
   }

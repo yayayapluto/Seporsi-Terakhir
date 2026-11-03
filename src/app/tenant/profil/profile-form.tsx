@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { SieraAlert } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,18 +34,11 @@ export function TenantProfileForm({
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
-      {error && (
-        <p
-          role="alert"
-          className="rounded-xl border border-[#F3C2C2] bg-[#FDECEC] px-4 py-3 text-sm text-[#BA1A1A]"
-        >
-          {error}
-        </p>
-      )}
+      {error && <SieraAlert variant="error">{error}</SieraAlert>}
       {saved && (
-        <output className="block rounded-xl border border-[#BFE3CF] bg-[#EAF5ED] px-4 py-3 text-sm font-semibold text-[#1E5A36]">
+        <SieraAlert variant="success">
           Tersimpan. Nama dan lokasi gerai sudah diperbarui.
-        </output>
+        </SieraAlert>
       )}
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="tenant-name">Nama gerai</Label>

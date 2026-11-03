@@ -1,15 +1,22 @@
 import {
   Bell,
+  ChevronRight,
   CircleHelp,
   Database,
+  Globe,
   ReceiptText,
   ShieldCheck,
   Store,
   UserRound,
 } from "lucide-react";
+import Link from "next/link";
 import { SignOutButton } from "@/app/(public)/profil/sign-out-button";
-import { SieraList, SieraRowLink, SieraSectionTitle } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
+
+const CARD =
+  "rounded-[20px] border border-[#E8ECE9] bg-card p-4 shadow-[0_1px_2px_rgba(16,24,40,.04)]";
+const ROW_TILE =
+  "flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#F1F5F2] text-primary";
 
 interface Row {
   href: string;
@@ -22,18 +29,26 @@ function Group({ heading, label, rows }: { heading: string; label: string; rows:
   const id = `${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-heading`;
   return (
     <section aria-labelledby={id} className="flex flex-col gap-3">
-      <SieraSectionTitle id={id}>{heading}</SieraSectionTitle>
-      <SieraList aria-label={label}>
-        {rows.map((r) => (
-          <SieraRowLink
-            key={r.href}
-            href={r.href}
-            icon={r.icon}
-            title={r.title}
-            subtitle={r.desc}
-          />
-        ))}
-      </SieraList>
+      <h2 id={id} className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
+        {heading}
+      </h2>
+      <nav aria-label={label} className={`${CARD} divide-y divide-dashed divide-[#E8ECE9] !p-0`}>
+        {rows.map((r) => {
+          const Icon = r.icon;
+          return (
+            <Link key={r.href} href={r.href} className="flex min-h-11 items-center gap-3 p-4">
+              <span aria-hidden className={ROW_TILE}>
+                <Icon className="size-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-semibold">{r.title}</span>
+                <span className="block text-[12px] text-[#64746B]">{r.desc}</span>
+              </span>
+              <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+            </Link>
+          );
+        })}
+      </nav>
     </section>
   );
 }
@@ -45,22 +60,28 @@ export default async function PengaturanPage() {
   const akun: Row[] = [
     { href: "/profil", icon: UserRound, title: "Profil", desc: "Nama dan info akun" },
     {
-      href: "/akun/keamanan",
+      href: "/masuk",
       icon: ShieldCheck,
       title: "Keamanan",
-      desc: "Email dan metode login",
+      desc: "Login Google, sesi aktif",
     },
     {
-      href: "/akun/notifikasi",
+      href: "/notifikasi",
       icon: Bell,
       title: "Notifikasi",
-      desc: "Bunyi kabar pesanan",
+      desc: "Kabar pesanan dan pendaftaran",
     },
     {
-      href: "/akun/privasi",
+      href: "/akun/pengaturan",
+      icon: Globe,
+      title: "Bahasa",
+      desc: "Indonesia — satu-satunya bahasa",
+    },
+    {
+      href: "/profil",
       icon: Database,
       title: "Privasi & data",
-      desc: "Unduh data kamu (JSON)",
+      desc: "Minta ekspor atau hapus via admin",
     },
   ];
 
@@ -68,7 +89,7 @@ export default async function PengaturanPage() {
     current.role === "tenant"
       ? [
           {
-            href: "/tenant/profil",
+            href: "/tenant/menu",
             icon: Store,
             title: "Profil kantin",
             desc: "Nama gerai dan lokasi",
@@ -105,7 +126,7 @@ export default async function PengaturanPage() {
           ];
 
   return (
-    <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl md:grid-cols-2 md:px-6">
+    <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 md:max-w-3xl md:grid-cols-2 md:px-6">
       <div className="flex flex-col gap-1 md:col-span-2">
         <h1 className="text-[18px] leading-[1.3] font-extrabold">Pengaturan</h1>
         <p className="text-[13px] text-[#64746B]">Kelola akun dan preferensi kamu.</p>

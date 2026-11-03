@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
+import { AppContent } from "@/components/app-content";
+import { AppFooter } from "@/components/app-footer";
+import { AppHeaderShell } from "@/components/app-header-shell";
 import { BottomNav } from "@/components/bottom-nav";
-import { FooterSlot } from "@/components/footer-slot";
-import { PushBridge } from "@/components/push-bridge";
-import { SiteHeader } from "@/components/site-header";
-import { SmoothProvider } from "@/components/smooth-provider";
-import { getCurrentUser } from "@/lib/auth";
+import { SwRegister } from "@/components/sw-register";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -20,13 +19,28 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Seporsi Terakhir",
+  title: { default: "Seporsi Terakhir", template: "%s · Seporsi Terakhir" },
   description:
     "Selamatkan seporsi terakhir hari ini: makanan enak harga miring, kurangi sampah makanan kampus.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Seporsi" },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
-  const current = await getCurrentUser().catch(() => null);
+export const viewport: Viewport = {
+  themeColor: "#2E7D4F",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="id"
@@ -34,15 +48,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       className={`${jakarta.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <PushBridge userId={current?.user.id ?? null} />
-        <SiteHeader />
-        <div className="flex w-full flex-1 items-stretch">
+        <SwRegister />
+        <AppHeaderShell />
+        <div className="flex w-full flex-1">
           <BottomNav />
-          <main className="flex min-w-0 flex-1 flex-col">
-            <SmoothProvider>{children}</SmoothProvider>
-            <FooterSlot />
-          </main>
+          <AppContent>{children}</AppContent>
         </div>
+        <AppFooter />
       </body>
     </html>
   );

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { buildTenantCsv } from "./csv";
 
@@ -80,7 +81,7 @@ export async function setTenantListed(
     return { ok: false, error: "Gagal mengubah visibilitas. Coba lagi." };
   }
   revalidatePath("/admin/tenant");
-  revalidatePath("/katalog");
+  revalidatePath(ROUTES.katalog);
   return { ok: true };
 }
 

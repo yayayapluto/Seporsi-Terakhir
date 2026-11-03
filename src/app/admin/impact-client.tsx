@@ -5,10 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { DateField } from "@/components/date-field";
 import { GuidedTour } from "@/components/guided-tour";
+import { SieraAlert, SieraCard, SieraEmpty, SieraRailPage, SieraSection } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { percentSold } from "@/lib/domain/metrics";
 import { formatIDR } from "@/lib/format";
+import { ROUTES } from "@/lib/routes";
 import { exportCsv } from "./actions";
 import type { AdminDailyPoint, AdminReportRow } from "./page";
 
@@ -33,6 +35,7 @@ export function ImpactClient({
   daily,
   from,
   to,
+  email,
 }: {
   summary: {
     portionsSaved: number;
@@ -45,6 +48,7 @@ export function ImpactClient({
   daily: AdminDailyPoint[];
   from: string;
   to: string;
+  email: string;
 }) {
   const router = useRouter();
   const params = useSearchParams();
@@ -77,6 +81,28 @@ export function ImpactClient({
     URL.revokeObjectURL(url);
   }
 
+  function DownloadButton({ tour = true }: { tour?: boolean }) {
+    return (
+      <Button
+        type="button"
+        variant="outline"
+        data-tour={tour ? "unduh" : undefined}
+        className="min-h-11 w-fit"
+        onClick={downloadCsv}
+        disabled={exporting}
+      >
+        {exporting ? (
+          <>
+            <Spinner />
+            Menyiapkan…
+          </>
+        ) : (
+          "Unduh CSV"
+        )}
+      </Button>
+    );
+  }
+
   const series = fillDaily(from, to, daily);
   const maxSaved = Math.max(1, ...series.map((d) => d.saved));
   const labelEvery = Math.max(1, Math.ceil(series.length / 8));
@@ -91,207 +117,281 @@ export function ImpactClient({
     },
   ];
 
+  // Progres 12 bulan borang: hari aktif pickup pada rentang + rentang label.
+  const activeDays = series.filter((d) => d.saved > 0).length;
+  const borangTarget = Math.min(365, series.length);
+  const borangPct = borangTarget > 0 ? Math.round((activeDays / borangTarget) * 100) : 0;
+  // Top tenant: 3 teratas dari agregat halaman (tanpa query baru).
+  const topTenants = [...rows].sort((a, b) => b.portionsPickedUp - a.portionsPickedUp).slice(0, 3);
+
   return (
-    <div className="flex flex-col gap-6">
-      <div data-tour="rentang" className="flex flex-wrap items-end gap-3">
-        <DateField
-          id="from"
-          label="Dari"
-          value={from}
-          onChange={(v) => applyRange(v, to)}
-          max={to}
-        />
-        <DateField
-          id="to"
-          label="Sampai"
-          value={to}
-          onChange={(v) => applyRange(from, v)}
-          min={from}
-        />
-      </div>
+    <SieraRailPage
+      asideLabel="Siap borang"
+      main={
+        <>
+          <div className="flex flex-col gap-2">
+            <p className="text-xs font-bold tracking-widest text-primary">DAMPAK KAMPUS</p>
+            <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>
+            <p className="text-muted-foreground">
+              Halo {email}. Angka dari pickup yang discan, bukan estimasi. Berat = estimasi sampling
+              per menu.
+            </p>
+          </div>
+          <div data-tour="rentang" className="flex flex-wrap items-end gap-3">
+            <DateField
+              id="from"
+              label="Dari"
+              value={from}
+              onChange={(v) => applyRange(v, to)}
+              max={to}
+            />
+            <DateField
+              id="to"
+              label="Sampai"
+              value={to}
+              onChange={(v) => applyRange(from, v)}
+              min={from}
+            />
+          </div>
 
-      <section
-        aria-label="Sorotan dampak"
-        className="overflow-hidden rounded-[20px] border border-line bg-gradient-to-br from-[#2E7D4F] to-[#1E5A36] p-5 text-white sm:p-6"
-      >
-        <p className="text-xs font-bold tracking-widest text-white/80">PORSI TERSELAMATKAN</p>
-        <p className="mt-1 text-4xl font-extrabold tabular-nums sm:text-5xl">
-          {summary.portionsSaved}
-        </p>
-        <p className="mt-2 text-sm text-white/90">
-          Sell-through{" "}
-          <strong className="tabular-nums">{Math.round(summary.percent * 100)}%</strong> porsi yang
-          diunggah berhasil diambil.
-        </p>
-        <dl className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-          {secondary.map((c) => (
-            <div key={c.label} className="rounded-xl bg-white/10 p-3">
-              <dt className="text-xs font-semibold text-white/80">{c.label}</dt>
-              <dd className="mt-0.5 text-lg font-bold tabular-nums">{c.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <section aria-label="Tren harian" className="flex flex-col gap-3">
-        <h2 className="text-lg font-bold">Tren harian</h2>
-        {series.every((d) => d.saved === 0) ? (
-          <p className="text-sm text-muted-foreground">
-            Belum ada pickup pada rentang ini. Tren muncul setelah tenant memindai serah terima.
-          </p>
-        ) : (
-          <div data-tour="tren" className="overflow-x-auto">
-            <div
-              className="flex h-32 min-w-[480px] items-end gap-1"
-              role="img"
-              aria-label={`Tren pickup harian, tertinggi ${maxSaved} porsi dalam sehari`}
-            >
-              {series.map((d, i) => (
-                <div key={d.day} className="flex min-w-0 flex-1 flex-col items-center gap-1">
-                  <div
-                    title={`${d.day}: ${d.saved} porsi`}
-                    className="w-full max-w-6 rounded-t bg-[#2E7D4F]"
-                    style={{
-                      height: `${Math.max(d.saved > 0 ? 6 : 2, Math.round((d.saved / maxSaved) * 100))}%`,
-                    }}
-                  />
-                  {i % labelEvery === 0 && (
-                    <span className="text-[10px] tabular-nums text-muted-foreground">
-                      {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
-                    </span>
-                  )}
+          <section
+            aria-label="Sorotan dampak"
+            className="overflow-hidden rounded-[20px] border border-line bg-gradient-to-br from-[#2E7D4F] to-[#1E5A36] p-5 text-white sm:p-6"
+          >
+            <p className="text-xs font-bold tracking-widest text-white/80">PORSI TERSELAMATKAN</p>
+            <p className="mt-1 text-4xl font-extrabold tabular-nums sm:text-5xl">
+              {summary.portionsSaved}
+            </p>
+            <p className="mt-2 text-sm text-white/90">
+              Sell-through{" "}
+              <strong className="tabular-nums">{Math.round(summary.percent * 100)}%</strong> porsi
+              yang diunggah berhasil diambil.
+            </p>
+            <dl className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+              {secondary.map((c) => (
+                <div key={c.label} className="rounded-xl bg-white/10 p-3">
+                  <dt className="text-xs font-semibold text-white/80">{c.label}</dt>
+                  <dd className="mt-0.5 text-lg font-bold tabular-nums">{c.value}</dd>
                 </div>
               ))}
-            </div>
-          </div>
-        )}
-      </section>
+            </dl>
+          </section>
 
-      {csvError && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
-          {csvError}
-        </p>
-      )}
+          <section aria-label="Tren harian" className="flex flex-col gap-3">
+            <h2 className="text-lg font-bold">Tren harian</h2>
+            <SieraCard className="p-4">
+              {series.every((d) => d.saved === 0) ? (
+                <p className="text-sm text-muted-foreground">
+                  Belum ada pickup pada rentang ini. Tren muncul setelah tenant memindai serah
+                  terima.
+                </p>
+              ) : (
+                <div data-tour="tren" className="overflow-x-auto">
+                  <div
+                    className="flex h-32 min-w-[480px] items-end gap-1"
+                    role="img"
+                    aria-label={`Tren pickup harian, tertinggi ${maxSaved} porsi dalam sehari`}
+                  >
+                    {series.map((d, i) => (
+                      <div key={d.day} className="flex min-w-0 flex-1 flex-col items-center gap-1">
+                        <div
+                          title={`${d.day}: ${d.saved} porsi`}
+                          className="w-full max-w-6 rounded-t bg-[#2E7D4F]"
+                          style={{
+                            height: `${Math.max(d.saved > 0 ? 6 : 2, Math.round((d.saved / maxSaved) * 100))}%`,
+                          }}
+                        />
+                        {i % labelEvery === 0 && (
+                          <span className="text-[10px] tabular-nums text-muted-foreground">
+                            {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </SieraCard>
+          </section>
 
-      {rows.length === 0 ? (
-        <div className="border-b py-10 text-center">
-          <p className="font-semibold">Belum ada aktivitas pada rentang ini</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Coba rentang yang lebih panjang, atau tunggu tenant mengunggah porsi.
-          </p>
-        </div>
-      ) : (
-        <div className="overflow-x-auto" data-tour="tabel-dampak">
-          <table className="w-full min-w-[640px] text-sm">
-            <caption className="sr-only">Rekap per gerai pada rentang terpilih</caption>
-            <thead>
-              <tr className="border-b text-left text-xs font-semibold text-muted-foreground">
-                <th scope="col" className="sticky left-0 bg-card py-2 pr-3">
-                  Gerai
-                </th>
-                <th scope="col" className="py-2 pr-3">
-                  Diunggah
-                </th>
-                <th scope="col" className="py-2 pr-3">
-                  Diambil
-                </th>
-                <th scope="col" className="py-2 pr-3">
-                  Sell-through
-                </th>
-                <th scope="col" className="py-2 pr-3 text-right">
-                  Revenue
-                </th>
-                <th scope="col" className="py-2 pr-3 text-right">
-                  Hemat
-                </th>
-                <th scope="col" className="py-2 text-right">
-                  Estimasi kg
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {rows.map((r) => (
-                <tr key={r.tenantName}>
-                  <td className="sticky left-0 bg-card py-3 pr-3 font-semibold">
-                    <Link
-                      href="/admin/tenant"
-                      className="rounded underline decoration-[#2E7D4F]/40 underline-offset-2 outline-none hover:text-[#1E5A36] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
-                    >
-                      {r.tenantName}
-                    </Link>
-                    {best > 0 && r.portionsPickedUp === best && (
-                      <span className="ml-2 inline-block rounded-full bg-[#DCEBE0] px-2 py-0.5 align-middle text-[11px] font-bold text-[#1E5A36]">
-                        Tertinggi
+          {csvError && <SieraAlert variant="error">{csvError}</SieraAlert>}
+
+          {rows.length === 0 ? (
+            <SieraEmpty
+              title="Belum ada aktivitas pada rentang ini"
+              hint="Coba rentang yang lebih panjang, atau tunggu tenant mengunggah porsi."
+            />
+          ) : (
+            <SieraCard className="p-4">
+              <div className="overflow-x-auto" data-tour="tabel-dampak">
+                <table className="w-full min-w-[640px] text-sm">
+                  <caption className="sr-only">Rekap per gerai pada rentang terpilih</caption>
+                  <thead>
+                    <tr className="border-b text-left text-xs font-semibold text-muted-foreground">
+                      <th scope="col" className="sticky left-0 bg-card py-2 pr-3">
+                        Gerai
+                      </th>
+                      <th scope="col" className="py-2 pr-3">
+                        Diunggah
+                      </th>
+                      <th scope="col" className="py-2 pr-3">
+                        Diambil
+                      </th>
+                      <th scope="col" className="py-2 pr-3">
+                        Sell-through
+                      </th>
+                      <th scope="col" className="py-2 pr-3 text-right">
+                        Revenue
+                      </th>
+                      <th scope="col" className="py-2 pr-3 text-right">
+                        Hemat
+                      </th>
+                      <th scope="col" className="py-2 text-right">
+                        Estimasi kg
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-dashed divide-line">
+                    {rows.map((r) => (
+                      <tr key={r.tenantName}>
+                        <td className="sticky left-0 bg-card py-3 pr-3 font-semibold">
+                          <Link
+                            href={ROUTES.adminTenant}
+                            className="rounded underline decoration-[#2E7D4F]/40 underline-offset-2 outline-none hover:text-[#1E5A36] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+                          >
+                            {r.tenantName}
+                          </Link>
+                          {best > 0 && r.portionsPickedUp === best && (
+                            <span className="ml-2 inline-block rounded-full bg-[#DCEBE0] px-2 py-0.5 align-middle text-[11px] font-bold text-[#1E5A36]">
+                              Tertinggi
+                            </span>
+                          )}
+                          {r.portionsPosted > 0 && r.portionsPickedUp === 0 && (
+                            <span className="ml-2 inline-block rounded-full bg-[#FEF3C7] px-2 py-0.5 align-middle text-[11px] font-bold text-[#92400E]">
+                              Belum diambil
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 pr-3">{r.portionsPosted}</td>
+                        <td className="py-3 pr-3">{r.portionsPickedUp}</td>
+                        <td className="py-3 pr-3">
+                          {Math.round(percentSold(r.portionsPickedUp, r.portionsPosted) * 100)}%
+                        </td>
+                        <td className="py-3 pr-3 text-right">{formatIDR(r.revenue)}</td>
+                        <td className="py-3 pr-3 text-right">{formatIDR(r.moneySaved)}</td>
+                        <td className="py-3 text-right">
+                          {r.wasteKg == null ? "—" : `${r.wasteKg.toFixed(2)} kg`}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </SieraCard>
+          )}
+
+          <DownloadButton />
+          <GuidedTour
+            tourKey="admin"
+            steps={[
+              {
+                target: '[data-tour="rentang"]',
+                title: "Atur rentang",
+                body: "Default 30 hari. Terapkan untuk muat ulang laporan.",
+              },
+              {
+                target: '[data-tour="tren"]',
+                title: "Lihat tren",
+                body: "Pickup per hari. Hari kosong = belum ada serah terima.",
+              },
+              {
+                target: '[data-tour="tabel-dampak"]',
+                title: "Baca per gerai",
+                body: "Sell-through dan kg per gerai. Nama gerai bisa diklik ke Kelola mitra.",
+              },
+              {
+                target: '[data-tour="unduh"]',
+                title: "Unduh bukti",
+                body: "CSV per gerai untuk laporan BEM/unit kampus.",
+              },
+            ]}
+          />
+        </>
+      }
+      aside={
+        <div className="hidden min-w-0 flex-col gap-4 lg:gap-5 xl:flex">
+          <SieraSection label="Progres periode 12 bulan">
+            <SieraCard className="flex flex-col gap-2 p-4">
+              <p className="text-2xl font-extrabold tabular-nums">
+                {activeDays}
+                <span className="text-sm font-bold text-muted-foreground">
+                  {" "}
+                  / {borangTarget} hari aktif
+                </span>
+              </p>
+              <div
+                className="h-2 overflow-hidden rounded-full bg-line"
+                role="progressbar"
+                aria-valuenow={borangPct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label="Progres periode 12 bulan"
+              >
+                <div
+                  className="h-full rounded-full bg-[#2E7D4F]"
+                  style={{ width: `${borangPct}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {from} sampai {to}. Borang butuh 12 bulan bukti jalan.
+              </p>
+            </SieraCard>
+          </SieraSection>
+          <SieraSection label="Unduh laporan">
+            <SieraCard className="flex flex-col gap-2 p-4">
+              <p className="text-sm text-muted-foreground">
+                CSV per gerai siap lampir borang periode ini.
+              </p>
+              <DownloadButton tour={false} />
+            </SieraCard>
+          </SieraSection>
+          <SieraSection
+            label={`Top tenant (${topTenants.length})`}
+            action={
+              <Link
+                href={ROUTES.adminTenant}
+                className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
+              >
+                Kelola
+              </Link>
+            }
+          >
+            {topTenants.length === 0 ? (
+              <SieraCard className="p-4">
+                <p className="text-sm text-muted-foreground">Belum ada pickup pada rentang ini.</p>
+              </SieraCard>
+            ) : (
+              <SieraCard className="flex flex-col divide-y divide-dashed divide-line px-4">
+                {topTenants.map((t, i) => (
+                  <div key={t.tenantName} className="flex items-center gap-3 py-3">
+                    <span className="text-sm font-extrabold tabular-nums text-[#1E5A36]">
+                      {i + 1}
+                    </span>
+                    <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                      <span className="truncate text-sm font-bold text-[#1C2826]">
+                        {t.tenantName}
                       </span>
-                    )}
-                    {r.portionsPosted > 0 && r.portionsPickedUp === 0 && (
-                      <span className="ml-2 inline-block rounded-full bg-[#FEF3C7] px-2 py-0.5 align-middle text-[11px] font-bold text-[#92400E]">
-                        Belum diambil
+                      <span className="truncate text-xs text-muted-foreground">
+                        {t.portionsPickedUp} diambil · {t.portionsPosted} diunggah
                       </span>
-                    )}
-                  </td>
-                  <td className="py-3 pr-3">{r.portionsPosted}</td>
-                  <td className="py-3 pr-3">{r.portionsPickedUp}</td>
-                  <td className="py-3 pr-3">
-                    {Math.round(percentSold(r.portionsPickedUp, r.portionsPosted) * 100)}%
-                  </td>
-                  <td className="py-3 pr-3 text-right">{formatIDR(r.revenue)}</td>
-                  <td className="py-3 pr-3 text-right">{formatIDR(r.moneySaved)}</td>
-                  <td className="py-3 text-right">
-                    {r.wasteKg == null ? "—" : `${r.wasteKg.toFixed(2)} kg`}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    </span>
+                  </div>
+                ))}
+              </SieraCard>
+            )}
+          </SieraSection>
         </div>
-      )}
-
-      <Button
-        type="button"
-        variant="outline"
-        data-tour="unduh"
-        className="w-fit min-h-11"
-        onClick={downloadCsv}
-        disabled={exporting}
-      >
-        {exporting ? (
-          <>
-            <Spinner />
-            Menyiapkan…
-          </>
-        ) : (
-          "Unduh CSV"
-        )}
-      </Button>
-      <GuidedTour
-        tourKey="admin"
-        steps={[
-          {
-            target: '[data-tour="rentang"]',
-            title: "Atur rentang",
-            body: "Default 30 hari. Terapkan untuk muat ulang laporan.",
-          },
-          {
-            target: '[data-tour="tren"]',
-            title: "Lihat tren",
-            body: "Pickup per hari. Hari kosong = belum ada serah terima.",
-          },
-          {
-            target: '[data-tour="tabel-dampak"]',
-            title: "Baca per gerai",
-            body: "Sell-through dan kg per gerai. Nama gerai bisa diklik ke Kelola mitra.",
-          },
-          {
-            target: '[data-tour="unduh"]',
-            title: "Unduh bukti",
-            body: "CSV per gerai untuk laporan BEM/unit kampus.",
-          },
-        ]}
-      />
-    </div>
+      }
+    />
   );
 }

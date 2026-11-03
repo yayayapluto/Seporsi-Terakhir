@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
+import { SieraAlert, SieraEmpty, SieraList } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -35,30 +36,21 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
 
   if (tenants.length === 0) {
     return (
-      <div className="border-b py-10 text-center">
-        <p className="font-semibold">Tidak ada pendaftaran menunggu</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Semua pendaftaran mitra sudah diproses.
-        </p>
-      </div>
+      <SieraEmpty
+        title="Tidak ada pendaftaran menunggu"
+        hint="Semua pendaftaran mitra sudah diproses."
+      />
     );
   }
 
   return (
     <div className="flex flex-col gap-4">
-      {error && (
-        <p
-          role="alert"
-          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-        >
-          {error}
-        </p>
-      )}
-      <ul className="divide-y divide-border border-b">
+      {error && <SieraAlert variant="error">{error}</SieraAlert>}
+      <SieraList>
         {tenants.map((t) => {
           const open = openId === t.id;
           return (
-            <li key={t.id} className="py-4">
+            <li key={t.id} className="px-4 py-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                 <div className="min-w-0">
                   <h2 className="font-bold leading-snug">{t.name}</h2>
@@ -78,6 +70,7 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
                     variant="outline"
                     onClick={() => setOpenId(open ? null : t.id)}
                     aria-expanded={open}
+                    className="min-h-11"
                   >
                     {open ? "Tutup" : "Tinjau"}
                   </Button>
@@ -136,7 +129,7 @@ export function ApproveList({ tenants }: { tenants: PendingTenant[] }) {
             </li>
           );
         })}
-      </ul>
+      </SieraList>
       <Dialog open={rejectId !== null} onOpenChange={(open) => !open && setRejectId(null)}>
         <DialogContent>
           <DialogTitle>Tolak {rejectTarget ? `“${rejectTarget.name}”` : "pendaftar"}?</DialogTitle>

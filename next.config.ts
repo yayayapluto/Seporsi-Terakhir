@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [{ source: "/cara-kerja", destination: "/#cara-kerja", permanent: true }];
+  },
   allowedDevOrigins: [
     "dev.seporsi-terakhir.my.id",
     "re.seporsi-terakhir.my.id",

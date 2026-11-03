@@ -23,11 +23,23 @@ export function SmoothProvider({ children }: { children: ReactNode }) {
     };
     raf = requestAnimationFrame(loop);
     const onAnchor = (e: MouseEvent) => {
-      const a = (e.target as HTMLElement).closest?.('a[href^="#"]');
+      const a = (e.target as HTMLElement).closest?.("a[href]");
       if (!a) return;
-      const id = a.getAttribute("href");
-      if (!id || id === "#") return;
-      const el = document.querySelector(id);
+      const href = a.getAttribute("href");
+      if (!href) return;
+      // Anchor murni (#id) atau same-page (/#id saat sudah di /).
+      const hash = href.startsWith("#")
+        ? href
+        : href.startsWith("/#") && window.location.pathname === "/"
+          ? href.slice(1)
+          : null;
+      if (!hash || hash === "#") return;
+      let el: Element | null = null;
+      try {
+        el = document.querySelector(hash);
+      } catch {
+        return;
+      }
       if (!el) return;
       e.preventDefault();
       lenis.scrollTo(el as HTMLElement, { offset: -56 });

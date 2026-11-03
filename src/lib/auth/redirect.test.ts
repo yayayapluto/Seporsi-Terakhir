@@ -1,11 +1,21 @@
 import { describe, expect, it } from "vitest";
 import { homeForRole } from "@/lib/auth";
 import { isSafeNext, resolveNext } from "@/lib/auth/redirect";
+import { ROUTES } from "@/lib/routes";
 
 describe("isSafeNext", () => {
   it("accepts internal paths", () => {
-    expect(isSafeNext("/katalog")).toBe(true);
-    expect(isSafeNext("/tenant/porsi/baru?x=1")).toBe(true);
+    expect(isSafeNext("/beranda/katalog")).toBe(true);
+    expect(isSafeNext("/beranda/pesanan?x=1")).toBe(true);
+    expect(isSafeNext("/profil/keamanan")).toBe(true);
+    expect(isSafeNext("/tenant/porsi/tambah?x=1")).toBe(true);
+  });
+
+  it("still accepts legacy paths (proxy redirects them)", () => {
+    expect(isSafeNext("/katalog")).toBe(true); // LEGACY: proxy 308 → ROUTES.katalog
+    expect(isSafeNext("/pesanan")).toBe(true); // LEGACY: proxy 308 → ROUTES.pesanan
+    expect(isSafeNext("/akun/keamanan")).toBe(true); // LEGACY: proxy 308 → ROUTES.profilKeamanan
+    expect(isSafeNext("/akun/pengaturan")).toBe(true); // LEGACY: proxy 308 → ROUTES.profilPengaturan
   });
 
   it("rejects external, protocol-relative, and escaped targets", () => {
@@ -21,11 +31,11 @@ describe("isSafeNext", () => {
 
 describe("resolveNext", () => {
   it("prefers a safe next over the role home", () => {
-    expect(resolveNext("/profil", "/katalog")).toBe("/profil");
+    expect(resolveNext(ROUTES.profil, ROUTES.katalog)).toBe(ROUTES.profil);
   });
 
   it("falls back to the role home for unsafe next", () => {
-    expect(resolveNext("https://evil.test", "/katalog")).toBe("/katalog");
+    expect(resolveNext("https://evil.test", ROUTES.katalog)).toBe(ROUTES.katalog);
     expect(resolveNext(null, "/tenant")).toBe("/tenant");
   });
 });
@@ -39,7 +49,7 @@ describe("homeForRole", () => {
 
   it("resolves post-login targets through the role home", () => {
     expect(resolveNext(null, homeForRole("tenant"))).toBe("/tenant");
-    expect(resolveNext("/pesanan", homeForRole("tenant"))).toBe("/pesanan");
+    expect(resolveNext(ROUTES.pesanan, homeForRole("tenant"))).toBe(ROUTES.pesanan);
     expect(resolveNext("https://evil.test", homeForRole("admin"))).toBe("/admin");
   });
 });

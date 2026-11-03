@@ -1,7 +1,9 @@
-import { CircleAlert } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { SieraCard } from "@/components/siera";
+import { SieraAlert, SieraCard } from "@/components/siera";
+
+import { ROUTES } from "@/lib/routes";
+import { DevLoginCard } from "./dev-login-card";
 import { EmailSignIn } from "./email-sign-in";
 import { GoogleSignIn } from "./google-sign-in";
 
@@ -20,15 +22,11 @@ async function MasukContent({
         <p className="text-sm text-[#1E5A36]">Pilih cara masuk favoritmu. Tanpa kata sandi.</p>
       </div>
       {(error === "oauth" || error === "magic-link") && (
-        <p
-          role="alert"
-          className="flex items-start gap-2 rounded-2xl border border-[#F3C2C2] bg-[#FDECEC] px-4 py-3 text-sm font-semibold text-[#BA1A1A]"
-        >
-          <CircleAlert className="mt-0.5 size-5 shrink-0" aria-hidden />
+        <SieraAlert variant="error">
           {error === "oauth"
             ? "Login Google gagal. Silakan coba lagi."
             : "Tautan tidak valid atau kedaluwarsa. Minta tautan baru di bawah."}
-        </p>
+        </SieraAlert>
       )}
       <SieraCard className="p-4">
         <GoogleSignIn next={next} />
@@ -43,7 +41,7 @@ async function MasukContent({
         <p className="border-t border-dashed border-line pt-3 text-center text-[12px] leading-relaxed text-[#64746B]">
           Dengan masuk, kamu menyetujui penggunaan datamu untuk pencatatan dampak sesuai{" "}
           <Link
-            href="/cara-kerja"
+            href={ROUTES.caraKerja}
             className="font-semibold text-[#1E5A36] underline underline-offset-2 outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
           >
             SOP keamanan pangan di Cara Kerja
@@ -51,6 +49,7 @@ async function MasukContent({
           .
         </p>
       </SieraCard>
+      {process.env.NODE_ENV !== "production" && <DevLoginCard next={next} />}
     </div>
   );
 }

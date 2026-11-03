@@ -1,19 +1,21 @@
-import { ArrowLeft, Timer } from "lucide-react";
+import { History, QrCode, Timer, UserRound } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { AppHeader } from "@/components/app-header";
 import { OrderStatusBadge } from "@/components/order-status-badge";
-import { sieraCardClass } from "@/components/siera";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+  SieraList,
+  SieraRailPage,
+  SieraRowLink,
+  SieraSection,
+  SieraStat,
+  SieraStatStrip,
+  sieraCardClass,
+} from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../../guard";
 import { TenantCancelButton } from "./cancel-button";
@@ -85,27 +87,9 @@ export default async function TenantOrderDetailPage({
   if (!z.string().uuid().safeParse(id).success) notFound();
   const o = await loadDetail(id);
 
-  return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <Breadcrumb className="hidden md:flex">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink render={<Link href="/tenant/pesanan" />}>Pesanan</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Detail</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <Link
-        href="/tenant/pesanan"
-        className="inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[#1E5A36] hover:underline md:hidden"
-      >
-        <ArrowLeft className="size-4" aria-hidden />
-        Pesanan
-      </Link>
-      <div className="flex flex-col gap-1">
+  const main = (
+    <>
+      <div className={`${sieraCardClass} flex flex-col gap-1 p-4`}>
         <p className="text-xs font-bold tracking-wide text-[#1E5A36]">RESERVASI</p>
         <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
           {o.menuName} × {o.quantity}
@@ -122,21 +106,6 @@ export default async function TenantOrderDetailPage({
           )}
         </p>
       </div>
-      {o.pickupCode && (
-        <section aria-labelledby="pickup-heading" className={`${sieraCardClass} p-5`}>
-          <p className="text-xs font-bold tracking-wide text-[#64746B]">KODE PICKUP</p>
-          <h2
-            id="pickup-heading"
-            className="mt-1 text-4xl font-extrabold tracking-[0.2em] text-[#1C2826] tabular-nums"
-          >
-            {o.pickupCode}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Ketik di kolom kode manual halaman Scan pickup bila kamera bermasalah.
-          </p>
-          <CopyTokenButton token={o.pickupCode} />
-        </section>
-      )}
       {o.expiresAt && (
         <section
           aria-label="Batas ambil"
@@ -153,7 +122,6 @@ export default async function TenantOrderDetailPage({
           </p>
         </section>
       )}
-
       <section aria-labelledby="pemesan-heading" className={`${sieraCardClass} p-5 text-center`}>
         <h2 id="pemesan-heading" className="text-2xl font-bold">
           {o.buyerName}
@@ -170,7 +138,6 @@ export default async function TenantOrderDetailPage({
           )}
         </p>
       </section>
-
       <dl className={`${sieraCardClass} divide-y divide-dashed divide-line px-5`}>
         {o.cookedAt && <Row label="Dimasak">{formatDateTimeWIB(new Date(o.cookedAt))} WIB</Row>}
         <Row label="Harga/porsi">
@@ -192,7 +159,6 @@ export default async function TenantOrderDetailPage({
           </span>
         </Row>
       </dl>
-
       {o.status === "reserved" && (
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <Link
@@ -216,6 +182,66 @@ export default async function TenantOrderDetailPage({
             : "Pesanan dibatalkan. Stok porsi dikembalikan ke katalog."}
         </p>
       )}
-    </div>
+    </>
+  );
+
+  const aside = (
+    <>
+      {o.pickupCode && (
+        <SieraSection id="pickup-heading" label="Kode pickup">
+          <div className={`${sieraCardClass} flex flex-col items-center gap-1 p-5 text-center`}>
+            <SieraStat
+              icon={QrCode}
+              value={o.pickupCode}
+              label="Ketik di Scan pickup bila kamera gagal"
+            />
+            <CopyTokenButton token={o.pickupCode} />
+          </div>
+        </SieraSection>
+      )}
+      <SieraSection id="riwayat-heading" label="Riwayat pemesan">
+        <SieraStatStrip>
+          <SieraStat icon={History} value={String(o.buyerPickups)} label="Selesai" />
+          <SieraStat icon={UserRound} value={String(o.buyerCancelled)} label="Batal" />
+          <SieraStat
+            icon={Timer}
+            value={`${o.quantity}×`}
+            label={o.status === "reserved" ? "Menunggu" : "Porsi"}
+          />
+        </SieraStatStrip>
+      </SieraSection>
+      {o.status === "reserved" && (
+        <SieraSection id="lanjut-heading" label="Langkah lanjut">
+          <SieraList aria-label="Langkah lanjut">
+            <SieraRowLink
+              href="/tenant/scan"
+              icon={QrCode}
+              title="Scan pickup"
+              subtitle="Konfirmasi serah terima di kasir"
+            />
+            <SieraRowLink
+              href="/tenant/pesanan"
+              icon={History}
+              title="Kembali ke pesanan"
+              subtitle="Lihat antrean pickup"
+            />
+          </SieraList>
+        </SieraSection>
+      )}
+    </>
+  );
+
+  return (
+    <>
+      <AppHeader
+        title={`${o.menuName} x ${o.quantity}`}
+        trail={[
+          { label: "Kantin", href: ROUTES.tenant },
+          { label: "Pesanan", href: ROUTES.tenantPesanan },
+          { label: `Detail ${o.menuName}` },
+        ]}
+      />
+      <SieraRailPage main={main} asideLabel="Pelengkap detail pesanan" aside={aside} />
+    </>
   );
 }

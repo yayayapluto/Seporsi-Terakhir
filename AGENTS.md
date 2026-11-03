@@ -30,7 +30,7 @@ Toolchain: Bun (`bun.lock` committed; no npm/pnpm/yarn locks), Node v24.21.0
 - `src/lib/` `env.ts` (Zod-validated), `format.ts` (IDR + WIB helpers)
 - `src/types/database.ts` GENERATED — never hand-edit
  - `supabase/` `config.toml` (redirect + mail template), `migrations/` (push via `db:push`)
-- `docs/` `product-brief.md`, `decisions.md`, `setup.md`, `design/` (Stitch)
+- `docs/` `product-brief.md`, `decisions.md`, `setup.md`; design authority = `PRODUCT-Siera.MD` + screenshots `docs/siera-ref/` (screenshot menang bila konflik)
 
 ## Coding conventions
 
@@ -41,9 +41,22 @@ Toolchain: Bun (`bun.lock` committed; no npm/pnpm/yarn locks), Node v24.21.0
 - Dates: `Intl.DateTimeFormat` + `timeZone: Asia/Jakarta`; no date library; expiry
   computed from `timestamptz` on server/DB. Currency: integer IDR, formatted via
   `formatIDR` (`Intl.NumberFormat('id-ID', IDR)`).
-- Design: Stitch "Campus Harvest & Rescue" tokens in `globals.css` (Plus Jakarta
-  Sans headings, Inter body, primary `#2E7D4F`, accent `#F28C28`, canvas
-  `#FFFBF5`); mobile-first; light mode only; Indonesian UI copy.
+- Design: `PRODUCT-Siera.MD` adalah acuan tunggal. Token §3
+  (`primary #2E7D4F`, kanvas putih `#FFFFFF`, radius card 20-24px); card = unit
+  utama, maks 1 level, tiap card punya 1 aksi; mobile-first; light mode only;
+  Indonesian UI copy. Cek `PRODUCT-Siera.MD` + screenshot `docs/siera-ref/`
+  sebelum buat UI apa pun.
+- Sejajar: indikator kerapian = teks label yang sejajar (bukan card). Baris header sekolom wajib sama tinggi (`min-h-11 flex items-center`); card mengikuti via grid stretch bawaan (`items-stretch`, section `min-w-0 h-full`), bukan subgrid/wrapper rel. Label panjang dipadatkan satu baris; keterangan kecil boleh tanpa kartu (`px-1 text-[11px]`).
+- Komponen UI shadcn-first: selalu pakai primitif `src/components/ui/` (button,
+  dialog, sheet, accordion, dsb — jangan hand-build dari nol). Komponen custom
+  HANYA boleh sebagai komposisi/wrapper di atas primitif shadcn (varian, layout,
+  pola repo seperti `SieraCard`); primitif yang belum ada = `shadcn add`, bukan
+  copy-paste atau tulis ulang. Audit berkala: tiap komponen non-ui wajib bisa
+  menunjuk primitif shadcn yang mendasarinya.
+- Animasi hanya via `motion` (dep yang sudah ada — dilarang tambah lib animasi):
+  boleh dipasang HANYA pada komponen yang memang butuh transisi (tur/onboarding,
+  dialog/sheet/accordion, shimmer skeleton, perubahan state). Satu momen authored
+  per permukaan, hormati `prefers-reduced-motion`, tanpa delay/blokir tugas.
 
 ## Domain rules (BR-1..8)
 
@@ -53,6 +66,42 @@ BR-4/5 tenant owns quality; ingredients/allergens shown when filled. BR-6
 discount ≈ 40–50% of normal (default 45%, nearest Rp500) — suggestion only.
 BR-7 zero platform fee in pilot. BR-8 strictly opt-in. 3-tap portion posting;
 normal price set once per tenant per menu item.
+
+## Agent workflow (wajib — baca sebelum kerja)
+
+1. Pre-task: `git status --short` + `git branch --show-current`; petakan simbol
+   via code-review-graph dulu (MCP tools / skill `explore-codebase` / CLI
+   `uvx code-review-graph query|search|impact`), fallback `read_file`/`search_files`;
+   cek `package.json` bila butuh lib baru. Graph lokal: `build` sekali, `update` sesudah edit besar.
+2. Edit minimal via `patch`; TDD untuk `src/lib/domain/` (test gagal dulu,
+   implementasi minimal, hijau). Maks 3x percobaan per file, lalu tanya user.
+3. Verifikasi per edit: `bun run lint`, `typecheck`, `test`; penuh sebelum commit:
+   `bun run check` + `bun run build` (keduanya exit 0; klaim tanpa output = belum selesai).
+4. Commit: stage file spesifik — JANGAN `git add -A` (file junk `nul` di root
+   merusaknya). Satu fase = satu conventional-commit. Jangan push/rewrite history
+   tanpa diminta. Jangan baca/commit secret (`.env*`).
+5. Docs: tiap dep baru / keputusan / deviasi → satu bullet di `docs/decisions.md`.
+   DB berubah = file migrasi baru + `db:types` (jangan hand-edit `database.ts`).
+6. Laporan akhir format tetap: Done / Changed (`path:baris`) / Verified (exit code
+   + output kunci) / Deviations / NOT verified / Pending manual.
+7. Port 3001 milik dev server user — jangan dimatikan; verifikasi serve via `curl`,
+   bukan notifikasi exit background. `taskkill` butuh prefix `MSYS_NO_PATHCONV=1`.
+8. Skill UI wajib `impeccable`: load via `skill_view`, ikuti playbook + baca
+   `craft-floor` sebelum edit UI; brief `PRODUCT-Siera.MD` + screenshot menang.
+   Tidak ada skill `taste` — jangan mengarang nama skill, pilih dari daftar yang ada.
+
+## Parallel work (multi-agent, anti-corrupt)
+
+Satu shard satu worker. Klaim shard di tabel bawah SEBELUM edit; jangan ambil shard yang sudah diklaim orang lain. File di luar shard = READ-ONLY.
+
+| Shard | File eksklusif | Diklaim oleh / status |
+|---|---|---|
+| A-public | `src/app/(public)/**`, `notifikasi/**`, `offline/**`, `not-found/forbidden/unauthorized/error` | — |
+| B-tenant-katalog | `src/app/tenant/page.tsx`, `menu-saya/**`, `pendaftaran/**`, `porsi/**`, `profil/**`, `menunggu/**` | — |
+| C-tenant-transaksi | `src/app/tenant/pesanan/**`, `scan/**`, `tenant-tour.tsx` | — |
+| D-admin-akun | `src/app/admin/**`, `src/app/akun/**` | — |
+
+Aturan: `read_file` fresh sebelum tiap `patch`; patch gagal 2x di file yang sama = berhenti di file itu dan lapor; formatter/linter `--write` scoped ke shard sendiri; worker tidak `commit`/`push`/`rebase` tanpa koordinator; full `check` + `build` hanya di merge gate.
 
 ## Definition of done (every phase)
 
