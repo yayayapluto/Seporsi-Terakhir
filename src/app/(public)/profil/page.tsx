@@ -17,8 +17,10 @@ import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
+import { MyProfileForm } from "./profile-form";
 
 /** Profil student: identitas, aplikasi tenant, dampak dari pesanan picked_up. */
 
@@ -128,11 +130,11 @@ export default async function ProfilPage({
 
   return (
     <>
-      <AppHeader title="Akun" />
-      <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl md:grid-cols-2 md:px-8 md:pb-12">
-        {/* Identitas — avatar + nama dalam card */}
+      <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
+      <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-6 px-4 py-6 md:grid-cols-2 md:px-8 md:pb-12">
+        {/* Identitas — avatar + form edit nama */}
         <section aria-label="Identitas" className={`${sieraCardClass} p-4 md:col-span-2`}>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 pb-4">
             <span
               aria-hidden
               className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-lg font-extrabold text-[#1E5A36]"
@@ -149,6 +151,7 @@ export default async function ProfilPage({
               )}
             </div>
           </div>
+          <MyProfileForm initialName={p.fullName} />
         </section>
 
         {/* Dampak — khusus student */}
@@ -164,7 +167,7 @@ export default async function ProfilPage({
                 <span>
                   Gagal memuat data dampak. Angka di bawah mungkin tidak akurat.{" "}
                   <Link
-                    href="/profil"
+                    href={ROUTES.profil}
                     className="inline-flex min-h-11 items-center font-bold underline underline-offset-4"
                   >
                     Coba lagi
@@ -232,7 +235,7 @@ export default async function ProfilPage({
                   Jual sisa masakanmu lewat Seporsi Terakhir — gratis untuk saat ini.
                 </p>
                 <Link
-                  href="/tenant/pendaftaran"
+                  href={ROUTES.tenantPendaftaran}
                   className={`${buttonVariants()} mt-4 min-h-12 w-full`}
                 >
                   Daftar jadi tenant
@@ -241,7 +244,7 @@ export default async function ProfilPage({
             ) : (
               <SieraList>
                 <SieraRowLink
-                  href={p.tenantApproved ? "/tenant" : "/tenant/menunggu-persetujuan"}
+                  href={p.tenantApproved ? ROUTES.tenant : ROUTES.tenantMenunggu}
                   icon={Store}
                   title={p.tenantName ?? "Kantinmu"}
                   subtitle={tenantStatus}
@@ -257,13 +260,13 @@ export default async function ProfilPage({
             <SieraSectionTitle id="akun-heading">Pengaturan</SieraSectionTitle>
             <SieraList aria-label="Pengaturan">
               <SieraRowLink
-                href="/tenant/profil"
+                href={ROUTES.tenantProfil}
                 icon={Store}
                 title="Profil kantin"
                 subtitle="Nama gerai dan lokasi"
               />
               <SieraRowLink
-                href="/akun/pengaturan"
+                href={ROUTES.akunPengaturan}
                 icon={Settings}
                 title="Pengaturan"
                 subtitle="Keamanan, notifikasi, privasi"
@@ -280,12 +283,12 @@ export default async function ProfilPage({
               {(
                 [
                   {
-                    href: "/admin/tenant",
+                    href: ROUTES.adminTenant,
                     icon: Store,
                     title: "Persetujuan tenant",
                     desc: "Daftar menunggu verifikasi",
                   },
-                  { href: "/admin", icon: Leaf, title: "Dampak", desc: "Angka rescue & unduhan" },
+                  { href: ROUTES.admin, icon: Leaf, title: "Dampak", desc: "Angka rescue & unduhan" },
                 ] as const
               ).map((r) => (
                 <SieraRowLink
@@ -308,7 +311,7 @@ export default async function ProfilPage({
           <SieraList aria-label={isStudent ? "Pesanan dan katalog" : "Pengaturan"}>
             {isStudent && (
               <SieraRowLink
-                href="/pesanan"
+                href={ROUTES.pesanan}
                 icon={History}
                 title="Riwayat pesanan"
                 subtitle="Lihat QR pickup atau cek riwayat lengkap"
@@ -316,14 +319,14 @@ export default async function ProfilPage({
             )}
             {isStudent && !p.loadFailed && p.savedPortions === 0 && (
               <SieraRowLink
-                href="/katalog"
+                href={ROUTES.katalog}
                 icon={UtensilsCrossed}
                 title="Cari porsi sore ini"
                 subtitle="Katalog rescue hari ini"
               />
             )}
             <SieraRowLink
-              href="/akun/pengaturan"
+              href={ROUTES.akunPengaturan}
               icon={Settings}
               title="Pengaturan"
               subtitle="Keamanan, notifikasi, privasi"
@@ -338,10 +341,10 @@ export default async function ProfilPage({
             <SieraRowLink
               href={
                 isTenant
-                  ? "/tenant?panduan=rantai&fresh=1"
+                  ? `${ROUTES.tenant}?panduan=rantai&fresh=1`
                   : isStudent
-                    ? "/beranda?panduan=rantai&fresh=1"
-                    : "/cara-kerja"
+                    ? `${ROUTES.beranda}?panduan=rantai&fresh=1`
+                    : ROUTES.caraKerja
               }
               icon={MapIcon}
               title={isTenant ? "Panduan kelola" : isStudent ? "Panduan beranda" : "Cara kerja"}
@@ -369,8 +372,8 @@ export default async function ProfilPage({
           userId={user.id}
           fresh={sp.fresh === "1"}
           entryStep={tourEntry}
-          next={tourJourney ? "/katalog" : undefined}
-          journeyLabel="Bagian 4 dari 4 · Akun"
+          next={tourJourney ? ROUTES.katalog : undefined}
+          journeyLabel="Bagian 4 dari 4 · Profil"
           finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}
           intro={{
             title: "Ada apa di akun?",

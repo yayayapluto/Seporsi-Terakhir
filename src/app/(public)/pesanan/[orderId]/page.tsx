@@ -1,6 +1,7 @@
 import { cn } from "cn";
-import { ArrowLeft, CalendarClock, Check, Clock3, Tag, Wallet } from "lucide-react";
+import { CalendarClock, Check, Clock3, Tag, Wallet } from "lucide-react";
 import Link from "next/link";
+import { AppHeader } from "@/components/app-header";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { GuidedTour } from "@/components/guided-tour";
@@ -8,6 +9,7 @@ import { OrderStatusBadge } from "@/components/order-status-badge";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { OrderLiveStatus } from "../order-live-status";
 import { CancelButton } from "./cancel-button";
@@ -92,23 +94,18 @@ export default async function OrderDetailPage({
   const normalTotal = order.normalPriceSnapshot * order.quantity;
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      {order.status === "reserved" && <OrderLiveStatus orderIds={[order.orderId]} />}
-      <div>
-        <Link
-          href="/pesanan"
-          className="inline-flex min-h-11 w-fit items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
+    <>
+      <AppHeader
+        title={`${order.menuName} x ${order.quantity}`}
+        trail={[{ label: "Pesanan", href: ROUTES.pesanan }, { label: `Detail ${order.menuName}` }]}
+      />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
+        {order.status === "reserved" && <OrderLiveStatus orderIds={[order.orderId]} />}
+        {/* Detail Header Card */}
+        <section
+          aria-label="Ringkasan pesanan"
+          className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}
         >
-          <ArrowLeft className="size-4" aria-hidden />
-          Semua pesanan
-        </Link>
-      </div>
-
-      {/* Detail Header Card */}
-      <section
-        aria-label="Ringkasan pesanan"
-        className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}
-      >
         <div className="flex flex-wrap items-center gap-2">
           <OrderStatusBadge status={order.status} />
           {order.pickedUpAt && (
@@ -286,37 +283,38 @@ export default async function OrderDetailPage({
             </>
           )}
         </aside>
+        </div>
+        <GuidedTour
+          tourKey="pesanan-detail"
+          forced={tourForced}
+          intro={{
+            title: "Halaman pickup?",
+            body: "Tunjukkan QR ke tenant, bayar di tempat, selesai. Detail pesananmu ada di sini.",
+          }}
+          steps={[
+            {
+              target: '[aria-label="Ringkasan pesanan"]',
+              title: "Status pesananmu",
+              body: "Menu, jumlah, tenant, dan status — menunggu, selesai, atau dibatalkan.",
+            },
+            {
+              target: '[aria-labelledby="qr-heading"]',
+              title: "QR pickup",
+              body: "Tunjukkan kode ini ke tenant saat ambil. Tokennya hanya muncul di layar ini.",
+            },
+            {
+              target: '[aria-label="Ringkasan bayar"]',
+              title: "Bayar di tempat",
+              body: "Total yang dibayar tunai ke tenant. Batalkan dari sini bila berubah pikiran.",
+            },
+            {
+              target: '[aria-label="Detail pesanan"]',
+              title: "Rincian",
+              body: "Jam masak, harga normal, dan waktu pesan buat arsipmu.",
+            },
+          ]}
+        />
       </div>
-      <GuidedTour
-        tourKey="pesanan-detail"
-        forced={tourForced}
-        intro={{
-          title: "Halaman pickup?",
-          body: "Tunjukkan QR ke tenant, bayar di tempat, selesai. Detail pesananmu ada di sini.",
-        }}
-        steps={[
-          {
-            target: '[aria-label="Ringkasan pesanan"]',
-            title: "Status pesananmu",
-            body: "Menu, jumlah, tenant, dan status — menunggu, selesai, atau dibatalkan.",
-          },
-          {
-            target: '[aria-labelledby="qr-heading"]',
-            title: "QR pickup",
-            body: "Tunjukkan kode ini ke tenant saat ambil. Tokennya hanya muncul di layar ini.",
-          },
-          {
-            target: '[aria-label="Ringkasan bayar"]',
-            title: "Bayar di tempat",
-            body: "Total yang dibayar tunai ke tenant. Batalkan dari sini bila berubah pikiran.",
-          },
-          {
-            target: '[aria-label="Detail pesanan"]',
-            title: "Rincian",
-            body: "Jam masak, harga normal, dan waktu pesan buat arsipmu.",
-          },
-        ]}
-      />
-    </div>
+    </>
   );
 }

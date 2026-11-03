@@ -1,10 +1,10 @@
 import { cn } from "cn";
-import { ArrowLeft, Clock3, ImageOff, Store, Timer, TriangleAlert, Wheat } from "lucide-react";
-import Link from "next/link";
+import { Clock3, ImageOff, Store, Timer, TriangleAlert, Wheat } from "lucide-react";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { AppHeader } from "@/components/app-header";
+import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
-import { buttonVariants } from "@/components/ui/button";
 import {
   attachMissingIngredientColumns,
   isMissingColumnError,
@@ -99,22 +99,12 @@ import { SieraField, SieraSectionTitle, sieraCardClass } from "@/components/sier
 function DetailBody({ portion }: { portion: PortionDetail | null }) {
   if (!portion) {
     return (
-      <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center">
-        <p className="text-sm font-bold text-[#1C2826]">Porsi tidak tersedia</p>
-        <p className="text-sm text-[#64746B]">
-          Porsi ini sudah habis, lewat masa ambil, atau belum dibuka tenant. Lihat porsi lain yang
-          masih ada di katalog.
-        </p>
-        <Link
-          href="/katalog"
-          className={cn(
-            buttonVariants(),
-            "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
-          )}
-        >
-          Kembali ke katalog
-        </Link>
-      </div>
+      <EmptyState
+        title="Porsi tidak tersedia"
+        hint="Porsi ini sudah habis, lewat masa ambil, atau belum dibuka tenant. Lihat porsi lain yang masih ada di katalog."
+        ctaHref="/katalog"
+        ctaLabel="Kembali ke katalog"
+      />
     );
   }
 
@@ -268,42 +258,42 @@ export default async function PortionDetailPage({
   if (!PortionId.safeParse(portionId).success) notFound();
   const portion = await loadPortion(portionId);
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <div>
-        <Link
-          href="/katalog"
-          className="inline-flex min-h-11 w-fit items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" aria-hidden />
-          Katalog
-        </Link>
-      </div>
-      <DetailBody portion={portion} />
-      <GuidedTour
-        tourKey="katalog-detail"
-        forced={tourForced}
-        intro={{
-          title: "Cara baca halaman porsi?",
-          body: "Cek stok, jam ambil, dan harga rescue di sini. Kalau cocok, kunci porsinya sebelum habis.",
-        }}
-        steps={[
-          {
-            target: '[aria-label="Ringkasan porsi"]',
-            title: "Stok dan harga",
-            body: "Sisa porsi, harga rescue, dan batas waktu ambil. Yang hampir habis ditandai jelas.",
-          },
-          {
-            target: '[aria-label="Panel pesan"]',
-            title: "Kunci porsimu",
-            body: "Atur jumlah, lalu pesan. Porsi terkunci atas namamu dan muncul di halaman Pesanan.",
-          },
-          {
-            target: '[aria-label="Detail porsi"]',
-            title: "Dimasak kapan?",
-            body: "Jam masak, bahan, dan alergen. Kalau ragu soal alergi, tanya tenant saat ambil.",
-          },
+    <>
+      <AppHeader
+        title={portion?.menuName ?? "Detail Porsi"}
+        trail={[
+          { label: "Katalog", href: "/katalog" },
+          { label: portion?.menuName ?? "Detail Porsi" },
         ]}
       />
-    </div>
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
+        <DetailBody portion={portion} />
+        <GuidedTour
+          tourKey="katalog-detail"
+          forced={tourForced}
+          intro={{
+            title: "Cara baca halaman porsi?",
+            body: "Cek stok, jam ambil, dan harga rescue di sini. Kalau cocok, kunci porsinya sebelum habis.",
+          }}
+          steps={[
+            {
+              target: '[aria-label="Ringkasan porsi"]',
+              title: "Stok dan harga",
+              body: "Sisa porsi, harga rescue, dan batas waktu ambil. Yang hampir habis ditandai jelas.",
+            },
+            {
+              target: '[aria-label="Panel pesan"]',
+              title: "Kunci porsimu",
+              body: "Atur jumlah, lalu pesan. Porsi terkunci atas namamu dan muncul di halaman Pesanan.",
+            },
+            {
+              target: '[aria-label="Detail porsi"]',
+              title: "Dimasak kapan?",
+              body: "Jam masak, bahan, dan alergen. Kalau ragu soal alergi, tanya tenant saat ambil.",
+            },
+          ]}
+        />
+      </div>
+    </>
   );
 }

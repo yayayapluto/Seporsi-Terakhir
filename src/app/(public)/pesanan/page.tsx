@@ -60,8 +60,8 @@ export default async function PesananPage({
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
     <>
-      <AppHeader title="Pesanan" />
-      <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl lg:max-w-6xl lg:px-8">
+      <AppHeader title="Pesanan" trail={[{ label: "Pesanan" }]} />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
         <SieraHero eyebrow="Riwayat & aktif" title="Pesanan saya">
           Porsi yang kamu kunci. Tunjukkan QR saat ambil, bayar di tempat.
         </SieraHero>

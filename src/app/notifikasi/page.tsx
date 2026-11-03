@@ -20,23 +20,24 @@ export default async function NotifikasiPage() {
 
   return (
     <>
-      <AppHeader title="Notifikasi" />
-      <div className="flex w-full flex-1 flex-col gap-6 px-4 py-6 md:px-8 md:pb-12">
+      <AppHeader title="Notifikasi" trail={[{ label: "Notifikasi" }]} />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8 md:pb-12">
         <div className="flex flex-col gap-2">
           <h1 className="text-xl font-extrabold tracking-tight text-[#1C2826] md:text-2xl">
-            Kabar terbaru
+            Kabar terbaru buat kamu
           </h1>
           <p className="text-sm text-[#64746B]">
-            Perubahan status pesanan dan pendaftaran muncul di sini.
+            Perubahan status pesanan dan pendaftaran muncul di sini sehingga pantau dari halaman
+            ini.
           </p>
         </div>
         <NotifLive tables={tables} />
         {notifs.length === 0 ? (
           <EmptyState
             title="Belum ada kabar"
-            hint="Perubahan status pesanan dan pendaftaran akan muncul di sini."
+            hint="Perubahan status pesanan dan pendaftaran akan muncul di sini sehingga cek lagi nanti."
             ctaHref="/katalog"
-            ctaLabel="Lihat katalog"
+            ctaLabel="Buka katalog"
           />
         ) : (
           <ul className="flex flex-col gap-3">
