@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { ChevronRight, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
@@ -33,7 +33,7 @@ export function SignOutButton() {
         type="button"
         variant="outline"
         onClick={() => setOpen(true)}
-        className="flex min-h-11 w-full items-center justify-start gap-3 rounded-[20px] border border-line bg-card p-4 text-left shadow-[0_1px_2px_rgba(16,24,40,.04)]"
+        className="flex min-h-16 w-full items-center gap-3 rounded-[20px] border border-line bg-card px-4 py-3.5 text-left shadow-[0_1px_2px_rgba(16,24,40,.04)]"
       >
         <span
           aria-hidden
@@ -41,7 +41,10 @@ export function SignOutButton() {
         >
           <LogOut className="size-5" />
         </span>
-        <span className="flex-1 text-sm font-bold text-[#BA1A1A]">Keluar</span>
+        <span className="min-w-0 flex-1 truncate text-[15px] leading-[1.3] font-semibold text-[#BA1A1A]">
+          Keluar
+        </span>
+        <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
