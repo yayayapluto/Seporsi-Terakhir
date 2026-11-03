@@ -1,15 +1,15 @@
 import { cn } from "cn";
 import { CalendarClock, Check, Clock3, Tag, Wallet } from "lucide-react";
 import Link from "next/link";
-import { AppHeader } from "@/components/app-header";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
-import { ROUTES, katalogDetail } from "@/lib/routes";
+import { katalogDetail, ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { OrderLiveStatus } from "../order-live-status";
 import { CancelButton } from "./cancel-button";
@@ -110,183 +110,183 @@ export default async function OrderDetailPage({
           aria-label="Ringkasan pesanan"
           className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}
         >
-        <div className="flex flex-wrap items-center gap-2">
-          <OrderStatusBadge status={order.status} />
-          {order.pickedUpAt && (
-            <span className="text-[13px] text-[#64746B]">
-              Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB · {order.quantity} porsi
-              diselamatkan
-            </span>
-          )}
-        </div>
-        <h1 className="text-balance text-2xl font-extrabold tracking-tight text-[#1C2826]">
-          {order.menuName} <span className="text-[#64746B]">× {order.quantity}</span>
-        </h1>
-        <p className="text-sm text-[#64746B]">
-          {order.tenantName}
-          {order.tenantLocation ? ` · ${order.tenantLocation}` : ""}
-          {order.avgWeightSnapshot != null && ` · ±${order.avgWeightSnapshot} g/porsi`}
-        </p>
-      </section>
-
-      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
-        <div className="flex min-w-0 flex-col gap-6 lg:col-start-1">
-          {order.status === "reserved" && (
-            <QrPanel
-              menuName={order.menuName}
-              tenantName={order.tenantName}
-              totalPrice={totalPrice}
-              tenantLocation={order.tenantLocation}
-              pickupToken={pickupToken}
-            />
-          )}
-          {order.status === "picked_up" && (
-            <output className="flex items-start gap-3 rounded-[20px] bg-[#E6F4EA] p-4">
-              <span
-                aria-hidden
-                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#2E7D4F] text-white"
-              >
-                <Check className="size-5" strokeWidth={2.5} aria-hidden />
+          <div className="flex flex-wrap items-center gap-2">
+            <OrderStatusBadge status={order.status} />
+            {order.pickedUpAt && (
+              <span className="text-[13px] text-[#64746B]">
+                Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB · {order.quantity} porsi
+                diselamatkan
               </span>
-              <div>
-                <p className="text-[15px] font-bold text-[#1C2826]">
-                  Pesanan selesai, selamat menikmati!
-                </p>
-                <p className="mt-0.5 text-sm text-[#1E5A36]">
-                  Total {formatIDR(totalPrice)} dibayar tunai di tempat saat pickup.
-                </p>
-              </div>
-            </output>
-          )}
-          {order.status === "cancelled" && (
-            <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-8 text-center">
-              <p className="text-sm font-bold text-[#1C2826]">Pesanan dibatalkan</p>
-              <p className="text-sm text-[#64746B]">Stok porsi sudah dikembalikan ke katalog.</p>
-              <Link
-                href={ROUTES.katalog}
-                className={cn(
-                  buttonVariants({ variant: "outline" }),
-                  "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
-                )}
-              >
-                Cari porsi lain
-              </Link>
-            </div>
-          )}
+            )}
+          </div>
+          <h1 className="text-balance text-2xl font-extrabold tracking-tight text-[#1C2826]">
+            {order.menuName} <span className="text-[#64746B]">× {order.quantity}</span>
+          </h1>
+          <p className="text-sm text-[#64746B]">
+            {order.tenantName}
+            {order.tenantLocation ? ` · ${order.tenantLocation}` : ""}
+            {order.avgWeightSnapshot != null && ` · ±${order.avgWeightSnapshot} g/porsi`}
+          </p>
+        </section>
 
-          <section aria-label="Detail pesanan" className="flex flex-col gap-2">
-            <SieraSectionTitle>Detail pesanan</SieraSectionTitle>
-            <dl
-              className={cn(
-                sieraCardClass,
-                "flex flex-col divide-y divide-dashed divide-line px-4",
-              )}
-            >
-              {order.cookedAt && (
-                <SieraField icon={Clock3} label="Dimasak">
-                  {formatDateTimeWIB(new Date(order.cookedAt))} WIB
-                </SieraField>
-              )}
-              <SieraField icon={Tag} label="Harga normal">
-                <del className="font-normal text-[#64746B]">
-                  <span className="sr-only">Harga awal: </span>
-                  {formatIDR(normalTotal)}
-                </del>
-              </SieraField>
-              <SieraField icon={Wallet} label="Total bayar di tempat">
-                <span className="text-base font-extrabold text-accent-strong">
-                  {formatIDR(totalPrice)}
+        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+          <div className="flex min-w-0 flex-col gap-6 lg:col-start-1">
+            {order.status === "reserved" && (
+              <QrPanel
+                menuName={order.menuName}
+                tenantName={order.tenantName}
+                totalPrice={totalPrice}
+                tenantLocation={order.tenantLocation}
+                pickupToken={pickupToken}
+              />
+            )}
+            {order.status === "picked_up" && (
+              <output className="flex items-start gap-3 rounded-[20px] bg-[#E6F4EA] p-4">
+                <span
+                  aria-hidden
+                  className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#2E7D4F] text-white"
+                >
+                  <Check className="size-5" strokeWidth={2.5} aria-hidden />
                 </span>
-              </SieraField>
-              <SieraField icon={CalendarClock} label="Waktu pesan">
-                {formatDateTimeWIB(new Date(order.createdAt))} WIB
-              </SieraField>
-            </dl>
-          </section>
-        </div>
+                <div>
+                  <p className="text-[15px] font-bold text-[#1C2826]">
+                    Pesanan selesai, selamat menikmati!
+                  </p>
+                  <p className="mt-0.5 text-sm text-[#1E5A36]">
+                    Total {formatIDR(totalPrice)} dibayar tunai di tempat saat pickup.
+                  </p>
+                </div>
+              </output>
+            )}
+            {order.status === "cancelled" && (
+              <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-8 text-center">
+                <p className="text-sm font-bold text-[#1C2826]">Pesanan dibatalkan</p>
+                <p className="text-sm text-[#64746B]">Stok porsi sudah dikembalikan ke katalog.</p>
+                <Link
+                  href={ROUTES.katalog}
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+                  )}
+                >
+                  Cari porsi lain
+                </Link>
+              </div>
+            )}
 
-        <aside
-          aria-label="Ringkasan bayar"
-          className={cn(
-            sieraCardClass,
-            "h-fit p-4 lg:sticky lg:top-[76px] lg:col-start-2 lg:self-start",
-          )}
-        >
-          {order.status === "cancelled" ? (
-            <div className="flex flex-col gap-3">
-              <h2 className="text-[15px] font-bold text-[#1C2826]">Mau coba lagi?</h2>
-              <p className="text-[13px] text-[#64746B]">
-                Porsi lain masih menunggu diselamatkan sore ini.
-              </p>
-              <Link
-                href={ROUTES.katalog}
+            <section aria-label="Detail pesanan" className="flex flex-col gap-2">
+              <SieraSectionTitle>Detail pesanan</SieraSectionTitle>
+              <dl
                 className={cn(
-                  buttonVariants(),
-                  "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+                  sieraCardClass,
+                  "flex flex-col divide-y divide-dashed divide-line px-4",
                 )}
               >
-                Lihat katalog
-              </Link>
-            </div>
-          ) : (
-            <>
-              <h2 className="text-[15px] font-bold text-[#1C2826]">Ringkasan bayar</h2>
-              <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5">
-                <del className="text-xs text-[#64746B]">
-                  <span className="sr-only">Harga awal: </span>
-                  {formatIDR(normalTotal)}
-                </del>
-                <strong className="text-2xl font-extrabold text-accent-strong">
-                  {formatIDR(totalPrice)}
-                </strong>
-              </p>
-              <p className="mt-1 text-[13px] text-[#64746B]">
-                {order.status === "picked_up"
-                  ? "Dibayar tunai di tempat saat pickup."
-                  : "Bayar tunai di tempat saat pickup."}
-              </p>
-              <span aria-hidden className="my-3 block border-t border-dashed border-line" />
-              <div className="flex flex-col gap-2">
-                {order.status === "reserved" && (
-                  <>
-                    <Link
-                      href={ROUTES.katalog}
-                      className={cn(
-                        buttonVariants({ variant: "outline" }),
-                        "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
-                      )}
-                    >
-                      Lihat katalog
-                    </Link>
-                    <CancelButton orderId={order.orderId} />
-                  </>
+                {order.cookedAt && (
+                  <SieraField icon={Clock3} label="Dimasak">
+                    {formatDateTimeWIB(new Date(order.cookedAt))} WIB
+                  </SieraField>
                 )}
-                {order.status === "picked_up" && (
-                  <>
-                    <Link
-                      href={katalogDetail(order.portionId)}
-                      className={cn(
-                        buttonVariants(),
-                        "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
-                      )}
-                    >
-                      Pesan lagi
-                    </Link>
-                    <Link
-                      href={ROUTES.katalog}
-                      className={cn(
-                        buttonVariants({ variant: "outline" }),
-                        "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
-                      )}
-                    >
-                      Lihat katalog
-                    </Link>
-                  </>
-                )}
+                <SieraField icon={Tag} label="Harga normal">
+                  <del className="font-normal text-[#64746B]">
+                    <span className="sr-only">Harga awal: </span>
+                    {formatIDR(normalTotal)}
+                  </del>
+                </SieraField>
+                <SieraField icon={Wallet} label="Total bayar di tempat">
+                  <span className="text-base font-extrabold text-accent-strong">
+                    {formatIDR(totalPrice)}
+                  </span>
+                </SieraField>
+                <SieraField icon={CalendarClock} label="Waktu pesan">
+                  {formatDateTimeWIB(new Date(order.createdAt))} WIB
+                </SieraField>
+              </dl>
+            </section>
+          </div>
+
+          <aside
+            aria-label="Ringkasan bayar"
+            className={cn(
+              sieraCardClass,
+              "h-fit p-4 lg:sticky lg:top-[76px] lg:col-start-2 lg:self-start",
+            )}
+          >
+            {order.status === "cancelled" ? (
+              <div className="flex flex-col gap-3">
+                <h2 className="text-[15px] font-bold text-[#1C2826]">Mau coba lagi?</h2>
+                <p className="text-[13px] text-[#64746B]">
+                  Porsi lain masih menunggu diselamatkan sore ini.
+                </p>
+                <Link
+                  href={ROUTES.katalog}
+                  className={cn(
+                    buttonVariants(),
+                    "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+                  )}
+                >
+                  Lihat katalog
+                </Link>
               </div>
-            </>
-          )}
-        </aside>
+            ) : (
+              <>
+                <h2 className="text-[15px] font-bold text-[#1C2826]">Ringkasan bayar</h2>
+                <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5">
+                  <del className="text-xs text-[#64746B]">
+                    <span className="sr-only">Harga awal: </span>
+                    {formatIDR(normalTotal)}
+                  </del>
+                  <strong className="text-2xl font-extrabold text-accent-strong">
+                    {formatIDR(totalPrice)}
+                  </strong>
+                </p>
+                <p className="mt-1 text-[13px] text-[#64746B]">
+                  {order.status === "picked_up"
+                    ? "Dibayar tunai di tempat saat pickup."
+                    : "Bayar tunai di tempat saat pickup."}
+                </p>
+                <span aria-hidden className="my-3 block border-t border-dashed border-line" />
+                <div className="flex flex-col gap-2">
+                  {order.status === "reserved" && (
+                    <>
+                      <Link
+                        href={ROUTES.katalog}
+                        className={cn(
+                          buttonVariants({ variant: "outline" }),
+                          "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+                        )}
+                      >
+                        Lihat katalog
+                      </Link>
+                      <CancelButton orderId={order.orderId} />
+                    </>
+                  )}
+                  {order.status === "picked_up" && (
+                    <>
+                      <Link
+                        href={katalogDetail(order.portionId)}
+                        className={cn(
+                          buttonVariants(),
+                          "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+                        )}
+                      >
+                        Pesan lagi
+                      </Link>
+                      <Link
+                        href={ROUTES.katalog}
+                        className={cn(
+                          buttonVariants({ variant: "outline" }),
+                          "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+                        )}
+                      >
+                        Lihat katalog
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </aside>
         </div>
         <GuidedTour
           tourKey="pesanan-detail"
