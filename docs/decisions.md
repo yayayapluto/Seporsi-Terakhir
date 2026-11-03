@@ -199,3 +199,13 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 - Profil label rata: header manual dampak/bantuan dibungkus `div min-h-11 items-center` agar sejajar dengan header `SieraSection` (indikator = teks label, card mengikuti).
 - Pesanan card-based + sejajar (`beranda/pesanan`): filter + daftar dibungkus `SieraSection` (label satu baris, hitungan di aksi kanan), error `p` -> `SieraAlert`, footnote tetap teks kecil; tour `data-tour` di dalam card tidak berubah. Kaidah sejajar masuk `AGENTS.md` (label sejajar, header `min-h-11`, stretch bawaan, label padat, keterangan `text-[11px]`).
 - Rel kanan desktop `profil` (pilot prompt-rel-kanan): `SieraRailPage` bersama di `siera.tsx` (`xl:grid-cols-[minmax(0,1fr)_340px]`, utama `max-w-[720px]`, aside sticky `top-20`); `/profil` student: main = identitas+dampak+nav, aside = aplikasi tenant+bantuan; di bawah xl satu kolom seperti semula. Tanpa query baru, tanpa dep baru.
+
+## Merge-gate glosarium (koordinator, tanpa laporan worker masuk)
+- Sapaan: `kamu` (sensus repo: 35 `kamu/Kamu`, 0 `Anda`) — final, tanpa varian baru.
+- Produk: `Siera/Porsi/Tenant/QR/Ambil` (ikut `humanizer-indonesia` + copy berjalan: `Pickup` -> `Ambil`, `Lihat dan pesan`).
+- Status: `wajib/opsional` huruf kecil (sensus: 15/6, konsisten). Tanpa commit khusus glosarium (nol varian lintas-shard ditemukan — tidak ada yang perlu disatukan).
+- P1: tidak ada di worktree (`faculty/leaderboard/waste-trend/push` nol temuan di `src/app`) — tidak dieksekusi.
+
+## Merge-gate konflik (koordinator, file bersama non-shard)
+- `layout.tsx` + `app-header.tsx` + `app-sidebar.tsx` disentuh paralel di luar tabel shard (file bersama, bukan eksklusif siapa pun): diterima apa adanya — `AppShell` (`layout`), header fixed + spacer + `md:left-60` (`app-header`), urutan import (`app-sidebar`). Satu arah refactor cangkang aplikasi; tidak ada versi tandingan di worktree, tidak perlu revert parsial.
+- `database.ts` + `supabase/migrations`: bersih (nol perubahan) — tidak ada migrasi ganda.
