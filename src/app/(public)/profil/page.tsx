@@ -144,8 +144,7 @@ export default async function ProfilPage({
   return (
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
-      <div className="grid w-full min-w-0 max-w-[1280px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-6 lg:grid-cols-2 lg:gap-6">
-        <div className="flex min-w-0 flex-col gap-8">
+      <div className="mx-auto grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-6">
           {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
           <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
             <div className="flex items-center gap-4">
@@ -263,7 +262,6 @@ export default async function ProfilPage({
             </SieraSection>
           )}
         </div>
-        <div className="flex min-w-0 flex-col gap-8">
           {/* Navigasi — Grouped List Card */}
           <SieraSection
             id="riwayat-heading"
@@ -356,43 +354,41 @@ export default async function ProfilPage({
           <div className="mt-8">
             <SignOutButton />
           </div>
-        </div>
-      </div>
-      {isStudent && (
-        <GuidedTour
-          tourKey="profil"
-          forced={tourForced}
-          auto={false}
-          journey={tourJourney}
-          userId={user.id}
-          fresh={sp.fresh === "1"}
-          entryStep={tourEntry}
-          next={tourJourney ? ROUTES.katalog : undefined}
-          journeyLabel="Bagian 4 dari 4 · Profil"
-          finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}
-          intro={{
-            title: "Ada apa di akun?",
-            body: "Dampakmu, jalan jadi tenant, dan semua pengaturan, sekilas saja.",
-          }}
-          steps={[
-            {
-              target: '[aria-label="Identitas"]',
-              title: "Kamu siapa di sini",
-              body: "Nama, email, dan peranmu: mahasiswa, atau tenant yang sudah disetujui.",
-            },
-            {
-              target: '[aria-labelledby="dampak-heading"]',
-              title: "Jejak rescue-mu",
-              body: "Porsi terselamatkan, uang hemat, dan sampah dicegah dari setiap pickup.",
-            },
-            {
-              target: '[aria-labelledby="bantuan-heading"]',
-              title: "Butuh panduan lagi",
-              body: "Putar ulang panduan beranda kapan saja dari sini.",
-            },
-          ]}
-        />
-      )}
+  {isStudent && (
+    <GuidedTour
+      tourKey="profil"
+      forced={tourForced}
+      auto={false}
+      journey={tourJourney}
+      userId={user.id}
+      fresh={sp.fresh === "1"}
+      entryStep={tourEntry}
+      next={tourJourney ? ROUTES.katalog : undefined}
+      journeyLabel="Bagian 4 dari 4 · Profil"
+      finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}
+      intro={{
+        title: "Ada apa di akun?",
+        body: "Dampakmu, jalan jadi tenant, dan semua pengaturan, sekilas saja.",
+      }}
+      steps={[
+        {
+          target: '[aria-label="Identitas"]',
+          title: "Kamu siapa di sini",
+          body: "Nama, email, dan peranmu: mahasiswa, atau tenant yang sudah disetujui.",
+        },
+        {
+          target: '[aria-labelledby="dampak-heading"]',
+          title: "Jejak rescue-mu",
+          body: "Porsi terselamatkan, uang hemat, dan sampah dicegah dari setiap pickup.",
+        },
+        {
+          target: '[aria-labelledby="bantuan-heading"]',
+          title: "Butuh panduan lagi",
+          body: "Putar ulang panduan beranda kapan saja dari sini.",
+        },
+      ]}
+      />
+    )}
     </>
   );
 }
