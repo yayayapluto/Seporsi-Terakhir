@@ -44,9 +44,6 @@ export function QrPanel({
       </div>
       <div className="flex flex-col items-center gap-4">
         <QRCode value={pickupToken} size={256} title={`QR pickup pesanan ${menuName}`} />
-        <p className="text-center text-sm font-semibold text-[#1C2826]">
-          Tunjukkan ke {tenantName}, bayar {formatIDR(totalPrice)} tunai di tempat.
-        </p>
         <p className="text-center">
           <span className="block text-xs text-[#64746B]">Total bayar tunai</span>
           <strong className="text-3xl font-extrabold text-accent-strong">

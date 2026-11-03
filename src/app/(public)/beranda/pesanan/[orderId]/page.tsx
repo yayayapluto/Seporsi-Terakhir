@@ -143,102 +143,103 @@ export default async function OrderDetailPage({
       <SieraRailPage
         asideLabel="Status dan kantin"
         main={
-          <>
-            {order.status === "reserved" && <OrderLiveStatus orderIds={[order.orderId]} />}
-            <section
-              aria-label="Ringkasan pesanan"
-              className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}
-            >
-              <div className="flex flex-wrap items-center gap-2">
-                <OrderStatusBadge status={order.status} />
-                {order.pickedUpAt && (
-                  <span className="text-[13px] text-[#64746B]">
-                    Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB · {order.quantity}{" "}
-                    porsi diselamatkan
-                  </span>
-                )}
-              </div>
-              <h1 className="text-balance text-2xl font-extrabold tracking-tight text-[#1C2826]">
-                {order.menuName} <span className="text-[#64746B]">× {order.quantity}</span>
-              </h1>
-              <p className="text-sm text-[#64746B]">
-                {order.tenantName}
-                {order.tenantLocation ? ` · ${order.tenantLocation}` : ""}
-                {order.avgWeightSnapshot != null && ` · ±${order.avgWeightSnapshot} g/porsi`}
-              </p>
-            </section>
-            {order.status === "reserved" && (
-              <QrPanel
-                menuName={order.menuName}
-                tenantName={order.tenantName}
-                totalPrice={totalPrice}
-                tenantLocation={order.tenantLocation}
-                pickupToken={pickupToken}
-              />
-            )}
-            {order.status === "picked_up" && (
-              <output className="flex items-start gap-3 rounded-[20px] bg-[#E6F4EA] p-4">
-                <span
-                  aria-hidden
-                  className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#2E7D4F] text-white"
-                >
-                  <Check className="size-5" strokeWidth={2.5} aria-hidden />
-                </span>
-                <div>
-                  <p className="text-[15px] font-bold text-[#1C2826]">
-                    Pesanan selesai, selamat menikmati!
-                  </p>
-                  <p className="mt-0.5 text-sm text-[#1E5A36]">
-                    Total {formatIDR(totalPrice)} dibayar tunai di tempat saat pickup.
-                  </p>
+          <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-5">
+            <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
+              {order.status === "reserved" && <OrderLiveStatus orderIds={[order.orderId]} />}
+              <section
+                aria-label="Ringkasan pesanan"
+                className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <OrderStatusBadge status={order.status} />
+                  {order.pickedUpAt && (
+                    <span className="text-[13px] text-[#64746B]">
+                      Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB ·{" "}
+                      {order.quantity} porsi diselamatkan
+                    </span>
+                  )}
                 </div>
-              </output>
-            )}
-            {order.status === "cancelled" && (
-              <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-8 text-center">
-                <p className="text-sm font-bold text-[#1C2826]">Pesanan dibatalkan</p>
-                <p className="text-sm text-[#64746B]">Stok porsi sudah dikembalikan ke katalog.</p>
-                <Link
-                  href={ROUTES.katalog}
+                <h1 className="text-balance text-2xl font-extrabold tracking-tight text-[#1C2826]">
+                  {order.menuName} <span className="text-[#64746B]">× {order.quantity}</span>
+                </h1>
+                <p className="text-sm text-[#64746B]">
+                  {order.tenantName}
+                  {order.tenantLocation ? ` · ${order.tenantLocation}` : ""}
+                  {order.avgWeightSnapshot != null && ` · ±${order.avgWeightSnapshot} g/porsi`}
+                </p>
+              </section>
+              {order.status === "reserved" && (
+                <QrPanel
+                  menuName={order.menuName}
+                  tenantName={order.tenantName}
+                  totalPrice={totalPrice}
+                  tenantLocation={order.tenantLocation}
+                  pickupToken={pickupToken}
+                />
+              )}
+              {order.status === "picked_up" && (
+                <output className="flex items-start gap-3 rounded-[20px] bg-[#E6F4EA] p-4">
+                  <span
+                    aria-hidden
+                    className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#2E7D4F] text-white"
+                  >
+                    <Check className="size-5" strokeWidth={2.5} aria-hidden />
+                  </span>
+                  <div>
+                    <p className="text-[15px] font-bold text-[#1C2826]">
+                      Pesanan selesai, selamat menikmati!
+                    </p>
+                    <p className="mt-0.5 text-sm text-[#1E5A36]">
+                      Total {formatIDR(totalPrice)} dibayar tunai di tempat saat pickup.
+                    </p>
+                  </div>
+                </output>
+              )}
+              {order.status === "cancelled" && (
+                <div className="flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-8 text-center">
+                  <p className="text-sm font-bold text-[#1C2826]">Pesanan dibatalkan</p>
+                  <p className="text-sm text-[#64746B]">
+                    Stok porsi sudah dikembalikan ke katalog.
+                  </p>
+                  <Link
+                    href={ROUTES.katalog}
+                    className={cn(
+                      buttonVariants({ variant: "outline" }),
+                      "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+                    )}
+                  >
+                    Cari porsi lain
+                  </Link>
+                </div>
+              )}
+            </div>
+            <div className="min-h-0 lg:sticky lg:top-[76px]">
+              <section aria-label="Detail pesanan" className="flex min-w-0 flex-col gap-2">
+                <SieraSectionTitle>Detail pesanan</SieraSectionTitle>
+                <dl
                   className={cn(
-                    buttonVariants({ variant: "outline" }),
-                    "flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+                    sieraCardClass,
+                    "flex flex-col divide-y divide-dashed divide-line px-4",
                   )}
                 >
-                  Cari porsi lain
-                </Link>
-              </div>
-            )}
-            <section aria-label="Detail pesanan" className="flex flex-col gap-2">
-              <SieraSectionTitle>Detail pesanan</SieraSectionTitle>
-              <dl
-                className={cn(
-                  sieraCardClass,
-                  "flex flex-col divide-y divide-dashed divide-line px-4",
-                )}
-              >
-                {order.cookedAt && (
-                  <SieraField icon={Clock3} label="Dimasak">
-                    {formatDateTimeWIB(new Date(order.cookedAt))} WIB
+                  {order.cookedAt && (
+                    <SieraField icon={Clock3} label="Dimasak">
+                      {formatDateTimeWIB(new Date(order.cookedAt))} WIB
+                    </SieraField>
+                  )}
+                  <SieraField icon={Tag} label="Harga normal">
+                    <del className="font-normal text-[#64746B]">
+                      <span className="sr-only">Harga awal: </span>
+                      {formatIDR(normalTotal)}
+                    </del>
                   </SieraField>
-                )}
-                <SieraField icon={Tag} label="Harga normal">
-                  <del className="font-normal text-[#64746B]">
-                    <span className="sr-only">Harga awal: </span>
-                    {formatIDR(normalTotal)}
-                  </del>
-                </SieraField>
-                <SieraField icon={Wallet} label="Total bayar di tempat">
-                  <span className="text-base font-extrabold text-accent-strong">
-                    {formatIDR(totalPrice)}
-                  </span>
-                </SieraField>
-                <SieraField icon={CalendarClock} label="Waktu pesan">
-                  {formatDateTimeWIB(new Date(order.createdAt))} WIB
-                </SieraField>
-              </dl>
-            </section>
-          </>
+                  <SieraField icon={CalendarClock} label="Waktu pesan">
+                    {formatDateTimeWIB(new Date(order.createdAt))} WIB
+                  </SieraField>
+                </dl>
+              </section>
+            </div>
+          </div>
         }
         aside={
           <>
@@ -293,11 +294,13 @@ export default async function OrderDetailPage({
                 </div>
               </div>
             </SieraSection>
-            <section aria-label="Ringkasan bayar" className={cn(sieraCardClass, "p-4")}>
+            <SieraSection
+              id="bayar-heading"
+              label={order.status === "cancelled" ? "Mau coba lagi?" : "Ringkasan bayar"}
+            >
               {order.status === "cancelled" ? (
-                <div className="flex flex-col gap-3">
-                  <h2 className="text-[15px] font-bold text-[#1C2826]">Mau coba lagi?</h2>
-                  <p className="text-[13px] text-[#64746B]">
+                <div className={cn(sieraCardClass, "flex flex-col gap-3 p-4 text-center")}>
+                  <p className="text-sm text-[#64746B]">
                     Porsi lain masih menunggu diselamatkan sore ini.
                   </p>
                   <Link
@@ -311,8 +314,7 @@ export default async function OrderDetailPage({
                   </Link>
                 </div>
               ) : (
-                <>
-                  <h2 className="text-[15px] font-bold text-[#1C2826]">Ringkasan bayar</h2>
+                <div className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}>
                   <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5">
                     <del className="text-xs text-[#64746B]">
                       <span className="sr-only">Harga awal: </span>
@@ -366,9 +368,9 @@ export default async function OrderDetailPage({
                       </>
                     )}
                   </div>
-                </>
+                </div>
               )}
-            </section>
+            </SieraSection>
           </>
         }
       />
