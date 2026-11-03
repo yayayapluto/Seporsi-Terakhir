@@ -1,6 +1,7 @@
 import { cn } from "cn";
 import { ChevronRight, History, ReceiptText } from "lucide-react";
 import Link from "next/link";
+import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { OrderStatusBadge } from "@/components/order-status-badge";
@@ -14,6 +15,7 @@ import {
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
@@ -135,11 +137,12 @@ export default async function TenantPesananPage({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <SieraTenantHeader kicker="RESERVASI" title="Pesanan masuk">
-        Reservasi porsi dari mahasiswa. Konfirmasi pickup lewat scan QR di halaman scanner.
-      </SieraTenantHeader>
-
+    <>
+      <AppHeader
+        title="Pesanan"
+        trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Pesanan" }]}
+      />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
       {failed ? (
         <div
           role="alert"
@@ -154,7 +157,7 @@ export default async function TenantPesananPage({
         <EmptyState
           title="Belum ada pesanan"
           hint="Posting porsi dulu supaya mahasiswa bisa memesan."
-          ctaHref="/tenant/porsi/baru"
+          ctaHref={ROUTES.tenantPorsiTambah}
           ctaLabel="Tambah porsi"
         />
       ) : (
@@ -213,6 +216,7 @@ export default async function TenantPesananPage({
           },
         ]}
       />
-    </div>
+      </div>
+    </>
   );
 }

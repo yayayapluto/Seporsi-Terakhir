@@ -12,6 +12,7 @@ import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/client";
 
 const schema = z.object({
@@ -50,7 +51,7 @@ export function PendaftaranForm() {
       }
       return;
     }
-    router.push("/tenant/menunggu-persetujuan");
+    router.push(ROUTES.tenantMenunggu);
     router.refresh();
   }
 
@@ -67,7 +68,7 @@ export function PendaftaranForm() {
           {formError}{" "}
           {alreadyApplied && (
             <Link
-              href="/tenant/menunggu-persetujuan"
+              href={ROUTES.tenantMenunggu}
               className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
             >
               Lihat status pendaftaran

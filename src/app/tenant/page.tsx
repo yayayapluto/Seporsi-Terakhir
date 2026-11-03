@@ -11,6 +11,7 @@ import {
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR, wibTodayRange } from "@/lib/format";
+import { ROUTES, tenantPorsiUbah } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { requireOwnTenant } from "./guard";
@@ -161,8 +162,8 @@ export default async function TenantDashboardPage({
   const totalRemaining = activePortions.reduce((sum, p) => sum + p.quantityRemaining, 0);
   return (
     <>
-      <AppHeader title="Dasbor" trail={[{ label: "Dasbor", href: "/tenant" }]} />
-      <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+      <AppHeader title="Dasbor" trail={[{ label: "Dasbor" }]} />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
         <SieraTenantHeader kicker="DASBOR TENANT" title="Kantinmu hari ini">
           <p className="text-sm">
             {totalRemaining} porsi aktif · {pickupsToday} pickup · {formatIDR(revenueToday)} omzet
@@ -261,7 +262,7 @@ export default async function TenantDashboardPage({
           <div className="flex items-center justify-between gap-3">
             <SieraSectionTitle id="porsi-heading">Porsi aktif</SieraSectionTitle>
             <Link
-              href="/tenant/porsi/baru"
+              href={ROUTES.tenantPorsiTambah}
               data-tour="tambah-porsi"
               className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
             >
@@ -274,7 +275,7 @@ export default async function TenantDashboardPage({
                 Belum ada porsi aktif. Posting sisa masakan hari ini.
               </p>
               <Link
-                href="/tenant/porsi/baru"
+                href={ROUTES.tenantPorsiTambah}
                 className={buttonVariants({ variant: "outline", className: "min-h-11" })}
               >
                 + Tambah porsi
@@ -315,7 +316,7 @@ export default async function TenantDashboardPage({
                           </span>
                         )}
                         <Link
-                          href={`/tenant/porsi/${p.id}/edit`}
+                          href={tenantPorsiUbah(p.id)}
                           className={buttonVariants({ variant: "outline", className: "min-h-11" })}
                         >
                           Edit

@@ -1,3 +1,5 @@
+import { AppHeader } from "@/components/app-header";
+import { ROUTES } from "@/lib/routes";
 import { SieraCard, SieraTenantHeader } from "@/components/siera";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
@@ -13,7 +15,12 @@ export default async function TenantProfilPage() {
     .eq("id", tenant.id)
     .single();
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+    <>
+      <AppHeader
+        title="Profil Kantin"
+        trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Profil Kantin" }]}
+      />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
       <SieraTenantHeader kicker="PROFIL KANTIN" title="Gerai kamu">
         Nama dan lokasi ini tampil ke mahasiswa di katalog dan pesanan.
       </SieraTenantHeader>
@@ -23,6 +30,7 @@ export default async function TenantProfilPage() {
           initialLocation={(data?.location_note as string | undefined) ?? ""}
         />
       </SieraCard>
-    </div>
+      </div>
+    </>
   );
 }

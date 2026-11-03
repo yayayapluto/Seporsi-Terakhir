@@ -34,7 +34,7 @@ const ICONS = {
 } as const;
 
 // Satu aktif: cocokkan tab dengan path terpanjang. Prefix hanya bila batas
-// segmen "/" sehingga /tenant tak ikut aktif saat di /tenant/porsi/baru.
+// segmen "/" sehingga /tenant tak ikut aktif saat di /tenant/porsi/tambah.
 function activeHref(tabs: readonly NavTab[], path: string): string | null {
   let best: string | null = null;
   for (const t of tabs) {
@@ -79,7 +79,7 @@ export function NavTabs({ tabs, asideTabs }: { tabs: NavTab[]; asideTabs?: NavTa
     path.startsWith("/tenant") ||
     path.startsWith("/admin");
   if (!inApp) return null;
-  // Satu aktif global: anak non-tab (mis. /tenant/porsi/baru) hanya aktifkan shortcutnya.
+  // Satu aktif global: anak non-tab (mis. /tenant/porsi/tambah) hanya aktifkan shortcutnya.
   const all = asideTabs ? [...tabs, ...asideTabs] : tabs;
   const active = activeHref(all, path);
   return (

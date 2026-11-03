@@ -1,4 +1,5 @@
 import { getCurrentUser } from "@/lib/auth";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { type NavTab, NavTabs } from "./nav-tabs";
 
@@ -42,29 +43,29 @@ function tabsFor(role: string | null, unread: number): NavTab[] {
   const badge = unread > 0 ? unread : undefined;
   if (role === "tenant")
     return [
-      { href: "/tenant", label: "Dasbor", icon: "dashboard" },
-      { href: "/tenant/scan", label: "Pindai", icon: "scan" },
-      { href: "/tenant/pesanan", label: "Pesanan", icon: "orders", badge },
-      { href: "/profil", label: "Akun", icon: "account" },
+      { href: ROUTES.tenant, label: "Dasbor", icon: "dashboard" },
+      { href: ROUTES.tenantScan, label: "Pindai", icon: "scan" },
+      { href: ROUTES.tenantPesanan, label: "Pesanan", icon: "orders", badge },
+      { href: ROUTES.profil, label: "Profil", icon: "account" },
     ];
   if (role === "admin")
     return [
-      { href: "/admin", label: "Dampak", icon: "dashboard" },
-      { href: "/admin/tenant", label: "Tenant", icon: "shield", badge },
-      { href: "/katalog", label: "Katalog", icon: "store" },
-      { href: "/profil", label: "Akun", icon: "account" },
+      { href: ROUTES.admin, label: "Dampak", icon: "dashboard" },
+      { href: ROUTES.adminTenant, label: "Tenant", icon: "shield", badge },
+      { href: ROUTES.katalog, label: "Katalog", icon: "store" },
+      { href: ROUTES.profil, label: "Profil", icon: "account" },
     ];
   if (role === "student")
     return [
-      { href: "/beranda", label: "Beranda", icon: "home" },
-      { href: "/katalog", label: "Katalog", icon: "store" },
-      { href: "/pesanan", label: "Pesanan", icon: "orders", badge },
-      { href: "/profil", label: "Akun", icon: "account" },
+      { href: ROUTES.beranda, label: "Beranda", icon: "home" },
+      { href: ROUTES.katalog, label: "Katalog", icon: "store" },
+      { href: ROUTES.pesanan, label: "Pesanan", icon: "orders", badge },
+      { href: ROUTES.profil, label: "Profil", icon: "account" },
     ];
   return [
-    { href: "/beranda", label: "Beranda", icon: "home" },
-    { href: "/katalog", label: "Katalog", icon: "store" },
-    { href: "/masuk", label: "Masuk", icon: "account" },
+    { href: ROUTES.beranda, label: "Beranda", icon: "home" },
+    { href: ROUTES.katalog, label: "Katalog", icon: "store" },
+    { href: ROUTES.masuk, label: "Masuk", icon: "account" },
   ];
 }
 

@@ -1,19 +1,13 @@
-import { ArrowLeft, Timer } from "lucide-react";
+import { Timer } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import { AppHeader } from "@/components/app-header";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { sieraCardClass } from "@/components/siera";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../../guard";
 import { TenantCancelButton } from "./cancel-button";
@@ -86,25 +80,16 @@ export default async function TenantOrderDetailPage({
   const o = await loadDetail(id);
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
-      <Breadcrumb className="hidden md:flex">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink render={<Link href="/tenant/pesanan" />}>Pesanan</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Detail</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <Link
-        href="/tenant/pesanan"
-        className="inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[#1E5A36] hover:underline md:hidden"
-      >
-        <ArrowLeft className="size-4" aria-hidden />
-        Pesanan
-      </Link>
+    <>
+      <AppHeader
+        title={`${o.menuName} x ${o.quantity}`}
+        trail={[
+          { label: "Kantin", href: ROUTES.tenant },
+          { label: "Pesanan", href: ROUTES.tenantPesanan },
+          { label: `Detail ${o.menuName}` },
+        ]}
+      />
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
       <div className="flex flex-col gap-1">
         <p className="text-xs font-bold tracking-wide text-[#1E5A36]">RESERVASI</p>
         <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
@@ -216,6 +201,7 @@ export default async function TenantOrderDetailPage({
             : "Pesanan dibatalkan. Stok porsi dikembalikan ke katalog."}
         </p>
       )}
-    </div>
+      </div>
+    </>
   );
 }

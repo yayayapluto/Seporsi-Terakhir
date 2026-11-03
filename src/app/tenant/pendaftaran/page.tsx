@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { SieraTenantHeader } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
+import { ROUTES } from "@/lib/routes";
+import { createClient } from "@/lib/supabase/server";
 import { getOwnTenant } from "@/lib/tenant";
 import { PendaftaranForm } from "./pendaftaran-form";
 
@@ -10,11 +12,11 @@ import { PendaftaranForm } from "./pendaftaran-form";
  * Sudah mendaftar → redirect sesuai status.
  */
 export default async function PendaftaranPage() {
-  await requireRole("/tenant/pendaftaran", "student", "tenant", "admin");
+  await requireRole(ROUTES.tenantPendaftaran, "student", "tenant", "admin");
   const tenant = await getOwnTenant();
-  if (tenant) redirect(tenant.is_approved ? "/tenant" : "/tenant/menunggu-persetujuan");
+  if (tenant) redirect(tenant.is_approved ? ROUTES.tenant : ROUTES.tenantMenunggu);
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+    <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
       <SieraTenantHeader kicker="MITRA KANTIN" title="Daftar jadi tenant">
         Jual sisa masakanmu lewat Seporsi Terakhir — gratis selama pilot kampus. Admin meninjau
         pendaftaranmu sebelum porsi bisa diposting.
