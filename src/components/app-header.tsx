@@ -6,7 +6,7 @@ import { HeaderCrumb } from "./header-crumb";
 import { NotifDrawer } from "./notif-drawer";
 import { NotifLive } from "./notif-live";
 
-/** AppHeader Siera: logo + judul halaman + bell notifikasi. Khusus area login. */
+/** AppHeader Siera: breadcrumb + bell notifikasi. Khusus area login. */
 export async function AppHeader({
   title,
   trail,
