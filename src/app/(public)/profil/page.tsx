@@ -319,7 +319,7 @@ export default async function ProfilPage({
                   <div className={`${sieraCardClass} border-dashed p-3 text-center`}>
                     <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
                     <p className="mt-1 text-[13px] text-[#64746B]">
-                      Jual sisa masakanmu — gratis untuk saat ini.
+                      Jual sisa masakanmu, gratis untuk saat ini.
                     </p>
                     <DaftarTenantButton />
                   </div>
@@ -378,13 +378,13 @@ export default async function ProfilPage({
           finishLabel={tourJourney ? "Lihat porsi sore ini" : undefined}
           intro={{
             title: "Ada apa di akun?",
-            body: "Dampakmu, jalan jadi tenant, dan semua pengaturan — sekilas saja.",
+            body: "Dampakmu, jalan jadi tenant, dan semua pengaturan, sekilas saja.",
           }}
           steps={[
             {
               target: '[aria-label="Identitas"]',
               title: "Kamu siapa di sini",
-              body: "Nama, email, dan peranmu — mahasiswa, atau tenant yang sudah disetujui.",
+              body: "Nama, email, dan peranmu: mahasiswa, atau tenant yang sudah disetujui.",
             },
             {
               target: '[aria-labelledby="dampak-heading"]',
