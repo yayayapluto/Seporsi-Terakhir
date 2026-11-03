@@ -15,6 +15,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { requireOwnTenant } from "./guard";
 import { TenantTour } from "./tenant-tour";
+import { TambahPorsiButton } from "./porsi/sheet-buttons";
+import TambahSheet from "./porsi/tambah-sheet";
 
 /** Dashboard tenant: porsi aktif, reservasi, pickup & omzet hari ini (WIB). */
 
@@ -203,13 +205,16 @@ export default async function TenantDashboardPage({
           </div>
         </SieraCard>
 
-        <Link
-          href="/tenant/scan"
-          data-tour="scan"
-          className={buttonVariants({ className: "min-h-11 w-full text-[15px]" })}
-        >
-          Scan pickup
-        </Link>
+        <div className="grid grid-cols-2 gap-2">
+          <Link
+            href="/tenant/scan"
+            data-tour="scan"
+            className={buttonVariants({ className: "min-h-11 w-full text-[15px]" })}
+          >
+            Scan pickup
+          </Link>
+          <TambahPorsiButton sheet={<TambahSheet />} />
+        </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
 
