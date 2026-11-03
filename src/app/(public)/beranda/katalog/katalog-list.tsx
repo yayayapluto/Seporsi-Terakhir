@@ -209,7 +209,7 @@ export function KatalogList({
       {filtered.length === 0 ? (
         <SieraEmpty
           title="Belum ada porsi sore ini."
-          hint="Biasanya tenant posting sekitar 15.30–16.30. Cek lagi nanti sore."
+          hint="Biasanya tenant posting sekitar 15.30 sampai 16.30. Cek lagi nanti sore."
           action={
             <Button
               type="button"
@@ -296,7 +296,7 @@ export function KatalogList({
                         <>
                           <span aria-hidden className="mx-4 border-t border-dashed border-line" />
                           <span className="flex min-h-11 items-center justify-between px-4 pt-1 pb-4 text-sm font-bold text-[#1E5A36]">
-                            Lihat &amp; Pesan
+                            Lihat dan pesan
                             <ChevronRight className="size-5 shrink-0" aria-hidden />
                           </span>
                         </>
@@ -432,7 +432,7 @@ export function KatalogList({
         journeyLabel="Bagian 2 dari 4 · Katalog"
         intro={{
           title: "Cara baca katalog?",
-          body: "Saring tenant, urutkan yang hampir habis, buka kartunya buat pesan. Bisa dilewati, dan diulang kapan saja.",
+          body: "Saring tenant, dahulukan yang hampir habis, buka kartunya buat pesan. Lewati atau ulangi kapan saja.",
         }}
         steps={[
           {
@@ -443,7 +443,7 @@ export function KatalogList({
           {
             target: "ul li:first-child a, ul li:first-child button",
             title: "Kunci porsimu",
-            body: "Pilih Lihat & Pesan, atur jumlah, ambil dengan QR, bayar di tempat.",
+            body: "Pilih Lihat dan pesan, atur jumlah, ambil dengan QR, bayar di tempat.",
           },
         ]}
       />

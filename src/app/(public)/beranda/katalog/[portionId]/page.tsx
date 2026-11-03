@@ -36,15 +36,40 @@ export interface PortionDetail {
 
 const PortionId = z.string().uuid();
 
+async function loadRelated(tenantName: string, excludeId: string) {
+  const supabase = await createClient();
+  const now = new Date().toISOString();
+  const { data } = await supabase
+    .from("portions")
+    .select("id, discount_price, tenants!inner(name), menu_items!inner(name)")
+    .eq("tenants.name", tenantName)
+    .neq("id", excludeId)
+    .gt("expires_at", now)
+    .order("expires_at", { ascending: true })
+    .limit(3);
+  return (data ?? []).map((r) => {
+    const menu = r.menu_items as unknown as { name: string } | { name: string }[];
+    const m = Array.isArray(menu) ? menu[0] : menu;
+    return {
+      id: String(r.id),
+      menuName: m?.name ?? "Menu",
+      discountPrice: Number(r.discount_price),
+    };
+  });
+}
+
 async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   const supabase = await createClient();
   const base =
     "id, quantity_posted, quantity_remaining, cooked_at, expires_at, release_at, discount_price, tenants!inner(name, location_note)";
+  const t0 = Date.now();
   const full = await supabase
     .from("portions")
     .select(`${base}, menu_items!inner(name, normal_price, ingredients, allergen_note, image_path)`)
     .eq("id", portionId)
     .maybeSingle();
+  // ponytail: log sementara Fase 1 ukur ms query; hapus sebelum Fase 2.
+  console.log(`[ukur] katalog.detail ${Date.now() - t0}ms`);
   // ponytail: hosted ketinggalan migrasi kolom baru → fallback select minimal, bukan halaman mati.
   // Nol baris maybeSingle (habis/kedaluwarsa/RLS) = sah: diam, tanpa log.
   let row = full.data;
@@ -95,9 +120,21 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   };
 }
 
-import { SieraField, SieraSectionTitle, sieraCardClass } from "@/components/siera";
+import {
+  SieraField,
+  SieraRailPage,
+  SieraSection,
+  SieraSectionTitle,
+  sieraCardClass,
+} from "@/components/siera";
 
-function DetailBody({ portion }: { portion: PortionDetail | null }) {
+function DetailBody({
+  portion,
+  related,
+}: {
+  portion: PortionDetail | null;
+  related: { id: string; menuName: string; discountPrice: number }[];
+}) {
   if (!portion) {
     return (
       <EmptyState
@@ -118,11 +155,11 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
   );
 
   return (
-    <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+    <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
       {/* Detail Header Card */}
       <section
         aria-label="Ringkasan porsi"
-        className={cn(sieraCardClass, "flex flex-col gap-3 p-5 lg:col-span-2")}
+        className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}
       >
         <div className="flex flex-wrap items-center gap-2">
           <span
@@ -160,88 +197,131 @@ function DetailBody({ portion }: { portion: PortionDetail | null }) {
         </div>
       </section>
 
-      {/* Foto */}
-      <div className="lg:col-start-1 lg:row-start-2">
-        {portion.imageUrl ? (
-          <PortionImage src={portion.imageUrl} alt={`Foto ${portion.menuName}`} />
-        ) : (
-          <div
-            className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 self-start rounded-[20px] border border-line bg-[#F4EFE6] text-[#64746B]"
-            role="img"
-            aria-label={`Foto ${portion.menuName} belum tersedia`}
-          >
-            <ImageOff className="size-8" aria-hidden />
-            <span className="px-1 text-center text-xs leading-tight">
-              Foto porsi belum tersedia
-            </span>
-          </div>
-        )}
-      </div>
+      <SieraRailPage
+        asideLabel="Panel pesan dan info"
+        main={
+          <>
+            {/* Foto */}
+            <div>
+              {portion.imageUrl ? (
+                <PortionImage src={portion.imageUrl} alt={`Foto ${portion.menuName}`} />
+              ) : (
+                <div
+                  className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 self-start rounded-[20px] border border-line bg-[#F4EFE6] text-[#64746B]"
+                  role="img"
+                  aria-label={`Foto ${portion.menuName} belum tersedia`}
+                >
+                  <ImageOff className="size-8" aria-hidden />
+                  <span className="px-1 text-center text-xs leading-tight">
+                    Foto porsi belum tersedia
+                  </span>
+                </div>
+              )}
+            </div>
 
-      {/* Panel pesan */}
-      <aside
-        aria-label="Panel pesan"
-        className={cn(
-          sieraCardClass,
-          "h-fit p-4 lg:sticky lg:top-[76px] lg:col-start-2 lg:row-span-2 lg:self-start",
-        )}
-      >
-        <h2 className="text-[15px] font-bold text-[#1C2826]">Atur jumlah</h2>
-        <p className="mt-0.5 text-[13px] text-[#64746B]">Stok tersisa: {remaining}</p>
-        <span aria-hidden className="my-3 block border-t border-dashed border-line" />
-        <div className="mt-4">
-          <OrderForm
-            portionId={portion.id}
-            discountPrice={portion.discountPrice}
-            quantityRemaining={remaining}
-            expiresAt={portion.expiresAt}
-          />
-        </div>
-      </aside>
+            {/* Detail */}
+            <section aria-label="Detail porsi" className="flex min-w-0 flex-col gap-2">
+              <div className="flex min-h-11 items-center">
+                <SieraSectionTitle>Detail porsi</SieraSectionTitle>
+              </div>
+              <dl
+                className={cn(
+                  sieraCardClass,
+                  "flex flex-col divide-y divide-dashed divide-line px-4",
+                )}
+              >
+                <SieraField icon={Clock3} label="Dimasak">
+                  {formatDateTimeWIB(new Date(portion.cookedAt))} WIB
+                </SieraField>
+                <SieraField icon={Timer} label="Batas ambil">
+                  {formatDateTimeWIB(new Date(portion.expiresAt))} WIB
+                </SieraField>
+                {portion.ingredients == null && portion.allergenNote == null ? (
+                  <SieraField icon={Wheat} label="Bahan & alergen">
+                    <span className="font-normal text-[#64746B]">
+                      Belum dicantumkan tenant. Tanya langsung saat ambil kalau kamu punya alergi.
+                    </span>
+                  </SieraField>
+                ) : (
+                  <>
+                    <SieraField icon={Wheat} label="Bahan">
+                      {portion.ingredients ?? (
+                        <span className="font-normal text-[#64746B]">Belum dicantumkan tenant</span>
+                      )}
+                    </SieraField>
+                    <SieraField icon={TriangleAlert} label="Alergen">
+                      {portion.allergenNote ?? (
+                        <span className="font-normal text-[#64746B]">Belum dicantumkan tenant</span>
+                      )}
+                    </SieraField>
+                  </>
+                )}
+                <SieraField icon={Store} label="Tenant">
+                  {portion.tenantName}
+                  {portion.tenantLocation ? (
+                    <span className="block truncate font-normal text-[#64746B]">
+                      {portion.tenantLocation}
+                    </span>
+                  ) : null}
+                </SieraField>
+              </dl>
+            </section>
+          </>
+        }
+        aside={
+          <>
+            {/* Panel pesan */}
+            <aside aria-label="Panel pesan" className={cn(sieraCardClass, "h-fit p-4")}>
+              <h2 className="text-[15px] font-bold text-[#1C2826]">Atur jumlah</h2>
+              <p className="mt-0.5 text-[13px] text-[#64746B]">Stok tersisa: {remaining}</p>
+              <span aria-hidden className="my-3 block border-t border-dashed border-line" />
+              <div className="mt-4">
+                <OrderForm
+                  portionId={portion.id}
+                  discountPrice={portion.discountPrice}
+                  quantityRemaining={remaining}
+                  expiresAt={portion.expiresAt}
+                />
+              </div>
+            </aside>
 
-      {/* Detail */}
-      <section
-        aria-label="Detail porsi"
-        className="flex flex-col gap-2 lg:col-start-1 lg:row-start-3"
-      >
-        <SieraSectionTitle>Detail porsi</SieraSectionTitle>
-        <dl className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-line px-4")}>
-          <SieraField icon={Clock3} label="Dimasak">
-            {formatDateTimeWIB(new Date(portion.cookedAt))} WIB
-          </SieraField>
-          <SieraField icon={Timer} label="Batas ambil">
-            {formatDateTimeWIB(new Date(portion.expiresAt))} WIB
-          </SieraField>
-          {portion.ingredients == null && portion.allergenNote == null ? (
-            <SieraField icon={Wheat} label="Bahan & alergen">
-              <span className="font-normal text-[#64746B]">
-                Belum dicantumkan tenant — tanya langsung saat ambil kalau kamu punya alergi.
-              </span>
-            </SieraField>
-          ) : (
-            <>
-              <SieraField icon={Wheat} label="Bahan">
-                {portion.ingredients ?? (
-                  <span className="font-normal text-[#64746B]">Belum dicantumkan tenant</span>
-                )}
-              </SieraField>
-              <SieraField icon={TriangleAlert} label="Alergen">
-                {portion.allergenNote ?? (
-                  <span className="font-normal text-[#64746B]">Belum dicantumkan tenant</span>
-                )}
-              </SieraField>
-            </>
-          )}
-          <SieraField icon={Store} label="Tenant">
-            {portion.tenantName}
-            {portion.tenantLocation ? (
-              <span className="block truncate font-normal text-[#64746B]">
-                {portion.tenantLocation}
-              </span>
-            ) : null}
-          </SieraField>
-        </dl>
-      </section>
+            {/* Cara ambil */}
+            <SieraSection id="cara-ambil" label="Cara ambil">
+              <ol
+                className={cn(sieraCardClass, "flex flex-col gap-2 p-4 text-[13px] text-[#64746B]")}
+              >
+                <li>1. Pesan porsi lalu simpan QR pickup.</li>
+                <li>2. Tunjukkan QR ke tenant sebelum batas ambil.</li>
+                <li>3. Bayar di tempat lalu bawa pulang.</li>
+              </ol>
+            </SieraSection>
+
+            {related.length > 0 && (
+              <SieraSection id="sejenis-heading" label="Porsi sejenis">
+                <ul
+                  className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-line")}
+                >
+                  {related.map((r) => (
+                    <li key={r.id}>
+                      <a
+                        href={`${ROUTES.katalog}/${r.id}`}
+                        className="flex min-h-11 items-center justify-between gap-3 px-4 py-2.5"
+                      >
+                        <span className="truncate text-sm font-bold text-[#1C2826]">
+                          {r.menuName}
+                        </span>
+                        <span className="shrink-0 text-sm font-extrabold text-accent-strong">
+                          {formatIDR(r.discountPrice)}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </SieraSection>
+            )}
+          </>
+        }
+      />
     </div>
   );
 }
@@ -258,6 +338,7 @@ export default async function PortionDetailPage({
   const tourForced = sp.mode === "onboarding";
   if (!PortionId.safeParse(portionId).success) notFound();
   const portion = await loadPortion(portionId);
+  const related = portion ? await loadRelated(portion.tenantName, portionId) : [];
   return (
     <>
       <AppHeader
@@ -269,7 +350,7 @@ export default async function PortionDetailPage({
         ]}
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
-        <DetailBody portion={portion} />
+        <DetailBody portion={portion} related={related} />
         <GuidedTour
           tourKey="katalog-detail"
           forced={tourForced}
