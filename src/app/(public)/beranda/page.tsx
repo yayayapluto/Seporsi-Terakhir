@@ -149,27 +149,21 @@ export default async function BerandaPage({
         <SieraRailPage
           asideLabel="Ringkasan beranda"
           main={
-            <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-5">
-              <div className="flex min-w-0 flex-col gap-4 lg:max-h-[calc(100dvh-220px)] lg:gap-5">
-                <div id="tour-hero">
-                  <SieraHero
-                    eyebrow={firstName ? `${greet}, ${firstName}` : greet}
-                    title="Kantin hampir tutup, masih ada yang enak."
-                  >
-                    <p>
-                      Sisa dagangan hari ini dijual miring. Ambil jam 16.30 sampai 18.30, bayar di
-                      tempat.
-                    </p>
-                  </SieraHero>
-                </div>
-                {showOnboard && <OnboardBanner />}
-                <div className="min-h-0 flex-1 lg:overflow-y-auto">
-                  <SoonSection portions={portions} failed={soonFailed} />
-                </div>
+            <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
+              <div id="tour-hero">
+                <SieraHero
+                  eyebrow={firstName ? `${greet}, ${firstName}` : greet}
+                  title="Kantin hampir tutup, masih ada yang enak."
+                >
+                  <p>
+                    Sisa dagangan hari ini dijual miring. Ambil jam 16.30 sampai 18.30, bayar di
+                    tempat.
+                  </p>
+                </SieraHero>
               </div>
-              <div className="min-h-0 lg:sticky lg:top-[76px] lg:max-h-[calc(100dvh-220px)] lg:overflow-y-auto">
-                <ActiveOrdersSection orders={activeOrders} />
-              </div>
+              {showOnboard && <OnboardBanner />}
+              <ActiveOrdersSection orders={activeOrders} />
+              <SoonSection portions={portions} failed={soonFailed} />
             </div>
           }
           aside={
