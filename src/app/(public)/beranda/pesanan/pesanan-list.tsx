@@ -76,27 +76,28 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
           </output>
         }
       >
-        <div data-tour="order-filter" className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}>
-          <div className="flex items-center gap-2">
-            <Label
-              htmlFor="status-filter"
-              className="w-12 shrink-0 text-[13px] font-semibold text-[#64746B]"
-            >
-              Status
-            </Label>
-            <Select value={filter} onValueChange={(v) => setFilter(String(v))}>
-              <SelectTrigger id="status-filter" className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {FILTERS.map((f) => (
-                  <SelectItem key={f.value} value={f.value}>
-                    {f.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div
+          data-tour="order-filter"
+          className={cn(sieraCardClass, "flex items-center gap-2 px-4 py-3")}
+        >
+          <Label
+            htmlFor="status-filter"
+            className="w-12 shrink-0 text-[13px] font-semibold text-[#64746B]"
+          >
+            Status
+          </Label>
+          <Select value={filter} onValueChange={(v) => setFilter(String(v))}>
+            <SelectTrigger id="status-filter" className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {FILTERS.map((f) => (
+                <SelectItem key={f.value} value={f.value}>
+                  {f.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </SieraSection>
 
@@ -122,7 +123,10 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
           <motion.ul
             data-tour="order-list"
             layout={!reduce}
-            className="flex min-w-0 flex-col gap-3"
+            className={cn(
+              sieraCardClass,
+              "flex min-w-0 flex-col divide-y divide-dashed divide-line px-4",
+            )}
           >
             {filtered.map((o) => (
               <motion.li
@@ -135,37 +139,34 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                       animate: { opacity: 1, y: 0 },
                       transition: { duration: 0.2, ease: "easeOut" as const },
                     })}
-                className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}
+                className="flex min-h-11 items-center gap-3 py-3"
               >
-                <div className="flex items-center gap-3">
-                  <SieraTile>
-                    <Store className="size-5" strokeWidth={1.75} aria-hidden />
-                  </SieraTile>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-[15px] leading-snug font-bold text-[#1C2826]">
-                        {o.menuName} <span className="font-semibold">× {o.quantity}</span>
-                      </h2>
-                      <OrderStatusBadge status={o.status} />
-                    </div>
-                    <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
-                      {o.tenantName}
-                      {o.tenantLocation ? ` · ${o.tenantLocation}` : ""} · dipesan{" "}
-                      {formatDateTimeWIB(new Date(o.createdAt))} WIB
-                    </p>
-                    {o.pickedUpAt && (
-                      <p className="mt-0.5 text-[13px] text-[#64746B]">
-                        Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
-                      </p>
-                    )}
+                <SieraTile>
+                  <Store className="size-5" strokeWidth={1.75} aria-hidden />
+                </SieraTile>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                    <h2 className="truncate text-sm font-bold text-[#1C2826]">
+                      {o.menuName} <span className="font-semibold">× {o.quantity}</span>
+                    </h2>
+                    <OrderStatusBadge status={o.status} />
                   </div>
+                  <p className="mt-0.5 truncate text-xs text-[#64746B]">
+                    {o.tenantName}
+                    {o.tenantLocation ? ` · ${o.tenantLocation}` : ""} · dipesan{" "}
+                    {formatDateTimeWIB(new Date(o.createdAt))} WIB
+                  </p>
+                  {o.pickedUpAt && (
+                    <p className="truncate text-xs text-[#64746B]">
+                      Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
+                    </p>
+                  )}
                 </div>
-                <div className="border-t border-dashed border-line" />
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-base font-extrabold text-accent-strong">
+                <div className="flex shrink-0 flex-col items-end gap-2">
+                  <p className="text-sm font-extrabold text-accent-strong">
                     {formatIDR(o.discountPriceSnapshot * o.quantity)}
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap justify-end gap-2">
                     <Link
                       href={pesananDetail(o.orderId)}
                       className={cn(buttonVariants({ variant: "outline" }), "h-11 px-5")}
