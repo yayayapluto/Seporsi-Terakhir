@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { PendaftaranForm } from "@/app/tenant/pendaftaran/pendaftaran-form";
 import { FormSheet } from "@/components/form-sheet";
 import { Button } from "@/components/ui/button";
-import { PendaftaranForm } from "@/app/tenant/pendaftaran/pendaftaran-form";
 
 export function DaftarTenantButton() {
   const [open, setOpen] = useState(false);
