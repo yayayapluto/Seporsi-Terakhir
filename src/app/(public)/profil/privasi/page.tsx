@@ -26,8 +26,8 @@ export default async function PrivasiPage() {
           <ExportButton role={current.role} />
         </SieraCard>
         <p className="text-[12px] leading-relaxed text-[#64746B]">
-          Mau hapus akun beserta datanya? Tulis ke admin lewat halaman Bantuan — penghapusan
-          bersifat permanen dan tidak bisa dibatalkan.
+          Mau hapus akun beserta datanya? Tulis ke admin lewat halaman Bantuan. Penghapusan bersifat
+          permanen dan tidak bisa dibatalkan.
         </p>
       </div>
     </>
