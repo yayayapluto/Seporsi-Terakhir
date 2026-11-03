@@ -209,3 +209,7 @@ Assumptions, deviations, and interpretations. Updated as work proceeds.
 ## Merge-gate konflik (koordinator, file bersama non-shard)
 - `layout.tsx` + `app-header.tsx` + `app-sidebar.tsx` disentuh paralel di luar tabel shard (file bersama, bukan eksklusif siapa pun): diterima apa adanya — `AppShell` (`layout`), header fixed + spacer + `md:left-60` (`app-header`), urutan import (`app-sidebar`). Satu arah refactor cangkang aplikasi; tidak ada versi tandingan di worktree, tidak perlu revert parsial.
 - `database.ts` + `supabase/migrations`: bersih (nol perubahan) — tidak ada migrasi ganda.
+
+## Merge-gate tour-placement (koordinator, file worker onboarding)
+- `src/lib/tour-placement.ts` worktree paralel rusak: cabang `belowFits && aboveFits` pakai `aboveFits` tanpa definisi (ReferenceError + TS2304 + 6 test gagal). Koordinator tambah 1 baris `aboveFits` (= cermin `belowFits` thd viewport efektif) — TS hijau, 6 gagal -> 1 gagal. Bukan keputusan desain, murni restorasi; file tetap milik worker, tidak dikomit oleh koordinator.
+- 1 test tersisa (`kartu lebih tinggi dari ruang`) ekspektasi vs implementasi beda viewport: test pakai `vp={360,640}` tanpa `bottomChrome`, impl default `topChrome:60` (effH=568 < cardH=600 -> top=72, 672>640). Test milik worker yang sama — koordinator TIDAK ubah; dikembalikan ke pemilik (tambah `bottomChrome`/selaraskan ekspektasi).
