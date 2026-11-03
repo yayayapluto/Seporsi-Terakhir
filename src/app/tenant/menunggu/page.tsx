@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { SieraTenantHeader, sieraCardClass } from "@/components/siera";
+import { SieraCard, SieraTenantHeader, sieraCardClass } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
@@ -29,7 +29,7 @@ export default async function MenungguPersetujuanPage() {
         <h2 id="status-heading" className="text-lg font-bold">
           Pendaftaran diterima
         </h2>
-        <dl className="mt-3 flex flex-col divide-y divide-border">
+        <dl className="mt-3 flex flex-col divide-y divide-dashed divide-line">
           <div className="flex gap-3 py-2">
             <dt className="w-36 shrink-0 text-sm text-muted-foreground">Nama tenant</dt>
             <dd className="min-w-0 text-sm font-medium">{tenant.name}</dd>
@@ -59,10 +59,12 @@ export default async function MenungguPersetujuanPage() {
         </dl>
       </section>
 
-      <p className="text-sm text-muted-foreground">
-        Admin akan meninjau pendaftaranmu. Setelah disetujui, dashboard tenant terbuka dan kamu bisa
-        mengunggah porsi pertama.
-      </p>
+      <SieraCard className="p-4">
+        <p className="text-sm text-[#64746B]">
+          Admin akan meninjau pendaftaranmu. Setelah disetujui, dashboard tenant terbuka dan kamu
+          bisa mengunggah porsi pertama.
+        </p>
+      </SieraCard>
 
       <div className="flex flex-wrap items-center gap-3 border-t pt-6">
         <PeriksaStatus />
