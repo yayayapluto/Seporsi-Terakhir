@@ -144,7 +144,7 @@ export default async function ProfilPage({
   return (
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
-      <div className="mx-auto grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-8">
+      <div className="grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-8">
         {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
         <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
           <div className="flex items-center gap-4">
