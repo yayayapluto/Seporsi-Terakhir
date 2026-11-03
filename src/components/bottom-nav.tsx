@@ -1,7 +1,9 @@
 import { getCurrentUser } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
-import { type NavTab, NavTabs } from "./nav-tabs";
+import { AppBottomNav } from "./app-bottomnav";
+import { AppSidebar } from "./app-sidebar";
+import type { NavTab } from "./nav-shared";
 
 export async function unreadFor(role: string | null, userId: string | null): Promise<number> {
   if (!userId) return 0;
@@ -73,5 +75,11 @@ function tabsFor(role: string | null, unread: number): NavTab[] {
 export async function BottomNav() {
   const current = await getCurrentUser();
   const unread = await unreadFor(current?.role ?? null, current?.user.id ?? null);
-  return <NavTabs tabs={tabsFor(current?.role ?? null, unread)} />;
+  const tabs = tabsFor(current?.role ?? null, unread);
+  return (
+    <>
+      <AppBottomNav tabs={tabs} />
+      <AppSidebar tabs={tabs} />
+    </>
+  );
 }
