@@ -7,7 +7,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GuidedTour } from "@/components/guided-tour";
-import { SieraCard, SieraEmpty, SieraSectionTitle, sieraCardClass } from "@/components/siera";
+import {
+  SieraCard,
+  SieraEmpty,
+  SieraSectionTitle,
+  SieraWarningBadge,
+  sieraCardClass,
+} from "@/components/siera";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -18,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Toggle } from "@/components/ui/toggle";
+import { MAX_PORTIONS_PER_DAY } from "@/lib/domain/constants";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { katalogDetail, ROUTES } from "@/lib/routes";
 import { getJourneyNext } from "@/lib/tour-journey";
@@ -160,10 +167,8 @@ export function KatalogList({
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
           <SieraSectionTitle>Katalog sore ini · {filtered.length}</SieraSectionTitle>
-          {dayTotal >= 2 && (
-            <p className="w-fit rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
-              Batas 2/hari tercapai
-            </p>
+          {dayTotal >= MAX_PORTIONS_PER_DAY && (
+            <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
           )}
         </div>
         <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1">

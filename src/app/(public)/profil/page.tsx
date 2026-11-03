@@ -5,7 +5,6 @@ import {
   PackageCheck,
   Settings,
   Store,
-  TriangleAlert,
   UtensilsCrossed,
   Wallet,
 } from "lucide-react";
@@ -14,7 +13,7 @@ import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
 import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
-import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { formatDateTimeWIB, formatIDR, namaToInitials } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
@@ -90,6 +89,7 @@ async function loadProfile(userId: string, includeOrders: boolean): Promise<Prof
 }
 
 import {
+  SieraAlert,
   SieraList,
   SieraRowLink,
   SieraSection,
@@ -127,12 +127,7 @@ export default async function ProfilPage({
   const label = roleLabel(p);
   const tenantStatus =
     p.tenantName == null ? null : p.tenantApproved ? "tenant aktif" : "menunggu persetujuan";
-  const initials = p.fullName
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
+  const initials = namaToInitials(p.fullName);
 
   return (
     <>
@@ -170,21 +165,15 @@ export default async function ProfilPage({
               <SieraSectionTitle id="dampak-heading">Dampakmu</SieraSectionTitle>
             </div>
             {p.loadFailed && (
-              <p
-                role="alert"
-                className="flex items-start gap-2 rounded-2xl bg-[#FEE2E2] p-4 text-sm font-semibold text-[#BA1A1A]"
-              >
-                <TriangleAlert className="mt-0.5 size-5 shrink-0" aria-hidden />
-                <span>
-                  Gagal memuat data dampak. Angka di bawah mungkin tidak akurat.{" "}
-                  <Link
-                    href={ROUTES.profil}
-                    className="inline-flex min-h-11 items-center font-bold underline underline-offset-4"
-                  >
-                    Coba lagi
-                  </Link>
-                </span>
-              </p>
+              <SieraAlert variant="error">
+                Gagal memuat data dampak. Angka di bawah mungkin tidak akurat.{" "}
+                <Link
+                  href={ROUTES.profil}
+                  className="inline-flex min-h-11 items-center font-bold underline underline-offset-4"
+                >
+                  Coba lagi
+                </Link>
+              </SieraAlert>
             )}
             <dl
               className={`${sieraCardClass} grid grid-cols-3 divide-x divide-dashed divide-line overflow-hidden`}

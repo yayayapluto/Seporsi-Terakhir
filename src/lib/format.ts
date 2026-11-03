@@ -45,6 +45,16 @@ export function wibDayRangeUtc(
   return { fromUtc, toExclusive };
 }
 
+/** Inisial 2 huruf dari nama, mis. "Ayu Lestari" -> "AL". */
+export function namaToInitials(fullName: string): string {
+  return fullName
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase())
+    .join("");
+}
+
 /** Rentang hari ini WIB: todayLocal + dayStartUtc + dayEndIso. */
 export function wibTodayRange(now: Date = new Date()): {
   todayLocal: string;
