@@ -1,8 +1,8 @@
-import { BarChart3, ChartColumn, PackageCheck, QrCode, Scale, Store, Wallet } from "lucide-react";
+import { BarChart3, ChartColumn, Check, Clock, PackageCheck, QrCode, Scale, Store, Timer, Wallet } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "cn";
-import { SieraTile, sieraCardClass } from "@/components/siera";
+import { SieraSectionTitle, SieraTile, sieraCardClass } from "@/components/siera";
 import { SiteFooter } from "@/components/site-footer";
 import {
   Accordion,
@@ -93,6 +93,8 @@ const AMAN = [
     body: "Waktu masak tampil di setiap baris katalog sebelum kamu memesan.",
   },
 ];
+const AMAN_ICONS = [Check, Timer, Clock] as const;
+
 
 const CARA_KERJA_STEPS = [
   {
@@ -283,41 +285,40 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* MASALAH — 3 kartu ikon */}
+        {/* MASALAH — banner info */}
         <Reveal className="flex flex-col gap-4 py-10">
-          <p className="text-xs font-bold tracking-[0.2em] text-primary">MASALAH</p>
-          <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
-            Satu masalah, dua pihak butuh.
-          </h2>
-          <ul className="grid gap-4 md:grid-cols-3">
-            {MASALAH.map((m) => (
-              <li
-                key={m.title}
-                className="flex flex-col gap-2 rounded-2xl border bg-card p-5 shadow-[0_2px_0_rgba(28,40,38,0.08)]"
-              >
-                <m.icon aria-hidden className="size-5 text-primary" />
-                <h3 className="font-bold">{m.title}</h3>
-                <p className="text-sm text-muted-foreground">{m.body}</p>
-              </li>
-            ))}
-          </ul>
+          <SieraSectionTitle>Kenapa ini ada</SieraSectionTitle>
+          <div className="grid gap-5 rounded-[20px] bg-[#DCEBE0] p-5 sm:p-6 md:grid-cols-[1fr_1.4fr] md:items-center">
+            <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
+              Satu masalah, dua pihak butuh.
+            </h2>
+            <ul className="flex flex-col gap-4">
+              {MASALAH.map((m) => (
+                <li key={m.title} className="flex items-center gap-3">
+                  <SieraTile className="bg-white">
+                    <m.icon className="size-5" strokeWidth={1.75} />
+                  </SieraTile>
+                  <div className="min-w-0">
+                    <h3 className="text-[15px] leading-snug font-extrabold text-[#1C2826]">
+                      {m.title}
+                    </h3>
+                    <p className="mt-0.5 text-[13px] text-[#3E4F49]">{m.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </Reveal>
 
         {/* CARA KERJA */}
         <Reveal className="flex flex-col gap-2 py-10">
-          <p className="text-xs font-bold tracking-[0.2em] text-primary">CARA KERJA</p>
           <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
             Dari katalog sampai makan, 4 langkah.
           </h2>
           <ol className="divide-y divide-border border-b lg:grid lg:grid-cols-4 lg:gap-x-8 lg:divide-y-0 lg:border-b-0">
-            {LANGKAH.map((s, i) => (
-              <li key={s.title} className="flex gap-4 py-4 lg:flex-col lg:gap-2">
-                <span
-                  aria-hidden
-                  className="w-8 shrink-0 font-heading text-xl font-extrabold text-primary"
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+            {LANGKAH.map((s) => (
+              <li key={s.title} className="flex gap-3 py-4">
+                <span aria-hidden className="mt-1.5 size-2.5 shrink-0 rounded-full bg-primary" />
                 <div>
                   <h3 className="font-bold">{s.title}</h3>
                   <p className="mt-0.5 text-sm text-muted-foreground">{s.body}</p>
@@ -391,18 +392,32 @@ export default async function Home() {
 
         {/* KEAMANAN */}
         <Reveal id="keamanan" className="flex scroll-mt-24 flex-col gap-2 py-10">
-          <p className="text-xs font-bold tracking-[0.2em] text-primary">KEAMANAN PANGAN</p>
           <h2 className="max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
             Aturan jelas supaya tetap aman.
           </h2>
-          <ul className="divide-y divide-border border-b lg:grid lg:grid-cols-3 lg:gap-x-8 lg:divide-y-0 lg:border-b-0">
-            {AMAN.map((f) => (
-              <li key={f.title} className="py-4 lg:flex lg:flex-col lg:gap-1">
-                <h3 className="font-bold">{f.title}</h3>
-                <p className="mt-0.5 text-sm text-muted-foreground">{f.body}</p>
-              </li>
-            ))}
-          </ul>
+          <div
+            className={cn(
+              sieraCardClass,
+              "grid divide-y divide-dashed divide-line md:grid-cols-3 md:divide-x md:divide-y-0",
+            )}
+          >
+            {AMAN.map((f, i) => {
+              const Icon = AMAN_ICONS[i] ?? Check;
+              return (
+                <div key={f.title} className="flex items-center gap-3 px-4 py-4 sm:px-5">
+                  <SieraTile>
+                    <Icon className="size-5" strokeWidth={1.75} />
+                  </SieraTile>
+                  <div className="min-w-0">
+                    <p className="text-[15px] leading-snug font-extrabold text-[#1C2826]">
+                      {f.title}
+                    </p>
+                    <p className="mt-0.5 text-[12px] text-muted-foreground">{f.body}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           <p className="text-sm text-muted-foreground">
             Tenant bertanggung jawab atas kualitas dan higienitas. Detail lengkap di{" "}
             <Link href={ROUTES.caraKerja} className="font-semibold text-foreground underline">
@@ -417,7 +432,6 @@ export default async function Home() {
           id="faq"
           className="mx-auto flex w-full max-w-3xl scroll-mt-24 flex-col gap-2 py-10"
         >
-          <p className="text-xs font-bold tracking-[0.2em] text-primary">TANYA JAWAB</p>
           <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
             Pertanyaan yang sering ditanyakan.
           </h2>
@@ -434,7 +448,7 @@ export default async function Home() {
         </Reveal>
 
         {/* PITA TUTUP — hijau pekat */}
-        <Reveal className="mb-12 overflow-hidden rounded-3xl bg-primary px-6 py-12 text-center text-primary-foreground sm:py-14">
+        <Reveal className="mb-12 overflow-hidden rounded-[24px] bg-primary px-6 py-12 text-center text-primary-foreground sm:py-14">
           <h2 className="mx-auto max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
             Jangan biarkan porsi terakhir terbuang.
           </h2>
