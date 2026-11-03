@@ -1,5 +1,4 @@
 import {
-  Clock3,
   History,
   Leaf,
   Map as MapIcon,
@@ -13,13 +12,14 @@ import {
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { DaftarTenantButton } from "./daftar-tenant-button";
 import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
+import { AvatarImage } from "./avatar-image";
+import { DaftarTenantButton } from "./daftar-tenant-button";
 
 /** Profil student: identitas, aplikasi tenant, dampak dari pesanan picked_up. */
 
@@ -27,6 +27,7 @@ interface ProfileData {
   fullName: string;
   email: string | null;
   role: string | null;
+  avatarPath: string | null;
   tenantName: string | null;
   tenantApproved: boolean | null;
   savedPortions: number;
@@ -39,7 +40,11 @@ interface ProfileData {
 async function loadProfile(userId: string, includeOrders: boolean): Promise<ProfileData> {
   const supabase = await createClient();
   const [{ data: profile }, { data: tenant }, { data: orders, error }] = await Promise.all([
-    supabase.from("profiles").select("full_name, email, role").eq("id", userId).single(),
+    supabase
+      .from("profiles")
+      .select("full_name, email, role, avatar_url")
+      .eq("id", userId)
+      .single(),
     supabase.from("tenants").select("name, is_approved").eq("owner_id", userId).maybeSingle(),
     includeOrders
       ? supabase.rpc("my_orders")
@@ -72,6 +77,7 @@ async function loadProfile(userId: string, includeOrders: boolean): Promise<Prof
       (profile?.email as string | null)?.split("@")[0] ??
       "Pengguna",
     email: (profile?.email as string | null) ?? null,
+    avatarPath: (profile?.avatar_url as string | null) ?? null,
     role: (profile?.role as string | null) ?? null,
     tenantName: (tenant?.name as string | undefined) ?? null,
     tenantApproved: (tenant?.is_approved as boolean | undefined) ?? null,
@@ -134,12 +140,16 @@ export default async function ProfilPage({
         {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
         <section aria-label="Identitas" className={`${sieraCardClass} p-3 md:col-span-2`}>
           <div className="flex items-center gap-3">
-            <span
-              aria-hidden
-              className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-base font-extrabold text-[#1E5A36]"
-            >
-              {initials || "•"}
-            </span>
+            {p.avatarPath ? (
+              <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
+            ) : (
+              <span
+                aria-hidden
+                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-base font-extrabold text-[#1E5A36]"
+              >
+                {initials || "•"}
+              </span>
+            )}
             <div className="min-w-0">
               <h1 className="truncate text-[16px] leading-[1.3] font-extrabold">{p.fullName}</h1>
               {p.email && <p className="truncate text-[13px] text-[#64746B]">{p.email}</p>}
@@ -173,7 +183,9 @@ export default async function ProfilPage({
                 </span>
               </p>
             )}
-            <dl className={`${sieraCardClass} grid grid-cols-1 divide-y divide-line overflow-hidden lg:grid-cols-3 lg:divide-x lg:divide-y-0`}>
+            <dl
+              className={`${sieraCardClass} grid grid-cols-1 divide-y divide-line overflow-hidden lg:grid-cols-3 lg:divide-x lg:divide-y-0`}
+            >
               <div className="flex min-h-0 items-center gap-3 px-4 py-2 lg:flex-col lg:gap-1 lg:px-2 lg:text-center">
                 <SieraTile>
                   <PackageCheck className="size-5" />
@@ -276,7 +288,12 @@ export default async function ProfilPage({
                     title: "Persetujuan tenant",
                     desc: "Daftar menunggu verifikasi",
                   },
-                  { href: ROUTES.admin, icon: Leaf, title: "Dampak", desc: "Angka rescue & unduhan" },
+                  {
+                    href: ROUTES.admin,
+                    icon: Leaf,
+                    title: "Dampak",
+                    desc: "Angka rescue & unduhan",
+                  },
                 ] as const
               ).map((r) => (
                 <SieraRowLink
