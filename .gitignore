@@ -63,3 +63,5 @@ next-env.d.ts
 tests/.auth/
 # research artefacts (local-only, not linted)
 /research-result/
+# prompt briefs (local-only)
+/prompts/
