@@ -22,8 +22,8 @@ export async function AppHeader({
   const tables = (role === "admin" ? ["tenants"] : ["orders"]) as ("orders" | "tenants")[];
   const crumbs = trail ?? [{ label: title }];
   return (
-    <header className="sticky top-0 z-30 ml-[calc(50%-50vw)] w-screen max-w-none border-b border-line bg-white">
-      <div className="mx-auto flex h-[60px] w-full max-w-5xl items-center justify-between gap-2 px-4 md:px-8">
+    <header className="sticky top-0 z-30 h-[60px] w-full border-b border-line bg-white">
+      <div className="flex h-full w-full items-center justify-between gap-2 px-4 md:px-8">
         <span className="flex min-w-0 flex-1 items-center">
           <HeaderCrumb trail={crumbs} />
         </span>

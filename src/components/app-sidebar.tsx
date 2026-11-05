@@ -17,7 +17,7 @@ export function AppSidebar({ tabs, asideTabs }: { tabs: NavTab[]; asideTabs?: Na
     >
       <Link
         href="/"
-        aria-label="Seporsi Terakhir — beranda"
+        aria-label="Seporsi Terakhir, beranda"
         className="-mx-4 mb-4 flex h-[60px] shrink-0 items-center border-b border-line px-8 font-heading text-lg font-extrabold text-[#2E7D4F]"
       >
         <span className="truncate">Seporsi Terakhir</span>
