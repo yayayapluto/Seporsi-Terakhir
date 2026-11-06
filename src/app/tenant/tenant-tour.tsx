@@ -38,6 +38,11 @@ export function TenantTour({
       }}
       steps={[
         {
+          target: "#tour-hero",
+          title: "Mulai dari sini",
+          body: "Sapaan, nama kantin, dan ringkasan hari ini ada di kartu ini.",
+        },
+        {
           target: '[data-tour="reservasi"]',
           title: "Reservasi menunggu",
           body: "Daftar mahasiswa yang sudah kunci porsi. Ketuk nama untuk detail.",

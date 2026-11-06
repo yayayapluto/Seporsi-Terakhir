@@ -11,7 +11,9 @@ import {
   Wallet,
 } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
 import {
   SieraEmpty,
   SieraList,
@@ -20,14 +22,14 @@ import {
   SieraSection,
   SieraStat,
   SieraStatStrip,
-  SieraTenantHeader,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
-import { formatDateTimeWIB, formatIDR, wibTodayRange } from "@/lib/format";
+import { formatDateTimeWIB, formatIDR, formatSisaMenit, wibTodayRange } from "@/lib/format";
 import { ROUTES, tenantPorsiUbah } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { requireOwnTenant } from "./guard";
+import { TenantPickupCountdown } from "./pesanan/tenant-pickup-countdown";
 import { TambahPorsiButton } from "./porsi/sheet-buttons";
 import TambahSheet from "./porsi/tambah-sheet";
 import { TenantTour } from "./tenant-tour";
@@ -48,6 +50,7 @@ interface Reservation {
   menuName: string;
   quantity: number;
   createdAt: string;
+  pickupDeadlineAt: string | null;
 }
 
 async function loadData() {
@@ -72,7 +75,7 @@ async function loadData() {
     supabase
       .from("orders")
       .select(
-        "id, status, quantity, created_at, picked_up_at, discount_price_snapshot, portions!inner(tenant_id, menu_items!inner(name))",
+        "id, status, quantity, created_at, picked_up_at, pickup_deadline_at, discount_price_snapshot, portions!inner(tenant_id, menu_items!inner(name))",
       )
       .eq("portions.tenant_id", tenant.id)
       .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
@@ -116,6 +119,7 @@ async function loadData() {
         menuName: menu?.name ?? "Menu",
         quantity: Number(o.quantity),
         createdAt: String(o.created_at),
+        pickupDeadlineAt: (o.pickup_deadline_at as string | null) ?? null,
       });
     }
     if (o.status === "picked_up" && o.picked_up_at) {
@@ -144,6 +148,7 @@ async function loadData() {
     todayLocal,
     justExpired,
     tenantId: tenant.id,
+    tenantName: tenant.name,
     menuTotal: menuRows.length,
     menuInactive: menuRows.filter((m) => !m.is_active).length,
   };
@@ -162,12 +167,36 @@ export default async function TenantDashboardPage({
 }) {
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
+  return (
+    <Suspense fallback={<LoadingSkeleton variant="grouped-list" />}>
+      <DashboardBody
+        tourForced={tourForced}
+        tourJourney={tourJourney}
+        tourEntry={tourEntry}
+        fresh={sp.fresh === "1"}
+      />
+    </Suspense>
+  );
+}
+
+async function DashboardBody({
+  tourForced,
+  tourJourney,
+  tourEntry,
+  fresh,
+}: {
+  tourForced: boolean;
+  tourJourney: boolean;
+  tourEntry: number | null;
+  fresh: boolean;
+}) {
   const {
     activePortions,
     reservations,
     pickupsToday,
     revenueToday,
     justExpired,
+    tenantName,
     tenantId,
     menuTotal,
     menuInactive,
@@ -187,7 +216,7 @@ export default async function TenantDashboardPage({
     attention.push({
       icon: Timer,
       title: `${soonest.menuName} · sisa ${soonest.quantityRemaining}`,
-      subtitle: `Habis ±${mins} mnt lagi`,
+      subtitle: `Habis ±${formatSisaMenit(mins)} lagi`,
       href: tenantPorsiUbah(soonest.id),
     });
   }
@@ -216,12 +245,15 @@ export default async function TenantDashboardPage({
         asideLabel="Perlu perhatian"
         main={
           <>
-            <SieraTenantHeader kicker="DASBOR TENANT" title="Kantinmu hari ini">
-              <p className="text-sm">
-                {totalRemaining} porsi aktif · {pickupsToday} pickup · {formatIDR(revenueToday)}{" "}
-                omzet hari ini
+            <div id="tour-hero" className="flex flex-col gap-2">
+              <p className="text-[13px] font-bold text-[#2E7D4F]">DASBOR TENANT</p>
+              <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+                {tenantName}
+              </h1>
+              <p className="text-[15px] leading-normal text-[#64746B]">
+                Pantau reservasi, scan pickup, dan posting sisa masakan hari ini.
               </p>
-            </SieraTenantHeader>
+            </div>
 
             <SieraStatStrip>
               <SieraStat icon={Package} value={totalRemaining} label="Porsi aktif" />
@@ -281,7 +313,20 @@ export default async function TenantDashboardPage({
                               <span className="font-normal text-[#64746B]">×{r.quantity}</span>
                             </>
                           }
-                          subtitle={`Dipesan ${formatDateTimeWIB(new Date(r.createdAt))} WIB`}
+                          subtitle={
+                            <>
+                              Dipesan {formatDateTimeWIB(new Date(r.createdAt))} WIB
+                              {r.pickupDeadlineAt && (
+                                <>
+                                  {" · ambil dalam "}
+                                  <TenantPickupCountdown
+                                    deadlineIso={r.pickupDeadlineAt}
+                                    className="font-bold text-[#B45309] tabular-nums"
+                                  />
+                                </>
+                              )}
+                            </>
+                          }
                         />
                       ))}
                     </SieraList>
@@ -345,7 +390,7 @@ export default async function TenantDashboardPage({
                             <div className="flex shrink-0 items-center gap-3">
                               {nearExpiry && (
                                 <span className="inline-flex items-center rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-semibold text-[#B45309]">
-                                  Batas ambil {minutesLeft} mnt lagi
+                                  Batas ambil {formatSisaMenit(minutesLeft)} lagi
                                 </span>
                               )}
                               <Link
@@ -372,7 +417,7 @@ export default async function TenantDashboardPage({
                               (j) => `${j.menuName} (${formatDateTimeWIB(new Date(j.expiresAt))})`,
                             )
                             .join(" · ")}{" "}
-                          — posting ulang bila masih layak.
+                          · posting ulang bila masih layak.
                         </span>
                       </output>
                     )}
@@ -400,7 +445,7 @@ export default async function TenantDashboardPage({
               next={tourJourney || autoChain ? (getJourneyNext("/tenant") ?? undefined) : undefined}
               journeyLabel="Bagian 1 dari 5 · Dasbor"
               entryStep={tourEntry}
-              fresh={sp.fresh === "1"}
+              fresh={fresh}
             />
           </>
         }
@@ -424,7 +469,7 @@ export default async function TenantDashboardPage({
             {justExpired.length > 0 && (
               <p className="flex items-start gap-1.5 px-1 text-[12px] leading-relaxed text-[#64746B]">
                 <CircleCheck className="mt-0.5 size-4 shrink-0 text-[#1E5A36]" aria-hidden />
-                {justExpired.length} porsi kedaluwarsa ≤1 jam — posting ulang bila layak.
+                {justExpired.length} porsi kedaluwarsa ≤1 jam, posting ulang bila layak.
               </p>
             )}
           </SieraSection>
