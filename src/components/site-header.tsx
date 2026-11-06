@@ -1,38 +1,24 @@
 "use client";
 
-import { House, LogIn, Menu, X } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/#cara-kerja", label: "Cara Kerja" },
-  { href: "/#keamanan", label: "Keamanan Pangan" },
-  { href: "/#faq", label: "FAQ" },
+  { href: "#langkah", label: "Cara Kerja" },
+  { href: "#faq", label: "Keamanan Pangan" },
+  { href: "#faq", label: "FAQ" },
 ];
 
-/** Floating pill landing "/". Panel hamburger mengambang tepat di bawah pill. */
+/** Header landing "/": bilah putih mengambang di atas kanvas. */
 export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const [signedIn, setSignedIn] = useState(false);
-  const [open, setOpen] = useState(false);
-  const reduce = useReducedMotion();
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: tutup menu tiap pindah rute
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     let unsubscribe: (() => void) | null = null;
@@ -56,150 +42,44 @@ export function SiteHeader() {
   if (pathname !== "/") return null;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-3 z-30 px-4 sm:top-5">
-      <div className="relative mx-auto w-full max-w-xl">
-        <header className="pointer-events-auto flex h-14 w-full items-center justify-between gap-2 rounded-2xl border border-line bg-white py-2 pr-2 pl-4 shadow-[0_2px_12px_rgba(16,24,40,0.08)]">
+    <>
+      <div className="fixed top-5 left-5 right-5 z-50 md:left-8 md:right-8">
+        <div className="mx-auto flex h-[72px] max-w-[1000px] items-center justify-between gap-3 rounded-2xl bg-white pr-4 pl-6 shadow-[0_4px_18px_rgba(23,38,29,0.1),0_0_0_1px_rgba(0,0,0,0.05)]">
           <Link
             href="/"
-            onClick={() => setOpen(false)}
-            className="flex min-h-11 min-w-0 items-center gap-2"
-            aria-label="Seporsi Terakhir — beranda"
+            className="flex min-h-11 min-w-0 items-center font-heading text-[18px] font-extrabold text-[#286F3B]"
+            aria-label="Seporsi Terakhir, beranda"
           >
-            <span className="truncate font-heading text-lg font-extrabold text-[#2E7D4F]">
-              Seporsi Terakhir
-            </span>
+            <span className="truncate">Seporsi Terakhir</span>
           </Link>
-          <div className="flex shrink-0 items-center gap-1">
-            <nav className="hidden items-center gap-1 text-sm md:flex" aria-label="Navigasi utama">
-              {NAV.map((n) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 font-medium text-[#1C2826] transition-colors outline-none hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
-                >
-                  {n.label}
-                </Link>
-              ))}
-            </nav>
-            {signedIn ? (
+
+          <nav
+            className="hidden items-center gap-7 text-[15px] font-medium text-[#17261D] min-[821px]:flex"
+            aria-label="Navigasi utama"
+          >
+            {NAV.map((item) => (
               <Link
-                href="/beranda"
-                aria-label="Beranda"
-                className={cn(
-                  buttonVariants({ size: "sm" }),
-                  "hidden min-h-11 gap-1.5 md:inline-flex",
-                )}
+                key={item.label}
+                href={item.href}
+                className="inline-flex min-h-11 items-center rounded-lg outline-none transition-colors hover:text-[#286F3B] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
               >
-                <House className="size-4" aria-hidden />
-                Beranda
+                {item.label}
               </Link>
-            ) : (
-              <Link
-                href="/masuk"
-                aria-label="Masuk ke akun"
-                className={cn(
-                  buttonVariants({ size: "sm" }),
-                  "hidden min-h-11 gap-1.5 md:inline-flex",
-                )}
-              >
-                Masuk
-                <LogIn className="size-4" aria-hidden />
-              </Link>
+            ))}
+          </nav>
+
+          <Link
+            href={signedIn ? ROUTES.beranda : ROUTES.masuk}
+            className={cn(
+              buttonVariants({ size: "sm" }),
+              "min-h-11 shrink-0 rounded-lg bg-[#286F3B] px-[22px] text-sm font-semibold text-white hover:bg-[#1E532C]",
             )}
-            <DropdownMenu open={open} onOpenChange={setOpen}>
-              <DropdownMenuTrigger
-                render={
-                  <button
-                    type="button"
-                    aria-label={open ? "Tutup menu" : "Buka menu"}
-                    className="inline-flex size-11 items-center justify-center rounded-full text-[#1C2826] transition-colors outline-none hover:bg-[#F1F5F2] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] md:hidden"
-                  >
-                    <span className="relative grid size-6 place-items-center">
-                      {/* Alasan lib: morph ikon = animasi transform+opacity → Motion. */}
-                      <motion.span
-                        aria-hidden
-                        className="grid place-items-center"
-                        initial={false}
-                        animate={
-                          open
-                            ? { scale: 0.5, rotate: 90, opacity: 0 }
-                            : { scale: 1, rotate: 0, opacity: 1 }
-                        }
-                        transition={reduce ? { duration: 0 } : { duration: 0.2 }}
-                      >
-                        <Menu strokeWidth={1.75} className="size-6" aria-hidden />
-                      </motion.span>
-                      <motion.span
-                        aria-hidden
-                        className="absolute inset-0 m-auto grid size-6 place-items-center"
-                        initial={false}
-                        animate={
-                          open
-                            ? { scale: 1, rotate: 0, opacity: 1 }
-                            : { scale: 0.5, rotate: -90, opacity: 0 }
-                        }
-                        transition={reduce ? { duration: 0 } : { duration: 0.2 }}
-                      >
-                        <X strokeWidth={1.75} className="size-6" aria-hidden />
-                      </motion.span>
-                    </span>
-                  </button>
-                }
-              />
-              <DropdownMenuContent
-                align="end"
-                sideOffset={12}
-                className="w-[calc(100vw-2rem)] max-w-xl rounded-2xl border border-line bg-white p-2 shadow-[0_12px_32px_rgba(16,24,40,0.16)] md:hidden"
-              >
-                {NAV.map((n) => (
-                  <DropdownMenuItem
-                    key={n.href}
-                    render={
-                      <Link
-                        href={n.href}
-                        onClick={() => setOpen(false)}
-                        className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm font-semibold text-[#1C2826] hover:bg-[#F1F5F2]"
-                      >
-                        {n.label}
-                      </Link>
-                    }
-                  />
-                ))}
-                {signedIn ? (
-                  <DropdownMenuItem
-                    render={
-                      <Link
-                        href="/beranda"
-                        onClick={() => setOpen(false)}
-                        className="flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C2826] hover:bg-[#F1F5F2]"
-                      >
-                        <House className="size-4" aria-hidden />
-                        Beranda
-                      </Link>
-                    }
-                  />
-                ) : (
-                  <DropdownMenuItem
-                    render={
-                      <Link
-                        href="/masuk"
-                        onClick={() => setOpen(false)}
-                        className={cn(
-                          buttonVariants({ size: "sm" }),
-                          "mt-1 flex min-h-11 items-center justify-center gap-1.5",
-                        )}
-                      >
-                        Masuk
-                        <LogIn className="size-4" aria-hidden />
-                      </Link>
-                    }
-                  />
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </header>
+          >
+            {signedIn ? "Beranda" : "Masuk"}
+          </Link>
+        </div>
       </div>
-    </div>
+      <div aria-hidden className="h-[92px]" />
+    </>
   );
 }

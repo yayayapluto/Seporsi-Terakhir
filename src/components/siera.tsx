@@ -57,7 +57,7 @@ export function SieraField({
 /** Judul seksi kecil di atas grup card. */
 export function SieraSectionTitle({ id, children }: { id?: string; children: ReactNode }) {
   return (
-    <h2 id={id} className="px-4 text-xs font-medium uppercase tracking-[0.08em] text-[#64746B]">
+    <h2 id={id} className="px-4 text-xs font-bold uppercase tracking-[0.08em] text-[#64746B]">
       {children}
     </h2>
   );
@@ -361,19 +361,35 @@ export function SieraEmpty({
   action,
   id,
   compact = false,
+  icon: Icon,
 }: {
   title: string;
   hint?: string;
   action?: ReactNode;
   id?: string;
   compact?: boolean;
+  icon?: LucideIcon;
 }) {
   return (
     <div
       id={id}
-      className={`flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 text-center ${compact ? "py-6" : "py-8"}`}
+      className={`flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 text-center ${compact ? "py-6" : "py-10 md:py-14"}`}
     >
-      <p className="text-sm font-bold text-[#1C2826]">{title}</p>
+      {Icon && (
+        <span
+          aria-hidden
+          className="flex size-16 items-center justify-center rounded-full bg-[#EAF5ED] text-[#2E7D4F]"
+        >
+          <Icon className="size-[30px]" strokeWidth={1.7} />
+        </span>
+      )}
+      <p
+        className={
+          Icon ? "text-lg font-extrabold text-[#1C2826]" : "text-sm font-bold text-[#1C2826]"
+        }
+      >
+        {title}
+      </p>
       {hint != null && <p className="text-sm text-[#64746B]">{hint}</p>}
       {action}
     </div>
@@ -412,7 +428,7 @@ export function SieraStatStrip({ children }: { children: ReactNode }) {
   );
 }
 
-/** Rel kanan desktop: konten full-width rata kiri, aside 340 sticky, hanya xl ke atas.
+/** Rel kanan desktop: grid 2 kolom (main + aside 340) dalam container max-w 1160, ala rail.
 Di bawah xl satu kolom persis seperti sekarang (aside menumpuk di bawah main). */
 export function SieraRailPage({
   main,
@@ -424,13 +440,10 @@ export function SieraRailPage({
   aside: ReactNode;
 }) {
   return (
-    <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-6">
+    <div className="mx-auto grid w-full min-w-0 max-w-[1160px] flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-stretch xl:gap-6">
       <div className="flex min-w-0 flex-col gap-4 lg:gap-5">{main}</div>
-      <aside
-        aria-label={asideLabel}
-        className="flex min-w-0 flex-col gap-4 lg:gap-5 xl:sticky xl:top-20 xl:self-start"
-      >
-        {aside}
+      <aside aria-label={asideLabel} className="flex min-w-0 flex-col">
+        <div className="flex min-w-0 flex-col gap-4 lg:gap-5 xl:sticky xl:top-20">{aside}</div>
       </aside>
     </div>
   );
