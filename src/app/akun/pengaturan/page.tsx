@@ -75,7 +75,7 @@ export default async function PengaturanPage() {
       href: "/akun/pengaturan",
       icon: Globe,
       title: "Bahasa",
-      desc: "Indonesia — satu-satunya bahasa",
+      desc: "Indonesia, satu-satunya bahasa",
     },
     {
       href: "/profil",

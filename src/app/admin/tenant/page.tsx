@@ -1,7 +1,7 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraAlert, SieraCard, SieraRailPage, SieraSection } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
@@ -62,7 +62,7 @@ export default function AdminTenantPage() {
         title="Persetujuan Tenant"
         trail={[{ label: "Dampak", href: ROUTES.admin }, { label: "Persetujuan Tenant" }]}
       />
-      <Suspense fallback={<LoadingSkeleton />}>
+      <Suspense fallback={<LoadingSpinner />}>
         <TenantRail />
       </Suspense>
     </>
@@ -167,10 +167,4 @@ async function TenantRail() {
       }
     />
   );
-}
-
-async function ListedBody() {
-  await requireRole("/admin/tenant", "admin");
-  const { tenants } = await loadListed();
-  return <ListedList tenants={tenants} />;
 }

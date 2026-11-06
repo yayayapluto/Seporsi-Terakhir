@@ -1,7 +1,7 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { requireRole } from "@/lib/auth";
 import { percentSold } from "@/lib/domain/metrics";
 import { wibDayRangeUtc } from "@/lib/format";
@@ -89,7 +89,7 @@ export default async function AdminPage({
   return (
     <>
       <AppHeader title="Dampak" trail={[{ label: "Dampak" }]} />
-      <Suspense fallback={<LoadingSkeleton variant="report" />}>
+      <Suspense fallback={<LoadingSpinner />}>
         <ReportBody from={from} to={to} email={user.user.email ?? "Admin"} />
       </Suspense>
     </>

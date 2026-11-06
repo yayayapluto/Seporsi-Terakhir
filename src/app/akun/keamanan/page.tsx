@@ -27,8 +27,8 @@ export default async function KeamananPage() {
         </dl>
       </SieraCard>
       <p className="text-[12px] leading-relaxed text-[#64746B]">
-        Ada perangkat asing? Keluar dari halaman ini tidak cukup — ganti sandi email kamu, lalu
-        masuk ulang. Butuh bantuan? Tulis ke admin lewat halaman Bantuan.
+        Ada perangkat asing? Keluar dari halaman ini tidak cukup. Ganti sandi email kamu, lalu masuk
+        ulang. Butuh bantuan? Tulis ke admin lewat halaman Bantuan.
       </p>
     </div>
   );
