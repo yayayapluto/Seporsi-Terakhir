@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { GuidedTour } from "@/components/guided-tour";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 import { ScannerClient } from "./scanner-client";
@@ -37,18 +39,31 @@ async function loadLastPickup(tenantId: string): Promise<LastPickup | null> {
 }
 
 /** Scanner pickup: kamera mobile-first, konfirmasi via Server Action. */
-export default async function ScanPage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ mode?: string }>;
-}) {
+export default function ScanPage({ searchParams }: { searchParams?: Promise<{ mode?: string }> }) {
+  return (
+    <Suspense fallback={<LoadingSkeleton variant="list" />}>
+      <ScanBody searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function ScanBody({ searchParams }: { searchParams?: Promise<{ mode?: string }> }) {
   const tenant = await requireOwnTenant("/tenant/scan");
   const sp = (await searchParams) ?? {};
   const tourForced = sp.mode === "onboarding";
   const lastPickup = await loadLastPickup(tenant.id);
+  const hour = new Date().getHours();
+  const greet =
+    hour < 11
+      ? "Selamat pagi"
+      : hour < 15
+        ? "Selamat siang"
+        : hour < 19
+          ? "Selamat sore"
+          : "Selamat malam";
   return (
     <>
-      <ScannerClient lastPickup={lastPickup} />
+      <ScannerClient lastPickup={lastPickup} greet={greet} tenantName={tenant.name} />
       <GuidedTour
         tourKey="tenant-scan"
         forced={tourForced}
