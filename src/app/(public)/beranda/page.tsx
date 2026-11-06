@@ -1,25 +1,22 @@
 import { cn } from "cn";
 import { ChevronRight, Store } from "lucide-react";
 import Link from "next/link";
+import { connection } from "next/server";
+import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
-import {
-  SieraHero,
-  SieraRailPage,
-  SieraSection,
-  SieraTile,
-  sieraCardClass,
-} from "@/components/siera";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { SieraRailPage, SieraSection, SieraTile, sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
-import { formatDateTimeWIB } from "@/lib/format";
+import { formatDateTimeWIB, formatSisaMenit } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { pesananDetail, ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { OnboardBanner } from "./onboard-banner";
-import { SoonScroller } from "./soon-scroller";
+import { SoonGrid } from "./soon-grid";
 
 export interface SoonPortion {
   id: string;
@@ -42,6 +39,7 @@ interface ActiveOrder {
 
 async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }> {
   const supabase = await createClient();
+  await connection();
   const now = new Date();
   const { data, error } = await supabase
     .from("portions")
@@ -78,6 +76,7 @@ async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }>
 
 async function loadActiveOrders(): Promise<ActiveOrder[]> {
   const supabase = await createClient();
+  await connection();
   const { data, error } = (await supabase.rpc("my_orders")) as {
     data: Array<Record<string, unknown>> | null;
     error: { message: string } | null;
@@ -107,7 +106,6 @@ export default async function BerandaPage({
   }>;
 }) {
   const { user } = await requireRole("/beranda", "student");
-  const supabase = await createClient();
   const hour = Number(
     new Intl.DateTimeFormat("id-ID", {
       timeZone: "Asia/Jakarta",
@@ -123,25 +121,11 @@ export default async function BerandaPage({
         : hour < 19
           ? "Selamat sore"
           : "Selamat malam";
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name")
-    .eq("id", user.id)
-    .single();
-  const firstName = (profile?.full_name as string | null)?.trim().split(/\s+/)[0];
-  const { count } = await supabase
-    .from("orders")
-    .select("id", { count: "exact", head: true })
-    .eq("student_id", user.id);
-  const showOnboard = (count ?? 0) === 0;
+  const { firstName, showOnboard } = await loadShellGreeting(user.id);
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   // Pintu masuk 1: new user (belum pernah pesan) di URL bersih langsung masuk rantai.
   const autoChain = shouldAutoChain(showOnboard, tourForced || tourJourney);
-  const [{ portions, failed: soonFailed }, activeOrders] = await Promise.all([
-    loadSoon(),
-    loadActiveOrders(),
-  ]);
   return (
     <>
       <AppHeader title="Beranda" trail={[{ label: "Beranda" }]} />
@@ -149,36 +133,53 @@ export default async function BerandaPage({
         <SieraRailPage
           asideLabel="Ringkasan beranda"
           main={
-            <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
-              <div id="tour-hero">
-                <SieraHero
-                  eyebrow={firstName ? `${greet}, ${firstName}` : greet}
-                  title="Kantin hampir tutup, masih ada yang enak."
-                >
-                  <p>
-                    Sisa dagangan hari ini dijual miring. Ambil jam 16.30 sampai 18.30, bayar di
-                    tempat.
-                  </p>
-                </SieraHero>
+            <div className="flex min-w-0 flex-col gap-6 lg:gap-7">
+              <div id="tour-hero" className="flex flex-col gap-2">
+                <p className="text-[13px] font-bold text-[#2E7D4F]">
+                  {firstName ? `${greet}, ${firstName}` : greet}
+                </p>
+                <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+                  Kantin hampir tutup, masih ada yang enak.
+                </h1>
+                <p className="text-[15px] leading-normal text-[#64746B]">
+                  Sisa dagangan hari ini dijual miring. Ambil jam 16.30 sampai 18.30, bayar di
+                  tempat.
+                </p>
               </div>
               {showOnboard && <OnboardBanner />}
-              <ActiveOrdersSection orders={activeOrders} />
-              <SoonSection portions={portions} failed={soonFailed} />
+              <Suspense fallback={<LoadingSpinner />}>
+                <ActiveOrdersBody user={user} />
+              </Suspense>
+              <Suspense fallback={<LoadingSpinner />}>
+                <SoonBody user={user} />
+              </Suspense>
             </div>
           }
           aside={
-            <div className="hidden min-w-0 flex-col gap-4 lg:gap-5 xl:flex">
-              <SieraSection id="ambil-heading" label="Jam ambil">
-                <div
-                  className={cn(
-                    sieraCardClass,
-                    "flex flex-col gap-1 p-4 text-[13px] text-[#64746B]",
-                  )}
+            <div className="hidden min-w-0 flex-col lg:gap-5 xl:flex">
+              <div
+                id="ambil-heading"
+                className="flex flex-col gap-2 rounded-[20px] border border-[#BFE3CF] bg-[#EAF5ED] p-6"
+              >
+                <h2 className="text-xs font-bold tracking-[0.08em] text-[#1E5A36] uppercase">
+                  Jam ambil
+                </h2>
+                <p className="mt-1 text-[26px] leading-tight font-extrabold text-[#1C2826]">
+                  16.30 – 18.30 <span className="text-[15px] font-bold">WIB</span>
+                </p>
+                <p className="text-sm leading-normal text-[#2F4037]">
+                  Tunjukkan QR saat ambil, bayar tunai di tempat.
+                </p>
+                <Link
+                  href={ROUTES.katalog}
+                  className={buttonVariants({
+                    className:
+                      "mt-3 flex h-12 w-full items-center justify-center rounded-xl text-[15px] font-bold",
+                  })}
                 >
-                  <p className="text-sm font-bold text-[#1C2826]">16.30 sampai 18.30 WIB</p>
-                  <p>Tunjukkan QR saat ambil, bayar tunai di tempat.</p>
-                </div>
-              </SieraSection>
+                  Lihat katalog
+                </Link>
+              </div>
             </div>
           }
         />
@@ -221,6 +222,33 @@ export default async function BerandaPage({
   );
 }
 
+async function loadShellGreeting(
+  userId: string,
+): Promise<{ firstName: string | null; showOnboard: boolean }> {
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", userId)
+    .single();
+  const firstName = (profile?.full_name as string | null)?.trim().split(/\s+/)[0] ?? null;
+  const { count } = await supabase
+    .from("orders")
+    .select("id", { count: "exact", head: true })
+    .eq("student_id", userId);
+  return { firstName: firstName || null, showOnboard: (count ?? 0) === 0 };
+}
+
+async function ActiveOrdersBody(_props: { user: { id: string } }) {
+  const orders = await loadActiveOrders();
+  return <ActiveOrdersSection orders={orders} />;
+}
+
+async function SoonBody(_props: { user: { id: string } }) {
+  const { portions, failed } = await loadSoon();
+  return <SoonSection portions={portions} failed={failed} />;
+}
+
 function ActiveOrderList({ orders }: { orders: ActiveOrder[] }) {
   const now = Date.now();
   return (
@@ -244,7 +272,7 @@ function ActiveOrderList({ orders }: { orders: ActiveOrder[] }) {
               </span>
               {left !== null && left < 60 && (
                 <span className="shrink-0 rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-bold text-[#92400E]">
-                  {left <= 5 ? "Segera ambil" : `Sisa ${left} mnt`}
+                  {left <= 5 ? "Segera ambil" : `Sisa ${formatSisaMenit(left)}`}
                 </span>
               )}
               <ChevronRight
@@ -309,23 +337,23 @@ function SoonSection({ portions, failed }: { portions: SoonPortion[]; failed: bo
   return (
     <div id="tour-catalog">
       <SieraSection
-        label={`Katalog sore ini (${portions.length})`}
+        label={`Katalog sore ini · ${portions.length} porsi`}
         action={
           <Link
             href={ROUTES.katalog}
             className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
           >
-            Lihat Semua
+            Lihat semua
           </Link>
         }
       >
         <div className="flex flex-col gap-2">
-          <SoonScroller portions={portions} />
+          <SoonGrid portions={portions} />
           <Link
             href={ROUTES.katalog}
             className={buttonVariants({
               className:
-                "mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold",
+                "mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold xl:hidden",
             })}
           >
             Lihat katalog
