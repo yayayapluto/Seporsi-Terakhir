@@ -34,6 +34,22 @@ export async function cancelOrder(
 }
 
 /**
+ * Sapu pesanan lewat batas ambil 15 menit (idempoten, server-side).
+ * Dipanggil dari countdown klien saat menyentuh 00:00 → refresh status.
+ */
+export async function sweepLatePickups(): Promise<{ ok: boolean }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false };
+  const { error } = await supabase.rpc("sweep_late_pickups");
+  if (error) return { ok: false };
+  revalidatePath(ROUTES.pesanan);
+  return { ok: true };
+}
+
+/**
  * Token QR satu pesanan untuk modal di list. RLS orders_read membatasi ke
  * row milik sendiri; token tak pernah masuk payload list (QR-value only).
  */
