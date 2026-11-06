@@ -2,7 +2,7 @@ import { TrendingUp } from "lucide-react";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -80,7 +80,7 @@ export default async function MenuPage({
         title="Menu Kantin"
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Menu Kantin" }]}
       />
-      <Suspense fallback={<LoadingSkeleton variant="list" />}>
+      <Suspense fallback={<LoadingSpinner />}>
         <MenuBody tenantId={tenant.id} tourForced={tourForced} />
       </Suspense>
     </>

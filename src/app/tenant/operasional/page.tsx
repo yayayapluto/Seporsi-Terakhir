@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraCard, sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatIDR } from "@/lib/format";
@@ -12,7 +12,7 @@ import { requireOwnTenant } from "../guard";
 /** Operasional tenant: ringkasan angka hari ini + aksi langsung. Tanpa tabel baru. */
 export default function OperasionalPage() {
   return (
-    <Suspense fallback={<LoadingSkeleton variant="report" />}>
+    <Suspense fallback={<LoadingSpinner />}>
       <OperasionalBody />
     </Suspense>
   );

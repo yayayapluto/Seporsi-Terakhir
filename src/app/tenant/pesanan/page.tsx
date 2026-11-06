@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { EmptyLine } from "@/components/shared/empty-line";
 import {
@@ -99,7 +99,7 @@ export default function TenantPesananPage({
   }>;
 }) {
   return (
-    <Suspense fallback={<LoadingSkeleton variant="grouped-list" />}>
+    <Suspense fallback={<LoadingSpinner />}>
       <TenantPesananBody searchParams={searchParams} />
     </Suspense>
   );
@@ -219,8 +219,7 @@ async function TenantPesananBody({
       {hero}
       {failed ? (
         <SieraAlert variant="error">
-          Gagal memuat pesanan. Koneksi bermasalah. Muat ulang halaman untuk mencoba lagi. Jangan
-          posting ulang porsi.
+          Gagal memuat pesanan. Muat ulang halaman untuk mencoba lagi.
         </SieraAlert>
       ) : orders.length === 0 ? (
         <EmptyState

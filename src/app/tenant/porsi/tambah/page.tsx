@@ -2,7 +2,7 @@ import { Lightbulb } from "lucide-react";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
 
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
@@ -37,7 +37,7 @@ export default function PorsiBaruPage({
   }>;
 }) {
   return (
-    <Suspense fallback={<LoadingSkeleton variant="list" />}>
+    <Suspense fallback={<LoadingSpinner />}>
       <PorsiBaruBody searchParams={searchParams} />
     </Suspense>
   );

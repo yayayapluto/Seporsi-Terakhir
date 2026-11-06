@@ -1,6 +1,8 @@
 import { Lightbulb } from "lucide-react";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import {
   SieraList,
   SieraRailPage,
@@ -16,11 +18,15 @@ import { PortionForm, type PortionFormMenu } from "../../portion-form";
 
 /** Edit porsi milik sendiri: jam masak, jendela jual, harga diskon, quantity. */
 
-export default async function EditPorsiPage({
-  params,
-}: {
-  params: Promise<{ portionId: string }>;
-}) {
+export default function EditPorsiPage({ params }: { params: Promise<{ portionId: string }> }) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <EditPorsiBody params={params} />
+    </Suspense>
+  );
+}
+
+async function EditPorsiBody({ params }: { params: Promise<{ portionId: string }> }) {
   const tenant = await requireOwnTenant("/tenant/porsi/ubah");
   const { portionId } = await params;
   const supabase = await createClient();

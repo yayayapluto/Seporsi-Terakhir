@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import {
   SieraEmpty,
   SieraList,
@@ -168,7 +168,7 @@ export default async function TenantDashboardPage({
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
-    <Suspense fallback={<LoadingSkeleton variant="grouped-list" />}>
+    <Suspense fallback={<LoadingSpinner />}>
       <DashboardBody
         tourForced={tourForced}
         tourJourney={tourJourney}

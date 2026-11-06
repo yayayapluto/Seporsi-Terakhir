@@ -1,6 +1,7 @@
 import { Suspense } from "react";
+import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 import { ScannerClient } from "./scanner-client";
@@ -41,9 +42,15 @@ async function loadLastPickup(tenantId: string): Promise<LastPickup | null> {
 /** Scanner pickup: kamera mobile-first, konfirmasi via Server Action. */
 export default function ScanPage({ searchParams }: { searchParams?: Promise<{ mode?: string }> }) {
   return (
-    <Suspense fallback={<LoadingSkeleton variant="list" />}>
-      <ScanBody searchParams={searchParams} />
-    </Suspense>
+    <>
+      <AppHeader
+        title="Scan pickup"
+        trail={[{ label: "Kantin", href: "/tenant" }, { label: "Scan" }]}
+      />
+      <Suspense fallback={<LoadingSpinner />}>
+        <ScanBody searchParams={searchParams} />
+      </Suspense>
+    </>
   );
 }
 
