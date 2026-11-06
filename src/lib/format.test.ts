@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { namaToInitials, nowInWib, wibDayRangeUtc, wibTodayRange } from "./format";
+import { formatSisaMenit, namaToInitials, nowInWib, wibDayRangeUtc, wibTodayRange } from "./format";
 
 describe("wibDayRangeUtc", () => {
   it("memetakan batas hari WIB ke UTC", () => {
@@ -37,5 +37,26 @@ describe("namaToInitials", () => {
     expect(namaToInitials("Ayu Lestari Putri")).toBe("AL");
     expect(namaToInitials("  budi ")).toBe("B");
     expect(namaToInitials("")).toBe("");
+  });
+});
+
+describe("formatSisaMenit", () => {
+  it("menit < 60 tetap menit", () => {
+    expect(formatSisaMenit(0)).toBe("0 mnt");
+    expect(formatSisaMenit(5)).toBe("5 mnt");
+    expect(formatSisaMenit(59)).toBe("59 mnt");
+  });
+  it("60 ditampilkan sebagai jam", () => {
+    expect(formatSisaMenit(60)).toBe("1 jam");
+    expect(formatSisaMenit(120)).toBe("2 jam");
+  });
+  it("campuran jam dan menit", () => {
+    expect(formatSisaMenit(70)).toBe("1 jam 10 mnt");
+    expect(formatSisaMenit(90)).toBe("1 jam 30 mnt");
+    expect(formatSisaMenit(125)).toBe("2 jam 5 mnt");
+  });
+  it("batas negatif/NaN aman", () => {
+    expect(formatSisaMenit(-10)).toBe("0 mnt");
+    expect(formatSisaMenit(NaN)).toBe("0 mnt");
   });
 });
