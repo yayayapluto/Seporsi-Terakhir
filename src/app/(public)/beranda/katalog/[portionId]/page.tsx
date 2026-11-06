@@ -2,16 +2,18 @@ import { cn } from "cn";
 import { Clock3, ImageOff, Store, Timer, TriangleAlert, Wheat } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import {
   attachMissingIngredientColumns,
   isMissingColumnError,
   shouldLogPortionLoadError,
 } from "@/lib/domain/portion-detail";
-import { formatDateTimeWIB, formatIDR } from "@/lib/format";
+import { formatDateTimeWIB, formatIDR, formatSisaMenit } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { katalogDetail, ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -170,7 +172,7 @@ function DetailBody({
           </span>
           {!soldOut && leftMin < 60 && (
             <span className="inline-flex items-center rounded-full bg-[#FEF3C7] px-2.5 py-1 text-xs font-bold text-[#92400E]">
-              {leftMin <= 5 ? "Segera ambil" : `Batas ambil ${leftMin} mnt lagi`}
+              {leftMin <= 5 ? "Segera ambil" : `Batas ambil ${formatSisaMenit(leftMin)} lagi`}
             </span>
           )}
         </div>
@@ -340,6 +342,20 @@ export default async function PortionDetailPage({
   const sp = (await searchParams) ?? {};
   const tourForced = sp.mode === "onboarding";
   if (!PortionId.safeParse(portionId).success) notFound();
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <PortionDetailBody portionId={portionId} tourForced={tourForced} />
+    </Suspense>
+  );
+}
+
+async function PortionDetailBody({
+  portionId,
+  tourForced,
+}: {
+  portionId: string;
+  tourForced: boolean;
+}) {
   const portion = await loadPortion(portionId);
   const related = portion ? await loadRelated(portion.tenantName, portionId) : [];
   return (

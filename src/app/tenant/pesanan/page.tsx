@@ -1,9 +1,11 @@
 import { cn } from "cn";
 import { ChevronRight, History, PackageCheck, ReceiptText, Timer, Wallet } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { EmptyLine } from "@/components/shared/empty-line";
 import {
@@ -23,15 +25,17 @@ import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
+import { TenantPickupCountdown } from "./tenant-pickup-countdown";
 
 /** Daftar reservasi porsi tenant: menunggu pickup → selesai. Tanpa token. */
 
 interface TenantOrderRow {
   id: string;
-  status: "reserved" | "picked_up" | "cancelled";
+  status: "reserved" | "picked_up" | "cancelled" | "unpicked";
   quantity: number;
   createdAt: string;
   pickedUpAt: string | null;
+  pickupDeadlineAt: string | null;
   discountPrice: number;
   menuName: string;
   buyerName: string;
@@ -44,6 +48,7 @@ interface RawTenantOrder {
   quantity: number;
   created_at: string;
   picked_up_at: string | null;
+  pickup_deadline_at: string | null;
   discount_price_snapshot: number;
   buyer?: { full_name?: string | null; email?: string | null } | null;
   portions?: { menu_items?: { name: string } | { name: string }[] | null } | null;
@@ -55,7 +60,7 @@ async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, status, quantity, created_at, picked_up_at, discount_price_snapshot, buyer:profiles!orders_student_id_fkey(full_name, email), portions!inner(menu_item_id, menu_items!inner(name), tenant_id)",
+      "id, status, quantity, created_at, picked_up_at, pickup_deadline_at, discount_price_snapshot, buyer:profiles!orders_student_id_fkey(full_name, email), portions!inner(menu_item_id, menu_items!inner(name), tenant_id)",
     )
     .eq("portions.tenant_id", tenant.id)
     .order("created_at", { ascending: false })
@@ -72,6 +77,7 @@ async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean
         quantity: o.quantity,
         createdAt: o.created_at,
         pickedUpAt: o.picked_up_at ?? null,
+        pickupDeadlineAt: o.pickup_deadline_at ?? null,
         discountPrice: o.discount_price_snapshot,
         menuName: menu?.name ?? "Menu",
         buyerName: o.buyer?.full_name?.trim() || o.buyer?.email?.split("@")[0] || "Mahasiswa",
@@ -81,7 +87,25 @@ async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean
   };
 }
 
-export default async function TenantPesananPage({
+export default function TenantPesananPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    mode?: string;
+    tour?: string;
+    panduan?: string;
+    langkah?: string;
+    fresh?: string;
+  }>;
+}) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <TenantPesananBody searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function TenantPesananBody({
   searchParams,
 }: {
   searchParams?: Promise<{
@@ -136,6 +160,15 @@ export default async function TenantPesananPage({
                   ? ` · Diambil ${formatDateTimeWIB(new Date(o.pickedUpAt))} WIB`
                   : ""}
               </span>
+              {o.status === "reserved" && o.pickupDeadlineAt && (
+                <span className="block truncate text-[12px] leading-[1.4] font-bold text-[#B45309]">
+                  Ambil dalam{" "}
+                  <TenantPickupCountdown
+                    deadlineIso={o.pickupDeadlineAt}
+                    className="tabular-nums"
+                  />
+                </span>
+              )}
             </span>
             <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
           </Link>
@@ -152,12 +185,41 @@ export default async function TenantPesananPage({
     );
   }
 
+  const tenant = await requireOwnTenant("/tenant/pesanan");
+  const hour = Number(
+    new Intl.DateTimeFormat("id-ID", {
+      timeZone: "Asia/Jakarta",
+      hour: "2-digit",
+      hour12: false,
+    }).format(new Date()),
+  );
+  const greet =
+    hour < 11
+      ? "Selamat pagi"
+      : hour < 15
+        ? "Selamat siang"
+        : hour < 19
+          ? "Selamat sore"
+          : "Selamat malam";
+
+  const hero = (
+    <div id="tour-hero" className="flex flex-col gap-2">
+      <p className="text-[13px] font-bold text-[#2E7D4F]">PESANAN</p>
+      <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+        {greet}, {tenant.name}
+      </h1>
+      <p className="text-[15px] leading-normal text-[#64746B]">
+        Layani reservasi masuk, lalu scan saat serah terima.
+      </p>
+    </div>
+  );
+
   const main = (
     <>
+      {hero}
       {failed ? (
         <SieraAlert variant="error">
-          Gagal memuat pesanan. Koneksi bermasalah. Muat ulang halaman untuk mencoba lagi — jangan
-          posting ulang porsi.
+          Gagal memuat pesanan. Muat ulang halaman untuk mencoba lagi.
         </SieraAlert>
       ) : orders.length === 0 ? (
         <EmptyState
@@ -261,7 +323,7 @@ export default async function TenantPesananPage({
         fresh={sp.fresh === "1"}
         intro={{
           title: "Pesanan masuk?",
-          body: "Reservasi mahasiswa yang menunggu pickup dan riwayatnya — semua di sini.",
+          body: "Reservasi mahasiswa yang menunggu pickup dan riwayatnya, semua di sini.",
         }}
         steps={[
           {

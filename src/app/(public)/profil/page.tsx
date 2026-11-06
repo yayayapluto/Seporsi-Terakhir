@@ -96,7 +96,6 @@ import {
   SieraRowLink,
   SieraSection,
   SieraSectionTitle,
-  SieraTile,
   sieraCardClass,
   sieraCountText,
 } from "@/components/siera";
@@ -148,25 +147,29 @@ export default async function ProfilPage({
       {isStudent ? (
         <div className="mx-auto flex w-full min-w-0 max-w-[1160px] flex-col gap-6 px-4 pt-6 pb-8 md:px-6">
           {/* Identitas full-width di atas rail */}
-          <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
-            <div className="flex items-center gap-4">
+          <section aria-label="Identitas" className={`${sieraCardClass} p-6`}>
+            <div className="flex items-center gap-5">
               {p.avatarPath ? (
                 <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
               ) : (
                 <span
                   aria-hidden
-                  className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-lg font-extrabold text-[#1E5A36] md:size-16 md:text-xl"
+                  className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-xl font-extrabold text-[#1E5A36] md:size-18 md:text-[28px]"
                 >
                   {initials || "•"}
                 </span>
               )}
               <div className="min-w-0">
-                <h1 className="truncate text-[18px] leading-snug font-semibold md:text-[20px]">
+                <h1 className="text-xl leading-tight font-extrabold tracking-[-0.01em] md:text-2xl [overflow-wrap:anywhere]">
                   {p.fullName}
                 </h1>
-                {p.email && <p className="truncate text-sm text-[#64746B]">{p.email}</p>}
+                {p.email && (
+                  <p className="mt-0.5 text-sm text-[#64746B] [overflow-wrap:anywhere]">
+                    {p.email}
+                  </p>
+                )}
                 {label && (
-                  <p className="mt-1.5 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
+                  <p className="mt-2 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-0.5 text-xs font-bold text-[#1E5A36]">
                     {label}
                   </p>
                 )}
@@ -179,7 +182,7 @@ export default async function ProfilPage({
               <>
                 {/* Dampak */}
                 <section aria-labelledby="dampak-heading" className="flex min-w-0 flex-col gap-2">
-                  <div className="flex min-h-11 items-center px-5 md:px-6">
+                  <div className="flex min-h-11 items-center">
                     <SieraSectionTitle id="dampak-heading">Dampakmu</SieraSectionTitle>
                   </div>
                   {p.loadFailed && (
@@ -193,40 +196,51 @@ export default async function ProfilPage({
                       </Link>
                     </SieraAlert>
                   )}
-                  <dl
-                    className={`${sieraCardClass} grid grid-cols-3 divide-x divide-dashed divide-line overflow-hidden`}
-                  >
-                    <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
-                      <SieraTile>
-                        <PackageCheck className="size-5" />
-                      </SieraTile>
-                      <dd className="text-[16px] font-extrabold">{p.savedPortions}</dd>
-                      <dt className="text-[12px] font-semibold text-[#64746B]">Porsi selamat</dt>
+                  <dl className="grid grid-cols-3 gap-3">
+                    <div className={`${sieraCardClass} flex min-w-0 flex-col gap-1 p-4 md:p-5`}>
+                      <span
+                        aria-hidden
+                        className="mb-2 flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-[#EAF5ED] text-[#2E7D4F]"
+                      >
+                        <PackageCheck className="size-5" strokeWidth={1.8} aria-hidden />
+                      </span>
+                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl">
+                        {p.savedPortions}
+                      </dd>
+                      <dt className="text-[13px] text-[#64746B]">Porsi selamat</dt>
                     </div>
-                    <div className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center">
-                      <SieraTile>
-                        <Wallet className="size-5" />
-                      </SieraTile>
-                      <dd className="truncate text-[16px] font-extrabold">
+                    <div className={`${sieraCardClass} flex min-w-0 flex-col gap-1 p-4 md:p-5`}>
+                      <span
+                        aria-hidden
+                        className="mb-2 flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-[#EAF5ED] text-[#2E7D4F]"
+                      >
+                        <Wallet className="size-5" strokeWidth={1.8} aria-hidden />
+                      </span>
+                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl">
                         {formatIDR(p.moneySavedIdr)}
                       </dd>
-                      <dt className="text-[12px] font-semibold text-[#64746B]">Uang hemat</dt>
+                      <dt className="text-[13px] text-[#64746B]">Uang hemat</dt>
                     </div>
                     <div
-                      className="flex min-w-0 flex-col items-center gap-1 px-2 py-3 text-center"
+                      className={`${sieraCardClass} flex min-w-0 flex-col gap-1 p-4 md:p-5`}
                       title="Berat = estimasi sampling tenant"
                     >
-                      <SieraTile>
-                        <Leaf className="size-5" />
-                      </SieraTile>
-                      <dd className="text-[16px] font-extrabold">
+                      <span
+                        aria-hidden
+                        className="mb-2 flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-[#EAF5ED] text-[#2E7D4F]"
+                      >
+                        <Leaf className="size-5" strokeWidth={1.8} aria-hidden />
+                      </span>
+                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl">
                         {p.wasteKg == null ? (
-                          <span className="text-sm font-normal text-[#64746B]">Belum ada</span>
+                          <span className="text-base font-bold text-[#64746B] md:text-lg">
+                            Belum ada
+                          </span>
                         ) : (
                           `${p.wasteKg.toLocaleString("id-ID", { maximumFractionDigits: 1 })} kg`
                         )}
                       </dd>
-                      <dt className="text-[12px] font-semibold text-[#64746B]">Sampah cegah*</dt>
+                      <dt className="text-[13px] text-[#64746B]">Sampah cegah*</dt>
                     </div>
                   </dl>
                   <p
@@ -273,16 +287,24 @@ export default async function ProfilPage({
             aside={
               <>
                 {/* Aplikasi tenant */}
-                <SieraSection id="tenant-heading" label="Aplikasi tenant">
-                  {tenantStatus == null ? (
-                    <div className={`${sieraCardClass} border-dashed p-5 text-center md:p-6`}>
-                      <p className="text-sm font-bold">Belum mendaftar sebagai tenant</p>
-                      <p className="mt-1 text-[13px] text-[#64746B]">
-                        Jual sisa masakanmu, gratis untuk saat ini.
-                      </p>
-                      <DaftarTenantButton />
-                    </div>
-                  ) : (
+                {tenantStatus == null ? (
+                  <div
+                    id="tenant-heading"
+                    className="flex flex-col gap-2 rounded-[20px] border border-[#BFE3CF] bg-[#EAF5ED] p-6"
+                  >
+                    <h2 className="text-xs font-bold tracking-[0.08em] text-[#1E5A36] uppercase">
+                      Aplikasi tenant
+                    </h2>
+                    <p className="mt-1 text-lg leading-snug font-extrabold text-[#1C2826]">
+                      Punya sisa masakan?
+                    </p>
+                    <p className="text-sm leading-normal text-[#2F4037]">
+                      Jual sisa masakanmu ke mahasiswa lain. Gratis untuk saat ini.
+                    </p>
+                    <DaftarTenantButton />
+                  </div>
+                ) : (
+                  <SieraSection id="tenant-heading" label="Aplikasi tenant">
                     <SieraList className="divide-solid">
                       <SieraRowLink
                         href={p.tenantApproved ? ROUTES.tenant : ROUTES.tenantMenunggu}
@@ -291,11 +313,11 @@ export default async function ProfilPage({
                         subtitle={tenantStatus}
                       />
                     </SieraList>
-                  )}
-                </SieraSection>
+                  </SieraSection>
+                )}
                 {/* Bantuan */}
                 <section aria-labelledby="bantuan-heading" className="flex min-w-0 flex-col gap-2">
-                  <div className="flex min-h-11 items-center px-5 md:px-6">
+                  <div className="flex min-h-11 items-center">
                     <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
                   </div>
                   <SieraList aria-label="Bantuan" className="divide-solid">
@@ -321,18 +343,18 @@ export default async function ProfilPage({
               ) : (
                 <span
                   aria-hidden
-                  className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-lg font-extrabold text-[#1E5A36] md:size-16 md:text-xl"
+                  className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-xl font-extrabold text-[#1E5A36] md:size-18 md:text-[28px]"
                 >
                   {initials || "•"}
                 </span>
               )}
               <div className="min-w-0">
-                <h1 className="truncate text-[18px] leading-snug font-semibold md:text-[20px]">
+                <h1 className="truncate text-xl leading-tight font-extrabold md:text-2xl">
                   {p.fullName}
                 </h1>
                 {p.email && <p className="truncate text-sm text-[#64746B]">{p.email}</p>}
                 {label && (
-                  <p className="mt-1.5 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-1 text-[11px] font-bold text-[#1E5A36]">
+                  <p className="mt-2 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-0.5 text-xs font-bold text-[#1E5A36]">
                     {label}
                   </p>
                 )}
@@ -388,7 +410,7 @@ export default async function ProfilPage({
           </SieraSection>
           {/* Bantuan — panduan sesuai peran */}
           <section aria-labelledby="bantuan-heading" className="flex min-w-0 flex-col gap-2">
-            <div className="flex min-h-11 items-center px-5 md:px-6">
+            <div className="flex min-h-11 items-center">
               <SieraSectionTitle id="bantuan-heading">Bantuan</SieraSectionTitle>
             </div>
             <SieraList aria-label="Bantuan" className="divide-solid">

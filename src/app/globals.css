@@ -143,3 +143,384 @@
     transition-duration: 0.01ms;
   }
 }
+
+/* ===== SIERA landing (adopsi 1:1 siera.veterantech.id) ===== */
+/* SIERA landing — adopsi 1:1 dari design system siera.veterantech.id.
+   Token, keyframes, dan kelas landing diambil apa adanya dari right page save;
+   tidak ada interpretasi ulang. Font: Inter Variable + Plus Jakarta Sans Variable (self-hosted). */
+@font-face {
+  font-family: "Plus Jakarta Sans Variable";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/siera/fonts/plussj-v.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url("/siera/fonts/inter-v.woff2") format("woff2");
+}
+
+[data-landing-page] {
+  --siera-font-sans: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
+  --siera-font-heading: "Plus Jakarta Sans Variable", var(--siera-font-sans);
+  --primary: #328c4a;
+  --primary-foreground: #ffffff;
+  --primary-20: #d6e8db;
+  --primary-40: #add1b7;
+  --primary-60: #84b992;
+  --primary-120: #286f3b;
+  --primary-140: #1e532c;
+  --primary-160: #14381e;
+  --primary-edge: #14381ed9;
+  --primary-hover: #1e532c;
+  --siera-secondary-20: #fdf8dd;
+  --siera-secondary-40: #faf1bb;
+  --siera-secondary-60: #f8ea98;
+  --siera-secondary: #f3dc54;
+  --siera-secondary-120: #c2b043;
+  --siera-secondary-160: #615822;
+  --additional-20: #e1f6f4;
+  --additional-40: #c3ede8;
+  --additional: #69d2c6;
+  --additional-120: #69d2c6;
+  --surface-subtle: oklch(98.5% 0 0);
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-400: #a3a3a3;
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --neutral-900: #171717;
+  --neutral-950: #0a0a0a;
+  --foreground: oklch(25% 0 0);
+  --border: oklch(92.2% 0 0);
+  --ring: #328c4a;
+  --destructive: oklch(57.7% 0.245 27.325);
+  --siera-shadow-float: 0 0 0 1px #0000000f, 0 4px 8px -2px #0000000f, 0 16px 32px -8px #00000024;
+  --siera-shadow-key-accent:
+    inset 0 -2px 0 0 #0000002e, 0 1px 2px 0 #14381e40, 0 2px 6px -2px #14381e4d;
+  --sf-img-0: url("/siera/sf0.svg");
+}
+
+@theme inline {
+  /* SIERA landing tokens (used only under [data-landing-page]) */
+  --color-primary: var(--primary);
+  --color-primary-20: var(--primary-20);
+  --color-primary-40: var(--primary-40);
+  --color-primary-60: var(--primary-60);
+  --color-primary-120: var(--primary-120);
+  --color-primary-140: var(--primary-140);
+  --color-primary-160: var(--primary-160);
+  --color-siera-secondary-20: var(--siera-secondary-20);
+  --color-siera-secondary-40: var(--siera-secondary-40);
+  --color-siera-secondary-60: var(--siera-secondary-60);
+  --color-siera-secondary: var(--siera-secondary);
+  --color-siera-secondary-120: var(--siera-secondary-120);
+  --color-siera-secondary-160: var(--siera-secondary-160);
+  --color-additional-20: var(--additional-20);
+  --color-additional-40: var(--additional-40);
+  --color-additional: var(--additional);
+  --color-additional-120: var(--additional-120);
+  --color-surface-subtle: var(--surface-subtle);
+}
+
+@property --flow-t {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+@keyframes t-digit-pop-in {
+  0% {
+    opacity: 0;
+    filter: blur(2px);
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur();
+    transform: translate(0);
+  }
+}
+@keyframes t-check-fade {
+  0% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes t-check-rotate {
+  0% {
+    transform: rotate(var(--check-rotate-from, 120deg));
+  }
+  to {
+    transform: rotate(0);
+  }
+}
+@keyframes t-check-blur {
+  0% {
+    filter: blur(var(--check-blur-from, 8px));
+  }
+  to {
+    filter: blur();
+  }
+}
+@keyframes t-check-bob {
+  0% {
+    translate: 0 var(--check-y-amount, -6px);
+  }
+  to {
+    translate: 0 0;
+  }
+}
+@keyframes t-check-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes t-input-shake {
+  0% {
+    animation-timing-function: var(--shake-ease);
+    transform: translate(0);
+  }
+  28.57% {
+    transform: translateX(var(--shake-distance));
+  }
+  57.14% {
+    transform: translateX(calc(var(--shake-distance) * -1));
+  }
+  78.57% {
+    transform: translateX(var(--shake-overshoot));
+  }
+  to {
+    transform: translate(0);
+  }
+}
+@keyframes siera-page-rise {
+  0% {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+@keyframes siera-page-fade {
+  0% {
+    opacity: 0;
+  }
+}
+@keyframes siera-journey-draw {
+  0% {
+    stroke-dashoffset: 100px;
+  }
+}
+@keyframes siera-journey-pop {
+  0% {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+@keyframes siera-journey-pulse {
+  0% {
+    opacity: 0.7;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+    scale: 1.35;
+  }
+}
+@keyframes siera-flow {
+  0% {
+    --flow-t: 0;
+  }
+  to {
+    --flow-t: 1;
+  }
+}
+@keyframes siera-marquee {
+  to {
+    translate: -50%;
+  }
+}
+@keyframes siera-float {
+  50% {
+    translate: 0 -6px;
+  }
+}
+@keyframes siera-sway {
+  0%,
+  to {
+    transform: rotate(-1deg);
+  }
+  50% {
+    transform: rotate(1deg);
+  }
+}
+@keyframes siera-word-in {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+    translate: 0 0.25em;
+  }
+}
+@keyframes siera-reveal {
+  0% {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+
+/* Jangka ruang landing: scope rata [data-landing-page]. */
+[data-landing-page] {
+  --siera-font-sans: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
+  --siera-font-heading: "Plus Jakarta Sans Variable", var(--siera-font-sans);
+  font-family: var(--siera-font-sans);
+  letter-spacing: normal;
+}
+[data-landing-page] :is(h1, h2, h3) {
+  font-family: var(--siera-font-heading);
+}
+[data-landing-page] {
+  --tw-shadow-float: var(--siera-shadow-float);
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+}
+.shadow-float {
+  --tw-shadow: var(--siera-shadow-float);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow),
+    var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+.siera-wordmark {
+  background-color: var(--primary);
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 1.5rem;
+  display: inline-block;
+  -webkit-mask: var(--sf-img-0) 50% / contain no-repeat;
+  mask: var(--sf-img-0) 50% / contain no-repeat;
+}
+
+.btn-accent {
+  border: 1px solid var(--primary-edge);
+  background-color: var(--primary-120);
+  color: var(--primary-foreground);
+  box-shadow: var(--siera-shadow-key-accent);
+  background-image: linear-gradient(#ffffff1f, #fff0);
+  background-origin: border-box;
+  background-clip: border-box;
+}
+.btn-accent:where(:hover:not(:disabled, [data-disabled])) {
+  background-color: var(--primary-hover);
+}
+
+.landing-word {
+  display: inline-block;
+}
+.landing-intro {
+  animation: 0.64s cubic-bezier(0.23, 1, 0.32, 1) both siera-page-rise;
+  animation-delay: var(--intro-delay, 0s);
+}
+.landing-words-intro {
+  animation: 0.2s ease-out both siera-page-fade;
+}
+.landing-words-intro .landing-word {
+  animation: 0.9s cubic-bezier(0.23, 1, 0.32, 1) both siera-word-in;
+  animation-delay: calc(80ms + min(var(--w), 10) * 55ms);
+}
+[data-landing-reveal] .landing-words[data-in] .landing-word {
+  animation: 0.7s cubic-bezier(0.23, 1, 0.32, 1) both siera-word-in;
+  animation-delay: calc(min(var(--w), 10) * 35ms);
+}
+[data-landing-reveal] .landing-reveal[data-in] {
+  animation: 0.64s cubic-bezier(0.23, 1, 0.32, 1) both siera-reveal;
+  animation-delay: var(--reveal-delay, 0s);
+}
+[data-landing-reveal] :is(.landing-reveal-group > *)[data-in] {
+  animation: 0.64s cubic-bezier(0.23, 1, 0.32, 1) both siera-reveal;
+  animation-delay: var(--reveal-delay, 0s);
+}
+.landing-reveal-group > *:nth-child(2) {
+  --reveal-delay: 0.1s;
+}
+.landing-reveal-group > *:nth-child(n + 3) {
+  --reveal-delay: 0.2s;
+}
+.landing-float {
+  animation: 6s ease-in-out infinite siera-float;
+  animation-delay: var(--float-delay, 0s);
+}
+.landing-sway {
+  transform-origin: 50% 0;
+  animation: 5s ease-in-out infinite siera-sway;
+  animation-delay: var(--float-delay, 0s);
+}
+.landing-marquee {
+  animation: siera-marquee var(--marquee-duration, 18s) linear infinite;
+}
+
+.flow {
+  --flow-t: var(--flow-rest, 1);
+  animation: siera-flow var(--flow-duration, 8s) linear infinite;
+}
+.flow-part {
+  --flow-on: calc(
+    clamp(0, (var(--flow-t) - var(--flow-in, 0)) * var(--flow-ramp, 24), 1) *
+    clamp(0, (var(--flow-out, 2) - var(--flow-t)) * var(--flow-ramp, 24), 1)
+  );
+  opacity: var(--flow-on);
+  translate: 0 calc((1 - var(--flow-on)) * 6px);
+}
+.flow-press {
+  --flow-on: calc(
+    clamp(0, (var(--flow-t) - var(--flow-in, 0)) * var(--flow-ramp, 24), 1) *
+    clamp(0, (var(--flow-out, 0) - var(--flow-t)) * var(--flow-ramp, 24), 1)
+  );
+  scale: calc(1 - 0.04 * var(--flow-on));
+  filter: brightness(calc(1 - 0.08 * var(--flow-on)));
+}
+.flow-cursor {
+  --flow-p: clamp(
+    0,
+    (var(--flow-t) - var(--flow-in, 0)) /
+    (var(--flow-arrive, 1) - var(--flow-in, 0)),
+    1
+  );
+  --flow-e: calc(var(--flow-p) * var(--flow-p) * (3 - 2 * var(--flow-p)));
+  opacity: calc(
+    clamp(0, (var(--flow-t) - var(--flow-in, 0)) * var(--flow-ramp, 24), 1) *
+    clamp(0, (var(--flow-out, 1) - var(--flow-t)) * var(--flow-ramp, 24), 1)
+  );
+  translate: calc(var(--flow-x0) + (var(--flow-x1) - var(--flow-x0)) * var(--flow-e))
+    calc(var(--flow-y0) + (var(--flow-y1) - var(--flow-y0)) * var(--flow-e));
+}
+.flow-grow {
+  --flow-grow: clamp(0, (var(--flow-t) - var(--flow-in, 0)) * var(--flow-ramp, 24) / 3, 1);
+  opacity: clamp(0, (var(--flow-out, 2) - var(--flow-t)) * var(--flow-ramp, 24), 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-word,
+  .landing-intro,
+  .landing-words-intro,
+  .landing-float,
+  .landing-sway,
+  .landing-marquee,
+  .flow,
+  .flow-part,
+  .flow-press,
+  .flow-cursor,
+  .flow-grow,
+  .t-digit,
+  [data-in] {
+    animation: none !important;
+    transition: none !important;
+  }
+}

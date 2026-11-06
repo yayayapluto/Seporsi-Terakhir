@@ -61,7 +61,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t">
         <p className="mx-auto w-full max-w-6xl px-4 py-4 text-xs text-muted-foreground sm:px-6">
-          © 2026 Seporsi Terakhir — Tahap awal SDG 12 di lingkungan kampus
+          © 2026 Seporsi Terakhir, tahap awal SDG 12 di lingkungan kampus
         </p>
       </div>
     </footer>

@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { OrderStatusBadge } from "@/components/order-status-badge";
-import { SieraAlert, SieraSection, SieraTile, sieraCardClass } from "@/components/siera";
+import { PickupCountdown } from "@/components/pickup-countdown";
+import { SieraAlert, SieraTile, sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -18,17 +19,9 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { pesananDetail, ROUTES } from "@/lib/routes";
-import { cancelOrder } from "./actions";
+import { cancelOrder, sweepLatePickups } from "./actions";
 import { OrderLiveStatus } from "./order-live-status";
 import type { MyOrder } from "./page";
 
@@ -67,39 +60,36 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
 
   return (
     <div className="flex flex-col gap-4">
-      <SieraSection
-        id="filter-heading"
-        label="Saring pesanan"
-        action={
-          <output className="inline-flex min-h-11 items-center text-sm font-bold text-[#1E5A36]">
-            {filtered.length} pesanan
-          </output>
-        }
+      <fieldset
+        aria-label="Saring pesanan"
+        data-tour="order-filter"
+        className="m-0 flex min-w-0 flex-wrap gap-2.5 border-0 p-0"
       >
-        <div
-          data-tour="order-filter"
-          className={cn(sieraCardClass, "flex items-center gap-2 px-4 py-3")}
-        >
-          <Label
-            htmlFor="status-filter"
-            className="w-12 shrink-0 text-[13px] font-semibold text-[#64746B]"
-          >
-            Status
-          </Label>
-          <Select value={filter} onValueChange={(v) => setFilter(String(v))}>
-            <SelectTrigger id="status-filter" className="h-11 min-w-0 flex-1 gap-1 px-2 text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {FILTERS.map((f) => (
-                <SelectItem key={f.value} value={f.value}>
-                  {f.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </SieraSection>
+        {FILTERS.map((f) => {
+          const active = filter === f.value;
+          const count =
+            f.value === "semua" ? orders.length : orders.filter((o) => o.status === f.value).length;
+          return (
+            <button
+              key={f.value}
+              type="button"
+              aria-pressed={active}
+              onClick={() => setFilter(f.value)}
+              className={cn(
+                "inline-flex min-h-11 items-center rounded-full border px-[18px] text-sm transition-colors",
+                active
+                  ? "border-primary bg-primary font-bold text-primary-foreground"
+                  : "border-line bg-white font-semibold text-[#2F4037] hover:bg-[#F1F5F2] focus-visible:bg-[#F1F5F2]",
+              )}
+            >
+              {f.label}
+              <span className={cn("ml-1.5", active ? "opacity-85" : "text-[#64746B]")}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </fieldset>
 
       {loadError && <SieraAlert variant="error">{loadError}</SieraAlert>}
       {error && <SieraAlert variant="error">{error}</SieraAlert>}
@@ -116,17 +106,15 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
           ctaLabel="Lihat katalog"
         />
       ) : (
-        <SieraSection id="list-heading" label="Daftar pesanan">
+        <div className="flex min-w-0 flex-col gap-3">
           <OrderLiveStatus
             orderIds={filtered.filter((o) => o.status === "reserved").map((o) => o.orderId)}
           />
           <motion.ul
             data-tour="order-list"
             layout={!reduce}
-            className={cn(
-              sieraCardClass,
-              "flex min-w-0 flex-col divide-y divide-dashed divide-line px-4",
-            )}
+            aria-label="Daftar pesanan"
+            className="flex min-w-0 flex-col gap-3"
           >
             {filtered.map((o) => (
               <motion.li
@@ -139,37 +127,55 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                       animate: { opacity: 1, y: 0 },
                       transition: { duration: 0.2, ease: "easeOut" as const },
                     })}
-                className="flex min-h-11 items-center gap-3 py-3"
               >
-                <SieraTile>
-                  <Store className="size-5" strokeWidth={1.75} aria-hidden />
-                </SieraTile>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                    <h2 className="truncate text-sm font-bold text-[#1C2826]">
-                      {o.menuName} <span className="font-semibold">× {o.quantity}</span>
-                    </h2>
-                    <OrderStatusBadge status={o.status} />
-                  </div>
-                  <p className="mt-0.5 truncate text-xs text-[#64746B]">
-                    {o.tenantName}
-                    {o.tenantLocation ? ` · ${o.tenantLocation}` : ""} · dipesan{" "}
-                    {formatDateTimeWIB(new Date(o.createdAt))} WIB
-                  </p>
-                  {o.pickedUpAt && (
-                    <p className="truncate text-xs text-[#64746B]">
-                      Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
+                <article
+                  className={cn(sieraCardClass, "flex min-w-0 flex-col gap-3 px-5 py-[18px]")}
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <SieraTile className="size-12 shrink-0">
+                      <Store className="size-[22px]" strokeWidth={1.8} aria-hidden />
+                    </SieraTile>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                        <h2 className="text-base font-bold text-[#1C2826]">
+                          {o.menuName}{" "}
+                          <span className="font-semibold opacity-60">× {o.quantity}</span>
+                        </h2>
+                        <OrderStatusBadge status={o.status} />
+                      </div>
+                      <p className="mt-1 truncate text-[13px] text-[#64746B]">
+                        {o.tenantName}
+                        {o.tenantLocation ? ` · ${o.tenantLocation}` : ""}
+                      </p>
+                      <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
+                        {formatDateTimeWIB(new Date(o.createdAt))} WIB
+                      </p>
+                      {o.pickedUpAt && (
+                        <p className="truncate text-[13px] text-[#64746B]">
+                          Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
+                        </p>
+                      )}
+                      {o.status === "reserved" && o.pickupDeadlineAt && (
+                        <p className="mt-0.5 flex items-center gap-1 text-xs font-bold text-[#B45309]">
+                          Ambil dalam{" "}
+                          <PickupCountdown
+                            deadlineIso={o.pickupDeadlineAt}
+                            className="tabular-nums"
+                            onExpire={() => {
+                              void sweepLatePickups().then(() => router.refresh());
+                            }}
+                          />
+                        </p>
+                      )}
+                    </div>
+                    <p className="shrink-0 text-base font-extrabold text-[#1E5A36]">
+                      {formatIDR(o.discountPriceSnapshot * o.quantity)}
                     </p>
-                  )}
-                </div>
-                <div className="flex shrink-0 flex-col items-end gap-2">
-                  <p className="text-sm font-extrabold text-accent-strong">
-                    {formatIDR(o.discountPriceSnapshot * o.quantity)}
-                  </p>
-                  <div className="flex flex-wrap justify-end gap-2">
+                  </div>
+                  <div className="flex flex-wrap items-center justify-end gap-2">
                     <Link
                       href={pesananDetail(o.orderId)}
-                      className={cn(buttonVariants({ variant: "outline" }), "h-11 px-5")}
+                      className={cn(buttonVariants({ variant: "outline" }), "h-11 rounded-xl px-5")}
                     >
                       Detail
                     </Link>
@@ -177,7 +183,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                       <Button
                         type="button"
                         variant="outline"
-                        className="h-11 border-[#F1B6B6] px-5 text-[#BA1A1A] hover:bg-[#FEE2E2] hover:text-[#BA1A1A]"
+                        className="h-11 rounded-xl border-[#F1B6B6] px-5 text-[#BA1A1A] hover:bg-[#FEE2E2] hover:text-[#BA1A1A]"
                         onClick={() => setConfirmId(o.orderId)}
                         disabled={cancelling === o.orderId}
                       >
@@ -192,11 +198,11 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                       </Button>
                     )}
                   </div>
-                </div>
+                </article>
               </motion.li>
             ))}
           </motion.ul>
-        </SieraSection>
+        </div>
       )}
       <Dialog open={confirmId !== null} onOpenChange={(open) => !open && setConfirmId(null)}>
         <DialogContent>

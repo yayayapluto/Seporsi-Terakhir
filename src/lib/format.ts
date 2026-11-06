@@ -55,6 +55,19 @@ export function namaToInitials(fullName: string): string {
     .join("");
 }
 
+/**
+ * Durasi sisa waktu dalam bahasa manusia: < 60 → "45 mnt",
+ * >= 60 → "1 jam 10 mnt" (70), "2 jam" (120), "1 jam 30 mnt" (90).
+ * Negatif/NaN → 0.
+ */
+export function formatSisaMenit(totalMinutes: number): string {
+  const mins = Math.max(0, Math.floor(Number.isFinite(totalMinutes) ? totalMinutes : 0));
+  if (mins < 60) return `${mins} mnt`;
+  const jam = Math.floor(mins / 60);
+  const sisa = mins % 60;
+  return sisa === 0 ? `${jam} jam` : `${jam} jam ${sisa} mnt`;
+}
+
 /** Rentang hari ini WIB: todayLocal + dayStartUtc + dayEndIso. */
 export function wibTodayRange(now: Date = new Date()): {
   todayLocal: string;

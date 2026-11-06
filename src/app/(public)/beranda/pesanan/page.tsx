@@ -1,15 +1,12 @@
 import { cn } from "cn";
-import { Check, Clock3, X } from "lucide-react";
+import { QrCode } from "lucide-react";
+import Link from "next/link";
+import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import {
-  SieraHero,
-  SieraRailPage,
-  SieraSection,
-  SieraStat,
-  SieraStatStrip,
-  sieraCardClass,
-} from "@/components/siera";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { SieraRailPage, sieraCardClass } from "@/components/siera";
+import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
@@ -24,6 +21,7 @@ export interface MyOrder {
   quantity: number;
   createdAt: string;
   pickedUpAt: string | null;
+  pickupDeadlineAt: string | null;
   normalPriceSnapshot: number;
   discountPriceSnapshot: number;
   menuName: string;
@@ -47,6 +45,7 @@ async function loadOrders(): Promise<{ orders: MyOrder[]; error: string | null }
       quantity: Number(o.quantity),
       createdAt: String(o.created_at),
       pickedUpAt: (o.picked_up_at as string | null) ?? null,
+      pickupDeadlineAt: (o.pickup_deadline_at as string | null) ?? null,
       normalPriceSnapshot: Number(o.normal_price_snapshot),
       discountPriceSnapshot: Number(o.discount_price_snapshot),
       menuName: String(o.menu_name),
@@ -69,81 +68,17 @@ export default async function PesananPage({
   }>;
 }) {
   const { user } = await requireRole(ROUTES.pesanan, "student");
-  const { orders, error } = await loadOrders();
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
-  const nextActive = orders.find((o) => o.status === "reserved") ?? null;
   return (
     <>
       <AppHeader
         title="Pesanan"
         trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Pesanan" }]}
       />
-      <SieraRailPage
-        asideLabel="QR pickup aktif"
-        main={
-          <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-2 lg:gap-5">
-            <div className="flex min-w-0 flex-col gap-4 lg:max-h-[calc(100dvh-220px)] lg:gap-5">
-              <SieraHero eyebrow="Riwayat & aktif" title="Pesanan saya">
-                Porsi yang kamu kunci. Tunjukkan QR saat ambil, bayar di tempat.
-              </SieraHero>
-              <div className="min-h-0 flex-1 lg:overflow-y-auto">
-                <OrdersList orders={orders} loadError={error} />
-              </div>
-            </div>
-            <div className="min-h-0 lg:sticky lg:top-[76px] lg:max-h-[calc(100dvh-220px)] lg:overflow-y-auto">
-              <SieraSection id="status-heading" label="Status ringkas">
-                <SieraStatStrip>
-                  <SieraStat
-                    icon={Clock3}
-                    value={orders.filter((o) => o.status === "reserved").length}
-                    label="Menunggu pickup"
-                  />
-                  <SieraStat
-                    icon={Check}
-                    value={orders.filter((o) => o.status === "picked_up").length}
-                    label="Selesai"
-                  />
-                  <SieraStat
-                    icon={X}
-                    value={orders.filter((o) => o.status === "cancelled").length}
-                    label="Dibatalkan"
-                  />
-                </SieraStatStrip>
-              </SieraSection>
-            </div>
-          </div>
-        }
-        aside={
-          <SieraSection id="qr-aktif-heading" label="QR pickup aktif">
-            {nextActive ? (
-              <div className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}>
-                <div className="min-w-0">
-                  <p className="truncate text-[15px] font-bold text-[#1C2826]">
-                    {nextActive.menuName}{" "}
-                    <span className="font-semibold">× {nextActive.quantity}</span>
-                  </p>
-                  <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
-                    {nextActive.tenantName}
-                    {nextActive.tenantLocation ? ` · ${nextActive.tenantLocation}` : ""}
-                  </p>
-                  <p className="mt-1 text-base font-extrabold text-accent-strong">
-                    {formatIDR(nextActive.discountPriceSnapshot * nextActive.quantity)}
-                  </p>
-                </div>
-                <QrModal order={nextActive} />
-              </div>
-            ) : (
-              <div className={cn(sieraCardClass, "border-dashed p-4 text-center")}>
-                <p className="text-sm font-bold text-[#1C2826]">Tidak ada pickup aktif</p>
-                <p className="mt-1 text-[13px] text-[#64746B]">
-                  Pesanan aktif akan muncul di sini.
-                </p>
-              </div>
-            )}
-          </SieraSection>
-        }
-      />
+      <Suspense fallback={<LoadingSpinner />}>
+        <PesananBody />
+      </Suspense>
       <GuidedTour
         tourKey="pesanan"
         forced={tourForced}
@@ -172,5 +107,78 @@ export default async function PesananPage({
         ]}
       />
     </>
+  );
+}
+
+async function PesananBody() {
+  const { orders, error } = await loadOrders();
+  const nextActive = orders.find((o) => o.status === "reserved") ?? null;
+  return (
+    <SieraRailPage
+      asideLabel="QR pickup aktif"
+      main={
+        <div className="flex min-w-0 flex-col gap-6 lg:gap-7">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-3xl font-extrabold tracking-[-0.02em] text-[#1C2826]">
+              Pesanan saya
+            </h1>
+            <p className="text-[15px] leading-normal text-[#64746B]">
+              Porsi yang kamu kunci. Tunjukkan QR saat ambil, bayar di tempat.
+            </p>
+          </div>
+          <OrdersList orders={orders} loadError={error} />
+        </div>
+      }
+      aside={
+        nextActive ? (
+          <div id="qr-aktif-heading" className={cn(sieraCardClass, "flex flex-col gap-3 p-6")}>
+            <h2 className="text-xs font-bold tracking-[0.08em] text-[#64746B] uppercase">
+              QR pickup aktif
+            </h2>
+            <div className="min-w-0">
+              <p className="truncate text-[15px] font-bold text-[#1C2826]">
+                {nextActive.menuName} <span className="font-semibold">× {nextActive.quantity}</span>
+              </p>
+              <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
+                {nextActive.tenantName}
+                {nextActive.tenantLocation ? ` · ${nextActive.tenantLocation}` : ""}
+              </p>
+              <p className="mt-1 text-base font-extrabold text-[#1E5A36]">
+                {formatIDR(nextActive.discountPriceSnapshot * nextActive.quantity)}
+              </p>
+            </div>
+            <QrModal order={nextActive} />
+          </div>
+        ) : (
+          <div
+            id="qr-aktif-heading"
+            className="flex flex-col gap-3 rounded-[20px] border border-line bg-white p-6 text-center"
+          >
+            <h2 className="self-start text-xs font-bold tracking-[0.08em] text-[#64746B] uppercase">
+              QR pickup aktif
+            </h2>
+            <div
+              aria-hidden
+              className="mx-auto mt-1 flex size-40 items-center justify-center rounded-2xl border-2 border-dashed border-line text-[#5B8A70]"
+            >
+              <QrCode className="size-14" strokeWidth={1.6} />
+            </div>
+            <p className="text-base font-bold text-[#1C2826]">Belum ada pickup aktif</p>
+            <p className="text-sm leading-normal text-[#64746B]">
+              Kunci satu porsi dulu, QR-nya akan muncul di sini.
+            </p>
+            <Link
+              href={ROUTES.katalog}
+              className={buttonVariants({
+                className:
+                  "mt-1.5 flex h-12 w-full items-center justify-center rounded-xl text-[15px] font-bold",
+              })}
+            >
+              Cari porsi di Katalog
+            </Link>
+          </div>
+        )
+      }
+    />
   );
 }

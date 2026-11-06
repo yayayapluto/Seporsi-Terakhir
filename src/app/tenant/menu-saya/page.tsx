@@ -1,15 +1,12 @@
 import { TrendingUp } from "lucide-react";
+import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import {
-  SieraList,
-  SieraRailPage,
-  SieraRowLink,
-  SieraSection,
-  SieraTenantHeader,
-} from "@/components/siera";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
+import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { MenuManager } from "./menu-manager";
 
@@ -77,73 +74,117 @@ export default async function MenuPage({
 }) {
   const tenant = await requireOwnTenant("/tenant/menu-saya");
   const sp = (await searchParams) ?? {};
-  const tourForced = sp.mode === "onboarding";
-  const items = await loadMenu(tenant.id);
-  const pickedByMenu = await loadMenuPerf(tenant.id);
-  const ranked = items
-    .map((m) => ({ ...m, picked: pickedByMenu[m.id] ?? 0 }))
-    .sort((a, b) => b.picked - a.picked)
-    .slice(0, 3)
-    .filter((r) => r.picked > 0);
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
     <>
       <AppHeader
         title="Menu Kantin"
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Menu Kantin" }]}
       />
-      <SieraRailPage
-        asideLabel="Performa per menu"
-        main={
-          <>
-            <SieraTenantHeader kicker="MENU KANTIN" title="Menu saya">
+      <Suspense fallback={<LoadingSpinner />}>
+        <MenuBody
+          tenantId={tenant.id}
+          tenantName={tenant.name}
+          tourForced={tourForced}
+          tourJourney={tourJourney}
+          tourEntry={tourEntry}
+        />
+      </Suspense>
+    </>
+  );
+}
+
+async function MenuBody({
+  tenantId,
+  tenantName,
+  tourForced,
+  tourJourney,
+  tourEntry,
+}: {
+  tenantId: string;
+  tenantName: string;
+  tourForced: boolean;
+  tourJourney: boolean;
+  tourEntry: number | null;
+}) {
+  const hour = new Date().getHours();
+  const greet =
+    hour < 11
+      ? "Selamat pagi"
+      : hour < 15
+        ? "Selamat siang"
+        : hour < 19
+          ? "Selamat sore"
+          : "Selamat malam";
+  const [items, pickedByMenu] = await Promise.all([loadMenu(tenantId), loadMenuPerf(tenantId)]);
+  const ranked = items
+    .map((m) => ({ ...m, picked: pickedByMenu[m.id] ?? 0 }))
+    .sort((a, b) => b.picked - a.picked)
+    .slice(0, 3)
+    .filter((r) => r.picked > 0);
+  return (
+    <SieraRailPage
+      asideLabel="Performa per menu"
+      main={
+        <>
+          <div id="tour-hero" className="flex flex-col gap-2">
+            <p className="text-[13px] font-bold text-[#2E7D4F]">MENU KANTIN</p>
+            <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+              {greet}, {tenantName}
+            </h1>
+            <p className="text-[15px] leading-normal text-[#64746B]">
               Daftar menu yang bisa diposting sebagai porsi sisa. Harga diskon disarankan otomatis
               saat posting.
-            </SieraTenantHeader>
-            <MenuManager items={items} tenantId={tenant.id} />
-            <GuidedTour
-              tourKey="tenant-menu"
-              forced={tourForced}
-              intro={{
-                title: "Kelola menu?",
-                body: "Daftarkan menu sekali, pakai berkali-kali tiap posting porsi.",
-              }}
-              steps={[
-                {
-                  target: '[data-tour="tambah-menu"]',
-                  title: "Tambah menu",
-                  body: "Nama, harga normal, bahan, dan alergen. Harga diskon disarankan otomatis.",
-                },
-                {
-                  target: '[data-tour="menu-list"] li:first-child',
-                  title: "Daftar menumu",
-                  body: "Ketuk Edit buat ubah harga atau nonaktifkan menu yang lagi libur.",
-                },
-              ]}
-            />
-          </>
-        }
-        aside={
-          <SieraSection id="menu-perf-heading" label="Performa 7 hari">
-            {ranked.length === 0 ? (
-              <p className="px-1 text-[13px] leading-relaxed text-[#64746B]">
-                Belum ada pickup 7 hari terakhir. Posting porsi biar menu mulai jalan.
-              </p>
-            ) : (
-              <SieraList>
-                {ranked.map((r) => (
-                  <SieraRowLink
-                    key={r.id}
-                    href={ROUTES.tenantPorsiTambah}
-                    icon={TrendingUp}
-                    title={`${r.name} · ${r.picked} pickup`}
-                    subtitle="Posting lagi dari menu ini"
-                  />
-                ))}
-              </SieraList>
-            )}
-          </SieraSection>
-        }
-      />
-    </>
+            </p>
+          </div>
+          <MenuManager items={items} tenantId={tenantId} />
+          <GuidedTour
+            tourKey="tenant-menu"
+            forced={tourForced}
+            journey={tourJourney}
+            next={tourJourney ? (getJourneyNext("/tenant/menu-saya") ?? undefined) : undefined}
+            journeyLabel="Bagian 1 dari 5 · Menu"
+            entryStep={tourEntry}
+            intro={{
+              title: "Kelola menu?",
+              body: "Daftarkan menu sekali, pakai berkali-kali tiap posting porsi.",
+            }}
+            steps={[
+              {
+                target: '[data-tour="tambah-menu"]',
+                title: "Tambah menu",
+                body: "Nama, harga normal, bahan, dan alergen. Harga diskon disarankan otomatis.",
+              },
+              {
+                target: '[data-tour="menu-list"] li:first-child',
+                title: "Daftar menumu",
+                body: "Ketuk Edit buat ubah harga atau nonaktifkan menu yang lagi libur.",
+              },
+            ]}
+          />
+        </>
+      }
+      aside={
+        <SieraSection id="menu-perf-heading" label="Performa 7 hari">
+          {ranked.length === 0 ? (
+            <p className="px-1 text-[13px] leading-relaxed text-[#64746B]">
+              Belum ada pickup 7 hari terakhir. Posting porsi biar menu mulai jalan.
+            </p>
+          ) : (
+            <SieraList>
+              {ranked.map((r) => (
+                <SieraRowLink
+                  key={r.id}
+                  href={ROUTES.tenantPorsiTambah}
+                  icon={TrendingUp}
+                  title={`${r.name} · ${r.picked} pickup`}
+                  subtitle="Posting lagi dari menu ini"
+                />
+              ))}
+            </SieraList>
+          )}
+        </SieraSection>
+      }
+    />
   );
 }

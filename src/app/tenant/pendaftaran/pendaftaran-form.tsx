@@ -125,7 +125,7 @@ export function PendaftaranForm() {
       </div>
       <ol className="flex flex-col gap-1 text-sm text-muted-foreground">
         <li>
-          <span className="font-semibold text-foreground">1.</span> Isi form ini — sekali kirim, tak
+          <span className="font-semibold text-foreground">1.</span> Isi form ini, sekali kirim, tak
           bisa diubah sendiri.
         </li>
         <li>

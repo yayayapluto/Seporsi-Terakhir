@@ -2,12 +2,14 @@ const STATUS_LABEL: Record<string, string> = {
   reserved: "Menunggu pickup",
   picked_up: "Selesai",
   cancelled: "Dibatalkan",
+  unpicked: "Telat diambil",
 };
 
 const STATUS_CLASS: Record<string, string> = {
   reserved: "border-[#DCEBE0] bg-[#DCEBE0] text-[#1E5A36]",
   picked_up: "border-[#E6F4EA] bg-[#E6F4EA] text-[#1E5A36]",
   cancelled: "border-line bg-[#F1F5F2] text-[#64746B]",
+  unpicked: "border-[#FDE2C4] bg-[#FEF3C7] text-[#92400E]",
 };
 
 export function OrderStatusBadge({ status }: { status: string }) {

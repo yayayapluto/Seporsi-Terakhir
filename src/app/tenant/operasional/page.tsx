@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { SieraCard, SieraHero, sieraCardClass } from "@/components/siera";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { SieraCard, sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
@@ -8,7 +10,15 @@ import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 
 /** Operasional tenant: ringkasan angka hari ini + aksi langsung. Tanpa tabel baru. */
-export default async function OperasionalPage() {
+export default function OperasionalPage() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <OperasionalBody />
+    </Suspense>
+  );
+}
+
+async function OperasionalBody() {
   const tenant = await requireOwnTenant(ROUTES.tenantOperasional);
   const supabase = await createClient();
   const dayStart = new Date();
@@ -60,9 +70,15 @@ export default async function OperasionalPage() {
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Operasional" }]}
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
-        <SieraHero eyebrow="Operasional" title="Ringkasan hari ini">
-          Porsi diposting, menunggu pickup, dan omzet masuk — sekilas.
-        </SieraHero>
+        <div className="flex flex-col gap-2">
+          <p className="text-[13px] font-bold text-[#2E7D4F]">OPERASIONAL</p>
+          <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+            Ringkasan hari ini
+          </h1>
+          <p className="text-[15px] leading-normal text-[#64746B]">
+            Porsi diposting, menunggu pickup, dan omzet masuk, sekilas.
+          </p>
+        </div>
         <dl className={`${sieraCardClass} grid grid-cols-2 gap-px overflow-hidden md:grid-cols-4`}>
           {[
             { label: "Porsi diposting", value: String(posted) },

@@ -18,7 +18,7 @@ export function DevLoginCard({ next }: { next?: string }) {
     <div className="rounded-[20px] border border-dashed border-line bg-muted/50 p-4">
       <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
         <FlaskConical className="size-3.5" aria-hidden />
-        Khusus development — pintasan login tanpa email
+        Khusus development, pintasan login tanpa email
       </p>
       <ul className="mt-2 flex flex-col gap-1.5">
         {picks.map((a) => (

@@ -21,19 +21,25 @@ export function placeTooltip({
   cardW,
   viewport,
   gap = GAP,
+  inset = { top: 0, bottom: 0 },
 }: {
   target: Box;
   cardH: number;
   cardW: number;
   viewport: Viewport;
   gap?: number;
+  inset?: { top: number; bottom: number };
 }): { top: number; left: number; side: "above" | "below"; arrowX: number } {
+  // Batas aman: chrome fixed (header/nav) masuk sebagai inset supaya tooltip
+  // tak pernah berakhir di kolong header atau nav bawah.
+  const topEdge = Math.max(EDGE, inset.top);
+  const bottomEdge = Math.max(EDGE, inset.bottom);
   const left = Math.min(Math.max(EDGE, target.left), viewport.w - cardW - EDGE);
   const tBottom = target.top + target.height;
   const belowTop = tBottom + gap;
   const aboveTop = target.top - cardH - gap;
-  const belowFits = belowTop + cardH + EDGE <= viewport.h;
-  const aboveFits = aboveTop >= EDGE;
+  const belowFits = belowTop + cardH + bottomEdge <= viewport.h;
+  const aboveFits = aboveTop >= topEdge;
   // Irisan vertikal bila dipasang tanpa jepit viewport — pilih sisi yang bersih.
   const overlap = (top: number) =>
     Math.max(0, Math.min(top + cardH, tBottom) - Math.max(top, target.top));
@@ -49,12 +55,12 @@ export function placeTooltip({
     top = aboveTop;
   } else if (overlapBelow <= overlapAbove) {
     side = "below";
-    top = Math.min(belowTop, viewport.h - cardH - EDGE);
+    top = Math.min(belowTop, viewport.h - bottomEdge - cardH);
   } else {
     side = "above";
-    top = Math.max(aboveTop, EDGE);
+    top = Math.max(aboveTop, topEdge);
   }
-  top = Math.max(0, top);
+  top = Math.max(topEdge, top);
   const centerX = target.left + target.width / 2;
   const arrowX = Math.min(Math.max(16, centerX - left), cardW - 16);
   return { top, left, side, arrowX };

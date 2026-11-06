@@ -1,13 +1,9 @@
 import { Lightbulb } from "lucide-react";
+import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import {
-  SieraList,
-  SieraRailPage,
-  SieraRowLink,
-  SieraSection,
-  SieraTenantHeader,
-} from "@/components/siera";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
 
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
@@ -29,7 +25,25 @@ function defaultCookedLocal(): string {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
 }
 
-export default async function PorsiBaruPage({
+export default function PorsiBaruPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    mode?: string;
+    tour?: string;
+    panduan?: string;
+    langkah?: string;
+    fresh?: string;
+  }>;
+}) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <PorsiBaruBody searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function PorsiBaruBody({
   searchParams,
 }: {
   searchParams?: Promise<{
@@ -83,9 +97,15 @@ export default async function PorsiBaruPage({
         asideLabel="Cek sebelum posting"
         main={
           <>
-            <SieraTenantHeader kicker="POSTING PORSI" title="Tambah porsi">
-              Unggah sisa masakan hari ini. Porsi kedaluwarsa otomatis keluar dari katalog.
-            </SieraTenantHeader>
+            <div id="tour-hero" className="flex flex-col gap-2">
+              <p className="text-[13px] font-bold text-[#2E7D4F]">POSTING PORSI</p>
+              <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+                Tambah porsi
+              </h1>
+              <p className="text-[15px] leading-normal text-[#64746B]">
+                Unggah sisa masakan hari ini. Porsi kedaluwarsa otomatis keluar dari katalog.
+              </p>
+            </div>
             <PortionForm
               tenantName={tenant.name}
               menus={menus}
@@ -105,7 +125,7 @@ export default async function PorsiBaruPage({
               forced={tourForced}
               journey={tourJourney}
               next={tourJourney ? (getJourneyNext("/tenant/porsi/tambah") ?? undefined) : undefined}
-              journeyLabel="Bagian 3 dari 5 · Porsi"
+              journeyLabel="Bagian 3 dari 4 · Porsi"
               entryStep={tourEntry}
               fresh={sp.fresh === "1"}
               userId={tenant.id}
@@ -122,7 +142,7 @@ export default async function PorsiBaruPage({
                 {
                   target: "#portion-qty",
                   title: "Jumlah dan jam",
-                  body: "Berapa porsi sisa dan kapan dimasak — jendela jual dihitung dari jam ini.",
+                  body: "Berapa porsi sisa dan kapan dimasak, jendela jual dihitung dari jam ini.",
                 },
                 {
                   target: 'button[type="submit"]',

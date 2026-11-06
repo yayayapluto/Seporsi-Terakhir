@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ConfirmDialogFooter } from "@/components/shared/confirm-dialog-footer";
@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { createClient } from "@/lib/supabase/client";
 
-/** Danger Action Card — klik buka dialog konfirmasi, spinner hanya di tombol Keluar dialog. */
 export function SignOutButton() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -33,18 +32,10 @@ export function SignOutButton() {
         type="button"
         variant="outline"
         onClick={() => setOpen(true)}
-        className="flex min-h-16 w-full items-center gap-3 rounded-[20px] border border-line bg-card px-4 py-3.5 text-left shadow-[0_1px_2px_rgba(16,24,40,.04)]"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-xl border-[#F0CFCF] px-5 text-[15px] font-bold text-[#A61B1B] sm:w-fit sm:self-start hover:bg-[#FEF2F2] hover:text-[#A61B1B]"
       >
-        <span
-          aria-hidden
-          className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FEE2E2] text-[#BA1A1A]"
-        >
-          <LogOut className="size-5" />
-        </span>
-        <span className="min-w-0 flex-1 truncate text-[15px] leading-[1.3] font-semibold text-[#BA1A1A]">
-          Keluar
-        </span>
-        <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+        <LogOut className="size-[18px]" strokeWidth={1.9} aria-hidden />
+        Keluar
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>

@@ -6,13 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { EmptyLine } from "@/components/shared/empty-line";
-import {
-  SieraHero,
-  SieraRailPage,
-  SieraSection,
-  SieraStat,
-  sieraCardClass,
-} from "@/components/siera";
+import { SieraRailPage, SieraSection, SieraStat, sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -60,7 +54,15 @@ function orderStatusLine(status: string): string {
   return STATUS_LABEL[status] ?? status;
 }
 
-export function ScannerClient({ lastPickup }: { lastPickup: LastPickup | null }) {
+export function ScannerClient({
+  lastPickup,
+  greet,
+  tenantName,
+}: {
+  lastPickup: LastPickup | null;
+  greet: string;
+  tenantName: string;
+}) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>({ kind: "scanning" });
   const [confirming, setConfirming] = useState(false);
@@ -168,7 +170,7 @@ export function ScannerClient({ lastPickup }: { lastPickup: LastPickup | null })
     toast.add({
       type: "success",
       title: "Pickup dikonfirmasi.",
-      description: `${phase.order.menuName} × ${phase.order.quantity} — ${formatIDR(phase.order.totalPrice)} diterima.`,
+      description: `${phase.order.menuName} × ${phase.order.quantity} · ${formatIDR(phase.order.totalPrice)} diterima.`,
     });
     setPhase({ kind: "success", order: phase.order });
     router.refresh();
@@ -252,19 +254,16 @@ export function ScannerClient({ lastPickup }: { lastPickup: LastPickup | null })
 
   const main = (
     <>
-      <SieraHero eyebrow="SCAN PICKUP" title="Serahkan porsi dalam 3 langkah">
-        <ol className="mt-2 flex flex-col gap-1 text-sm text-[#1E5A36] sm:flex-row sm:gap-4">
-          <li>
-            <strong className="font-extrabold">1.</strong> Bidik QR mahasiswa
-          </li>
-          <li>
-            <strong className="font-extrabold">2.</strong> Terima bayar di tempat
-          </li>
-          <li>
-            <strong className="font-extrabold">3.</strong> Konfirmasi pickup
-          </li>
-        </ol>
-      </SieraHero>
+      <div id="tour-hero" className="flex flex-col gap-2">
+        <p className="text-[13px] font-bold text-[#2E7D4F]">SCAN PICKUP</p>
+        <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+          {greet}, {tenantName}
+        </h1>
+        <p className="text-[15px] leading-normal text-[#64746B]">
+          Serahkan porsi dalam 3 langkah: bidik QR mahasiswa, terima bayar di tempat, konfirmasi
+          pickup.
+        </p>
+      </div>
       {phase.kind === "scanning" && (
         <div data-tour="scanner" className="relative mx-auto w-full max-w-[520px]">
           {cameraError ? (
@@ -351,7 +350,7 @@ export function ScannerClient({ lastPickup }: { lastPickup: LastPickup | null })
                 className="min-h-12 w-full"
                 onClick={() => reset()}
               >
-                Batal — scan ulang
+                Batal, scan ulang
               </Button>
               <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
                 <DialogTrigger
@@ -413,7 +412,7 @@ export function ScannerClient({ lastPickup }: { lastPickup: LastPickup | null })
             {formatIDR(phase.order.totalPrice)} diterima
           </p>
           <p className="text-sm text-[#1E5A36]">
-            {phase.order.menuName} × {phase.order.quantity} — pesanan tercatat selesai.
+            {phase.order.menuName} × {phase.order.quantity} · pesanan tercatat selesai.
           </p>
           <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
             <Button type="button" className="min-h-12 w-full text-[15px]" onClick={() => reset()}>

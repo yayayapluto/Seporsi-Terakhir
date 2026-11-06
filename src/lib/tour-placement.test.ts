@@ -80,4 +80,22 @@ describe("placeTooltip", () => {
     expect(r.top).toBeGreaterThanOrEqual(0);
     expect(r.top + 300).toBeLessThanOrEqual(932);
   });
+
+  it("chrome fixed (header 60 + nav 64) dijadikan batas aman: tooltip tak masuk kolong", () => {
+    const vp = { w: 430, h: 932 };
+    const inset = { top: 60, bottom: 64 };
+    const cardW = Math.min(340, vp.w - 32);
+    const target = { top: 500, left: 16, width: 398, height: 120 };
+    const r = placeTooltip({ target, cardH: 300, cardW, viewport: vp, inset });
+    expect(r.top).toBeGreaterThanOrEqual(inset.top);
+    expect(r.top + 300).toBeLessThanOrEqual(vp.h - inset.bottom);
+    expect(intersects({ ...r, width: cardW, height: 300 }, target)).toBe(false);
+  });
+
+  it("tanpa inset tetap hormati EDGE 16 seperti sebelumnya", () => {
+    const vp = { w: 1280, h: 800 };
+    const target = { top: 8, left: 8, width: 200, height: 60 };
+    const r = placeTooltip({ target, cardH: 340, cardW: 340, viewport: vp });
+    expect(r.top).toBeGreaterThanOrEqual(0);
+  });
 });

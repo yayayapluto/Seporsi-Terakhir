@@ -114,7 +114,7 @@ export function NavTabs({ tabs }: { tabs: NavTab[] }) {
       >
         <Link
           href="/"
-          aria-label="Seporsi Terakhir — beranda"
+          aria-label="Seporsi Terakhir, beranda"
           className="mb-4 flex min-h-11 items-center px-3 font-heading text-lg font-extrabold text-[#2E7D4F]"
         >
           <span className="truncate">Seporsi Terakhir</span>

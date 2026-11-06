@@ -2,9 +2,11 @@ import { cn } from "cn";
 import { CalendarClock, Check, Clock3, Store, Tag } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import {
   SieraField,
@@ -21,6 +23,7 @@ import { katalogDetail, ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { OrderLiveStatus } from "../order-live-status";
 import { CancelButton } from "./cancel-button";
+import { PickupDeadlineBanner } from "./pickup-deadline-banner";
 import { QrPanel } from "./qr-panel";
 
 /**
@@ -36,6 +39,7 @@ export interface OrderDetail {
   createdAt: string;
   cookedAt: string | null;
   pickedUpAt: string | null;
+  pickupDeadlineAt: string | null;
   normalPriceSnapshot: number;
   discountPriceSnapshot: number;
   avgWeightSnapshot: number | null;
@@ -61,6 +65,7 @@ async function loadOrder(orderId: string) {
     createdAt: String(row.created_at),
     cookedAt: (row.cooked_at as string | null) ?? null,
     pickedUpAt: (row.picked_up_at as string | null) ?? null,
+    pickupDeadlineAt: (row.pickup_deadline_at as string | null) ?? null,
     normalPriceSnapshot: Number(row.normal_price_snapshot),
     discountPriceSnapshot: Number(row.discount_price_snapshot),
     avgWeightSnapshot: (row.avg_weight_snapshot as number | null) ?? null,
@@ -94,6 +99,14 @@ export default async function OrderDetailPage({
   const sp = (await searchParams) ?? {};
   const tourForced = sp.mode === "onboarding";
   if (!z.string().uuid().safeParse(orderId).success) notFound();
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <OrderBody orderId={orderId} tourForced={tourForced} />
+    </Suspense>
+  );
+}
+
+async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced: boolean }) {
   const { order, pickupToken } = await loadOrder(orderId);
 
   const totalPrice = order.discountPriceSnapshot * order.quantity;
@@ -146,6 +159,9 @@ export default async function OrderDetailPage({
           <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-5">
             <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
               {order.status === "reserved" && <OrderLiveStatus orderIds={[order.orderId]} />}
+              {order.status === "reserved" && order.pickupDeadlineAt && (
+                <PickupDeadlineBanner deadlineIso={order.pickupDeadlineAt} />
+              )}
               <section
                 aria-label="Ringkasan pesanan"
                 className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}

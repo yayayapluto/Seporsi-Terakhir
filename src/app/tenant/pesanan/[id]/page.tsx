@@ -1,8 +1,10 @@
 import { History, QrCode, Timer, UserRound } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import {
   SieraList,
@@ -18,6 +20,7 @@ import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../../guard";
+import { TenantPickupCountdown } from "../tenant-pickup-countdown";
 import { TenantCancelButton } from "./cancel-button";
 import { CopyTokenButton } from "./copy-token-button";
 
@@ -25,11 +28,12 @@ import { CopyTokenButton } from "./copy-token-button";
 
 interface TenantOrderDetail {
   orderId: string;
-  status: "reserved" | "picked_up" | "cancelled";
+  status: "reserved" | "picked_up" | "cancelled" | "unpicked";
   quantity: number;
   createdAt: string;
   pickedUpAt: string | null;
   cookedAt: string | null;
+  pickupDeadlineAt: string | null;
   normalPriceSnapshot: number;
   discountPriceSnapshot: number;
   menuName: string;
@@ -56,6 +60,7 @@ async function loadDetail(orderId: string): Promise<TenantOrderDetail> {
     createdAt: String(r.created_at),
     pickedUpAt: r.picked_up_at == null ? null : String(r.picked_up_at),
     cookedAt: r.cooked_at == null ? null : String(r.cooked_at),
+    pickupDeadlineAt: r.pickup_deadline_at == null ? null : String(r.pickup_deadline_at),
     normalPriceSnapshot: Number(r.normal_price_snapshot),
     discountPriceSnapshot: Number(r.discount_price_snapshot),
     menuName: String(r.menu_name),
@@ -77,11 +82,15 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-export default async function TenantOrderDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function TenantOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <TenantOrderDetailBody params={params} />
+    </Suspense>
+  );
+}
+
+async function TenantOrderDetailBody({ params }: { params: Promise<{ id: string }> }) {
   await requireOwnTenant("/tenant/pesanan");
   const { id } = await params;
   if (!z.string().uuid().safeParse(id).success) notFound();
@@ -106,6 +115,28 @@ export default async function TenantOrderDetailPage({
           )}
         </p>
       </div>
+      {o.status === "reserved" && o.pickupDeadlineAt && (
+        <section
+          aria-label="Batas waktu ambil"
+          className="flex items-center gap-3 rounded-2xl border border-[#B45309]/20 bg-[#FEF3C7] p-4"
+        >
+          <span
+            aria-hidden
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#B45309]"
+          >
+            <Timer className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-[#1C2826]">
+              Pembeli harus ambil dalam{" "}
+              <TenantPickupCountdown deadlineIso={o.pickupDeadlineAt} className="tabular-nums" />
+            </p>
+            <p className="mt-0.5 text-[13px] text-[#92400E]">
+              Lewat batas ini pesanan ditandai telat diambil dan porsi kembali ke katalog.
+            </p>
+          </div>
+        </section>
+      )}
       {o.expiresAt && (
         <section
           aria-label="Batas ambil"
@@ -128,12 +159,11 @@ export default async function TenantOrderDetailPage({
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
           {o.buyerPickups === 0 && o.buyerCancelled === 0 ? (
-            "Pemesan baru — belum ada riwayat."
+            "Pemesan baru, belum ada riwayat."
           ) : (
             <>
               {o.buyerPickups} pickup selesai · {o.buyerCancelled} batal
-              {o.buyerCancelled >= 2 &&
-                " · sering membatalkan — konfirmasi ulang saat serah terima"}
+              {o.buyerCancelled >= 2 && " · sering membatalkan, konfirmasi ulang saat serah terima"}
             </>
           )}
         </p>

@@ -1,17 +1,18 @@
-import { Clock3 } from "lucide-react";
+import { cn } from "cn";
+import { Check, Clock3 } from "lucide-react";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import {
-  SieraEmpty,
-  SieraHero,
   SieraList,
   SieraRailPage,
   SieraRowLink,
   SieraSection,
+  sieraCardClass,
 } from "@/components/siera";
-import { wibTodayRange } from "@/lib/format";
+import { MAX_PORTIONS_PER_DAY } from "@/lib/domain/constants";
+import { formatSisaMenit, wibTodayRange } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { katalogDetail, ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -121,7 +122,7 @@ async function KatalogPageBody(
     .slice(0, 3);
   const urgentLabel = (expiresAt: string) => {
     const leftMin = Math.max(0, Math.floor((+new Date(expiresAt) - nowMs) / 60_000));
-    return leftMin <= 5 ? "Segera ambil" : `Sisa ${leftMin} mnt`;
+    return leftMin <= 5 ? "Segera ambil" : `Sisa ${formatSisaMenit(leftMin)}`;
   };
   return (
     <>
@@ -133,11 +134,16 @@ async function KatalogPageBody(
         asideLabel="Segera habis"
         main={
           <>
-            <SieraHero eyebrow="Katalog sore ini" title="Porsi hari ini">
-              Sisa dagangan yang masih layak makan. Jam masaknya tertulis jelas, bayar langsung di
-              tempat. Maksimal 2 porsi per hari.
-            </SieraHero>
-            <Suspense fallback={<LoadingSkeleton variant="catalog-list" />}>
+            <div className="flex flex-col gap-2">
+              <h1 className="text-3xl font-extrabold tracking-[-0.02em] text-[#1C2826]">
+                Porsi hari ini
+              </h1>
+              <p className="text-[15px] leading-normal text-[#64746B]">
+                Sisa dagangan yang masih layak makan. Jam masaknya tertulis jelas, bayar langsung di
+                tempat.
+              </p>
+            </div>
+            <Suspense fallback={<LoadingSpinner />}>
               <KatalogList
                 portions={portions}
                 tenants={tenants}
@@ -151,14 +157,18 @@ async function KatalogPageBody(
         }
         aside={
           <div className="hidden min-w-0 flex-col gap-4 lg:gap-5 xl:flex">
-            <SieraSection label="Segera habis">
-              {urgent.length === 0 ? (
-                <SieraEmpty
-                  compact
-                  title="Belum ada yang mepet."
-                  hint="Semua porsi masih di atas 60 menit."
-                />
-              ) : (
+            {urgent.length === 0 ? (
+              <div className={cn(sieraCardClass, "flex flex-col gap-2 p-6")}>
+                <h2 className="text-xs font-bold tracking-[0.08em] text-[#64746B] uppercase">
+                  Segera habis
+                </h2>
+                <p className="mt-1 text-base font-bold text-[#1C2826]">Belum ada yang mepet</p>
+                <p className="text-sm leading-normal text-[#64746B]">
+                  Semua porsi masih di atas 60 menit.
+                </p>
+              </div>
+            ) : (
+              <SieraSection label="Segera habis">
                 <SieraList aria-label="Porsi segera habis">
                   {urgent.map((p) => (
                     <SieraRowLink
@@ -170,8 +180,30 @@ async function KatalogPageBody(
                     />
                   ))}
                 </SieraList>
-              )}
-            </SieraSection>
+              </SieraSection>
+            )}
+            <div className="flex flex-col gap-3 rounded-[20px] border border-[#BFE3CF] bg-[#EAF5ED] p-6">
+              <h2 className="text-xs font-bold tracking-[0.08em] text-[#1E5A36] uppercase">
+                Aturan singkat
+              </h2>
+              {[
+                `Maksimal ${MAX_PORTIONS_PER_DAY} porsi per hari.`,
+                "Tunjukkan QR saat ambil, bayar di tempat.",
+                "Jam masak tertulis di tiap porsi.",
+              ].map((rule) => (
+                <p
+                  key={rule}
+                  className="flex items-start gap-3 text-sm leading-normal text-[#2F4037]"
+                >
+                  <Check
+                    className="mt-0.5 size-5 shrink-0 text-[#2E7D4F]"
+                    strokeWidth={1.9}
+                    aria-hidden
+                  />
+                  <span>{rule}</span>
+                </p>
+              ))}
+            </div>
           </div>
         }
       />

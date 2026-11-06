@@ -299,7 +299,7 @@ export function PortionForm({
           </Label>
           <Select
             items={Object.fromEntries(
-              menus.map((m) => [m.id, `${m.name} — ${formatIDR(m.normalPrice)}`]),
+              menus.map((m) => [m.id, `${m.name} · ${formatIDR(m.normalPrice)}`]),
             )}
             value={selectedId || ""}
             onValueChange={(v) => {
@@ -315,7 +315,7 @@ export function PortionForm({
             <SelectContent>
               {menus.map((m) => (
                 <SelectItem key={m.id} value={m.id}>
-                  {m.name} — {formatIDR(m.normalPrice)}
+                  {m.name} · {formatIDR(m.normalPrice)}
                   {m.isActive === false ? " (menu nonaktif)" : ""}
                 </SelectItem>
               ))}
@@ -471,7 +471,7 @@ export function PortionForm({
               <p id="discount-hint" className="text-xs text-muted-foreground" aria-live="polite">
                 Saran {Math.round(DISCOUNT_PRICE_RATIO_DEFAULT * 100)}% dari{" "}
                 {selected != null ? formatIDR(selected.normalPrice) : "–"}:{" "}
-                <strong>{formatIDR(suggested)}</strong> — boleh disesuaikan, wajib di bawah harga
+                <strong>{formatIDR(suggested)}</strong>, boleh disesuaikan, wajib di bawah harga
                 normal.
               </p>
             )
@@ -625,7 +625,7 @@ export function PortionForm({
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {total > 0
-                  ? `Potensi ${formatIDR(total)} — bayar di tempat, tanpa biaya platform.`
+                  ? `Potensi ${formatIDR(total)}, bayar di tempat, tanpa biaya platform.`
                   : endsAt
                     ? `Hilang dari katalog sekitar pukul ${endsAt} WIB.`
                     : "Isi harga untuk melihat potensi penerimaan."}
