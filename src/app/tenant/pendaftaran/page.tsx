@@ -25,7 +25,7 @@ export default async function PendaftaranPage() {
     {
       icon: ClipboardCheck,
       title: "1. Isi form",
-      subtitle: "Nama gerai + lokasi — sekali kirim",
+      subtitle: "Nama gerai + lokasi, sekali kirim",
     },
     {
       icon: Hourglass,
@@ -44,7 +44,7 @@ export default async function PendaftaranPage() {
       main={
         <>
           <SieraTenantHeader kicker="MITRA KANTIN" title="Daftar jadi tenant">
-            Jual sisa masakanmu lewat Seporsi Terakhir — gratis selama pilot kampus. Admin meninjau
+            Jual sisa masakanmu lewat Seporsi Terakhir, gratis selama pilot kampus. Admin meninjau
             pendaftaranmu sebelum porsi bisa diposting.
           </SieraTenantHeader>
           <PendaftaranForm />
