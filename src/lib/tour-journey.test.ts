@@ -43,6 +43,17 @@ describe("getJourneyNext", () => {
     expect(getJourneyNext(ROUTES.katalog)).toBe(`${ROUTES.pesanan}?panduan=rantai&langkah=0`);
     expect(getJourneyNext(ROUTES.pesanan)).toBe(`${ROUTES.profil}?panduan=rantai&langkah=0`);
     expect(getJourneyNext(ROUTES.profil)).toBeNull();
+    expect(getJourneyNext(ROUTES.tenant)).toBe(`${ROUTES.tenantMenu}?panduan=rantai&langkah=0`);
+    expect(getJourneyNext(ROUTES.tenantMenu)).toBe(
+      `${ROUTES.tenantPorsiTambah}?panduan=rantai&langkah=0`,
+    );
+    expect(getJourneyNext(ROUTES.tenantPorsiTambah)).toBe(
+      `${ROUTES.tenantScan}?panduan=rantai&langkah=0`,
+    );
+    expect(getJourneyNext(ROUTES.tenantScan)).toBe(
+      `${ROUTES.tenantPesanan}?panduan=rantai&langkah=0`,
+    );
+    expect(getJourneyNext(ROUTES.tenantPesanan)).toBeNull();
   });
 
   it("ignores legacy top-level paths (redirected by proxy)", () => {
@@ -53,7 +64,6 @@ describe("getJourneyNext", () => {
 
   it("returns null outside the chain", () => {
     expect(getJourneyNext("/")).toBeNull();
-    expect(getJourneyNext("/tenant")).toBeNull();
     expect(getJourneyNext(`${ROUTES.katalog}/abc`)).toBeNull();
   });
 });

@@ -31,6 +31,10 @@ let stepLocks = 0;
 let stepPrevOverflow = "";
 
 const HOLE_PAD = 10;
+// Chrome fixed yang harus dihindari tooltip (px): AppHeader h-[60px] atas,
+// BottomNav mengambang (bottom-3 12px + pill ~68px) bawah. md: nav hilang = margin ekstra.
+const CHROME_TOP = 60;
+const CHROME_BOTTOM = 80;
 const RESUME_KEY = "tour-journey-resume";
 
 interface Hole {
@@ -354,6 +358,9 @@ export function GuidedTour({
           cardH,
           cardW,
           viewport: { w: vw, h: vh },
+          // Chrome fixed: AppHeader atas, BottomNav/FAB bawah. Tooltip dilarang
+          // berakhir di kolong keduanya.
+          inset: { top: CHROME_TOP, bottom: CHROME_BOTTOM },
         }),
       );
     };
@@ -530,7 +537,7 @@ export function GuidedTour({
               )}
               {order.length === 0 && totalSteps > 0 && (
                 <p className="mt-2 text-xs font-semibold text-[#64746B]">
-                  Belum ada konten untuk bagian ini — lanjut ke berikutnya.
+                  Belum ada konten untuk bagian ini. Lanjut ke berikutnya.
                 </p>
               )}
               <div className="mt-5 flex gap-3">
