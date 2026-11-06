@@ -1,10 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
-import { AppContent } from "@/components/app-content";
-import { AppFooter } from "@/components/app-footer";
-import { AppHeaderShell } from "@/components/app-header-shell";
-import { BottomNav } from "@/components/bottom-nav";
+import { AppShell } from "@/components/app-shell";
 import { SwRegister } from "@/components/sw-register";
 import "./globals.css";
 
@@ -19,11 +16,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Seporsi Terakhir", template: "%s · Seporsi Terakhir" },
+  title: { default: "SIERA", template: "%s · SIERA" },
   description:
-    "Selamatkan seporsi terakhir hari ini: makanan enak harga miring, kurangi sampah makanan kampus.",
+    "Platform resmi PKKMB UPNVJ untuk mendukung seluruh rangkaian kegiatan secara terstruktur dan terintegrasi.",
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "Seporsi" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "SIERA" },
   icons: {
     icon: [
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
@@ -49,12 +46,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     >
       <body className="flex min-h-full flex-col">
         <SwRegister />
-        <AppHeaderShell />
-        <div className="flex w-full flex-1">
-          <BottomNav />
-          <AppContent>{children}</AppContent>
-        </div>
-        <AppFooter />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
