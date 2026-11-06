@@ -443,7 +443,7 @@ async function DashboardBody({
               userId={tenantId}
               journey={tourJourney || autoChain}
               next={tourJourney || autoChain ? (getJourneyNext("/tenant") ?? undefined) : undefined}
-              journeyLabel="Bagian 1 dari 5 · Dasbor"
+              journeyLabel="Bagian 1 dari 4 · Dasbor"
               entryStep={tourEntry}
               fresh={fresh}
             />

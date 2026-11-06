@@ -125,7 +125,7 @@ async function PorsiBaruBody({
               forced={tourForced}
               journey={tourJourney}
               next={tourJourney ? (getJourneyNext("/tenant/porsi/tambah") ?? undefined) : undefined}
-              journeyLabel="Bagian 3 dari 5 · Porsi"
+              journeyLabel="Bagian 3 dari 4 · Porsi"
               entryStep={tourEntry}
               fresh={sp.fresh === "1"}
               userId={tenant.id}

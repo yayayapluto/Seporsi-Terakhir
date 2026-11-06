@@ -2,31 +2,66 @@ import { Lightbulb } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
+import { GuidedTour } from "@/components/guided-tour";
 import { LoadingSpinner } from "@/components/loading-spinner";
-import {
-  SieraList,
-  SieraRailPage,
-  SieraRowLink,
-  SieraSection,
-  SieraTenantHeader,
-} from "@/components/siera";
+import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
+import { parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../../../guard";
 import { PortionForm, type PortionFormMenu } from "../../portion-form";
 
 /** Edit porsi milik sendiri: jam masak, jendela jual, harga diskon, quantity. */
-
-export default function EditPorsiPage({ params }: { params: Promise<{ portionId: string }> }) {
+export default async function EditPorsiPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ portionId: string }>;
+  searchParams?: Promise<{ panduan?: string; langkah?: string; fresh?: string }>;
+}) {
+  const sp = (await searchParams) ?? {};
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <EditPorsiBody params={params} />
-    </Suspense>
+    <>
+      <GuidedTour
+        tourKey="tenant-porsi-ubah"
+        forced={tourForced}
+        journey={tourJourney}
+        entryStep={tourEntry}
+        intro={{
+          title: "Ubah porsi?",
+          body: "Pastikan data benar sebelum posting. Menu, jumlah, diskon, jam masak.",
+        }}
+        steps={[
+          {
+            id: "porsi-edit-heading",
+            target: "#tour-hero",
+            title: "Cek porsi",
+            body: "Pastikan porsi dan sisa quantity sesuai.",
+          },
+          {
+            id: "porsi-edit-form",
+            target: 'button[type="submit"]',
+            title: "Simpan",
+            body: "Klik simpan untuk update porsi di katalog sore ini.",
+          },
+        ]}
+      />
+      <Suspense fallback={<LoadingSpinner />}>
+        <EditPorsiBody params={params} sp={sp} />
+      </Suspense>
+    </>
   );
 }
 
-async function EditPorsiBody({ params }: { params: Promise<{ portionId: string }> }) {
+async function EditPorsiBody({
+  params,
+  sp: _sp,
+}: {
+  params: Promise<{ portionId: string }>;
+  sp: { panduan?: string; langkah?: string; fresh?: string };
+}) {
   const tenant = await requireOwnTenant("/tenant/porsi/ubah");
   const { portionId } = await params;
   const supabase = await createClient();
@@ -40,7 +75,6 @@ async function EditPorsiBody({ params }: { params: Promise<{ portionId: string }
   const mi = data?.menu_items as unknown as { normal_price: number; tenant_id: string } | null;
   if (!data || !mi || mi.tenant_id !== tenant.id) notFound();
   const normalPrice = mi.normal_price;
-
   const menusRes = await supabase
     .from("menu_items")
     .select("id, name, normal_price, is_active")
@@ -53,15 +87,17 @@ async function EditPorsiBody({ params }: { params: Promise<{ portionId: string }
     normalPrice: m.normal_price,
     isActive: m.is_active,
   }));
-
   // datetime-local WIB butuh "YYYY-MM-DDTHH:MM"; sv-SE kasih spasi → ganti T, potong detik.
-  const toLocalInput = (iso: string) =>
-    new Date(iso)
-      .toLocaleString("sv-SE", { timeZone: "Asia/Jakarta" })
-      .replace(" ", "T")
-      .slice(0, 16);
-  const cookedAtLocal = toLocalInput(data.cooked_at);
-  const releaseAtLocal = data.release_at ? toLocalInput(data.release_at) : "";
+  const cookedAtLocal = new Date(data.cooked_at)
+    .toLocaleString("sv-SE", { timeZone: "Asia/Jakarta" })
+    .replace(" ", "T")
+    .slice(0, 16);
+  const releaseAtLocal = data.release_at
+    ? new Date(data.release_at)
+        .toLocaleString("sv-SE", { timeZone: "Asia/Jakarta" })
+        .replace(" ", "T")
+        .slice(0, 16)
+    : "";
 
   return (
     <>
@@ -72,10 +108,16 @@ async function EditPorsiBody({ params }: { params: Promise<{ portionId: string }
       <SieraRailPage
         asideLabel="Cek sebelum posting"
         main={
-          <>
-            <SieraTenantHeader kicker="EDIT PORSI" title="Edit porsi">
-              Sisa {data.quantity_remaining} dari {data.quantity_posted} porsi belum terpesan.
-            </SieraTenantHeader>
+          <div className="flex min-w-0 flex-col gap-6 lg:gap-7">
+            <div id="tour-hero" className="flex flex-col gap-2">
+              <p className="text-[13px] font-bold text-[#2E7D4F]">EDIT PORSI</p>
+              <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+                {tenant.name}
+              </h1>
+              <p className="text-[15px] leading-normal text-[#64746B]">
+                Sisa {data.quantity_remaining} dari {data.quantity_posted} porsi belum terpesan.
+              </p>
+            </div>
             <PortionForm
               tenantName={tenant.name}
               menus={menus}
@@ -90,7 +132,7 @@ async function EditPorsiBody({ params }: { params: Promise<{ portionId: string }
                 normalPrice,
               }}
             />
-          </>
+          </div>
         }
         aside={
           <SieraSection id="cek-posting-heading" label="Tips posting">

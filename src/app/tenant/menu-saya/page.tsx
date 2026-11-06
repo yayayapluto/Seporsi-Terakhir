@@ -6,6 +6,7 @@ import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
+import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { MenuManager } from "./menu-manager";
 
@@ -73,7 +74,7 @@ export default async function MenuPage({
 }) {
   const tenant = await requireOwnTenant("/tenant/menu-saya");
   const sp = (await searchParams) ?? {};
-  const tourForced = sp.mode === "onboarding";
+  const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
     <>
       <AppHeader
@@ -81,13 +82,40 @@ export default async function MenuPage({
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Menu Kantin" }]}
       />
       <Suspense fallback={<LoadingSpinner />}>
-        <MenuBody tenantId={tenant.id} tourForced={tourForced} />
+        <MenuBody
+          tenantId={tenant.id}
+          tenantName={tenant.name}
+          tourForced={tourForced}
+          tourJourney={tourJourney}
+          tourEntry={tourEntry}
+        />
       </Suspense>
     </>
   );
 }
 
-async function MenuBody({ tenantId, tourForced }: { tenantId: string; tourForced: boolean }) {
+async function MenuBody({
+  tenantId,
+  tenantName,
+  tourForced,
+  tourJourney,
+  tourEntry,
+}: {
+  tenantId: string;
+  tenantName: string;
+  tourForced: boolean;
+  tourJourney: boolean;
+  tourEntry: number | null;
+}) {
+  const hour = new Date().getHours();
+  const greet =
+    hour < 11
+      ? "Selamat pagi"
+      : hour < 15
+        ? "Selamat siang"
+        : hour < 19
+          ? "Selamat sore"
+          : "Selamat malam";
   const [items, pickedByMenu] = await Promise.all([loadMenu(tenantId), loadMenuPerf(tenantId)]);
   const ranked = items
     .map((m) => ({ ...m, picked: pickedByMenu[m.id] ?? 0 }))
@@ -102,7 +130,7 @@ async function MenuBody({ tenantId, tourForced }: { tenantId: string; tourForced
           <div id="tour-hero" className="flex flex-col gap-2">
             <p className="text-[13px] font-bold text-[#2E7D4F]">MENU KANTIN</p>
             <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
-              Menu saya
+              {greet}, {tenantName}
             </h1>
             <p className="text-[15px] leading-normal text-[#64746B]">
               Daftar menu yang bisa diposting sebagai porsi sisa. Harga diskon disarankan otomatis
@@ -113,6 +141,10 @@ async function MenuBody({ tenantId, tourForced }: { tenantId: string; tourForced
           <GuidedTour
             tourKey="tenant-menu"
             forced={tourForced}
+            journey={tourJourney}
+            next={tourJourney ? (getJourneyNext("/tenant/menu-saya") ?? undefined) : undefined}
+            journeyLabel="Bagian 1 dari 5 · Menu"
+            entryStep={tourEntry}
             intro={{
               title: "Kelola menu?",
               body: "Daftarkan menu sekali, pakai berkali-kali tiap posting porsi.",
