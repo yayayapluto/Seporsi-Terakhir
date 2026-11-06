@@ -9,7 +9,10 @@ export function DaftarTenantButton() {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="mt-3 min-h-11 w-full">
+      <Button
+        onClick={() => setOpen(true)}
+        className="mt-3 h-12 w-full rounded-xl text-[15px] font-bold"
+      >
         Daftar jadi tenant
       </Button>
       <FormSheet open={open} onOpenChange={setOpen} title="Daftar jadi tenant">
