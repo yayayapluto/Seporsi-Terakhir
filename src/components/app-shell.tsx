@@ -10,15 +10,15 @@ import { BottomNav } from "./bottom-nav";
  */
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <>
-      <AppHeaderShell />
-      <div className="flex w-full flex-1">
+    <div className="flex w-full flex-1">
+      <div className="flex flex-col">
+        <AppHeaderShell />
         <BottomNav />
-        <div className="flex min-w-0 flex-1 flex-col">
-          <AppContent>{children}</AppContent>
-          <AppFooter />
-        </div>
       </div>
-    </>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AppContent>{children}</AppContent>
+        <AppFooter />
+      </div>
+    </div>
   );
 }
