@@ -143,8 +143,8 @@ async function KatalogPageBody(
                   Porsi hari ini
                 </h1>
                 <p className="text-[15px] leading-normal text-[#64746B]">
-                  Sisa dagangan yang masih layak makan. Jam masaknya tertulis jelas, bayar langsung di
-                  tempat.
+                  Sisa dagangan yang masih layak makan. Jam masaknya tertulis jelas, bayar langsung
+                  di tempat.
                 </p>
               </div>
               <Suspense fallback={<LoadingSpinner />}>
