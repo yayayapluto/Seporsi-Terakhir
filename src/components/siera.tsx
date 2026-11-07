@@ -424,7 +424,7 @@ export function SieraStat({
 /** Strip 3 stat: satu card dibagi divider dashed (bukan 3 card lepas). */
 export function SieraStatStrip({ children }: { children: ReactNode }) {
   return (
-    <SieraCard className="grid grid-cols-3 divide-x divide-dashed divide-line p-4">
+    <SieraCard className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-x divide-dashed divide-line p-4">
       {children}
     </SieraCard>
   );
