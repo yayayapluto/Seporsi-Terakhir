@@ -18,6 +18,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <AppContent>{children}</AppContent>
         <AppFooter />
-      <div aria-hidden="true" className="hidden max-md:block h-[calc(96px+env(safe-area-inset-bottom))] shrink-0" />
+        <AppFooter />
+        <div aria-hidden="true" className="hidden max-md:block h-[calc(96px+env(safe-area-inset-bottom))] shrink-0" />
       </div>
+    </div>
+  );
 }
