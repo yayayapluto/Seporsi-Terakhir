@@ -158,7 +158,9 @@ export function SieraRowLink({
             {title}
           </span>
           {subtitle != null && (
-            <span className="text-[12px] leading-[1.4] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">{subtitle}</span>
+            <span className="text-[12px] leading-[1.4] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+              {subtitle}
+            </span>
           )}
         </span>
         <ChevronRight
