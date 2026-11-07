@@ -14,6 +14,10 @@ import { SieraList, SieraRowLink, SieraSectionTitle } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Pengaturan" };
+
 interface Row {
   href: string;
   icon: typeof Bell;

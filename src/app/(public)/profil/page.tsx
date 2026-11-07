@@ -21,6 +21,10 @@ import { parseTourParams } from "@/lib/tour-journey";
 import { AvatarImage } from "./avatar-image";
 import { DaftarTenantButton } from "./daftar-tenant-button";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Profil" };
+
 /** Profil student: identitas, aplikasi tenant, dampak dari pesanan picked_up. */
 
 interface ProfileData {

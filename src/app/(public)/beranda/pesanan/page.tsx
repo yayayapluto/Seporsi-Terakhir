@@ -15,6 +15,10 @@ import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { OrdersList } from "./pesanan-list";
 import { QrModal } from "./qr-modal";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Pesanan" };
+
 export interface MyOrder {
   orderId: string;
   status: string;

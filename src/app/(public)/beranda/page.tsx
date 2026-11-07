@@ -1,4 +1,4 @@
-import { cn } from "cn";
+import type { Metadata } from "next";
 import { ChevronRight, Store } from "lucide-react";
 import Link from "next/link";
 import { connection } from "next/server";
@@ -7,7 +7,7 @@ import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { LoadingSpinner } from "@/components/loading-spinner";
-import { SieraRailPage, SieraSection, SieraTile, sieraCardClass } from "@/components/siera";
+import { SieraCard, SieraRailPage, SieraSection, SieraTile } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatSisaMenit } from "@/lib/format";
@@ -17,6 +17,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { OnboardBanner } from "./onboard-banner";
 import { SoonGrid } from "./soon-grid";
+
+export const metadata: Metadata = { title: "Beranda" };
 
 export interface SoonPortion {
   id: string;
@@ -129,7 +131,7 @@ export default async function BerandaPage({
   return (
     <>
       <AppHeader title="Beranda" trail={[{ label: "Beranda" }]} />
-      <div className="flex-1 bg-background">
+      <div className="flex-1 bg-background pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8">
         <SieraRailPage
           asideLabel="Ringkasan beranda"
           main={
@@ -252,14 +254,14 @@ async function SoonBody(_props: { user: { id: string } }) {
 function ActiveOrderList({ orders }: { orders: ActiveOrder[] }) {
   const now = Date.now();
   return (
-    <ul className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-line px-4")}>
+    <div className="flex flex-col gap-3">
       {orders.map((o) => {
         const left = o.slotEnd
           ? Math.max(0, Math.floor((+new Date(o.slotEnd) - now) / 60_000))
           : null;
         return (
-          <li key={o.orderId}>
-            <Link href={pesananDetail(o.orderId)} className="flex min-h-11 items-center gap-3 py-3">
+          <Link key={o.orderId} href={pesananDetail(o.orderId)} className="block">
+            <SieraCard className="flex min-h-11 items-center gap-3 px-4 py-3">
               <SieraTile>
                 <Store className="size-5" strokeWidth={1.75} aria-hidden />
               </SieraTile>
@@ -280,18 +282,18 @@ function ActiveOrderList({ orders }: { orders: ActiveOrder[] }) {
                 strokeWidth={1.75}
                 aria-hidden
               />
-            </Link>
-          </li>
+            </SieraCard>
+          </Link>
         );
       })}
-    </ul>
+    </div>
   );
 }
 
 function ActiveOrdersSection({ orders }: { orders: ActiveOrder[] }) {
   if (orders.length === 0) return null;
   return (
-    <div id="tour-orders">
+    <div id="tour-orders" className="-mx-5 md:-mx-6">
       <SieraSection
         label={`Pesanan aktif (${orders.length})`}
         action={
@@ -335,7 +337,7 @@ function SoonSection({ portions, failed }: { portions: SoonPortion[]; failed: bo
     );
   }
   return (
-    <div id="tour-catalog">
+    <div id="tour-catalog" className="-mx-5 md:-mx-6">
       <SieraSection
         label={`Katalog sore ini · ${portions.length} porsi`}
         action={

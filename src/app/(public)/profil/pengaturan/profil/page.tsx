@@ -7,6 +7,10 @@ import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { MyProfileForm } from "../../profile-form";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Profil Akun" };
+
 /** Ubah nama + foto profil pengguna. */
 export default async function ProfilEditPage() {
   const current = await requireRole(ROUTES.profilPengaturan, "student", "tenant", "admin");

@@ -19,6 +19,10 @@ import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
 import { KatalogList } from "./katalog-list";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Katalog" };
+
 export interface CatalogPortion {
   id: string;
   menuName: string;

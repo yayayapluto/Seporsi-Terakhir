@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { SieraAlert, SieraCard } from "@/components/siera";
@@ -6,6 +7,8 @@ import { ROUTES } from "@/lib/routes";
 import { DevLoginCard } from "./dev-login-card";
 import { EmailSignIn } from "./email-sign-in";
 import { GoogleSignIn } from "./google-sign-in";
+
+export const metadata: Metadata = { title: "Masuk" };
 
 async function MasukContent({
   searchParams,
