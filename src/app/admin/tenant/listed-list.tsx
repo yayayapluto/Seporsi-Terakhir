@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SieraAlert, SieraList } from "@/components/siera";
+import { SieraAlert, SieraCard, SieraList } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { setTenantListed } from "../actions";
@@ -35,39 +35,78 @@ export function ListedList({ tenants }: { tenants: ListedTenant[] }) {
   if (tenants.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-3">
-      {error && <SieraAlert variant="error">{error}</SieraAlert>}
-      <SieraList>
+    <>
+      <div className="max-md:hidden">
+        {error && <SieraAlert variant="error">{error}</SieraAlert>}
+        <SieraList>
+          {tenants.map((t) => (
+            <li key={t.id} className="flex items-center gap-3 px-4 py-3">
+              <div className="min-w-0 flex-1">
+                <h2 className="truncate font-bold leading-snug max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                  {t.name}
+                </h2>
+                <p className="text-xs text-muted-foreground">
+                  {t.locationNote ? `${t.locationNote} • ` : ""}
+                  {t.isListed ? "Tampil di katalog" : "Disembunyikan dari katalog"}
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busyId !== null}
+                onClick={() => toggle(t)}
+                className="min-h-11 shrink-0"
+              >
+                {busyId === t.id ? (
+                  <>
+                    <Spinner />
+                    Menyimpan…
+                  </>
+                ) : t.isListed ? (
+                  "Sembunyikan"
+                ) : (
+                  "Tampilkan"
+                )}
+              </Button>
+            </li>
+          ))}
+        </SieraList>
+      </div>
+
+      <div className="md:hidden space-y-3">
+        {error && <SieraAlert variant="error">{error}</SieraAlert>}
         {tenants.map((t) => (
-          <li key={t.id} className="flex items-center gap-3 px-4 py-3">
-            <div className="min-w-0 flex-1">
-              <h2 className="truncate font-bold leading-snug">{t.name}</h2>
-              <p className="text-xs text-muted-foreground">
+          <SieraCard key={t.id} className="p-4">
+            <div className="space-y-1">
+              <h3 className="font-bold text-lg">{t.name}</h3>
+              <p className="text-sm text-muted-foreground">
                 {t.locationNote ? `${t.locationNote} • ` : ""}
                 {t.isListed ? "Tampil di katalog" : "Disembunyikan dari katalog"}
               </p>
             </div>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={busyId !== null}
-              onClick={() => toggle(t)}
-              className="min-h-11 shrink-0"
-            >
-              {busyId === t.id ? (
-                <>
-                  <Spinner />
-                  Menyimpan…
-                </>
-              ) : t.isListed ? (
-                "Sembunyikan"
-              ) : (
-                "Tampilkan"
-              )}
-            </Button>
-          </li>
+            <div className="mt-3 pt-3 border-t">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busyId !== null}
+                onClick={() => toggle(t)}
+                className="w-full min-h-11"
+              >
+                {busyId === t.id ? (
+                  <>
+                    <Spinner className="mr-2 h-4 w-4" />
+                    Menyimpan…
+                  </>
+                ) : t.isListed ? (
+                  "Sembunyikan"
+                ) : (
+                  "Tampilkan"
+                )}
+              </Button>
+            </div>
+          </SieraCard>
         ))}
-      </SieraList>
-    </div>
+      </div>
+    </>
   );
 }
