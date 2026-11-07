@@ -80,36 +80,36 @@ export default async function PesananPage({
         trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Pesanan" }]}
       />
       <div className="mx-auto w-full max-w-[430px] md:max-w-none">
-      <Suspense fallback={<LoadingSpinner />}>
-        <PesananBody />
-      </Suspense>
-      <GuidedTour
-        tourKey="pesanan"
-        forced={tourForced}
-        auto={false}
-        journey={tourJourney}
-        userId={user.id}
-        fresh={sp.fresh === "1"}
-        entryStep={tourEntry}
-        next={tourJourney ? (getJourneyNext(ROUTES.pesanan) ?? undefined) : undefined}
-        journeyLabel="Bagian 3 dari 4 · Pesanan"
-        intro={{
-          title: "Lacak pesananmu?",
-          body: "Semua porsi yang kamu kunci ada di sini. Saring status, buka QR, atau batalkan bila berubah pikiran.",
-        }}
-        steps={[
-          {
-            target: '[data-tour="order-filter"]',
-            title: "Saring status",
-            body: "Pisahkan yang menunggu pickup, sudah selesai, atau dibatalkan.",
-          },
-          {
-            target: '[data-tour="order-list"] li:first-child',
-            title: "Satu pesanan",
-            body: "Buka QR pickup, lihat detail, atau batalkan selagi masih menunggu.",
-          },
-        ]}
-      />
+        <Suspense fallback={<LoadingSpinner />}>
+          <PesananBody />
+        </Suspense>
+        <GuidedTour
+          tourKey="pesanan"
+          forced={tourForced}
+          auto={false}
+          journey={tourJourney}
+          userId={user.id}
+          fresh={sp.fresh === "1"}
+          entryStep={tourEntry}
+          next={tourJourney ? (getJourneyNext(ROUTES.pesanan) ?? undefined) : undefined}
+          journeyLabel="Bagian 3 dari 4 · Pesanan"
+          intro={{
+            title: "Lacak pesananmu?",
+            body: "Semua porsi yang kamu kunci ada di sini. Saring status, buka QR, atau batalkan bila berubah pikiran.",
+          }}
+          steps={[
+            {
+              target: '[data-tour="order-filter"]',
+              title: "Saring status",
+              body: "Pisahkan yang menunggu pickup, sudah selesai, atau dibatalkan.",
+            },
+            {
+              target: '[data-tour="order-list"] li:first-child',
+              title: "Satu pesanan",
+              body: "Buka QR pickup, lihat detail, atau batalkan selagi masih menunggu.",
+            },
+          ]}
+        />
       </div>
     </>
   );

@@ -134,83 +134,83 @@ async function KatalogPageBody(
         trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Katalog" }]}
       />
       <div className="mx-auto w-full max-w-[430px] md:max-w-none">
-      <SieraRailPage
-        asideLabel="Segera habis"
-        main={
-          <>
-            <div className="flex flex-col gap-2">
-              <h1 className="text-3xl font-extrabold tracking-[-0.02em] text-[#1C2826]">
-                Porsi hari ini
-              </h1>
-              <p className="text-[15px] leading-normal text-[#64746B]">
-                Sisa dagangan yang masih layak makan. Jam masaknya tertulis jelas, bayar langsung di
-                tempat.
-              </p>
-            </div>
-            <Suspense fallback={<LoadingSpinner />}>
-              <KatalogList
-                portions={portions}
-                tenants={tenants}
-                dayTotal={dayTotal}
-                tourForced={tourForced}
-                tourJourney={tourJourney}
-                tourEntry={tourEntry}
-              />
-            </Suspense>
-          </>
-        }
-        aside={
-          <div className="hidden min-w-0 flex-col gap-4 lg:gap-5 xl:flex">
-            {urgent.length === 0 ? (
-              <div className={cn(sieraCardClass, "flex flex-col gap-2 p-6")}>
-                <h2 className="text-xs font-bold tracking-[0.08em] text-[#64746B] uppercase">
-                  Segera habis
-                </h2>
-                <p className="mt-1 text-base font-bold text-[#1C2826]">Belum ada yang mepet</p>
-                <p className="text-sm leading-normal text-[#64746B]">
-                  Semua porsi masih di atas 60 menit.
+        <SieraRailPage
+          asideLabel="Segera habis"
+          main={
+            <>
+              <div className="flex flex-col gap-2">
+                <h1 className="text-3xl font-extrabold tracking-[-0.02em] text-[#1C2826]">
+                  Porsi hari ini
+                </h1>
+                <p className="text-[15px] leading-normal text-[#64746B]">
+                  Sisa dagangan yang masih layak makan. Jam masaknya tertulis jelas, bayar langsung di
+                  tempat.
                 </p>
               </div>
-            ) : (
-              <SieraSection label="Segera habis">
-                <SieraList aria-label="Porsi segera habis">
-                  {urgent.map((p) => (
-                    <SieraRowLink
-                      key={p.id}
-                      href={katalogDetail(p.id)}
-                      icon={Clock3}
-                      title={p.menuName}
-                      subtitle={`${p.tenantName} · ${urgentLabel(p.expiresAt)}`}
+              <Suspense fallback={<LoadingSpinner />}>
+                <KatalogList
+                  portions={portions}
+                  tenants={tenants}
+                  dayTotal={dayTotal}
+                  tourForced={tourForced}
+                  tourJourney={tourJourney}
+                  tourEntry={tourEntry}
+                />
+              </Suspense>
+            </>
+          }
+          aside={
+            <div className="hidden min-w-0 flex-col gap-4 lg:gap-5 xl:flex">
+              {urgent.length === 0 ? (
+                <div className={cn(sieraCardClass, "flex flex-col gap-2 p-6")}>
+                  <h2 className="text-xs font-bold tracking-[0.08em] text-[#64746B] uppercase">
+                    Segera habis
+                  </h2>
+                  <p className="mt-1 text-base font-bold text-[#1C2826]">Belum ada yang mepet</p>
+                  <p className="text-sm leading-normal text-[#64746B]">
+                    Semua porsi masih di atas 60 menit.
+                  </p>
+                </div>
+              ) : (
+                <SieraSection label="Segera habis">
+                  <SieraList aria-label="Porsi segera habis">
+                    {urgent.map((p) => (
+                      <SieraRowLink
+                        key={p.id}
+                        href={katalogDetail(p.id)}
+                        icon={Clock3}
+                        title={p.menuName}
+                        subtitle={`${p.tenantName} · ${urgentLabel(p.expiresAt)}`}
+                      />
+                    ))}
+                  </SieraList>
+                </SieraSection>
+              )}
+              <div className="flex flex-col gap-3 rounded-[20px] border border-[#BFE3CF] bg-[#EAF5ED] p-6">
+                <h2 className="text-xs font-bold tracking-[0.08em] text-[#1E5A36] uppercase">
+                  Aturan singkat
+                </h2>
+                {[
+                  `Maksimal ${MAX_PORTIONS_PER_DAY} porsi per hari.`,
+                  "Tunjukkan QR saat ambil, bayar di tempat.",
+                  "Jam masak tertulis di tiap porsi.",
+                ].map((rule) => (
+                  <p
+                    key={rule}
+                    className="flex items-start gap-3 text-sm leading-normal text-[#2F4037]"
+                  >
+                    <Check
+                      className="mt-0.5 size-5 shrink-0 text-[#2E7D4F]"
+                      strokeWidth={1.9}
+                      aria-hidden
                     />
-                  ))}
-                </SieraList>
-              </SieraSection>
-            )}
-            <div className="flex flex-col gap-3 rounded-[20px] border border-[#BFE3CF] bg-[#EAF5ED] p-6">
-              <h2 className="text-xs font-bold tracking-[0.08em] text-[#1E5A36] uppercase">
-                Aturan singkat
-              </h2>
-              {[
-                `Maksimal ${MAX_PORTIONS_PER_DAY} porsi per hari.`,
-                "Tunjukkan QR saat ambil, bayar di tempat.",
-                "Jam masak tertulis di tiap porsi.",
-              ].map((rule) => (
-                <p
-                  key={rule}
-                  className="flex items-start gap-3 text-sm leading-normal text-[#2F4037]"
-                >
-                  <Check
-                    className="mt-0.5 size-5 shrink-0 text-[#2E7D4F]"
-                    strokeWidth={1.9}
-                    aria-hidden
-                  />
-                  <span>{rule}</span>
-                </p>
-              ))}
+                    <span>{rule}</span>
+                  </p>
+                ))}
+              </div>
             </div>
-          </div>
-        }
-      />
+          }
+        />
       </div>
     </>
   );
