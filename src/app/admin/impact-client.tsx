@@ -380,10 +380,10 @@ export function ImpactClient({
                       {i + 1}
                     </span>
                     <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                      <span className="truncate text-sm font-bold text-[#1C2826]">
+                      <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-sm font-bold text-[#1C2826]">
                         {t.tenantName}
                       </span>
-                      <span className="truncate text-xs text-muted-foreground">
+                      <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-xs text-muted-foreground">
                         {t.portionsPickedUp} diambil · {t.portionsPosted} diunggah
                       </span>
                     </span>

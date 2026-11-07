@@ -131,7 +131,7 @@ async function TenantRail() {
                       key={t.id}
                       className="flex min-h-11 items-center justify-between gap-3 text-sm"
                     >
-                      <span className="min-w-0 flex-1 truncate font-bold text-[#1C2826]">
+                      <span className="min-w-0 flex-1 truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] font-bold text-[#1C2826]">
                         {t.name}
                       </span>
                       <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
