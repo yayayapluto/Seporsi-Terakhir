@@ -154,11 +154,11 @@ export function SieraRowLink({
           <Icon className="size-5" strokeWidth={1.75} aria-hidden />
         </SieraTile>
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="truncate text-[15px] leading-[1.3] font-semibold text-[#1C2826]">
+          <span className="text-[15px] leading-[1.3] font-semibold text-[#1C2826] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
             {title}
           </span>
           {subtitle != null && (
-            <span className="truncate text-[12px] leading-[1.4] text-[#64746B]">{subtitle}</span>
+            <span className="text-[12px] leading-[1.4] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">{subtitle}</span>
           )}
         </span>
         <ChevronRight
