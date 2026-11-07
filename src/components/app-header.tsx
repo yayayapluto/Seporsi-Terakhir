@@ -25,7 +25,7 @@ export async function AppHeader({
   const isRoot = crumbs.length === 1 && !crumbs[0]?.href;
   return (
     <header className="sticky top-0 z-30 h-16 w-full border-b border-line bg-white md:h-[60px]">
-      <div className="flex h-full w-full items-center justify-between gap-2 px-4 md:px-8">
+      <div className="flex h-full w-full items-center justify-between gap-2 px-5 md:px-8">
         {isRoot ? (
           <>
             <span className="flex min-w-0 flex-1 items-center max-md:hidden">
@@ -36,7 +36,7 @@ export async function AppHeader({
               aria-label="Seporsi Terakhir, beranda"
               className="flex min-w-0 flex-1 items-center font-heading text-lg font-extrabold text-[#286F3B] md:hidden"
             >
-              <span className="truncate">Seporsi Terakhir</span>
+              <span className="break-words">Seporsi Terakhir</span>
             </Link>
           </>
         ) : (

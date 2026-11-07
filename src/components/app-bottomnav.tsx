@@ -12,10 +12,10 @@ export function AppBottomNav({ tabs }: { tabs: NavTab[] }) {
   return (
     <nav
       aria-label="Navigasi utama"
-      className="fixed inset-x-3 bottom-3 z-40 mx-auto max-w-[430px] md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="fixed inset-x-3 bottom-0 z-40 mx-auto max-w-[430px] md:hidden"
+      style={{ marginBottom: "calc(12px + env(safe-area-inset-bottom))" }}
     >
-      <ul className="flex min-h-[72px] items-stretch rounded-3xl border border-line bg-white px-1.5 py-1.5 shadow-[0_8px_24px_rgba(16,24,40,.10)]">
+      <ul className="flex min-h-[72px] items-stretch gap-1 rounded-3xl bg-white p-2 shadow-lg ring-1 ring-black/5">
         {tabs.map((t) => {
           const Icon = ICONS[t.icon];
           const isActive = t.href === active;
@@ -25,19 +25,19 @@ export function AppBottomNav({ tabs }: { tabs: NavTab[] }) {
                 href={t.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "relative flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-2 text-[11px] font-semibold transition-colors duration-200 active:scale-[0.98]",
+                  "relative flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-[18px] px-1 py-2 text-xs font-semibold transition-colors duration-200 active:scale-[0.98]",
                   isActive
-                    ? "text-[#1E5A36]"
+                    ? "bg-[#DCEBE1] text-[#0D5A38] font-bold"
                     : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
                 )}
               >
-                {isActive && <ActivePill id="nav-pill-mobile" rounded="rounded-2xl" />}
+                {isActive && <ActivePill id="nav-pill-mobile" rounded="rounded-[18px]" />}
                 <span className="relative z-10">
                   <Icon className="size-5" strokeWidth={isActive ? 2.25 : 1.75} aria-hidden />
                   {t.badge != null && (
                     <output
                       aria-label={`${t.badge} belum dibaca`}
-                      className="absolute -top-1.5 -right-2.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#BA1A1A] px-1 text-[10px] font-bold text-white"
+                      className="absolute -top-1.5 -right-2.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#b91c1c] px-1 text-[11px] font-bold text-white"
                     >
                       {badgeText(t.badge)}
                     </output>
