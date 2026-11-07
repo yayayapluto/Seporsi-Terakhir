@@ -301,7 +301,9 @@ export function KatalogList({
                         <span className="line-clamp-2 max-md:line-clamp-none max-md:break-words text-base leading-snug font-bold text-[#1C2826]">
                           {p.menuName}
                         </span>
-                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[13px] text-[#64746B]">{p.tenantName}</span>
+                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[13px] text-[#64746B]">
+                          {p.tenantName}
+                        </span>
                         <span className="mt-2 text-[13px] text-[#64746B]">
                           Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
                         </span>
