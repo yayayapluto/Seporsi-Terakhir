@@ -377,7 +377,7 @@ async function DashboardBody({
                             className="flex min-h-16 flex-col justify-center gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
                           >
                             <div className="min-w-0">
-                              <h3 className="truncate font-bold leading-snug">
+                              <h3 className="truncate font-bold leading-snug max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                                 {p.menuName}{" "}
                                 <span className="font-normal text-[#64746B]">
                                   sisa {p.quantityRemaining}/{p.quantityPosted}

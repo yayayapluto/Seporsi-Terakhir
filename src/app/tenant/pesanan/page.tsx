@@ -153,10 +153,10 @@ async function TenantPesananBody({
               )}
             </SieraTile>
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[15px] leading-[1.3] font-semibold text-[#1C2826]">
+              <span className="block truncate text-[15px] leading-[1.3] font-semibold text-[#1C2826] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                 {o.menuName} <span className="font-normal text-[#64746B]">×{o.quantity}</span>
               </span>
-              <span className="block truncate text-[12px] leading-[1.4] text-[#64746B]">
+              <span className="block truncate text-[12px] leading-[1.4] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                 {o.buyerName} · Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
                 {formatIDR(o.discountPrice * o.quantity)}
                 {o.status === "picked_up" && o.pickedUpAt
@@ -164,7 +164,7 @@ async function TenantPesananBody({
                   : ""}
               </span>
               {o.status === "reserved" && o.pickupDeadlineAt && (
-                <span className="block truncate text-[12px] leading-[1.4] font-bold text-[#B45309]">
+                <span className="block truncate text-[12px] leading-[1.4] font-bold text-[#B45309] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                   Ambil dalam{" "}
                   <TenantPickupCountdown
                     deadlineIso={o.pickupDeadlineAt}
