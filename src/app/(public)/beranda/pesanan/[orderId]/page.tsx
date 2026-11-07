@@ -166,16 +166,27 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                 aria-label="Ringkasan pesanan"
                 className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}
               >
-                <div className="flex flex-wrap items-center gap-2">
-                  <OrderStatusBadge status={order.status} />
+                <div className="flex flex-col items-start gap-2 max-md:gap-2 md:flex-row md:flex-wrap md:items-center">
+                  <div className="md:hidden w-full">
+                    <OrderStatusBadge status={order.status} />
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 max-md:hidden">
+                    <OrderStatusBadge status={order.status} />
+                    {order.pickedUpAt && (
+                      <span className="text-[13px] text-[#64746B]">
+                        Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB ·{" "}
+                        {order.quantity} porsi diselamatkan
+                      </span>
+                    )}
+                  </div>
                   {order.pickedUpAt && (
-                    <span className="text-[13px] text-[#64746B]">
+                    <span className="text-[13px] text-[#64746B] md:hidden">
                       Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB · {order.quantity}{" "}
                       porsi diselamatkan
                     </span>
                   )}
                 </div>
-                <h1 className="text-balance text-2xl font-extrabold tracking-tight text-[#1C2826]">
+                <h1 className="text-balance max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-2xl font-extrabold tracking-tight text-[#1C2826]">
                   {order.menuName} <span className="text-[#64746B]">× {order.quantity}</span>
                 </h1>
                 <p className="text-sm text-[#64746B]">
@@ -229,7 +240,7 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                 </div>
               )}
             </div>
-            <div className="min-h-0 lg:sticky lg:top-[76px]">
+            <div className="min-h-0 lg:sticky lg:top-[76px] max-md:sticky max-md:bottom-[calc(112px+env(safe-area-inset-bottom))]">
               <section aria-label="Detail pesanan" className="flex min-w-0 flex-col gap-2">
                 <SieraSectionTitle>Detail pesanan</SieraSectionTitle>
                 <dl
@@ -301,7 +312,7 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                   <Store className="size-5" strokeWidth={1.75} aria-hidden />
                 </SieraTile>
                 <div className="min-w-0">
-                  <p className="truncate text-[15px] font-bold text-[#1C2826]">
+                  <p className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[15px] font-bold text-[#1C2826]">
                     {order.tenantName}
                   </p>
                   <p className="mt-0.5 text-[13px] text-[#64746B]">
