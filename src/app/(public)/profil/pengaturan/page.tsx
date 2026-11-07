@@ -7,14 +7,13 @@ import {
   Store,
   UserRound,
 } from "lucide-react";
+import type { Metadata } from "next";
 import { SignOutButton } from "@/app/(public)/profil/sign-out-button";
 import { AppHeader } from "@/components/app-header";
 import { InstallPwa } from "@/components/install-pwa";
 import { SieraList, SieraRowLink, SieraSectionTitle } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Pengaturan" };
 

@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { ChevronRight, Store } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";

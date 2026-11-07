@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { LoadingSpinner } from "@/components/loading-spinner";
@@ -6,8 +7,6 @@ import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { MyProfileForm } from "../../profile-form";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Profil Akun" };
 

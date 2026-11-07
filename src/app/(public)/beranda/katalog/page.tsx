@@ -1,5 +1,6 @@
 import { cn } from "cn";
 import { Check, Clock3 } from "lucide-react";
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
@@ -18,8 +19,6 @@ import { katalogDetail, ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
 import { KatalogList } from "./katalog-list";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Katalog" };
 

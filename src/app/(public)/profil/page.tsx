@@ -9,6 +9,7 @@ import {
   UtensilsCrossed,
   Wallet,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
@@ -20,8 +21,6 @@ import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
 import { AvatarImage } from "./avatar-image";
 import { DaftarTenantButton } from "./daftar-tenant-button";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Profil" };
 

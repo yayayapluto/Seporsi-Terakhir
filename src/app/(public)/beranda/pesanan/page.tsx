@@ -1,5 +1,6 @@
 import { cn } from "cn";
 import { QrCode } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
@@ -14,8 +15,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { OrdersList } from "./pesanan-list";
 import { QrModal } from "./qr-modal";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Pesanan" };
 
