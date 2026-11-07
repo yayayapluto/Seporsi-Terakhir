@@ -79,6 +79,7 @@ export default async function PesananPage({
         title="Pesanan"
         trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Pesanan" }]}
       />
+      <div className="mx-auto w-full max-w-[430px] md:max-w-none">
       <Suspense fallback={<LoadingSpinner />}>
         <PesananBody />
       </Suspense>
@@ -109,6 +110,7 @@ export default async function PesananPage({
           },
         ]}
       />
+      </div>
     </>
   );
 }

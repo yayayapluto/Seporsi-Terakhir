@@ -132,6 +132,7 @@ export default async function BerandaPage({
     <>
       <AppHeader title="Beranda" trail={[{ label: "Beranda" }]} />
       <div className="flex-1 bg-background pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8">
+        <div className="mx-auto w-full max-w-[430px] md:max-w-none">
         <SieraRailPage
           asideLabel="Ringkasan beranda"
           main={
@@ -185,6 +186,7 @@ export default async function BerandaPage({
             </div>
           }
         />
+        </div>
         <GuidedTour
           tourKey="beranda"
           forced={tourForced}

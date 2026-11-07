@@ -148,7 +148,7 @@ export default async function ProfilPage({
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
       {isStudent ? (
-        <div className="mx-auto flex w-full min-w-0 max-w-[1160px] flex-col gap-6 px-4 pt-6 pb-8 md:px-6">
+        <div className="mx-auto flex w-full min-w-0 flex-col gap-6 px-5 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:max-w-[1160px] md:px-6 md:pb-8">
           {/* Identitas full-width di atas rail */}
           <section aria-label="Identitas" className={`${sieraCardClass} p-6`}>
             <div className="flex items-center gap-5">
@@ -199,7 +199,7 @@ export default async function ProfilPage({
                       </Link>
                     </SieraAlert>
                   )}
-                  <dl className="grid grid-cols-3 gap-3">
+                  <dl className="grid grid-cols-1 gap-3 md:grid-cols-3">
                     <div className={`${sieraCardClass} flex min-w-0 flex-col gap-1 p-4 md:p-5`}>
                       <span
                         aria-hidden
