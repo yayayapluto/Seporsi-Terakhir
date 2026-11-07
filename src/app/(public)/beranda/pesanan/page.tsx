@@ -141,7 +141,7 @@ async function PesananBody() {
               QR pickup aktif
             </h2>
             <div className="min-w-0">
-              <p className="truncate text-[15px] font-bold text-[#1C2826]">
+              <p className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[15px] font-bold text-[#1C2826]">
                 {nextActive.menuName} <span className="font-semibold">× {nextActive.quantity}</span>
               </p>
               <p className="mt-0.5 truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
