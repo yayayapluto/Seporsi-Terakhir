@@ -100,7 +100,7 @@ async function TenantOrderDetailBody({ params }: { params: Promise<{ id: string 
     <>
       <div className={`${sieraCardClass} flex flex-col gap-1 p-4`}>
         <p className="text-xs font-bold tracking-wide text-[#1E5A36]">RESERVASI</p>
-        <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
+        <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
           {o.menuName} × {o.quantity}
         </h1>
         <p className="text-sm text-[#1E5A36]">
