@@ -24,7 +24,7 @@ export function SoonGrid({ portions }: { portions: SoonPortion[] }) {
   const hasMore = portions.length > shown.length;
 
   return (
-    <ul className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4">
+    <ul className="grid grid-cols-1 gap-3 max-md:max-w-none lg:grid-cols-3 lg:gap-4">
       {shown.map((p) => {
         const pct = p.normalPrice > 0 ? Math.round((1 - p.discountPrice / p.normalPrice) * 100) : 0;
         return (
