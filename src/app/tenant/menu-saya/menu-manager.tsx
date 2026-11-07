@@ -227,7 +227,7 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
                 </div>
               )}
               <div className="min-w-0 flex-1">
-                <h2 className="font-bold leading-snug">{m.name}</h2>
+                <h2 className="font-bold leading-snug max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">{m.name}</h2>
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   Harga normal {formatIDR(m.normalPrice)}
                   {m.avgWeightGrams ? ` · ±${m.avgWeightGrams} g/porsi` : ""}
