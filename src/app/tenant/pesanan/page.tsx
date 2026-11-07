@@ -1,5 +1,6 @@
 import { cn } from "cn";
 import { ChevronRight, History, PackageCheck, ReceiptText, Timer, Wallet } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
@@ -26,8 +27,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { TenantPickupCountdown } from "./tenant-pickup-countdown";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Pesanan Masuk" };
 

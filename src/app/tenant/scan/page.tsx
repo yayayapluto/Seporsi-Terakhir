@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
@@ -6,8 +7,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { ScannerClient } from "./scanner-client";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Scan Pickup" };
 

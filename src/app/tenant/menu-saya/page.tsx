@@ -1,4 +1,5 @@
 import { TrendingUp } from "lucide-react";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
@@ -9,8 +10,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { MenuManager } from "./menu-manager";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Menu Saya" };
 

@@ -10,6 +10,7 @@ import {
   UtensilsCrossed,
   Wallet,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
@@ -33,8 +34,6 @@ import { TenantPickupCountdown } from "./pesanan/tenant-pickup-countdown";
 import { TambahPorsiButton } from "./porsi/sheet-buttons";
 import TambahSheet from "./porsi/tambah-sheet";
 import { TenantTour } from "./tenant-tour";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Dasbor Tenant" };
 

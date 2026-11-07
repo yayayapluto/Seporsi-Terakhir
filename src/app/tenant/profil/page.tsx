@@ -1,12 +1,11 @@
 import { Store } from "lucide-react";
+import type { Metadata } from "next";
 import { AppHeader } from "@/components/app-header";
 import { SieraList, SieraRowLink, SieraSection, sieraCardClass } from "@/components/siera";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 import { TenantProfileForm } from "./profile-form";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Profil Tenant" };
 

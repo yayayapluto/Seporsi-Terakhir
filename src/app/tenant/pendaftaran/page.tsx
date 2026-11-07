@@ -1,4 +1,5 @@
 import { BadgeCheck, ClipboardCheck, Hourglass } from "lucide-react";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import {
   SieraList,
@@ -11,8 +12,6 @@ import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
 import { getOwnTenant } from "@/lib/tenant";
 import { PendaftaranForm } from "./pendaftaran-form";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Pendaftaran Tenant" };
 
