@@ -132,61 +132,59 @@ export default async function BerandaPage({
     <>
       <AppHeader title="Beranda" trail={[{ label: "Beranda" }]} />
       <div className="flex-1 bg-background pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8">
-        <div className="mx-auto w-full max-w-[430px] md:max-w-none">
-          <SieraRailPage
-            asideLabel="Ringkasan beranda"
-            main={
-              <div className="flex min-w-0 flex-col gap-6 lg:gap-7">
-                <div id="tour-hero" className="flex flex-col gap-2">
-                  <p className="text-[13px] font-bold text-[#2E7D4F]">
-                    {firstName ? `${greet}, ${firstName}` : greet}
-                  </p>
-                  <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
-                    Kantin hampir tutup, masih ada yang enak.
-                  </h1>
-                  <p className="text-[15px] leading-normal text-[#64746B]">
-                    Sisa dagangan hari ini dijual miring. Ambil jam 16.30 sampai 18.30, bayar di
-                    tempat.
-                  </p>
-                </div>
-                {showOnboard && <OnboardBanner />}
-                <Suspense fallback={<LoadingSpinner />}>
-                  <ActiveOrdersBody user={user} />
-                </Suspense>
-                <Suspense fallback={<LoadingSpinner />}>
-                  <SoonBody user={user} />
-                </Suspense>
+        <SieraRailPage
+          asideLabel="Ringkasan beranda"
+          main={
+            <div className="flex min-w-0 flex-col gap-6 lg:gap-7">
+              <div id="tour-hero" className="flex flex-col gap-2">
+                <p className="text-[13px] font-bold text-[#2E7D4F]">
+                  {firstName ? `${greet}, ${firstName}` : greet}
+                </p>
+                <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+                  Kantin hampir tutup, masih ada yang enak.
+                </h1>
+                <p className="text-[15px] leading-normal text-[#64746B]">
+                  Sisa dagangan hari ini dijual miring. Ambil jam 16.30 sampai 18.30, bayar di
+                  tempat.
+                </p>
               </div>
-            }
-            aside={
-              <div className="hidden min-w-0 flex-col lg:gap-5 xl:flex">
-                <div
-                  id="ambil-heading"
-                  className="flex flex-col gap-2 rounded-[20px] border border-[#BFE3CF] bg-[#EAF5ED] p-6"
+              {showOnboard && <OnboardBanner />}
+              <Suspense fallback={<LoadingSpinner />}>
+                <ActiveOrdersBody user={user} />
+              </Suspense>
+              <Suspense fallback={<LoadingSpinner />}>
+                <SoonBody user={user} />
+              </Suspense>
+            </div>
+          }
+          aside={
+            <div className="hidden min-w-0 flex-col lg:gap-5 xl:flex">
+              <div
+                id="ambil-heading"
+                className="flex flex-col gap-2 rounded-[20px] border border-[#BFE3CF] bg-[#EAF5ED] p-6"
+              >
+                <h2 className="text-xs font-bold tracking-[0.08em] text-[#1E5A36] uppercase">
+                  Jam ambil
+                </h2>
+                <p className="mt-1 text-[26px] leading-tight font-extrabold text-[#1C2826]">
+                  16.30 – 18.30 <span className="text-[15px] font-bold">WIB</span>
+                </p>
+                <p className="text-sm leading-normal text-[#2F4037]">
+                  Tunjukkan QR saat ambil, bayar tunai di tempat.
+                </p>
+                <Link
+                  href={ROUTES.katalog}
+                  className={buttonVariants({
+                    className:
+                      "mt-3 flex h-12 w-full items-center justify-center rounded-xl text-[15px] font-bold",
+                  })}
                 >
-                  <h2 className="text-xs font-bold tracking-[0.08em] text-[#1E5A36] uppercase">
-                    Jam ambil
-                  </h2>
-                  <p className="mt-1 text-[26px] leading-tight font-extrabold text-[#1C2826]">
-                    16.30 – 18.30 <span className="text-[15px] font-bold">WIB</span>
-                  </p>
-                  <p className="text-sm leading-normal text-[#2F4037]">
-                    Tunjukkan QR saat ambil, bayar tunai di tempat.
-                  </p>
-                  <Link
-                    href={ROUTES.katalog}
-                    className={buttonVariants({
-                      className:
-                        "mt-3 flex h-12 w-full items-center justify-center rounded-xl text-[15px] font-bold",
-                    })}
-                  >
-                    Lihat katalog
-                  </Link>
-                </div>
+                  Lihat katalog
+                </Link>
               </div>
-            }
-          />
-        </div>
+            </div>
+          }
+        />
         <GuidedTour
           tourKey="beranda"
           forced={tourForced}
