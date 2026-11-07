@@ -15,7 +15,7 @@ export function AppBottomNav({ tabs }: { tabs: NavTab[] }) {
       className="fixed inset-x-3 bottom-3 z-40 mx-auto max-w-[430px] md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <ul className="flex items-stretch rounded-[20px] border border-line bg-white px-1 py-1 shadow-[0_8px_24px_rgba(16,24,40,.10)]">
+      <ul className="flex min-h-[72px] items-stretch rounded-3xl border border-line bg-white px-1.5 py-1.5 shadow-[0_8px_24px_rgba(16,24,40,.10)]">
         {tabs.map((t) => {
           const Icon = ICONS[t.icon];
           const isActive = t.href === active;
@@ -25,7 +25,7 @@ export function AppBottomNav({ tabs }: { tabs: NavTab[] }) {
                 href={t.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1.5 text-[11px] font-semibold transition-colors duration-200 active:scale-[0.98]",
+                  "relative flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-2 text-[11px] font-semibold transition-colors duration-200 active:scale-[0.98]",
                   isActive
                     ? "text-[#1E5A36]"
                     : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
