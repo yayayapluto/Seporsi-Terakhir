@@ -266,8 +266,8 @@ function ActiveOrderList({ orders }: { orders: ActiveOrder[] }) {
                 <Store className="size-5" strokeWidth={1.75} aria-hidden />
               </SieraTile>
               <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <span className="truncate text-sm font-bold text-[#1C2826]">{o.menuName}</span>
-                <span className="truncate text-xs text-[#64746B]">
+                <span className="text-sm font-bold text-[#1C2826] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">{o.menuName}</span>
+                <span className="text-xs text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                   {o.tenantName}
                   {o.slotEnd ? ` · Ambil sampai ${formatDateTimeWIB(new Date(o.slotEnd))}` : ""}
                 </span>
