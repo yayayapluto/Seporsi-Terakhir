@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
@@ -9,8 +10,6 @@ import { requireRole } from "@/lib/auth";
 import { loadNotifs } from "@/lib/notifs";
 import { ROUTES } from "@/lib/routes";
 import { getOwnTenant } from "@/lib/tenant";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Notifikasi" };
 
