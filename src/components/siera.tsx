@@ -57,7 +57,7 @@ export function SieraField({
 /** Judul seksi kecil di atas grup card. */
 export function SieraSectionTitle({ id, children }: { id?: string; children: ReactNode }) {
   return (
-    <h2 id={id} className="px-4 text-xs font-bold uppercase tracking-[0.08em] text-[#64746B]">
+      <h2 id={id} className="max-md:px-0 px-4 text-xs font-bold uppercase tracking-[0.08em] text-[#64746B]">
       {children}
     </h2>
   );
