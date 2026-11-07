@@ -19,6 +19,10 @@ import { cn } from "@/lib/utils";
 import { LangkahStagger } from "./langkah-stagger";
 import { Pressable, Reveal } from "./thread";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Penyelamatan Surplus Pangan" };
+
 const LANGKAH = [
   {
     num: "01",

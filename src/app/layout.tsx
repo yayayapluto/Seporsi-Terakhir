@@ -16,11 +16,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: { default: "SIERA", template: "%s · SIERA" },
+  title: { default: "Seporsi Terakhir", template: "%s · Seporsi Terakhir" },
   description:
     "Platform resmi PKKMB UPNVJ untuk mendukung seluruh rangkaian kegiatan secara terstruktur dan terintegrasi.",
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "SIERA" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Seporsi Terakhir" },
   icons: {
     icon: [
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
