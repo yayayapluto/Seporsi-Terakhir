@@ -226,7 +226,7 @@ export default async function Home() {
       {/* CTA penutup. */}
       <section className="mx-auto w-full max-w-[1080px] px-5 pb-[72px] md:px-8">
         <Reveal>
-          <div className="flex flex-col items-center gap-4 rounded-[28px] bg-[#2D7A4F] px-6 py-14 text-center text-white md:px-10 md:py-16">
+          <div className="flex flex-col items-center gap-4 rounded-[28px] bg-[#2D7A4F] max-md:px-5 max-md:py-8 max-md:rounded-[20px] px-6 py-14 text-center text-white md:px-10 md:py-16">
             <h2 className="max-w-[14ch] text-balance text-[32px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
               Jangan biarkan porsi terakhir terbuang.
             </h2>
