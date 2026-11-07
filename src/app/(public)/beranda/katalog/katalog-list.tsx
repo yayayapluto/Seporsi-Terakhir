@@ -106,7 +106,7 @@ export function KatalogList({
       <fieldset
         aria-label="Saring katalog"
         data-tour="filter"
-        className="m-0 flex min-w-0 flex-col gap-4 border-0 p-0"
+        className="m-0 flex min-w-0 max-md:flex-row max-md:items-end max-md:gap-3 flex-col gap-4 border-0 p-0"
       >
         <label
           htmlFor="tenant-filter"
@@ -151,7 +151,7 @@ export function KatalogList({
             </SelectContent>
           </Select>
         </label>
-        <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1">
+        <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1 max-md:hidden">
           <legend className="sr-only">Tampilan katalog</legend>
           {[
             { value: "grid" as ViewMode, label: "Tampilan grid", Icon: LayoutGrid },
@@ -199,6 +199,32 @@ export function KatalogList({
             <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
           )}
         </div>
+        <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1 md:hidden">
+          <legend className="sr-only">Tampilan katalog</legend>
+          {[
+            { value: "grid" as ViewMode, label: "Tampilan grid", Icon: LayoutGrid },
+            { value: "list" as ViewMode, label: "Tampilan daftar", Icon: Rows3 },
+          ].map(({ value, label, Icon }) => {
+            const active = view === value;
+            return (
+              <Toggle
+                key={value}
+                pressed={active}
+                onPressedChange={() => setView(value)}
+                aria-label={label}
+                className="relative min-h-9 min-w-9 rounded-lg data-[state=on]:bg-transparent focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+              >
+                {active && (
+                  <span aria-hidden className="absolute inset-0 rounded-lg bg-[#DCEBE0]" />
+                )}
+                <Icon
+                  className={`relative size-4 ${active ? "text-[#1E5A36]" : "text-[#64746B]"}`}
+                  aria-hidden
+                />
+              </Toggle>
+            );
+          })}
+        </fieldset>
       </div>
       {filtered.length === 0 ? (
         <SieraEmpty
@@ -272,10 +298,10 @@ export function KatalogList({
                         )}
                       </span>
                       <span className="flex flex-1 flex-col gap-0.5 p-4">
-                        <span className="line-clamp-2 text-base leading-snug font-bold text-[#1C2826]">
+                        <span className="line-clamp-2 max-md:line-clamp-none max-md:break-words text-base leading-snug font-bold text-[#1C2826]">
                           {p.menuName}
                         </span>
-                        <span className="truncate text-[13px] text-[#64746B]">{p.tenantName}</span>
+                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[13px] text-[#64746B]">{p.tenantName}</span>
                         <span className="mt-2 text-[13px] text-[#64746B]">
                           Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
                         </span>
@@ -351,10 +377,10 @@ export function KatalogList({
                         )}
                       </span>
                       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                        <span className="truncate text-[15px] font-bold text-[#1C2826]">
+                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[15px] font-bold text-[#1C2826]">
                           {p.menuName}
                         </span>
-                        <span className="truncate text-[13px] text-[#64746B]">
+                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[13px] text-[#64746B]">
                           {p.tenantName} · Sisa {p.quantityRemaining}
                         </span>
                         <span className="flex flex-wrap items-baseline gap-x-1.5">
