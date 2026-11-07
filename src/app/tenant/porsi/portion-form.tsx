@@ -610,7 +610,7 @@ export function PortionForm({
               <p className="line-clamp-2 min-h-10 break-words text-sm font-bold leading-snug">
                 {selected != null ? selected.name : "Pilih menu dulu"}
               </p>
-              <p className="truncate text-xs text-muted-foreground">
+              <p className="truncate text-xs text-muted-foreground max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                 {selected != null
                   ? `${tenantName ? `${tenantName} · ` : ""}Dimasak ${cookedAtLocal ? formatCookedShort(cookedAtLocal) : "–"}${quantity > 0 ? ` · Sisa ${quantity}` : ""}`
                   : "Nama tenant · jam masak · sisa tampil di sini"}

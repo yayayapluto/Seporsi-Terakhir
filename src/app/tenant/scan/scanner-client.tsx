@@ -266,6 +266,7 @@ export function ScannerClient({
       </div>
       {phase.kind === "scanning" && (
         <div data-tour="scanner" className="relative mx-auto w-full max-w-[520px]">
+          <style>{`@media (max-width: 819px){ .siera-scanner video { aspect-ratio: 1/1; object-fit: cover; min-height: 280px; } }`}</style>
           {cameraError ? (
             <div className="flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
               <span
