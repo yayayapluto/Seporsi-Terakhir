@@ -149,9 +149,11 @@ export default async function ProfilPage({
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
       {isStudent ? (
         <div className="mx-auto flex w-full min-w-0 flex-col gap-6 px-5 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:max-w-[1160px] md:px-6 md:pb-8">
-          {/* Identitas full-width di atas rail */}
-          <section aria-label="Identitas" className={`${sieraCardClass} p-6`}>
-            <div className="flex items-center gap-5">
+          <section
+            aria-label="Identitas"
+            className={`${sieraCardClass} p-5 md:p-6 max-md:px-5 max-md:py-5`}
+          >
+            <div className="flex items-center gap-5 max-md:gap-4">
               {p.avatarPath ? (
                 <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
               ) : (
@@ -162,12 +164,12 @@ export default async function ProfilPage({
                   {initials || "•"}
                 </span>
               )}
-              <div className="min-w-0">
-                <h1 className="text-xl leading-tight font-extrabold tracking-[-0.01em] md:text-2xl [overflow-wrap:anywhere]">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl leading-tight font-extrabold tracking-[-0.01em] md:text-2xl max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] [overflow-wrap:anywhere]">
                   {p.fullName}
                 </h1>
                 {p.email && (
-                  <p className="mt-0.5 text-sm text-[#64746B] [overflow-wrap:anywhere]">
+                  <p className="mt-0.5 break-words text-sm text-[#64746B] [overflow-wrap:anywhere]">
                     {p.email}
                   </p>
                 )}
