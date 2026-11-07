@@ -1,8 +1,7 @@
+import type { Metadata } from "next";
 import { SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { PushToggle } from "./push-toggle";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Notifikasi" };
 

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
@@ -8,8 +9,6 @@ import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { ApproveList } from "./approve-list";
 import { ListedList, type ListedTenant } from "./listed-list";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Dasbor Admin" };
 

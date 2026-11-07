@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
@@ -7,8 +8,6 @@ import { percentSold } from "@/lib/domain/metrics";
 import { wibDayRangeUtc } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { ImpactClient } from "./impact-client";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Dasbor Admin" };
 

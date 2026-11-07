@@ -1,9 +1,8 @@
 import { AtSign, CalendarCheck, KeyRound } from "lucide-react";
+import type { Metadata } from "next";
 import { SieraCard, SieraField, SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB } from "@/lib/format";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Keamanan" };
 

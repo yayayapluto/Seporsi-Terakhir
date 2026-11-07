@@ -9,11 +9,10 @@ import {
   Store,
   UserRound,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SignOutButton } from "@/app/(public)/profil/sign-out-button";
 import { requireRole } from "@/lib/auth";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Pengaturan Akun" };
 

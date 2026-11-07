@@ -1,8 +1,7 @@
+import type { Metadata } from "next";
 import { SieraCard, SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { ExportButton } from "./export-button";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Privasi & Data" };
 
