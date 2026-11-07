@@ -20,7 +20,9 @@ export function NotifRow({ n, onNavigate }: { n: NotifItem; onNavigate?: () => v
       </span>
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="flex items-baseline justify-between gap-2">
-          <span className="truncate text-sm font-bold text-[#1C2826]">{n.title}</span>
+          <span className="truncate text-sm font-bold text-[#1C2826] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+            {n.title}
+          </span>
           <span className="shrink-0 text-xs whitespace-nowrap text-[#64746B]">
             {formatDateTimeWIB(new Date(n.time))}
           </span>

@@ -12,7 +12,7 @@ export default async function KeamananPage() {
   const provider = current.user.app_metadata?.provider ?? "email";
   const method = provider === "google" ? "Login Google" : `Login ${provider}`;
   return (
-    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl">
+    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-5 py-6 max-md:max-w-full max-md:px-0 sm:max-w-none md:max-w-3xl">
       <SieraHero eyebrow="Keamanan" title="Sesi masuk kamu">
         Cara kamu masuk dan sejak kapan akun ini aktif.
       </SieraHero>

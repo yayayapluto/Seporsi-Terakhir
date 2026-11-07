@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Notifikasi" };
 export default async function NotifikasiSettingPage() {
   const current = await requireRole("/akun/notifikasi", "student", "tenant", "admin");
   return (
-    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-4 py-6 sm:max-w-none md:max-w-3xl">
+    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-6 px-5 py-6 max-md:max-w-full max-md:px-0 sm:max-w-none md:max-w-3xl">
       <SieraHero eyebrow="Notifikasi" title="Kabar sampai bunyi">
         Nyalakan agar kabar pesanan muncul sebagai notifikasi browser di perangkat ini.
       </SieraHero>
