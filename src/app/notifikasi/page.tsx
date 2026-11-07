@@ -9,6 +9,11 @@ import { requireRole } from "@/lib/auth";
 import { loadNotifs } from "@/lib/notifs";
 import { ROUTES } from "@/lib/routes";
 import { getOwnTenant } from "@/lib/tenant";
+
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Notifikasi" };
+
 /** Notifikasi per role dari tabel yang sudah ada: student = status pesanannya, tenant = reservasi masuk, admin = pendaftaran menunggu. */
 
 export default async function NotifikasiPage() {

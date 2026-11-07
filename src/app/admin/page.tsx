@@ -8,6 +8,10 @@ import { wibDayRangeUtc } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { ImpactClient } from "./impact-client";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Dasbor Admin" };
+
 export interface AdminDailyPoint {
   day: string;
   saved: number;

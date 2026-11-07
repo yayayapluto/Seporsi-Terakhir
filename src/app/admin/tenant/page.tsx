@@ -9,6 +9,10 @@ import { createClient } from "@/lib/supabase/server";
 import { ApproveList } from "./approve-list";
 import { ListedList, type ListedTenant } from "./listed-list";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Dasbor Admin" };
+
 async function loadListed(): Promise<{ tenants: ListedTenant[] }> {
   const supabase = await createClient();
   await connection();

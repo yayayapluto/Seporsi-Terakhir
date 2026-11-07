@@ -13,6 +13,10 @@ import Link from "next/link";
 import { SignOutButton } from "@/app/(public)/profil/sign-out-button";
 import { requireRole } from "@/lib/auth";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Pengaturan Akun" };
+
 const CARD =
   "rounded-[20px] border border-[#E8ECE9] bg-card p-4 shadow-[0_1px_2px_rgba(16,24,40,.04)]";
 const ROW_TILE =

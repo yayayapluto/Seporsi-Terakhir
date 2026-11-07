@@ -3,6 +3,10 @@ import { SieraCard, SieraField, SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB } from "@/lib/format";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Keamanan" };
+
 /** Keamanan: info sesi masuk saja — tanpa aksi. */
 export default async function KeamananPage() {
   const current = await requireRole("/akun/keamanan", "student", "tenant", "admin");

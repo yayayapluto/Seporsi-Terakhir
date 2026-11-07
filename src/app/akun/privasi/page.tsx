@@ -2,6 +2,10 @@ import { SieraCard, SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { ExportButton } from "./export-button";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Privasi & Data" };
+
 /** Privasi & data: unduh data sendiri + info hapus via admin. */
 export default async function PrivasiPage() {
   const current = await requireRole("/akun/privasi", "student", "tenant", "admin");

@@ -2,6 +2,10 @@ import { SieraHero } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { PushToggle } from "./push-toggle";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Notifikasi" };
+
 /** Notifikasi: toggle push browser + status izin + contoh. */
 export default async function NotifikasiSettingPage() {
   const current = await requireRole("/akun/notifikasi", "student", "tenant", "admin");
