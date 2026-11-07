@@ -275,7 +275,10 @@ function DetailBody({
           <>
             {/* Panel pesan */}
             <div
-              className={cn(sieraCardClass, "h-fit p-4 max-md:sticky max-md:bottom-[calc(112px+env(safe-area-inset-bottom))] max-md:max-h-none")}
+              className={cn(
+                sieraCardClass,
+                "h-fit p-4 max-md:sticky max-md:bottom-[calc(112px+env(safe-area-inset-bottom))] max-md:max-h-none",
+              )}
             >
               <h2 className="text-[15px] font-bold text-[#1C2826]">Atur jumlah</h2>
               <p className="mt-0.5 text-[13px] text-[#64746B]">Stok tersisa: {remaining}</p>
