@@ -1,4 +1,5 @@
 import { Check, QrCode } from "lucide-react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -18,8 +19,6 @@ import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { LangkahStagger } from "./langkah-stagger";
 import { Pressable, Reveal } from "./thread";
-
-import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Penyelamatan Surplus Pangan" };
 
