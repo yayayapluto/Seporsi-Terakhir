@@ -142,7 +142,7 @@ async function PesananBody() {
               <p className="truncate text-[15px] font-bold text-[#1C2826]">
                 {nextActive.menuName} <span className="font-semibold">× {nextActive.quantity}</span>
               </p>
-              <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
+              <p className="mt-0.5 truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                 {nextActive.tenantName}
                 {nextActive.tenantLocation ? ` · ${nextActive.tenantLocation}` : ""}
               </p>

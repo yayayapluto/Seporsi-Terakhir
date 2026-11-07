@@ -143,15 +143,15 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                         </h2>
                         <OrderStatusBadge status={o.status} />
                       </div>
-                      <p className="mt-1 truncate text-[13px] text-[#64746B]">
+                      <p className="mt-1 truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {o.tenantName}
                         {o.tenantLocation ? ` · ${o.tenantLocation}` : ""}
                       </p>
-                      <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
+                      <p className="mt-0.5 truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {formatDateTimeWIB(new Date(o.createdAt))} WIB
                       </p>
                       {o.pickedUpAt && (
-                        <p className="truncate text-[13px] text-[#64746B]">
+                        <p className="truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                           Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
                         </p>
                       )}

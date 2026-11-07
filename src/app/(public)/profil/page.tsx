@@ -207,7 +207,7 @@ export default async function ProfilPage({
                       >
                         <PackageCheck className="size-5" strokeWidth={1.8} aria-hidden />
                       </span>
-                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl">
+                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {p.savedPortions}
                       </dd>
                       <dt className="text-[13px] text-[#64746B]">Porsi selamat</dt>
@@ -219,7 +219,7 @@ export default async function ProfilPage({
                       >
                         <Wallet className="size-5" strokeWidth={1.8} aria-hidden />
                       </span>
-                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl">
+                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {formatIDR(p.moneySavedIdr)}
                       </dd>
                       <dt className="text-[13px] text-[#64746B]">Uang hemat</dt>
@@ -234,7 +234,7 @@ export default async function ProfilPage({
                       >
                         <Leaf className="size-5" strokeWidth={1.8} aria-hidden />
                       </span>
-                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl">
+                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {p.wasteKg == null ? (
                           <span className="text-base font-bold text-[#64746B] md:text-lg">
                             Belum ada
@@ -352,10 +352,14 @@ export default async function ProfilPage({
                 </span>
               )}
               <div className="min-w-0">
-                <h1 className="truncate text-xl leading-tight font-extrabold md:text-2xl">
+                <h1 className="truncate text-xl leading-tight font-extrabold md:text-2xl max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                   {p.fullName}
                 </h1>
-                {p.email && <p className="truncate text-sm text-[#64746B]">{p.email}</p>}
+                {p.email && (
+                  <p className="truncate text-sm text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                    {p.email}
+                  </p>
+                )}
                 {label && (
                   <p className="mt-2 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-0.5 text-xs font-bold text-[#1E5A36]">
                     {label}
@@ -373,7 +377,9 @@ export default async function ProfilPage({
                   icon={Store}
                   title={
                     <span className="flex items-center gap-2">
-                      <span className="truncate">Persetujuan tenant</span>
+                      <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                        Persetujuan tenant
+                      </span>
                       {pendingTenants > 0 && (
                         <span className="shrink-0 rounded-full bg-[#DCEBE0] px-2 py-0.5 text-[11px] font-bold text-[#1E5A36]">
                           {sieraCountText(pendingTenants)}
