@@ -176,7 +176,7 @@ function DetailBody({
             </span>
           )}
         </div>
-        <h1 className="text-balance text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] sm:text-2xl">
+        <h1 className="text-balance max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] sm:text-2xl">
           {portion.menuName}
         </h1>
         <p className="text-sm text-[#64746B]">
@@ -262,7 +262,7 @@ function DetailBody({
                 <SieraField icon={Store} label="Tenant">
                   {portion.tenantName}
                   {portion.tenantLocation ? (
-                    <span className="block truncate font-normal text-[#64746B]">
+                    <span className="block truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] font-normal text-[#64746B]">
                       {portion.tenantLocation}
                     </span>
                   ) : null}
@@ -275,7 +275,7 @@ function DetailBody({
           <>
             {/* Panel pesan */}
             <div
-              className={cn(sieraCardClass, "h-fit max-h-[calc(100dvh-220px)] overflow-y-auto p-4")}
+              className={cn(sieraCardClass, "h-fit p-4 max-md:sticky max-md:bottom-[calc(112px+env(safe-area-inset-bottom))] max-md:max-h-none")}
             >
               <h2 className="text-[15px] font-bold text-[#1C2826]">Atur jumlah</h2>
               <p className="mt-0.5 text-[13px] text-[#64746B]">Stok tersisa: {remaining}</p>
@@ -312,7 +312,7 @@ function DetailBody({
                         href={katalogDetail(r.id)}
                         className="flex min-h-11 items-center justify-between gap-3 px-4 py-2.5"
                       >
-                        <span className="truncate text-sm font-bold text-[#1C2826]">
+                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-sm font-bold text-[#1C2826]">
                           {r.menuName}
                         </span>
                         <span className="shrink-0 text-sm font-extrabold text-accent-strong">
