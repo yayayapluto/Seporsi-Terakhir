@@ -59,10 +59,10 @@ export function SoonGrid({ portions }: { portions: SoonPortion[] }) {
                 </span>
               </span>
               <span className="flex flex-1 flex-col gap-0.5 p-4">
-                <span className="line-clamp-2 text-base leading-snug font-bold text-[#1C2826]">
+                <span className="text-base leading-snug font-bold text-[#1C2826]">
                   {p.menuName}
                 </span>
-                <span className="truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                <span className="text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                   {p.tenantName}
                 </span>
                 <span className="mt-2 text-[13px] text-[#64746B]">
