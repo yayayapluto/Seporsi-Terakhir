@@ -412,7 +412,9 @@ export function SieraStat({
         <Icon className="size-5" strokeWidth={1.75} aria-hidden />
       </SieraTile>
       <div className="min-w-0">
-        <p className="truncate text-lg leading-none font-extrabold">{value}</p>
+        <p className="truncate text-lg leading-none font-extrabold max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+          {value}
+        </p>
         <p className="mt-1 text-[11px] font-semibold text-[#64746B]">{label}</p>
       </div>
     </div>

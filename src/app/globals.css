@@ -520,7 +520,9 @@
   .flow-grow,
   .t-digit,
   [data-in] {
+    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion override */
     animation: none !important;
+    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion override */
     transition: none !important;
   }
 }
