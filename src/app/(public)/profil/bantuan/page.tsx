@@ -18,7 +18,7 @@ export default async function BantuanPage() {
           { label: "Bantuan & Lapor" },
         ]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-4 px-4 py-6 md:px-8">
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-4 max-md:px-5 max-md:pb-[calc(112px+env(safe-area-inset-bottom))] px-4 py-6 md:px-8">
         <SieraHero eyebrow="Bantuan" title="Ada yang bisa dibantu?">
           Jawaban cepat di bawah, atau kirim laporan langsung ke admin.
         </SieraHero>

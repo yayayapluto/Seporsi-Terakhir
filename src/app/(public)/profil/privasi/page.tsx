@@ -17,7 +17,7 @@ export default async function PrivasiPage() {
           { label: "Privasi & Data" },
         ]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 max-md:px-5 max-md:pb-[calc(112px+env(safe-area-inset-bottom))] px-4 py-6 md:px-8">
         <SieraHero eyebrow="Privasi & data" title="Data kamu milik kamu">
           Unduh seluruh data akunmu kapan saja. Isinya: profil, pesanan, dan data kantin bila kamu
           tenant.
