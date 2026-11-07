@@ -42,6 +42,8 @@ export function ListedList({ tenants }: { tenants: ListedTenant[] }) {
           <li key={t.id} className="flex items-center gap-3 px-4 py-3">
             <div className="min-w-0 flex-1">
               <h2 className="font-bold leading-snug max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                {t.name}
+              </h2>
               <p className="text-xs text-muted-foreground">
                 {t.locationNote ? `${t.locationNote} • ` : ""}
                 {t.isListed ? "Tampil di katalog" : "Disembunyikan dari katalog"}
