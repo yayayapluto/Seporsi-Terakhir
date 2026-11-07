@@ -234,7 +234,7 @@ export default async function Home() {
               Satu porsi terjual berarti satu porsi tidak jadi sampah dan satu mahasiswa makan lebih
               hemat.
             </p>
-            <div className="mt-3 flex flex-wrap justify-center gap-3">
+            <div className="mt-3 flex flex-wrap justify-center gap-3 max-md:flex-col max-md:w-full max-md:items-stretch max-md:gap-2">
               <Pressable>
                 <Link
                   href={ROUTES.katalog}
