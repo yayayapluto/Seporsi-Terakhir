@@ -34,6 +34,10 @@ import { TambahPorsiButton } from "./porsi/sheet-buttons";
 import TambahSheet from "./porsi/tambah-sheet";
 import { TenantTour } from "./tenant-tour";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Dasbor Tenant" };
+
 /** Dashboard tenant: porsi aktif, reservasi, pickup & omzet hari ini (WIB). */
 
 interface ActivePortion {

@@ -6,6 +6,10 @@ import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 import { TenantProfileForm } from "./profile-form";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Profil Tenant" };
+
 /** Profil kantin: nama gerai + lokasi, bisa diubah tenant sendiri. */
 export default async function TenantProfilPage() {
   const tenant = await requireOwnTenant("/tenant/profil");

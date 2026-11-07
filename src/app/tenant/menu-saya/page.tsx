@@ -10,6 +10,10 @@ import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { MenuManager } from "./menu-manager";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Menu Saya" };
+
 /** Daftar menu milik tenant + dialog tambah/edit via RPC upsert_menu_item. */
 
 export interface MenuItemRow {

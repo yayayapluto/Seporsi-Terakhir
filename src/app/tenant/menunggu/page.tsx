@@ -17,6 +17,10 @@ import { getOwnTenant } from "@/lib/tenant";
 import { PeriksaStatus } from "./periksa-status";
 import { SignOutButton } from "./sign-out-button";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Menunggu Verifikasi" };
+
 /** Status pendaftaran tenant yang belum disetujui. Approved → dashboard. */
 export default async function MenungguPersetujuanPage() {
   await requireRole(ROUTES.tenantMenunggu, "student", "tenant", "admin");

@@ -12,6 +12,10 @@ import { ROUTES } from "@/lib/routes";
 import { getOwnTenant } from "@/lib/tenant";
 import { PendaftaranForm } from "./pendaftaran-form";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Pendaftaran Tenant" };
+
 /**
  * Pendaftaran tenant: terbuka untuk semua user login (applicant baru
  * masih role student; role baru jadi tenant setelah admin approve).

@@ -9,6 +9,10 @@ import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Operasional" };
+
 /** Operasional tenant: ringkasan angka hari ini + aksi langsung. Tanpa tabel baru. */
 export default function OperasionalPage() {
   return (

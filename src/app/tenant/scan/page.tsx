@@ -7,6 +7,10 @@ import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { ScannerClient } from "./scanner-client";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Scan Pickup" };
+
 export interface LastPickup {
   menuName: string;
   quantity: number;

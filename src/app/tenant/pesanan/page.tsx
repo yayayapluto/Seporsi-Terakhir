@@ -27,6 +27,10 @@ import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { TenantPickupCountdown } from "./tenant-pickup-countdown";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Pesanan Masuk" };
+
 /** Daftar reservasi porsi tenant: menunggu pickup → selesai. Tanpa token. */
 
 interface TenantOrderRow {
