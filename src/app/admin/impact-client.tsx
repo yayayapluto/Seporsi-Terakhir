@@ -131,7 +131,9 @@ export function ImpactClient({
         <>
           <div className="flex flex-col gap-2">
             <p className="text-xs font-bold tracking-widest text-primary">DAMPAK KAMPUS</p>
-            <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>
+            <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl font-bold">
+              Dampak penyelamatan
+            </h1>
             <p className="text-muted-foreground">
               Halo {email}. Angka dari pickup yang discan, bukan estimasi. Berat = estimasi sampling
               per menu.

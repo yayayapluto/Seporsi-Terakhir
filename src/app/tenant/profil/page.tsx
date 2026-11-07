@@ -29,7 +29,7 @@ export default async function TenantProfilPage() {
       <section aria-label="Identitas gerai" className={`${sieraCardClass} p-6`}>
         <div className="flex flex-col gap-1">
           <p className="text-[13px] font-bold text-[#2E7D4F]">PROFIL KANTIN</p>
-          <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+          <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
             {name}
           </h1>
           <p className="text-[15px] leading-normal text-[#64746B]">

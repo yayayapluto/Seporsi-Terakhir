@@ -72,10 +72,10 @@ async function OperasionalBody() {
         title="Operasional"
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Operasional" }]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 max-md:px-5 max-md:py-6 max-md:pb-[calc(112px+env(safe-area-inset-bottom))] px-4 py-8 md:px-8">
         <div className="flex flex-col gap-2">
           <p className="text-[13px] font-bold text-[#2E7D4F]">OPERASIONAL</p>
-          <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+          <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
             Ringkasan hari ini
           </h1>
           <p className="text-[15px] leading-normal text-[#64746B]">

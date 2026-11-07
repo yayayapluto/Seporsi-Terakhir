@@ -132,7 +132,7 @@ async function MenuBody({
         <>
           <div id="tour-hero" className="flex flex-col gap-2">
             <p className="text-[13px] font-bold text-[#2E7D4F]">MENU KANTIN</p>
-            <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+            <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
               {greet}, {tenantName}
             </h1>
             <p className="text-[15px] leading-normal text-[#64746B]">

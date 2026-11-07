@@ -83,7 +83,9 @@ async function TenantRail() {
         <>
           <div className="flex flex-col gap-2">
             <p className="text-xs font-bold tracking-widest text-primary">KELOLA MITRA</p>
-            <h1 className="text-3xl font-bold">Mitra kantin</h1>
+            <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl font-bold">
+              Mitra kantin
+            </h1>
             <p className="text-muted-foreground">
               Setujui pendaftar baru dan atur siapa yang tampil di katalog.
             </p>
