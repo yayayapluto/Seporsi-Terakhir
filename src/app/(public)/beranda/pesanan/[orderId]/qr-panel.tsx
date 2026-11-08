@@ -30,7 +30,13 @@ export function QrPanel({
     );
   }
   return (
-    <section aria-labelledby="qr-heading" className={cn(sieraCardClass, "flex flex-col gap-4 p-5")}>
+    <section
+      aria-labelledby="qr-heading"
+      className={cn(
+        sieraCardClass,
+        "flex flex-col gap-4 p-5 max-md:h-auto max-md:min-h-0 max-md:overflow-visible max-md:p-4 max-md:rounded-2xl max-md:bg-white max-md:border max-md:border-[#e3e9e5]",
+      )}
+    >
       <div>
         <p className="text-[12px] font-semibold tracking-[0.02em] text-[#64746B]">
           Tunjukkan layar ini ke tenant
@@ -43,7 +49,15 @@ export function QrPanel({
         )}
       </div>
       <div className="flex flex-col items-center gap-4">
-        <QRCode value={pickupToken} size={256} title={`QR pickup pesanan ${menuName}`} />
+        <div className="mx-auto aspect-square w-full max-w-[260px] rounded-xl border border-[#e3e9e5] bg-white p-3">
+          <QRCode
+            value={pickupToken}
+            size={256}
+            title={`QR pickup pesanan ${menuName}`}
+            className="block h-full w-full"
+            style={{ width: "100%", height: "100%" }}
+          />
+        </div>
         <p className="text-center">
           <span className="block text-xs text-[#64746B]">Total bayar tunai</span>
           <strong className="text-3xl font-extrabold text-accent-strong">
