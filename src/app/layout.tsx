@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       data-scroll-behavior="smooth"
       className={`${jakarta.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col max-md:min-h-0 max-md:bg-white">
         <SwRegister />
         <AppShell>{children}</AppShell>
       </body>
