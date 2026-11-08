@@ -1,5 +1,13 @@
 import { cn } from "cn";
-import { ChevronRight, History, PackageCheck, ReceiptText, Timer, Wallet } from "lucide-react";
+import {
+  ChevronRight,
+  History,
+  PackageCheck,
+  ReceiptText,
+  ScanLine,
+  Timer,
+  Wallet,
+} from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -282,10 +290,8 @@ async function TenantPesananBody({
         id="penunggu-heading"
         label="Penunggu terlama"
         action={
-          <Link
-            href="/tenant/scan"
-            className="text-[13px] font-bold text-[#1E5A36] underline underline-offset-4"
-          >
+          <Link href="/tenant/scan" className={cn(buttonVariants({ size: "sm" }), "min-h-11")}>
+            <ScanLine className="size-4" aria-hidden />
             Scan
           </Link>
         }
