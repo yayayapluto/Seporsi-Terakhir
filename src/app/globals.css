@@ -98,32 +98,6 @@
   body {
     overflow-x: clip;
   }
-  @media (max-width: 819px) {
-    html,
-    body {
-      max-width: 100%;
-      overflow-x: clip;
-    }
-    main {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-    }
-    main :is(div, section, article, aside, header, footer, ul, ol, li, form, fieldset, label) {
-      min-width: 0;
-    }
-    main :is(img, svg, canvas, video, iframe, table) {
-      max-width: 100%;
-    }
-    main :is(h1, h2, h3, h4, p, li, a, span, td, th, dd, dt) {
-      overflow-wrap: break-word;
-    }
-    main :is(.truncate, [class*="whitespace-nowrap"]) {
-      white-space: normal;
-      overflow: visible;
-      text-overflow: clip;
-    }
-  }
   .lenis.lenis-smooth {
     scroll-behavior: auto;
   }
