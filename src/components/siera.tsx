@@ -9,7 +9,7 @@ import { Input } from "./ui/input";
 
 /** Token class card Siera di atas primitif shadcn `card` — untuk section ber-label yang wajib pertahankan tag + aria. */
 export const sieraCardClass =
-  "overflow-hidden rounded-[20px] border border-line bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]";
+  "overflow-hidden rounded-[20px] border border-line bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)] w-full max-md:w-full max-md:mx-0 max-md:rounded-2xl";
 
 /** Card Siera standar di atas primitif shadcn `card`: putih, radius 20, border #E8ECE9, shadow 1px. */
 export function SieraCard({ className, children }: { className?: string; children: ReactNode }) {
@@ -77,7 +77,7 @@ export function SieraHero({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5">
+    <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5 max-md:rounded-2xl max-md:w-full max-md:mx-0">
       <p className="text-xs font-bold tracking-wide text-[#1E5A36]">{eyebrow}</p>
       <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
         {title}
@@ -98,7 +98,7 @@ export function SieraTenantHeader({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 max-md:px-0 max-md:mx-0 max-md:w-full">
       <p className="text-xs font-bold tracking-widest text-primary">{kicker}</p>
       <h1 className="text-3xl font-bold">{title}</h1>
       <div className="text-muted-foreground">{children}</div>
@@ -107,7 +107,8 @@ export function SieraTenantHeader({
 }
 
 /** Wadah grouped list: radius tetap, overflow hidden, tanpa padding, divider solid. */
-export const sieraListClass = "overflow-hidden rounded-[20px] border border-line bg-white";
+export const sieraListClass =
+  "overflow-hidden rounded-[20px] border border-line bg-white w-full max-md:w-full max-md:mx-0 max-md:rounded-2xl";
 
 /** List homogen: divider dashed 1px antar baris (PRODUCT-Siera §5.3). */
 export function SieraList({
@@ -299,8 +300,8 @@ export function SieraAuthShell({
   eyebrow?: string;
 }) {
   return (
-    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col justify-center gap-4 px-4 py-10">
-      <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5">
+    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col justify-center gap-4 px-4 py-10 max-md:px-0 max-md:mx-0 max-md:w-full max-md:max-w-full">
+      <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5 max-md:rounded-2xl max-md:w-full max-md:mx-0">
         {eyebrow && <p className="text-xs font-bold tracking-wide text-[#1E5A36]">{eyebrow}</p>}
         <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
           {title}
