@@ -81,6 +81,12 @@
     @apply bg-background text-foreground;
   }
   /* ponytail: ruang bottom-nav mobile ditangani spacer 96px AppShell setelah footer. */
+  /* ponytail: safety net — raw button tanpa data-slot shadcn tetap dapat border terlihat. */
+  button:not([data-slot]):not([role="tab"]):not([role="switch"]):not([role="checkbox"]),
+  a[class*="btn"] {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
   html {
     @apply font-sans;
   }
