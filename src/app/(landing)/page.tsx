@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { HeroPhoto } from "@/components/landing/hero-photo";
 import { Magnetic } from "@/components/landing/motion/magnetic";
+import { RevealScope } from "@/components/landing/motion/reveal-scope";
 import { SplitHeading } from "@/components/landing/motion/split-heading";
 import {
   Accordion,
@@ -130,54 +131,56 @@ export default async function Home() {
     <div className="flex-1 bg-white text-[#17261D] max-md:-mx-4 max-md:w-[calc(100%+2rem)]">
       {/* HERO — foto etalase + proposisi + aksi primer. */}
       <section className="mx-auto w-full max-w-[1080px] px-5 pt-36 pb-[72px] md:px-8">
-        <div className="grid items-center gap-10 md:grid-cols-2">
-          <HeroPhoto maxPorsi={MAX_QUANTITY_PER_ORDER} />
+        <RevealScope>
+          <div className="grid items-center gap-10 md:grid-cols-2">
+            <HeroPhoto maxPorsi={MAX_QUANTITY_PER_ORDER} />
 
-          <div className="flex flex-col gap-5">
-            <SplitHeading
-              as="h1"
-              trigger="load"
-              className="text-balance font-bold tracking-[-0.02em] text-[clamp(2.5rem,8vw,3.25rem)] leading-[1.05] min-[821px]:text-[clamp(2.5rem,8vw,5.5rem)]"
-            >
-              Cara kerja penyelamatan porsi kampus.
-            </SplitHeading>
-            <p data-reveal className="text-base leading-relaxed text-[#4A5B51]">
-              Tenant menjual surplus layak makan dengan harga diskon. Mahasiswa pesan, ambil dengan
-              QR, bayar di tempat.
-            </p>
-            <div className="flex flex-wrap items-center gap-3">
-              <Magnetic>
-                <Pressable>
-                  <Link
-                    href={primaryHref}
-                    className={cn(
-                      buttonVariants(),
-                      "min-h-12 rounded-[10px] bg-[#286F3B] px-[22px] text-[15px] font-semibold text-white hover:bg-[#1E532C]",
-                    )}
-                  >
-                    {primaryLabel}
-                  </Link>
-                </Pressable>
-              </Magnetic>
-              <Magnetic>
-                <Pressable>
-                  <Link
-                    href="#langkah"
-                    className={cn(
-                      buttonVariants({ variant: "outline" }),
-                      "min-h-12 rounded-[10px] px-[22px] text-[15px] font-semibold text-[#17261D] hover:bg-[#F4EFE6]",
-                    )}
-                  >
-                    Lihat Cara Hitung
-                  </Link>
-                </Pressable>
-              </Magnetic>
+            <div className="flex flex-col gap-5">
+              <SplitHeading
+                as="h1"
+                trigger="load"
+                className="text-balance font-bold tracking-[-0.02em] text-[clamp(2.5rem,8vw,3.25rem)] leading-[1.05] min-[821px]:text-[clamp(2.5rem,8vw,5.5rem)]"
+              >
+                Cara kerja penyelamatan porsi kampus.
+              </SplitHeading>
+              <p data-reveal className="text-base leading-relaxed text-[#4A5B51]">
+                Tenant menjual surplus layak makan dengan harga diskon. Mahasiswa pesan, ambil
+                dengan QR, bayar di tempat.
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <Magnetic>
+                  <Pressable>
+                    <Link
+                      href={primaryHref}
+                      className={cn(
+                        buttonVariants(),
+                        "min-h-12 rounded-[10px] bg-[#286F3B] px-[22px] text-[15px] font-semibold text-white hover:bg-[#1E532C]",
+                      )}
+                    >
+                      {primaryLabel}
+                    </Link>
+                  </Pressable>
+                </Magnetic>
+                <Magnetic>
+                  <Pressable>
+                    <Link
+                      href="#langkah"
+                      className={cn(
+                        buttonVariants({ variant: "outline" }),
+                        "min-h-12 rounded-[10px] px-[22px] text-[15px] font-semibold text-[#17261D] hover:bg-[#F4EFE6]",
+                      )}
+                    >
+                      Lihat Cara Hitung
+                    </Link>
+                  </Pressable>
+                </Magnetic>
+              </div>
+              <p className="text-[13px] text-[#5B6B62]">
+                Bayar di tempat · Jam masak tertera · Maks {MAX_QUANTITY_PER_ORDER} porsi/hari
+              </p>
             </div>
-            <p className="text-[13px] text-[#5B6B62]">
-              Bayar di tempat · Jam masak tertera · Maks {MAX_QUANTITY_PER_ORDER} porsi/hari
-            </p>
           </div>
-        </div>
+        </RevealScope>
       </section>
 
       {/* LANGKAH — tiga langkah dari etalase ke meja makan. */}
