@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraCard, SieraRailPage, SieraSection, SieraTile } from "@/components/siera";
+import { SiteFooterMini } from "@/components/site-footer";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatSisaMenit } from "@/lib/format";
@@ -131,12 +132,13 @@ export default async function BerandaPage({
   return (
     <>
       <AppHeader title="Beranda" trail={[{ label: "Beranda" }]} />
-      <div className="flex-1 bg-background pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8">
+      <div className="flex-1 bg-background pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8 max-md:pb-0 min-h-dvh">
         <SieraRailPage
+          className="max-md:px-5 max-md:w-full max-md:max-w-full max-md:mx-0 max-md:py-6"
           asideLabel="Ringkasan beranda"
           main={
-            <div className="flex min-w-0 flex-col gap-6 lg:gap-7">
-              <div id="tour-hero" className="flex flex-col gap-2">
+            <div className="flex min-w-0 flex-col gap-6 lg:gap-7 max-md:px-0 max-md:mx-0">
+              <div id="tour-hero" className="flex flex-col gap-2 max-md:px-0 max-md:mx-0">
                 <p className="text-[13px] font-bold text-[#2E7D4F]">
                   {firstName ? `${greet}, ${firstName}` : greet}
                 </p>
@@ -155,6 +157,13 @@ export default async function BerandaPage({
               <Suspense fallback={<LoadingSpinner />}>
                 <SoonBody user={user} />
               </Suspense>
+              <div className="hidden max-md:block max-md:px-0 max-md:mx-0 max-md:w-full border-t border-line mt-4">
+                <SiteFooterMini bare />
+              </div>
+              <div
+                aria-hidden="true"
+                className="hidden max-md:block h-[calc(96px+env(safe-area-inset-bottom))] shrink-0"
+              />
             </div>
           }
           aside={
@@ -254,14 +263,18 @@ async function SoonBody(_props: { user: { id: string } }) {
 function ActiveOrderList({ orders }: { orders: ActiveOrder[] }) {
   const now = Date.now();
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 max-md:gap-2.5 max-md:px-0 max-md:mx-0">
       {orders.map((o) => {
         const left = o.slotEnd
           ? Math.max(0, Math.floor((+new Date(o.slotEnd) - now) / 60_000))
           : null;
         return (
-          <Link key={o.orderId} href={pesananDetail(o.orderId)} className="block">
-            <SieraCard className="flex min-h-11 items-center gap-3 px-4 py-3">
+          <Link
+            key={o.orderId}
+            href={pesananDetail(o.orderId)}
+            className="block w-full max-md:w-full max-md:px-0 max-md:mx-0"
+          >
+            <SieraCard className="flex min-h-11 items-center gap-3 px-4 py-3 w-full max-md:w-full max-md:rounded-2xl border max-md:overflow-hidden max-md:mx-0 max-md:p-3.5">
               <SieraTile>
                 <Store className="size-5" strokeWidth={1.75} aria-hidden />
               </SieraTile>
@@ -295,13 +308,13 @@ function ActiveOrderList({ orders }: { orders: ActiveOrder[] }) {
 function ActiveOrdersSection({ orders }: { orders: ActiveOrder[] }) {
   if (orders.length === 0) return null;
   return (
-    <div id="tour-orders" className="-mx-5 md:-mx-6 max-md:mx-0">
+    <div id="tour-orders" className="-mx-5 md:-mx-6 max-md:mx-0 max-md:px-0 max-md:w-full">
       <SieraSection
         label={`Pesanan aktif (${orders.length})`}
         action={
           <Link
             href={ROUTES.pesanan}
-            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
+            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] max-md:px-0 max-md:mx-0"
           >
             Lihat Semua
           </Link>
@@ -323,6 +336,7 @@ function SoonSection({ portions, failed }: { portions: SoonPortion[]; failed: bo
         hint="Koneksi bermasalah. Muat ulang buat coba lagi."
         ctaHref="/beranda"
         ctaLabel="Muat ulang"
+        className="w-full max-md:w-full max-md:px-0 max-md:mx-0"
       />
     );
   }
@@ -335,29 +349,30 @@ function SoonSection({ portions, failed }: { portions: SoonPortion[]; failed: bo
         hint="Biasanya kantin mulai posting sekitar 15.30 sampai 16.30. Cek lagi nanti sore."
         ctaHref={ROUTES.katalog}
         ctaLabel="Buka katalog"
+        className="w-full max-md:w-full max-md:px-0 max-md:mx-0"
       />
     );
   }
   return (
-    <div id="tour-catalog" className="-mx-5 md:-mx-6 max-md:mx-0">
+    <div id="tour-catalog" className="-mx-5 md:-mx-6 max-md:mx-0 max-md:px-0 max-md:w-full">
       <SieraSection
         label={`Katalog sore ini · ${portions.length} porsi`}
         action={
           <Link
             href={ROUTES.katalog}
-            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
+            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] max-md:px-0 max-md:mx-0"
           >
             Lihat semua
           </Link>
         }
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 max-md:px-0 max-md:mx-0 max-md:w-full">
           <SoonGrid portions={portions} />
           <Link
             href={ROUTES.katalog}
             className={buttonVariants({
               className:
-                "mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold xl:hidden",
+                "mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold xl:hidden max-md:w-full max-md:mx-0",
             })}
           >
             Lihat katalog

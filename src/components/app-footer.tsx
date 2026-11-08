@@ -12,6 +12,13 @@ const FULL_FOOTER_PATHS: Record<string, true> = {
 export function AppFooter() {
   const pathname = usePathname();
   if (FULL_FOOTER_PATHS[pathname]) return null;
+  if (pathname === "/beranda") {
+    return (
+      <div className="hidden md:block w-full border-t border-line bg-white">
+        <SiteFooterMini bare />
+      </div>
+    );
+  }
   return (
     <div className="w-full border-t border-line bg-white">
       <SiteFooterMini bare />

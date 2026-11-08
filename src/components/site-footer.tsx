@@ -71,7 +71,7 @@ export function SiteFooter() {
 /** Footer minimal satu baris untuk halaman dalam (bukan landing/cara-kerja/masuk). */
 export function SiteFooterMini({ bare = false }: { bare?: boolean }) {
   const inner = (
-    <div className="flex w-full flex-col gap-1 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:px-8">
+    <div className="flex w-full flex-col gap-1 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:px-8 max-md:px-0 max-md:mx-0">
       <p className="text-xs font-semibold text-[#64746B]">
         © 2026 Seporsi Terakhir · UPN Veteran Jakarta
       </p>

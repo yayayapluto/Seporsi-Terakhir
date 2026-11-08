@@ -57,7 +57,10 @@ export function SieraField({
 /** Judul seksi kecil di atas grup card. */
 export function SieraSectionTitle({ id, children }: { id?: string; children: ReactNode }) {
   return (
-      <h2 id={id} className="max-md:px-0 px-4 text-xs font-bold uppercase tracking-[0.08em] text-[#64746B]">
+    <h2
+      id={id}
+      className="max-md:px-0 px-4 text-xs font-bold uppercase tracking-[0.08em] text-[#64746B]"
+    >
       {children}
     </h2>
   );
@@ -337,15 +340,17 @@ export function SieraSection({
   label,
   action,
   children,
+  className,
 }: {
   id?: string;
   label: string;
   action?: ReactNode;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <section aria-label={label} className="flex min-w-0 flex-col gap-2">
-      <div className="flex min-h-11 items-center justify-between gap-3 px-4">
+    <section aria-label={label} className={cn("flex min-w-0 flex-col gap-2", className)}>
+      <div className="flex min-h-11 items-center justify-between gap-3 px-4 max-md:px-0">
         <SieraSectionTitle id={id}>
           <span className="block truncate whitespace-nowrap">{label}</span>
         </SieraSectionTitle>
@@ -364,6 +369,7 @@ export function SieraEmpty({
   id,
   compact = false,
   icon: Icon,
+  className,
 }: {
   title: string;
   hint?: string;
@@ -371,11 +377,16 @@ export function SieraEmpty({
   id?: string;
   compact?: boolean;
   icon?: LucideIcon;
+  className?: string;
 }) {
   return (
     <div
       id={id}
-      className={`flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 text-center ${compact ? "py-6" : "py-10 md:py-14"}`}
+      className={cn(
+        "flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 text-center max-md:rounded-2xl max-md:w-full max-md:mx-0",
+        compact ? "py-6" : "py-10 md:py-14",
+        className,
+      )}
     >
       {Icon && (
         <span
@@ -438,13 +449,20 @@ export function SieraRailPage({
   main,
   asideLabel,
   aside,
+  className,
 }: {
   main: ReactNode;
   asideLabel: string;
   aside: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="mx-auto grid w-full min-w-0 max-w-[430px] md:max-w-[1160px] flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-stretch xl:gap-6">
+    <div
+      className={cn(
+        "mx-auto grid w-full min-w-0 max-w-[430px] md:max-w-[1160px] flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-stretch xl:gap-6",
+        className,
+      )}
+    >
       <div className="flex min-w-0 flex-col gap-4 lg:gap-5">{main}</div>
       <aside aria-label={asideLabel} className="flex min-w-0 flex-col">
         <div className="flex min-w-0 flex-col gap-4 lg:gap-5 xl:sticky xl:top-20">{aside}</div>

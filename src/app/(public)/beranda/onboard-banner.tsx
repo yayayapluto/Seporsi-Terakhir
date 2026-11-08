@@ -22,7 +22,7 @@ export function OnboardBanner() {
   return (
     <section
       aria-label="Panduan awal"
-      className="relative flex flex-col gap-1 rounded-[20px] border border-line bg-[#DCEBE0] p-4 pr-12"
+      className="relative flex flex-col gap-1 rounded-[20px] border border-line bg-[#DCEBE0] p-4 pr-12 max-md:rounded-2xl max-md:w-full max-md:mx-0"
     >
       <p className="text-sm font-bold text-[#1C2826]">Baru pertama kali ke sini?</p>
       <p className="text-[13px] leading-relaxed text-[#1E5A36]">
