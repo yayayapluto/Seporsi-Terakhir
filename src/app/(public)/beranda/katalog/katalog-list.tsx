@@ -10,6 +10,7 @@ import { GuidedTour } from "@/components/guided-tour";
 import { SieraEmpty, SieraWarningBadge, sieraCardClass } from "@/components/siera";
 import { Button } from "@/components/ui/button";
 import { OptionSelect } from "@/components/ui/option-select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Toggle } from "@/components/ui/toggle";
 import { MAX_PORTIONS_PER_DAY } from "@/lib/domain/constants";
 import { formatDateTimeWIB, formatIDR, formatSisaMenit } from "@/lib/format";
@@ -425,10 +426,9 @@ export function KatalogList({
       {visible < filtered.length && (
         <output ref={moreRef} className="flex justify-center py-6" aria-live="polite">
           <span className="sr-only">Memuat porsi berikutnya…</span>
-          <div
-            className="h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-primary motion-reduce:animate-none"
-            aria-hidden="true"
-          />
+          <div aria-hidden="true" className="flex w-full flex-col gap-3">
+            <Skeleton className="h-28 w-full rounded-2xl" />
+          </div>
         </output>
       )}
       <GuidedTour
