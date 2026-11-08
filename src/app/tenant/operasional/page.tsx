@@ -90,7 +90,9 @@ async function OperasionalBody() {
             { label: "Diambil · omzet", value: `${picked} · ${formatIDR(revenue)}` },
           ].map((s) => (
             <div key={s.label} className="flex flex-col gap-1 bg-white p-4">
-              <dt className="text-[11px] font-bold tracking-wide text-[#64746B]">{s.label}</dt>
+              <dt className="text-[11px] font-bold tracking-wide text-[#64746B] max-md:text-xs">
+                {s.label}
+              </dt>
               <dd className="text-xl font-extrabold tabular-nums">{s.value}</dd>
             </div>
           ))}
