@@ -22,15 +22,15 @@ export function NotifRow({
       className={cn(
         sieraCardClass,
         "flex min-h-11 items-center gap-3 px-4 py-3.5",
-        "max-md:flex max-md:items-start max-md:gap-3 max-md:w-full max-md:p-3.5 max-md:bg-white max-md:border max-md:border-[#e3e9e5] max-md:rounded-2xl",
-        read && "opacity-60",
+        "max-md:flex max-md:items-start max-md:gap-3 max-md:w-full max-md:p-3.5 max-md:bg-white max-md:border max-md:border-[#e3e9e5] max-md:rounded-2xl max-md:shrink-0 max-md:h-auto max-md:min-h-0 max-md:max-h-none max-md:overflow-visible max-md:opacity-100",
+        read && "opacity-60 max-md:opacity-100",
       )}
     >
       {/* 1. avatar + 2. text column */}
       <Link
         href={n.href}
         onClick={onNavigate}
-        className="flex min-w-0 flex-1 items-start gap-3 max-md:flex max-md:items-start max-md:gap-3 max-md:flex-1 max-md:min-w-0"
+        className="flex min-w-0 flex-1 items-start gap-3 max-md:flex max-md:items-start max-md:gap-3 max-md:flex-1 max-md:min-w-0 max-md:h-auto max-md:max-h-none max-md:overflow-visible max-md:shrink-0"
       >
         <div
           aria-hidden="true"
@@ -44,7 +44,7 @@ export function NotifRow({
 
         <div className="flex min-w-0 flex-1 flex-col gap-0.5 max-md:flex-1 max-md:min-w-0">
           <div className="flex items-baseline justify-between gap-2 max-md:block">
-            <div className="truncate text-sm font-bold text-[#1C2826] max-md:text-[15px] max-md:font-bold max-md:leading-snug max-md:flex max-md:items-center max-md:gap-1.5 max-md:break-normal max-md:[overflow-wrap:break-word]">
+            <div className="truncate text-sm font-bold text-[#1C2826] max-md:text-[15px] max-md:font-bold max-md:leading-snug max-md:flex max-md:items-center max-md:gap-1.5 max-md:break-normal max-md:[overflow-wrap:break-word] max-md:whitespace-normal max-md:overflow-visible max-md:text-ellipsis-none">
               {!read && (
                 <span
                   aria-hidden="true"
@@ -53,11 +53,11 @@ export function NotifRow({
               )}
               <span>{n.title}</span>
             </div>
-            <div className="shrink-0 text-xs text-[#64746B] whitespace-nowrap max-md:mt-0.5 max-md:text-xs max-md:text-[#5b6b62] max-md:break-normal max-md:[overflow-wrap:break-word]">
+            <div className="shrink-0 text-xs text-[#64746B] whitespace-nowrap max-md:mt-0.5 max-md:text-xs max-md:text-[#5b6b62] max-md:break-normal max-md:[overflow-wrap:break-word] max-md:whitespace-normal max-md:overflow-visible">
               {formatDateTimeWIB(new Date(n.time))}
             </div>
           </div>
-          <p className="line-clamp-2 text-[13px] text-[#1C2826] max-md:mt-1.5 max-md:text-[13px] max-md:leading-normal max-md:text-[#4a5b51] max-md:line-clamp-3 max-md:break-normal max-md:[overflow-wrap:break-word]">
+          <p className="line-clamp-2 text-[13px] text-[#1C2826] max-md:mt-1.5 max-md:text-[13px] max-md:leading-normal max-md:text-[#4a5b51] max-md:line-clamp-3 max-md:break-normal max-md:[overflow-wrap:break-word] max-md:overflow-visible">
             {n.desc}
           </p>
         </div>
