@@ -84,10 +84,10 @@ export function NotifDrawer({
         <SheetContent
           side="right"
           showCloseButton={false}
-          className="h-dvh w-full p-0 sm:max-w-[400px]"
+          className="h-dvh w-full p-0 sm:max-w-[400px] max-md:w-full max-md:max-w-full max-md:inset-0 max-md:h-dvh max-md:flex max-md:flex-col"
           aria-label="Notifikasi"
         >
-          <SheetHeader className="flex-row items-center justify-between gap-2 border-b border-line bg-white px-4 py-3">
+          <SheetHeader className="flex-row items-center justify-between gap-2 border-b border-line bg-white px-4 py-3 max-md:shrink-0">
             <div className="min-w-0">
               <SheetTitle className="truncate text-base font-extrabold text-[#1C2826]">
                 Notifikasi
@@ -112,9 +112,9 @@ export function NotifDrawer({
               )}
             </div>
           </SheetHeader>
-          <ul className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto px-4 py-4 max-md:gap-2.5 max-md:px-4 list-none m-0 p-0">
+          <ul className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto px-4 py-4 max-md:gap-2.5 max-md:px-4 list-none m-0 p-0 max-md:flex max-md:flex-col max-md:gap-2.5 max-md:px-4 max-md:py-3 max-md:flex-1 max-md:min-h-0 max-md:overflow-y-auto max-md:overscroll-contain max-md:pb-[calc(16px+env(safe-area-inset-bottom))]">
             {notifs.length === 0 ? (
-              <li className="flex flex-col items-center gap-2 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center list-none">
+              <li className="flex flex-col items-center gap-2 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center list-none max-md:shrink-0">
                 <p className="text-sm font-bold text-[#1C2826]">Belum ada kabar</p>
                 <p className="text-sm text-[#64746B]">
                   Perubahan status pesanan dan pendaftaran akan muncul di sini.
