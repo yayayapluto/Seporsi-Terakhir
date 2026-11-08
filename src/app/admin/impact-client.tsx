@@ -200,22 +200,35 @@ export function ImpactClient({
                     role="img"
                     aria-label={`Tren pickup harian, tertinggi ${maxSaved} porsi dalam sehari`}
                   >
-                    {series.map((d, i) => (
-                      <div key={d.day} className="flex min-w-0 flex-1 flex-col items-center gap-1">
+                    {series.map((d, i) => {
+                      const isLabel = i % labelEvery === 0 || i === series.length - 1;
+                      const labelIdx = Math.floor(i / labelEvery);
+                      return (
                         <div
-                          title={`${d.day}: ${d.saved} porsi`}
-                          className="w-full max-w-6 rounded-t bg-[#2E7D4F]"
-                          style={{
-                            height: `${Math.max(d.saved > 0 ? 6 : 2, Math.round((d.saved / maxSaved) * 100))}%`,
-                          }}
-                        />
-                        {(i % labelEvery === 0 || i === series.length - 1) && (
-                          <span className="text-[10px] tabular-nums text-muted-foreground max-md:text-xs">
-                            {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                          key={d.day}
+                          className="flex h-full min-w-0 flex-1 flex-col items-center"
+                        >
+                          <div className="flex min-h-0 w-full min-w-0 flex-1 items-end">
+                            <div
+                              title={`${d.day}: ${d.saved} porsi`}
+                              className="w-full max-w-6 rounded-t bg-[#2E7D4F]"
+                              style={{
+                                height: `${Math.max(d.saved > 0 ? 6 : 2, Math.round((d.saved / maxSaved) * 100))}%`,
+                              }}
+                            />
+                          </div>
+                          {isLabel && (
+                            <span
+                              className={`pt-1 text-[10px] tabular-nums text-muted-foreground max-md:text-xs ${
+                                labelIdx % 2 === 1 && i !== series.length - 1 ? "max-md:hidden" : ""
+                              }`}
+                            >
+                              {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
