@@ -57,6 +57,8 @@ export function LangkahStory({ steps }: { steps: readonly LangkahStep[] }) {
             .to("[data-numfill='1']", { opacity: 0, duration: 0.3 }, "step2")
             .to("[data-numfill='2']", { opacity: 1, duration: 0.3 }, "step2")
             .to("[data-rail='1']", { scaleY: 1, duration: 0.5, ease: "none" }, "step2")
+            .to("[data-dot='1']", { backgroundColor: "#CFE3D6", duration: 0.3 }, "step2")
+            .to("[data-dot='2']", { backgroundColor: "#2E7D4F", duration: 0.3 }, "step2")
             .addLabel("step3")
             .to("[data-state='2']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
             .to("[data-text='2']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
@@ -74,7 +76,9 @@ export function LangkahStory({ steps }: { steps: readonly LangkahStep[] }) {
             )
             .to("[data-numfill='2']", { opacity: 0, duration: 0.3 }, "step3")
             .to("[data-numfill='3']", { opacity: 1, duration: 0.3 }, "step3")
-            .to("[data-rail='2']", { scaleY: 1, duration: 0.5, ease: "none" }, "step3");
+            .to("[data-rail='2']", { scaleY: 1, duration: 0.5, ease: "none" }, "step3")
+            .to("[data-dot='2']", { backgroundColor: "#CFE3D6", duration: 0.3 }, "step3")
+            .to("[data-dot='3']", { backgroundColor: "#2E7D4F", duration: 0.3 }, "step3");
           return () => tl.scrollTrigger?.kill();
         });
         mm.add("(max-width: 819px)", () => {
@@ -109,6 +113,8 @@ export function LangkahStory({ steps }: { steps: readonly LangkahStep[] }) {
               { opacity: 1, y: 0, duration: 0.5 },
               "step2",
             )
+            .to("[data-dot='1']", { backgroundColor: "#CFE3D6", duration: 0.3 }, "step2")
+            .to("[data-dot='2']", { backgroundColor: "#2E7D4F", duration: 0.3 }, "step2")
             .addLabel("step3")
             .to("[data-state='2']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
             .to("[data-text='2']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
@@ -123,7 +129,9 @@ export function LangkahStory({ steps }: { steps: readonly LangkahStep[] }) {
               { opacity: 0, y: 24 },
               { opacity: 1, y: 0, duration: 0.5 },
               "step3",
-            );
+            )
+            .to("[data-dot='2']", { backgroundColor: "#CFE3D6", duration: 0.3 }, "step3")
+            .to("[data-dot='3']", { backgroundColor: "#2E7D4F", duration: 0.3 }, "step3");
           return () => tl.scrollTrigger?.kill();
         });
       }, root);
@@ -139,11 +147,11 @@ export function LangkahStory({ steps }: { steps: readonly LangkahStep[] }) {
   return (
     <div ref={root} className="min-w-0">
       <div
-        className="grid items-center gap-6 md:min-h-screen md:grid-cols-2 md:gap-12 max-md:h-[100svh] max-md:grid-rows-[45svh_auto_35svh]"
+        className="grid items-center gap-6 md:min-h-screen md:grid-cols-2 md:gap-12 max-md:min-h-[100svh] max-md:grid-rows-[auto_auto_1fr] max-md:gap-4"
         data-story
       >
         {/* Stage: satu kartu morph antar 3 state */}
-        <div className="relative flex aspect-square w-full max-w-[400px] items-center justify-center overflow-hidden rounded-[28px] bg-[#DCEBE1] shadow-[0_14px_28px_rgba(23,38,29,0.12)] max-md:mx-auto max-md:max-h-[45svh]">
+        <div className="relative flex aspect-square w-full max-w-[400px] items-center justify-center overflow-hidden rounded-[28px] bg-[#DCEBE1] shadow-[0_14px_28px_rgba(23,38,29,0.12)] max-md:mx-auto max-md:max-h-[42svh]">
           {steps.map((step, i) => (
             <div
               key={step.num}
@@ -153,6 +161,17 @@ export function LangkahStory({ steps }: { steps: readonly LangkahStep[] }) {
             >
               {step.panel}
             </div>
+          ))}
+        </div>
+
+        {/* Progress dots (mobile, horizontal) */}
+        <div aria-hidden="true" className="flex items-center justify-center gap-2 md:hidden">
+          {steps.map((s, i) => (
+            <span
+              key={s.num}
+              data-dot={i + 1}
+              className={`size-2.5 rounded-full ${i === 0 ? "bg-[#2E7D4F]" : "bg-[#CFE3D6]"}`}
+            />
           ))}
         </div>
 

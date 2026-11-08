@@ -7,8 +7,8 @@ import { useRef } from "react";
 
 const CHIPS = [
   { text: "Bayar di tempat", className: "top-4 left-4", speed: 24 },
-  { text: "Jam masak tertera", className: "right-4 bottom-16", speed: 40 },
-  { text: "Maks 2 porsi/hari", className: "bottom-4 left-4", speed: 60 },
+  { text: "Jam masak tertera", className: "top-4 right-4", speed: 40 },
+  { text: "Maks 2 porsi/hari", className: "right-4 bottom-16", speed: 60 },
 ];
 
 /** Foto hero: reveal clip-path + parallax + chip mengambang. Konten dari SSR, gerak hanya lapisan tambahan. */
@@ -89,7 +89,7 @@ export function HeroPhoto({ maxPorsi }: { maxPorsi: number }) {
           {c.text}
         </span>
       ))}
-      <span className="absolute right-4 bottom-4 left-4 max-w-max rounded-lg bg-white/75 px-3 py-2 text-xs text-[#1C2826] backdrop-blur">
+      <span className="absolute right-4 bottom-4 left-4 max-w-[75%] rounded-lg bg-white/75 px-3 py-2 text-xs leading-snug text-[#1C2826] backdrop-blur">
         Kantin sore hari: sisa layak simpan didata sebelum tutup.
       </span>
     </div>

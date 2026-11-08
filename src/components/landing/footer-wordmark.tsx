@@ -16,11 +16,11 @@ export function FooterWordmark() {
       const ctx = gsap.context(() => {
         gsap.fromTo(
           el,
-          { yPercent: 30 },
+          { yPercent: 20 },
           {
             yPercent: 0,
             ease: "none",
-            scrollTrigger: { trigger: el, start: "top bottom", end: "top 60%", scrub: 0.3 },
+            scrollTrigger: { trigger: el, start: "top bottom", end: "top 35%", scrub: 0.3 },
           },
         );
       }, el);
