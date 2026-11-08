@@ -7,7 +7,7 @@ import { BottomNav } from "./bottom-nav";
 /** AppShell: sidebar kiri full-height + kolom kanan (konten tengah + footer). */
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <div className="flex w-full flex-1 max-md:flex-none max-md:min-h-0 max-md:h-auto max-md:bg-white">
+    <div className="flex w-full flex-1 max-md:flex-none max-md:min-h-0 max-md:h-auto max-md:bg-white max-md:overflow-x-clip">
       <div className="flex flex-col">
         <AppHeaderShell />
         <BottomNav />
