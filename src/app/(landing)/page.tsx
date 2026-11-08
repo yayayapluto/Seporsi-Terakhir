@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { HeroPhoto } from "@/components/landing/hero-photo";
 import { Magnetic } from "@/components/landing/motion/magnetic";
+import { Marquee } from "@/components/landing/motion/marquee";
 import { RevealScope } from "@/components/landing/motion/reveal-scope";
 import { SplitHeading } from "@/components/landing/motion/split-heading";
 import {
@@ -182,6 +183,8 @@ export default async function Home() {
           </div>
         </RevealScope>
       </section>
+
+      <Marquee />
 
       {/* LANGKAH — tiga langkah dari etalase ke meja makan. */}
       <section
