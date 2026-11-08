@@ -132,7 +132,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                   className={cn(sieraCardClass, "flex min-w-0 flex-col gap-3 px-5 py-[18px]")}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <SieraTile className="size-12 shrink-0">
+                    <SieraTile className="size-12 shrink-0 max-md:hidden">
                       <Store className="size-[22px]" strokeWidth={1.8} aria-hidden />
                     </SieraTile>
                     <div className="min-w-0 flex-1">
@@ -163,7 +163,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                         </p>
                       )}
                       {o.status === "reserved" && o.pickupDeadlineAt && (
-                        <p className="mt-0.5 flex items-center gap-1 text-xs font-bold text-[#B45309]">
+                        <p className="mt-0.5 flex items-center gap-1 text-xs font-bold text-[#B45309] max-md:rounded-lg max-md:border max-md:border-[#B45309]/20 max-md:bg-[#FEF3C7]/50 max-md:px-3 max-md:py-2 max-md:font-medium max-md:text-[#92400E]">
                           Ambil dalam{" "}
                           <PickupCountdown
                             deadlineIso={o.pickupDeadlineAt}
