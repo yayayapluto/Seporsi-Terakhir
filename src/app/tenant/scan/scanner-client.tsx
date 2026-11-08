@@ -438,15 +438,17 @@ export function ScannerClient({
         label="Konfirmasi manual"
         action={
           phase.kind === "scanning" ? (
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               data-tour="manual"
-              className="min-h-11 text-[13px] font-bold text-[#1E5A36] underline underline-offset-4"
+              className="min-h-11"
               onClick={() => setManualOpen((v) => !v)}
               aria-expanded={manualOpen}
             >
               {manualOpen ? "Tutup kode manual" : "Masukkan kode manual"}
-            </button>
+            </Button>
           ) : undefined
         }
       >
