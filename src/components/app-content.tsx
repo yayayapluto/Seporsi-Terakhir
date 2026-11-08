@@ -4,7 +4,7 @@ import { SmoothProvider } from "./smooth-provider";
 /** Kolom konten aplikasi: full width, halaman yang butuh batas atur sendiri. */
 export function AppContent({ children }: { children: ReactNode }) {
   return (
-    <main className="flex w-full min-w-0 flex-1 flex-col max-md:scroll-pb-32">
+    <main className="flex w-full min-w-0 flex-1 flex-col max-md:scroll-pb-24">
       <SmoothProvider>{children}</SmoothProvider>
     </main>
   );
