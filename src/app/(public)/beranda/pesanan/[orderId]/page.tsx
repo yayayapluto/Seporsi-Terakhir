@@ -240,7 +240,7 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                 </div>
               )}
             </div>
-            <div className="min-h-0 lg:sticky lg:top-[76px] max-md:sticky max-md:bottom-[calc(112px+env(safe-area-inset-bottom))]">
+            <div className="min-h-0 lg:sticky lg:top-[76px] max-md:static">
               <section aria-label="Detail pesanan" className="flex min-w-0 flex-col gap-2">
                 <SieraSectionTitle>Detail pesanan</SieraSectionTitle>
                 <dl
@@ -263,6 +263,12 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                   <SieraField icon={CalendarClock} label="Waktu pesan">
                     {formatDateTimeWIB(new Date(order.createdAt))} WIB
                   </SieraField>
+                  <div className="hidden min-h-14 items-center gap-3 px-1 py-3 max-md:flex">
+                    <span className="min-w-0 flex-1 text-xs text-[#64746B]">Total bayar tunai</span>
+                    <strong className="text-2xl font-extrabold text-[#0d5a38]">
+                      {formatIDR(totalPrice)}
+                    </strong>
+                  </div>
                 </dl>
               </section>
             </div>
@@ -342,7 +348,7 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                 </div>
               ) : (
                 <div className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}>
-                  <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5">
+                  <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 max-md:hidden">
                     <del className="text-xs text-[#64746B]">
                       <span className="sr-only">Harga awal: </span>
                       {formatIDR(normalTotal)}
@@ -398,6 +404,10 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                 </div>
               )}
             </SieraSection>
+            <div
+              aria-hidden="true"
+              className="hidden h-[calc(112px+env(safe-area-inset-bottom))] shrink-0 max-md:block"
+            />
           </>
         }
       />
