@@ -35,7 +35,10 @@ export function HeaderCrumb({ trail }: { trail: Crumb[] }) {
       >
         <ArrowLeft className="size-5" aria-hidden />
       </Button>
-      <Breadcrumb>
+      <span className="hidden min-w-0 flex-1 truncate text-base font-bold text-[#1C2826] max-md:block">
+        {current?.label}
+      </span>
+      <Breadcrumb className="max-md:hidden">
         <BreadcrumbList className="sm:gap-2.5">
           {trail.map((c, i) => {
             const last = i === trail.length - 1;
