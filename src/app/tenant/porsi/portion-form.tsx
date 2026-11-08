@@ -277,7 +277,7 @@ export function PortionForm({
   }
 
   return (
-    <div className="grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_320px]">
+    <div className="grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_320px] max-md:grid-cols-[minmax(0,1fr)] max-md:min-w-0">
       <form onSubmit={handleSubmit(onSubmit)} className="flex min-w-0 flex-col gap-6">
         {formError && <SieraAlert variant="error">{formError}</SieraAlert>}
         {draftRestored && isNew && (
