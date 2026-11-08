@@ -2,7 +2,6 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
 
 /** Bar progres tipis di atas halaman, scaleX mengikuti scroll. */
@@ -20,7 +19,12 @@ export function ScrollProgress() {
         {
           scaleX: 1,
           ease: "none",
-          scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 0.3 },
+          scrollTrigger: {
+            trigger: document.body,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.3,
+          },
         },
       );
     },

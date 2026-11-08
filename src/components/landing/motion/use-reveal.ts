@@ -1,7 +1,6 @@
 "use client";
 
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 
 /** Reveal sekali saat masuk viewport untuk semua [data-reveal] di bawah ref. */
