@@ -195,6 +195,7 @@ export function KatalogList({
         </h2>
         <div className="flex shrink-0 items-center gap-2 max-md:contents">
           <span className="text-sm font-bold text-[#1C2826]">{filtered.length} porsi</span>
+          <div aria-hidden="true" className="hidden w-full max-md:block" />
           {dayTotal >= MAX_PORTIONS_PER_DAY && (
             <div className="max-md:order-3">
               <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
