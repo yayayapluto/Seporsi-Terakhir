@@ -188,9 +188,12 @@ export function ImpactClient({
                   terima.
                 </p>
               ) : (
-                <div data-tour="tren" className="overflow-x-auto">
+                <div
+                  data-tour="tren"
+                  className="overflow-x-auto max-md:overflow-visible max-md:min-w-0"
+                >
                   <div
-                    className="flex h-32 min-w-[480px] items-end gap-1"
+                    className="flex h-32 min-w-[480px] items-end gap-1 max-md:h-56 max-md:min-w-0"
                     role="img"
                     aria-label={`Tren pickup harian, tertinggi ${maxSaved} porsi dalam sehari`}
                   >
@@ -203,8 +206,8 @@ export function ImpactClient({
                             height: `${Math.max(d.saved > 0 ? 6 : 2, Math.round((d.saved / maxSaved) * 100))}%`,
                           }}
                         />
-                        {i % labelEvery === 0 && (
-                          <span className="text-[10px] tabular-nums text-muted-foreground">
+                        {(i % labelEvery === 0 || i === series.length - 1) && (
+                          <span className="text-[10px] tabular-nums text-muted-foreground max-md:text-xs">
                             {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
                           </span>
                         )}
