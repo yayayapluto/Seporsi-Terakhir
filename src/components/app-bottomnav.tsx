@@ -28,7 +28,7 @@ export function AppBottomNav({ tabs }: { tabs: NavTab[] }) {
                   "relative flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-[18px] px-1 py-2 text-xs font-semibold transition-colors duration-200 active:scale-[0.98]",
                   isActive
                     ? "bg-[#DCEBE1] text-[#0D5A38] font-bold"
-                    : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+                    : "text-muted-foreground [@media(hover:hover)]:hover:bg-muted/60 [@media(hover:hover)]:hover:text-foreground",
                 )}
               >
                 {isActive && <ActivePill id="nav-pill-mobile" rounded="rounded-[18px]" />}
