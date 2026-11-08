@@ -134,12 +134,15 @@ export function ImpactClient({
             <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl font-bold">
               Dampak penyelamatan
             </h1>
-            <p className="text-muted-foreground">
-              Halo {email}. Angka dari pickup yang discan, bukan estimasi. Berat = estimasi sampling
-              per menu.
+            <p className="text-muted-foreground max-md:text-sm max-md:leading-relaxed">
+              Halo <span className="max-md:break-all">{email}</span>. Angka dari pickup yang discan,
+              bukan estimasi. Berat = estimasi sampling per menu.
             </p>
           </div>
-          <div data-tour="rentang" className="flex flex-wrap items-end gap-3">
+          <div
+            data-tour="rentang"
+            className="flex flex-wrap items-end gap-3 max-md:grid max-md:grid-cols-[minmax(0,1fr)] max-md:gap-3"
+          >
             <DateField
               id="from"
               label="Dari"
@@ -171,9 +174,9 @@ export function ImpactClient({
             </p>
             <dl className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
               {secondary.map((c) => (
-                <div key={c.label} className="rounded-xl bg-white/10 p-3">
+                <div key={c.label} className="min-w-0 rounded-xl bg-white/10 p-3">
                   <dt className="text-xs font-semibold text-white/80">{c.label}</dt>
-                  <dd className="mt-0.5 text-lg font-bold tabular-nums">{c.value}</dd>
+                  <dd className="mt-0.5 text-lg font-bold tabular-nums break-words">{c.value}</dd>
                 </div>
               ))}
             </dl>
