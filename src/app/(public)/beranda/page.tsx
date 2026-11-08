@@ -8,7 +8,6 @@ import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraCard, SieraRailPage, SieraSection, SieraTile } from "@/components/siera";
-import { SiteFooterMini } from "@/components/site-footer";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatSisaMenit } from "@/lib/format";
@@ -134,7 +133,7 @@ export default async function BerandaPage({
       <AppHeader title="Beranda" trail={[{ label: "Beranda" }]} />
       <div className="flex-1 bg-background pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8 max-md:pb-0">
         <SieraRailPage
-          className="max-md:px-5 max-md:w-full max-md:max-w-full max-md:mx-0 max-md:pt-5 max-md:pb-1"
+          className="max-md:px-0 max-md:w-full max-md:max-w-full max-md:mx-0 max-md:pt-5 max-md:pb-1"
           asideLabel="Ringkasan beranda"
           main={
             <div className="flex min-w-0 flex-col gap-6 lg:gap-7 max-md:px-0 max-md:mx-0">
@@ -157,9 +156,6 @@ export default async function BerandaPage({
               <Suspense fallback={<LoadingSpinner />}>
                 <SoonBody user={user} />
               </Suspense>
-              <div className="hidden max-md:block max-md:px-0 max-md:mx-0 max-md:w-full border-t border-line mt-2">
-                <SiteFooterMini bare />
-              </div>
             </div>
           }
           aside={

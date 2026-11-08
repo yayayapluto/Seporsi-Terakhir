@@ -459,7 +459,7 @@ export function SieraRailPage({
   return (
     <div
       className={cn(
-        "mx-auto grid w-full min-w-0 max-w-[430px] md:max-w-[1160px] flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-stretch xl:gap-6",
+        "mx-auto grid w-full min-w-0 max-w-[430px] md:max-w-[1160px] flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-stretch xl:gap-6 max-md:px-0 max-md:mx-0 max-md:w-full max-md:max-w-full",
         className,
       )}
     >

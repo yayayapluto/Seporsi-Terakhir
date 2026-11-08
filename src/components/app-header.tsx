@@ -24,7 +24,7 @@ export async function AppHeader({
   const crumbs = trail ?? [{ label: title }];
   const isRoot = crumbs.length === 1 && !crumbs[0]?.href;
   return (
-    <header className="sticky top-0 z-30 h-16 w-full border-b border-line bg-white md:h-[60px]">
+    <header className="sticky top-0 z-30 h-16 w-full border-b border-line bg-white md:h-[60px] max-md:-mx-5 max-md:w-[calc(100%+2.5rem)]">
       <div className="flex h-full w-full items-center justify-between gap-2 px-5 md:px-8">
         {isRoot ? (
           <>
