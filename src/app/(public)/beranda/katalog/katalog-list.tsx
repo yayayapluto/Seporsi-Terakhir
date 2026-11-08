@@ -106,7 +106,7 @@ export function KatalogList({
       <fieldset
         aria-label="Saring katalog"
         data-tour="filter"
-        className="m-0 flex min-w-0 max-md:flex-row max-md:items-end max-md:gap-3 flex-col gap-4 border-0 p-0"
+        className="m-0 flex min-w-0 max-md:flex-col max-md:gap-4 flex-col gap-4 border-0 p-0"
       >
         <label
           htmlFor="tenant-filter"
