@@ -1,6 +1,8 @@
 import { Check, QrCode } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CtaCircles } from "@/components/landing/cta-circles";
+import { FooterBottom } from "@/components/landing/footer-bottom";
 import { HeroPhoto } from "@/components/landing/hero-photo";
 import { Magnetic } from "@/components/landing/motion/magnetic";
 import { Marquee } from "@/components/landing/motion/marquee";
@@ -238,8 +240,17 @@ export default async function Home() {
       {/* CTA penutup. */}
       <section className="mx-auto w-full max-w-[1080px] px-5 pb-[72px] md:px-8">
         <Reveal>
-          <div className="flex flex-col items-center gap-4 rounded-[28px] bg-[#2D7A4F] max-md:px-4 max-md:py-8 max-md:rounded-[20px] px-6 py-14 text-center text-white md:px-10 md:py-16">
-            <h2 className="max-w-[14ch] text-balance text-[32px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
+          <div className="relative flex flex-col items-center gap-4 overflow-hidden rounded-[28px] bg-[#2D7A4F] max-md:px-4 max-md:py-8 max-md:rounded-[20px] px-6 py-14 text-center text-white md:px-10 md:py-16">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -top-16 -left-16 size-48 rounded-full bg-[#1E5A36] opacity-50 blur-3xl"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-10 -bottom-20 size-56 rounded-full bg-[#3E9A6A] opacity-40 blur-3xl"
+            />
+            <CtaCircles />
+            <h2 className="relative max-w-[14ch] text-balance text-[32px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
               Jangan biarkan porsi terakhir terbuang.
             </h2>
             <p className="max-w-[52ch] text-base leading-relaxed text-white/90">
@@ -275,12 +286,7 @@ export default async function Home() {
         </Reveal>
       </section>
 
-      <footer className="bg-[#2D7A4F] py-10 text-white">
-        <div className="mx-auto flex w-full max-w-[1080px] flex-wrap justify-between gap-4 px-5 text-[13px] md:px-8">
-          <span className="font-heading text-base font-extrabold">Seporsi Terakhir</span>
-          <span className="text-white/90">© 2026 · Tahap awal SDG 12 di lingkungan kampus</span>
-        </div>
-      </footer>
+      <FooterBottom />
     </div>
   );
 }

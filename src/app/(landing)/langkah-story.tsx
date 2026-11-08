@@ -2,7 +2,6 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef, useState } from "react";
 import type { LangkahStep } from "./langkah-stagger";
 import { LangkahStagger } from "./langkah-stagger";
