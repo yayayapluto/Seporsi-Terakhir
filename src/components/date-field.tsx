@@ -70,7 +70,7 @@ export function DateField({
                 type="button"
                 variant="outline"
                 data-slot="button"
-                className="h-11 min-h-11 flex-1 justify-start gap-1.5 px-2.5 py-2 font-normal whitespace-nowrap"
+                className="h-11 min-h-11 flex-1 justify-start gap-1.5 px-2.5 py-2 font-normal whitespace-nowrap max-md:min-w-0 max-md:min-h-11"
               >
                 <CalendarIcon className="size-4 shrink-0 text-muted-foreground" />
                 {selected
@@ -79,7 +79,10 @@ export function DateField({
               </Button>
             }
           />
-          <PopoverContent className="w-auto p-0" align="start">
+          <PopoverContent
+            className="w-auto p-0 max-md:w-[calc(100vw-2rem)] max-md:max-w-full"
+            align="start"
+          >
             <Calendar
               mode="single"
               locale={localeId}
@@ -96,9 +99,9 @@ export function DateField({
         {selected && (
           <Button
             type="button"
-            variant="ghost"
-            size="sm"
-            className="min-h-11 shrink-0 px-3"
+            variant="outline"
+            size="icon"
+            className="shrink-0 max-md:size-11"
             onClick={() => onChange("")}
             aria-label={`Hapus ${label.toLowerCase()}`}
           >
