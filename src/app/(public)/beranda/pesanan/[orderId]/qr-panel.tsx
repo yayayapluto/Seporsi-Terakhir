@@ -34,7 +34,7 @@ export function QrPanel({
       aria-labelledby="qr-heading"
       className={cn(
         sieraCardClass,
-        "flex flex-col gap-4 p-5 max-md:h-auto max-md:min-h-0 max-md:overflow-visible max-md:p-4 max-md:rounded-2xl max-md:bg-white max-md:border max-md:border-[#e3e9e5]",
+        "flex flex-col gap-4 p-5 max-md:h-auto max-md:min-h-0 max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:overflow-visible max-md:p-4 max-md:rounded-2xl max-md:bg-white max-md:border max-md:border-[#e3e9e5]",
       )}
     >
       <div>
@@ -48,8 +48,8 @@ export function QrPanel({
           <p className="mt-0.5 text-sm font-semibold text-[#1C2826]">Lokasi: {tenantLocation}</p>
         )}
       </div>
-      <div className="flex flex-col items-center gap-4">
-        <div className="mx-auto aspect-square w-full max-w-[260px] rounded-xl border border-[#e3e9e5] bg-white p-3">
+      <div className="flex w-full min-w-0 flex-col items-center gap-4">
+        <div className="mx-auto aspect-square w-full min-w-0 max-w-[260px] rounded-xl border border-[#e3e9e5] bg-white p-3">
           <QRCode
             value={pickupToken}
             size={256}
@@ -58,9 +58,9 @@ export function QrPanel({
             style={{ width: "100%", height: "100%" }}
           />
         </div>
-        <p className="text-center">
+        <p className="text-center max-md:hidden">
           <span className="block text-xs text-[#64746B]">Total bayar tunai</span>
-          <strong className="text-3xl font-extrabold text-accent-strong">
+          <strong className="text-3xl font-extrabold text-[#0d5a38]">
             {formatIDR(totalPrice)}
           </strong>
         </p>
