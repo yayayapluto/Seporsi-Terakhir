@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { SieraCard, sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { formatIDR } from "@/lib/format";
@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: "Operasional" };
 /** Operasional tenant: ringkasan angka hari ini + aksi langsung. Tanpa tabel baru. */
 export default function OperasionalPage() {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<GenericPageSkeleton />}>
       <OperasionalBody />
     </Suspense>
   );

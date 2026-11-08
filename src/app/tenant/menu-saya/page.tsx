@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -84,7 +84,7 @@ export default async function MenuPage({
         title="Menu Kantin"
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Menu Kantin" }]}
       />
-      <Suspense fallback={<LoadingSpinner />}>
+      <Suspense fallback={<GenericPageSkeleton />}>
         <MenuBody
           tenantId={tenant.id}
           tenantName={tenant.name}

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { ROUTES } from "@/lib/routes";
@@ -48,7 +48,7 @@ export default async function EditPorsiPage({
           },
         ]}
       />
-      <Suspense fallback={<LoadingSpinner />}>
+      <Suspense fallback={<GenericPageSkeleton />}>
         <EditPorsiBody params={params} sp={sp} />
       </Suspense>
     </>

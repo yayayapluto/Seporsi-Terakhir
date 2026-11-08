@@ -14,7 +14,7 @@ import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { EmptyLine } from "@/components/shared/empty-line";
 import {
@@ -110,7 +110,7 @@ export default function TenantPesananPage({
   }>;
 }) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<GenericPageSkeleton />}>
       <TenantPesananBody searchParams={searchParams} />
     </Suspense>
   );

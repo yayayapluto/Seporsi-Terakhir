@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import {
   SieraList,
@@ -84,7 +84,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 
 export default function TenantOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<GenericPageSkeleton />}>
       <TenantOrderDetailBody params={params} />
     </Suspense>
   );
