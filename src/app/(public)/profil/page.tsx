@@ -148,12 +148,9 @@ export default async function ProfilPage({
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
       {isStudent ? (
-        <div className="mx-auto flex w-full min-w-0 flex-col gap-6 px-5 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:max-w-[1160px] md:px-6 md:pb-8">
-          <section
-            aria-label="Identitas"
-            className={`${sieraCardClass} p-5 md:p-6 max-md:px-5 max-md:py-5`}
-          >
-            <div className="flex items-center gap-5 max-md:gap-4">
+        <div className="mx-auto flex w-full min-w-0 flex-col gap-6 px-5 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:max-w-[1160px] md:px-6 md:pb-8 max-md:px-0 max-md:mx-0 max-md:pt-4 max-md:pb-0 max-md:max-w-full">
+          <section aria-label="Identitas" className={`${sieraCardClass} p-4 md:p-6 max-md:p-4`}>
+            <div className="flex items-center gap-4">
               {p.avatarPath ? (
                 <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
               ) : (
@@ -169,8 +166,15 @@ export default async function ProfilPage({
                   {p.fullName}
                 </h1>
                 {p.email && (
-                  <p className="mt-0.5 break-words text-sm text-[#64746B] [overflow-wrap:anywhere]">
-                    {p.email}
+                  <p className="mt-0.5 text-[13px] text-[#64746B] break-words">
+                    {p.email.includes("@") ? (
+                      <>
+                        {p.email.split("@")[0]}@<wbr />
+                        {p.email.split("@").slice(1).join("@")}
+                      </>
+                    ) : (
+                      p.email
+                    )}
                   </p>
                 )}
                 {label && (
@@ -339,9 +343,9 @@ export default async function ProfilPage({
           />
         </div>
       ) : (
-        <div className="mx-auto grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-6">
+        <div className="mx-auto grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-6 max-md:px-0 max-md:mx-0 max-md:pt-4 max-md:pb-0 max-md:max-w-full">
           {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
-          <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
+          <section aria-label="Identitas" className={`${sieraCardClass} p-4 md:p-6 max-md:p-4`}>
             <div className="flex items-center gap-4">
               {p.avatarPath ? (
                 <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
@@ -353,13 +357,20 @@ export default async function ProfilPage({
                   {initials || "•"}
                 </span>
               )}
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <h1 className="truncate text-xl leading-tight font-extrabold md:text-2xl max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                   {p.fullName}
                 </h1>
                 {p.email && (
-                  <p className="truncate text-sm text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
-                    {p.email}
+                  <p className="mt-0.5 text-[13px] text-[#64746B] break-words">
+                    {p.email.includes("@") ? (
+                      <>
+                        {p.email.split("@")[0]}@<wbr />
+                        {p.email.split("@").slice(1).join("@")}
+                      </>
+                    ) : (
+                      p.email
+                    )}
                   </p>
                 )}
                 {label && (
