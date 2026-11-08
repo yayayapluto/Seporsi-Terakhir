@@ -100,6 +100,26 @@ export function SkeletonField() {
   );
 }
 
+/** Skeleton halaman generik: judul + stat + list. */
+export function GenericPageSkeleton() {
+  return (
+    <div aria-busy="true" className="flex min-h-0 flex-col gap-4">
+      <output className="sr-only">Memuat</output>
+      <div aria-hidden="true" className="flex flex-col gap-4">
+        <SkeletonText lines={2} />
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] gap-3">
+          <SkeletonStat />
+          <SkeletonStat />
+          <SkeletonStat />
+        </div>
+        <SkeletonListItem />
+        <SkeletonListItem />
+        <SkeletonListItem />
+      </div>
+    </div>
+  );
+}
+
 /** Baris tabel skeleton. */
 export function SkeletonTableRow() {
   return (
