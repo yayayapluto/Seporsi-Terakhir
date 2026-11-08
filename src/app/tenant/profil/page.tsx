@@ -21,7 +21,7 @@ export default async function TenantProfilPage() {
   const name = (data?.name as string | undefined) ?? tenant.name;
   const location = (data?.location_note as string | undefined) ?? "";
   return (
-    <div className="mx-auto flex w-full min-w-0 max-w-[1160px] flex-col gap-6 max-md:px-5 max-md:pb-[calc(112px+env(safe-area-inset-bottom))] px-4 pt-6 pb-8 md:px-6">
+    <div className="mx-auto flex w-full min-w-0 max-w-[1160px] flex-col gap-6 px-4 pt-6 pb-8 md:px-6 max-md:px-0 max-md:mx-0 max-md:pt-4 max-md:pb-0 max-md:max-w-full">
       <AppHeader
         title="Profil Kantin"
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Profil Kantin" }]}

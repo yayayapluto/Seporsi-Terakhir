@@ -133,7 +133,7 @@ async function KatalogPageBody(
         title="Katalog"
         trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Katalog" }]}
       />
-      <div className="mx-auto w-full max-w-[430px] md:max-w-none">
+      <div className="mx-auto w-full max-w-[430px] md:max-w-none max-md:mx-0 max-md:w-full max-md:max-w-full">
         <SieraRailPage
           asideLabel="Segera habis"
           main={

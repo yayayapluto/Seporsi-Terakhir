@@ -42,7 +42,7 @@ export function QrModal({ order }: { order: MyOrder }) {
       </DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
-        className="max-md:inset-x-0 max-md:top-auto max-md:bottom-0 max-md:translate-x-0 max-md:translate-y-0 max-md:rounded-t-3xl max-md:rounded-b-none max-md:px-5 max-md:pb-[max(1.5rem,env(safe-area-inset-bottom))]"
+        className="max-md:inset-x-0 max-md:top-auto max-md:bottom-0 max-md:translate-x-0 max-md:translate-y-0 max-md:rounded-t-3xl max-md:rounded-b-none max-md:px-4 max-md:pb-[max(1.5rem,env(safe-area-inset-bottom))]"
       >
         <DialogHeader>
           <p className="text-xs font-bold tracking-widest text-primary uppercase">

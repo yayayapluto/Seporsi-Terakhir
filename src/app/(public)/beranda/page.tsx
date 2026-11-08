@@ -328,7 +328,7 @@ function SoonSection({ portions, failed }: { portions: SoonPortion[]; failed: bo
         hint="Koneksi bermasalah. Muat ulang buat coba lagi."
         ctaHref="/beranda"
         ctaLabel="Muat ulang"
-        className="w-full max-md:w-full max-md:mx-0 max-md:p-5"
+        className="w-full max-md:w-full max-md:mx-0 max-md:p-4"
       />
     );
   }
@@ -341,7 +341,7 @@ function SoonSection({ portions, failed }: { portions: SoonPortion[]; failed: bo
         hint="Biasanya kantin mulai posting sekitar 15.30 sampai 16.30. Cek lagi nanti sore."
         ctaHref={ROUTES.katalog}
         ctaLabel="Buka katalog"
-        className="w-full max-md:w-full max-md:mx-0 max-md:p-5"
+        className="w-full max-md:w-full max-md:mx-0 max-md:p-4"
       />
     );
   }
