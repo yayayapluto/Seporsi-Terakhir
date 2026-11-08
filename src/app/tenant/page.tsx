@@ -15,7 +15,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import {
   SieraEmpty,
   SieraList,
@@ -28,6 +27,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress, ProgressTrack } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonListItem, SkeletonStat, SkeletonText } from "@/components/ui/skeleton-blocks";
 import { formatDateTimeWIB, formatIDR, formatSisaMenit, wibTodayRange } from "@/lib/format";
 import { ROUTES, tenantPorsiUbah } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -174,7 +175,25 @@ export default async function TenantDashboardPage({
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense
+      fallback={
+        <div aria-busy="true" className="flex min-h-0 flex-col gap-4">
+          <output className="sr-only">Memuat</output>
+          <div aria-hidden="true" className="flex flex-col gap-4">
+            <SkeletonText lines={2} />
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] gap-3">
+              <SkeletonStat />
+              <SkeletonStat />
+              <SkeletonStat />
+            </div>
+            <Skeleton className="h-12 w-full rounded-xl" />
+            <SkeletonListItem withButton />
+            <SkeletonListItem />
+            <SkeletonListItem />
+          </div>
+        </div>
+      }
+    >
       <DashboardBody
         tourForced={tourForced}
         tourJourney={tourJourney}
