@@ -6,6 +6,7 @@ import type { NotifItem } from "@/lib/notifs";
 import { NotifRow } from "./notif-row";
 import { sieraCountText } from "./siera";
 import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
 import {
   Sheet,
   SheetClose,
@@ -65,6 +66,28 @@ export function NotifDrawer({
   }, [open, userKey]);
 
   const newCount = notifs.filter((n) => !readIds.has(n.id)).length;
+  const listItems =
+    notifs.length === 0 ? (
+      <li className="flex flex-col items-center gap-2 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center list-none max-md:shrink-0">
+        <p className="text-sm font-bold text-[#1C2826]">Belum ada kabar</p>
+        <p className="text-sm text-[#64746B]">
+          Perubahan status pesanan dan pendaftaran akan muncul di sini.
+        </p>
+      </li>
+    ) : (
+      notifs.map((n) => {
+        const read = readIds.has(n.id);
+        return (
+          <NotifRow
+            key={n.id}
+            n={n}
+            onNavigate={() => setOpen(false)}
+            read={read}
+            onMarkRead={() => markOne(n.id)}
+          />
+        );
+      })
+    );
   return (
     <>
       {live}
@@ -91,7 +114,7 @@ export function NotifDrawer({
         <SheetContent
           side="right"
           showCloseButton={false}
-          className="h-dvh w-full p-0 sm:max-w-[400px] max-md:fixed max-md:inset-y-0 max-md:right-0 max-md:left-auto max-md:ml-auto max-md:w-[88%] max-md:max-w-[400px] max-md:h-dvh max-md:flex max-md:flex-col max-md:rounded-l-3xl max-md:shadow-2xl max-md:bg-white max-md:border-l-0 max-md:pt-[env(safe-area-inset-top)] max-md:pb-[env(safe-area-inset-bottom)]"
+          className="h-dvh w-full p-0 sm:max-w-[400px] max-md:fixed max-md:inset-y-0 max-md:right-0 max-md:left-auto max-md:ml-auto max-md:w-[88%] max-md:max-w-[400px] max-md:h-dvh max-md:flex max-md:flex-col max-md:min-h-0 max-md:overflow-hidden max-md:rounded-l-3xl max-md:shadow-2xl max-md:bg-white max-md:border-l-0 max-md:pt-[env(safe-area-inset-top)] max-md:pb-[env(safe-area-inset-bottom)]"
           overlayClassName="max-md:fixed max-md:inset-0 max-md:bg-black/40 max-md:supports-backdrop-filter:backdrop-blur-none"
           aria-label="Notifikasi"
         >
@@ -133,29 +156,14 @@ export function NotifDrawer({
               <X className="size-5" aria-hidden="true" />
             </SheetClose>
           </SheetHeader>
-          <ul className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto px-4 py-4 max-md:gap-2.5 max-md:px-4 list-none m-0 p-0 max-md:flex max-md:flex-col max-md:gap-2.5 max-md:px-4 max-md:py-3 max-md:flex-1 max-md:min-h-0 max-md:overflow-y-auto max-md:overscroll-contain max-md:pb-[calc(16px+env(safe-area-inset-bottom))]">
-            {notifs.length === 0 ? (
-              <li className="flex flex-col items-center gap-2 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center list-none max-md:shrink-0">
-                <p className="text-sm font-bold text-[#1C2826]">Belum ada kabar</p>
-                <p className="text-sm text-[#64746B]">
-                  Perubahan status pesanan dan pendaftaran akan muncul di sini.
-                </p>
-              </li>
-            ) : (
-              notifs.map((n) => {
-                const read = readIds.has(n.id);
-                return (
-                  <NotifRow
-                    key={n.id}
-                    n={n}
-                    onNavigate={() => setOpen(false)}
-                    read={read}
-                    onMarkRead={() => markOne(n.id)}
-                  />
-                );
-              })
-            )}
+          <ul className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto px-4 py-4 list-none m-0 p-0 max-md:hidden">
+            {listItems}
           </ul>
+          <ScrollArea className="hidden max-md:block max-md:flex-1 max-md:min-h-0 max-md:h-0 [&>[data-slot=scroll-area-viewport]]:touch-pan-y">
+            <ul className="flex flex-col gap-2.5 px-4 py-3 list-none m-0 max-md:pb-[calc(16px+env(safe-area-inset-bottom))]">
+              {listItems}
+            </ul>
+          </ScrollArea>
         </SheetContent>
       </Sheet>
     </>
