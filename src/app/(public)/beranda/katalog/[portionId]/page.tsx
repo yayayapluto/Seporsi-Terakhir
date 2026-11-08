@@ -158,7 +158,7 @@ function DetailBody({
   );
 
   return (
-    <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
+    <div className="flex min-w-0 flex-col gap-4 lg:gap-5 max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:overflow-x-clip">
       {/* Detail Header Card */}
       <section
         aria-label="Ringkasan porsi"
@@ -205,7 +205,7 @@ function DetailBody({
         main={
           <>
             {/* Foto */}
-            <div>
+            <div className="min-w-0 max-md:w-full max-md:min-w-0 max-md:max-w-full">
               {portion.imageUrl ? (
                 <PortionImage src={portion.imageUrl} alt={`Foto ${portion.menuName}`} />
               ) : (
@@ -223,7 +223,10 @@ function DetailBody({
             </div>
 
             {/* Detail */}
-            <section aria-label="Detail porsi" className="flex min-w-0 flex-col gap-2">
+            <section
+              aria-label="Detail porsi"
+              className="flex min-w-0 flex-col gap-2 max-md:w-full max-md:min-w-0 max-md:max-w-full"
+            >
               <div className="flex min-h-11 items-center">
                 <SieraSectionTitle>Detail porsi</SieraSectionTitle>
               </div>
@@ -274,7 +277,12 @@ function DetailBody({
         aside={
           <>
             {/* Panel pesan */}
-            <div className={cn(sieraCardClass, "h-fit p-4 max-md:static max-md:max-h-none")}>
+            <div
+              className={cn(
+                sieraCardClass,
+                "h-fit p-4 max-md:static max-md:max-h-none max-md:w-full max-md:min-w-0 max-md:max-w-full",
+              )}
+            >
               <h2 className="text-[15px] font-bold text-[#1C2826]">Atur jumlah</h2>
               <p className="mt-0.5 text-[13px] text-[#64746B]">Stok tersisa: {remaining}</p>
               <span aria-hidden className="my-3 block border-t border-dashed border-line" />
