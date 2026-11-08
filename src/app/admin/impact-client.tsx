@@ -224,11 +224,11 @@ export function ImpactClient({
               hint="Coba rentang yang lebih panjang, atau tunggu tenant mengunggah porsi."
             />
           ) : (
-            <SieraCard className="p-4">
-              <div className="overflow-x-auto" data-tour="tabel-dampak">
-                <table className="w-full min-w-[640px] text-sm">
+            <SieraCard className="p-4 max-md:border-0 max-md:bg-transparent max-md:shadow-none max-md:p-0">
+              <div className="overflow-x-auto max-md:overflow-visible" data-tour="tabel-dampak">
+                <table className="w-full min-w-[640px] text-sm max-md:block max-md:min-w-0">
                   <caption className="sr-only">Rekap per gerai pada rentang terpilih</caption>
-                  <thead>
+                  <thead className="max-md:hidden">
                     <tr className="border-b text-left text-xs font-semibold text-muted-foreground">
                       <th scope="col" className="sticky left-0 bg-card py-2 pr-3">
                         Gerai
@@ -253,35 +253,64 @@ export function ImpactClient({
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-dashed divide-line">
+                  <tbody className="divide-y divide-dashed divide-line max-md:block max-md:space-y-3 max-md:divide-y-0">
                     {rows.map((r) => (
-                      <tr key={r.tenantName}>
-                        <td className="sticky left-0 bg-card py-3 pr-3 font-semibold">
+                      <tr
+                        key={r.tenantName}
+                        className="max-md:grid max-md:grid-cols-2 max-md:gap-2 max-md:rounded-xl max-md:border max-md:border-[#e3e9e5] max-md:bg-white max-md:p-4"
+                      >
+                        <td className="sticky left-0 bg-card py-3 pr-3 font-semibold max-md:static max-md:col-span-2 max-md:flex max-md:items-start max-md:gap-2 max-md:py-0 max-md:pr-0">
                           <Link
                             href={ROUTES.adminTenant}
-                            className="rounded underline decoration-[#2E7D4F]/40 underline-offset-2 outline-none hover:text-[#1E5A36] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+                            className="rounded underline decoration-[#2E7D4F]/40 underline-offset-2 outline-none hover:text-[#1E5A36] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] max-md:min-w-0 max-md:flex-1 max-md:break-words max-md:no-underline max-md:active:bg-muted"
                           >
                             {r.tenantName}
                           </Link>
                           {best > 0 && r.portionsPickedUp === best && (
-                            <span className="ml-2 inline-block rounded-full bg-[#DCEBE0] px-2 py-0.5 align-middle text-[11px] font-bold text-[#1E5A36]">
+                            <span className="ml-2 inline-block shrink-0 rounded-full bg-[#DCEBE0] px-2 py-0.5 align-middle text-[11px] font-bold text-[#1E5A36] max-md:ml-0">
                               Tertinggi
                             </span>
                           )}
                           {r.portionsPosted > 0 && r.portionsPickedUp === 0 && (
-                            <span className="ml-2 inline-block rounded-full bg-[#FEF3C7] px-2 py-0.5 align-middle text-[11px] font-bold text-[#92400E]">
+                            <span className="ml-2 inline-block shrink-0 rounded-full bg-[#FEF3C7] px-2 py-0.5 align-middle text-[11px] font-bold text-[#92400E] max-md:ml-0">
                               Belum diambil
                             </span>
                           )}
                         </td>
-                        <td className="py-3 pr-3">{r.portionsPosted}</td>
-                        <td className="py-3 pr-3">{r.portionsPickedUp}</td>
-                        <td className="py-3 pr-3">
+                        <td
+                          data-label="Diunggah"
+                          className="py-3 pr-3 max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
+                          {r.portionsPosted}
+                        </td>
+                        <td
+                          data-label="Diambil"
+                          className="py-3 pr-3 max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
+                          {r.portionsPickedUp}
+                        </td>
+                        <td
+                          data-label="Sell-through"
+                          className="py-3 pr-3 max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
                           {Math.round(percentSold(r.portionsPickedUp, r.portionsPosted) * 100)}%
                         </td>
-                        <td className="py-3 pr-3 text-right">{formatIDR(r.revenue)}</td>
-                        <td className="py-3 pr-3 text-right">{formatIDR(r.moneySaved)}</td>
-                        <td className="py-3 text-right">
+                        <td
+                          data-label="Revenue"
+                          className="py-3 pr-3 text-right max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-left max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
+                          {formatIDR(r.revenue)}
+                        </td>
+                        <td
+                          data-label="Hemat"
+                          className="py-3 pr-3 text-right max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-left max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
+                          {formatIDR(r.moneySaved)}
+                        </td>
+                        <td
+                          data-label="Estimasi kg"
+                          className="py-3 text-right max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-left max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
                           {r.wasteKg == null ? "—" : `${r.wasteKg.toFixed(2)} kg`}
                         </td>
                       </tr>
