@@ -384,7 +384,7 @@ export function SieraEmpty({
     <div
       id={id}
       className={cn(
-        "flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 text-center max-md:rounded-2xl max-md:w-full max-md:mx-0 max-md:p-5",
+        "flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 text-center max-md:rounded-2xl max-md:w-full max-md:mx-0 max-md:p-4",
         compact ? "py-6" : "py-10 md:py-14",
         className,
       )}
