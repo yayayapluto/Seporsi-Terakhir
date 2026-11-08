@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import {
   SieraList,
   SieraRailPage,
@@ -12,6 +11,7 @@ import {
   SieraSection,
   sieraCardClass,
 } from "@/components/siera";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { MAX_PORTIONS_PER_DAY } from "@/lib/domain/constants";
 import { formatSisaMenit, wibTodayRange } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";

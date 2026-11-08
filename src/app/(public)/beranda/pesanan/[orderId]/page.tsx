@@ -6,7 +6,6 @@ import { Suspense } from "react";
 import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import {
   SieraField,
@@ -17,6 +16,7 @@ import {
   sieraCardClass,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { katalogDetail, ROUTES } from "@/lib/routes";
