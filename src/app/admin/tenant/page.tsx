@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraAlert, SieraCard, SieraRailPage, SieraSection } from "@/components/siera";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -65,7 +65,7 @@ export default function AdminTenantPage() {
         title="Persetujuan Tenant"
         trail={[{ label: "Dampak", href: ROUTES.admin }, { label: "Persetujuan Tenant" }]}
       />
-      <Suspense fallback={<LoadingSpinner />}>
+      <Suspense fallback={<GenericPageSkeleton />}>
         <TenantRail />
       </Suspense>
     </>
