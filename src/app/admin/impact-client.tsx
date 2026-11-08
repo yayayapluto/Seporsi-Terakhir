@@ -196,13 +196,23 @@ export function ImpactClient({
                   className="overflow-x-auto max-md:overflow-visible max-md:min-w-0"
                 >
                   <div
-                    className="flex h-32 min-w-[480px] items-end gap-1 max-md:h-56 max-md:min-w-0"
+                    className="flex h-32 min-w-[480px] items-end gap-1 max-md:relative max-md:h-56 max-md:min-w-0 max-md:px-2"
                     role="img"
                     aria-label={`Tren pickup harian, tertinggi ${maxSaved} porsi dalam sehari`}
                   >
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-x-0 top-1/3 hidden h-px bg-[#E8ECE9] max-md:block"
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-x-0 top-2/3 hidden h-px bg-[#E8ECE9] max-md:block"
+                    />
                     {series.map((d, i) => {
                       const isLabel = i % labelEvery === 0 || i === series.length - 1;
                       const labelIdx = Math.floor(i / labelEvery);
+                      const isFirst = i === 0;
+                      const isLast = i === series.length - 1;
                       return (
                         <div
                           key={d.day}
@@ -211,7 +221,9 @@ export function ImpactClient({
                           <div className="flex min-h-0 w-full min-w-0 flex-1 items-end">
                             <div
                               title={`${d.day}: ${d.saved} porsi`}
-                              className="w-full max-w-6 rounded-t bg-[#2E7D4F]"
+                              className={`w-full max-w-6 rounded-t ${
+                                d.saved > 0 ? "bg-[#2E7D4F]" : "bg-[#E8ECE9]"
+                              }`}
                               style={{
                                 height: `${Math.max(d.saved > 0 ? 6 : 2, Math.round((d.saved / maxSaved) * 100))}%`,
                               }}
@@ -220,8 +232,8 @@ export function ImpactClient({
                           {isLabel && (
                             <span
                               className={`pt-1 text-[10px] tabular-nums text-muted-foreground max-md:text-xs ${
-                                labelIdx % 2 === 1 && i !== series.length - 1 ? "max-md:hidden" : ""
-                              }`}
+                                labelIdx % 2 === 1 && !isLast ? "max-md:hidden" : ""
+                              } ${isFirst ? "max-md:self-start" : ""} ${isLast ? "max-md:self-end" : ""}`}
                             >
                               {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
                             </span>
