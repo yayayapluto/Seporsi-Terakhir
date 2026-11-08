@@ -9,13 +9,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraEmpty, SieraWarningBadge, sieraCardClass } from "@/components/siera";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { OptionSelect } from "@/components/ui/option-select";
 import { Toggle } from "@/components/ui/toggle";
 import { MAX_PORTIONS_PER_DAY } from "@/lib/domain/constants";
 import { formatDateTimeWIB, formatIDR, formatSisaMenit } from "@/lib/format";
@@ -112,44 +106,32 @@ export function KatalogList({
           htmlFor="tenant-filter"
           className="flex min-w-0 flex-1 flex-col gap-1.5 sm:min-w-[200px]"
         >
-          <span className="text-xs font-bold text-[#64746B]">Tenant</span>
-          <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
-            <SelectTrigger
-              id="tenant-filter"
-              className="h-12 w-full min-w-0 rounded-xl px-3.5 text-sm [&>span]:min-w-0 [&>span]:truncate"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent align="start" alignItemWithTrigger={false}>
-              <SelectItem value="semua">Semua tenant</SelectItem>
-              {tenants.map((t) => (
-                <SelectItem key={t} value={t}>
-                  {t}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <span className="text-xs font-bold text-[#64746B] max-md:text-sm">Tenant</span>
+          <OptionSelect
+            id="tenant-filter"
+            ariaLabel="Tenant"
+            value={tenant}
+            onValueChange={setTenant}
+            options={[
+              { value: "semua", label: "Semua tenant" },
+              ...tenants.map((t) => ({ value: t, label: t })),
+            ]}
+            className="h-12 w-full min-w-0 rounded-xl px-3.5 text-sm [&>span]:min-w-0 [&>span]:truncate"
+          />
         </label>
         <label
           htmlFor="sort-filter"
           className="flex min-w-0 flex-1 flex-col gap-1.5 sm:min-w-[200px]"
         >
-          <span className="text-xs font-bold text-[#64746B]">Urutkan</span>
-          <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
-            <SelectTrigger
-              id="sort-filter"
-              className="h-12 w-full min-w-0 rounded-xl px-3.5 text-sm [&>span]:min-w-0 [&>span]:truncate"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent align="start" alignItemWithTrigger={false}>
-              {SORTS.map((s) => (
-                <SelectItem key={s.value} value={s.value}>
-                  {s.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <span className="text-xs font-bold text-[#64746B] max-md:text-sm">Urutkan</span>
+          <OptionSelect
+            id="sort-filter"
+            ariaLabel="Urutkan"
+            value={sort}
+            onValueChange={(v) => setSort(v as SortValue)}
+            options={SORTS.map((s) => ({ value: s.value, label: s.label }))}
+            className="h-12 w-full min-w-0 rounded-xl px-3.5 text-sm [&>span]:min-w-0 [&>span]:truncate"
+          />
         </label>
         <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1 max-md:hidden">
           <legend className="sr-only">Tampilan katalog</legend>
