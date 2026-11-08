@@ -1,12 +1,19 @@
 "use client";
 
-import { Bell } from "lucide-react";
+import { Bell, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { NotifItem } from "@/lib/notifs";
 import { NotifRow } from "./notif-row";
 import { sieraCountText } from "./siera";
 import { Button } from "./ui/button";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "./ui/sheet";
 
 /** Bell notifikasi + drawer kanan di atas primitif shadcn Sheet. Isi awal dari server, segar via NotifLive. */
 export function NotifDrawer({
@@ -84,7 +91,8 @@ export function NotifDrawer({
         <SheetContent
           side="right"
           showCloseButton={false}
-          className="h-dvh w-full p-0 sm:max-w-[400px] max-md:w-full max-md:max-w-full max-md:inset-0 max-md:h-dvh max-md:flex max-md:flex-col"
+          className="h-dvh w-full p-0 sm:max-w-[400px] max-md:fixed max-md:inset-y-0 max-md:right-0 max-md:left-auto max-md:ml-auto max-md:w-[88%] max-md:max-w-[400px] max-md:h-dvh max-md:flex max-md:flex-col max-md:rounded-l-3xl max-md:shadow-2xl max-md:bg-white max-md:border-l-0 max-md:pt-[env(safe-area-inset-top)] max-md:pb-[env(safe-area-inset-bottom)]"
+          overlayClassName="max-md:fixed max-md:inset-0 max-md:bg-black/40 max-md:supports-backdrop-filter:backdrop-blur-none"
           aria-label="Notifikasi"
         >
           <SheetHeader className="flex-row items-center justify-between gap-2 border-b border-line bg-white px-4 py-3 max-md:shrink-0">
@@ -111,6 +119,19 @@ export function NotifDrawer({
                 </Button>
               )}
             </div>
+            <SheetClose
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Tutup"
+                  className="hidden size-11 shrink-0 rounded-full max-md:inline-flex"
+                />
+              }
+            >
+              <X className="size-5" aria-hidden="true" />
+            </SheetClose>
           </SheetHeader>
           <ul className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto px-4 py-4 max-md:gap-2.5 max-md:px-4 list-none m-0 p-0 max-md:flex max-md:flex-col max-md:gap-2.5 max-md:px-4 max-md:py-3 max-md:flex-1 max-md:min-h-0 max-md:overflow-y-auto max-md:overscroll-contain max-md:pb-[calc(16px+env(safe-area-inset-bottom))]">
             {notifs.length === 0 ? (
