@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "cn";
-import { ChevronRight, Clock3, ImageOff, LayoutGrid, Rows3 } from "lucide-react";
+import { ChevronRight, CircleAlert, Clock3, ImageOff, LayoutGrid, Rows3 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -189,17 +189,17 @@ export function KatalogList({
       <div className="flex min-h-11 items-center justify-between gap-3 max-md:flex-wrap">
         <h2
           id="katalog-heading"
-          className="text-xs font-bold uppercase tracking-[0.08em] text-[#64746B]"
+          className="text-xs font-bold uppercase tracking-[0.08em] text-[#64746B] max-md:hidden"
         >
           Katalog sore ini
         </h2>
-        <div className="flex shrink-0 items-center gap-2 max-md:contents">
+        <span className="hidden text-sm font-bold text-[#1C2826] max-md:block">
+          {filtered.length} porsi sore ini
+        </span>
+        <div className="hidden shrink-0 items-center gap-2 md:flex">
           <span className="text-sm font-bold text-[#1C2826]">{filtered.length} porsi</span>
-          <div aria-hidden="true" className="hidden w-full max-md:block" />
           {dayTotal >= MAX_PORTIONS_PER_DAY && (
-            <div className="max-md:order-3">
-              <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
-            </div>
+            <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
           )}
         </div>
         <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1 md:hidden max-md:order-last max-md:ml-auto">
@@ -228,6 +228,12 @@ export function KatalogList({
             );
           })}
         </fieldset>
+        {dayTotal >= MAX_PORTIONS_PER_DAY && (
+          <p className="hidden w-full items-center gap-2 rounded-xl bg-[#FEF3C7] px-3.5 py-2.5 text-sm font-bold text-[#92400E] max-md:flex">
+            <CircleAlert className="size-4 shrink-0" aria-hidden />
+            Batas {MAX_PORTIONS_PER_DAY}/hari tercapai
+          </p>
+        )}
       </div>
       {filtered.length === 0 ? (
         <SieraEmpty
