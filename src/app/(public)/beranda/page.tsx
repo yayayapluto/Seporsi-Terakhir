@@ -157,13 +157,9 @@ export default async function BerandaPage({
               <Suspense fallback={<LoadingSpinner />}>
                 <SoonBody user={user} />
               </Suspense>
-              <div className="hidden max-md:block max-md:px-0 max-md:mx-0 max-md:w-full border-t border-line mt-4">
+              <div className="hidden max-md:block max-md:px-0 max-md:mx-0 max-md:w-full border-t border-line mt-2">
                 <SiteFooterMini bare />
               </div>
-              <div
-                aria-hidden="true"
-                className="hidden max-md:block h-[calc(96px+env(safe-area-inset-bottom))] shrink-0"
-              />
             </div>
           }
           aside={

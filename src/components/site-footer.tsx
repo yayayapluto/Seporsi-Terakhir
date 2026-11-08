@@ -71,26 +71,26 @@ export function SiteFooter() {
 /** Footer minimal satu baris untuk halaman dalam (bukan landing/cara-kerja/masuk). */
 export function SiteFooterMini({ bare = false }: { bare?: boolean }) {
   const inner = (
-    <div className="flex w-full flex-col gap-1 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:px-8 max-md:px-0 max-md:mx-0">
-      <p className="text-xs font-semibold text-[#64746B]">
+    <div className="flex w-full flex-col gap-1 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:px-8 max-md:px-0 max-md:mx-0 max-md:py-3 max-md:gap-1.5">
+      <p className="text-xs font-semibold text-[#64746B] max-md:text-[11px]">
         © 2026 Seporsi Terakhir · UPN Veteran Jakarta
       </p>
-      <nav className="flex flex-wrap gap-x-5" aria-label="Tautan bawah">
+      <nav className="flex flex-wrap gap-x-5 max-md:gap-x-4" aria-label="Tautan bawah">
         <Link
           href={ROUTES.katalog}
-          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
+          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1 max-md:min-h-0 max-md:py-0.5 max-md:text-[11px]"
         >
           Katalog
         </Link>
         <Link
           href="/#cara-kerja"
-          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
+          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1 max-md:min-h-0 max-md:py-0.5 max-md:text-[11px]"
         >
           Cara kerja
         </Link>
         <Link
           href="/profil"
-          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1"
+          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1 max-md:min-h-0 max-md:py-0.5 max-md:text-[11px]"
         >
           Akun
         </Link>
