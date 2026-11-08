@@ -41,6 +41,8 @@ export function LangkahStory({ steps }: { steps: readonly LangkahStep[] }) {
             .to("[data-text='2']", { opacity: 0, y: -24, duration: 0.5 }, 0)
             .to("[data-text='3']", { opacity: 0, y: -24, duration: 0.5 }, 0)
             .addLabel("step2")
+            .to("[data-state='1']", { opacity: 0, y: -24, duration: 0.5 }, "step2")
+            .to("[data-text='1']", { opacity: 0, y: -24, duration: 0.5 }, "step2")
             .fromTo(
               "[data-state='2']",
               { opacity: 0, y: 24 },
@@ -57,8 +59,8 @@ export function LangkahStory({ steps }: { steps: readonly LangkahStep[] }) {
             .to("[data-numfill='2']", { opacity: 1, duration: 0.3 }, "step2")
             .to("[data-rail='1']", { scaleY: 1, duration: 0.5, ease: "none" }, "step2")
             .addLabel("step3")
-            .to("[data-state='1']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
-            .to("[data-text='1']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
+            .to("[data-state='2']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
+            .to("[data-text='2']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
             .fromTo(
               "[data-state='3']",
               { opacity: 0, y: 24 },
@@ -94,6 +96,8 @@ export function LangkahStory({ steps }: { steps: readonly LangkahStep[] }) {
             .to("[data-text='2']", { opacity: 0, y: -24, duration: 0.5 }, 0)
             .to("[data-text='3']", { opacity: 0, y: -24, duration: 0.5 }, 0)
             .addLabel("step2")
+            .to("[data-state='1']", { opacity: 0, y: -24, duration: 0.5 }, "step2")
+            .to("[data-text='1']", { opacity: 0, y: -24, duration: 0.5 }, "step2")
             .fromTo(
               "[data-state='2']",
               { opacity: 0, y: 24 },
@@ -107,8 +111,8 @@ export function LangkahStory({ steps }: { steps: readonly LangkahStep[] }) {
               "step2",
             )
             .addLabel("step3")
-            .to("[data-state='1']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
-            .to("[data-text='1']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
+            .to("[data-state='2']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
+            .to("[data-text='2']", { opacity: 0, y: -24, duration: 0.5 }, "step3")
             .fromTo(
               "[data-state='3']",
               { opacity: 0, y: 24 },
