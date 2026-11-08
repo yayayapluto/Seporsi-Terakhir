@@ -3,6 +3,7 @@ import {
   CircleHelp,
   Hourglass,
   Package,
+  Plus,
   ReceiptText,
   ScanLine,
   Timer,
@@ -268,8 +269,11 @@ async function DashboardBody({
               <Link
                 href="/tenant/scan"
                 data-tour="scan"
-                className={buttonVariants({ className: "min-h-11 w-full text-[15px]" })}
+                className={buttonVariants({
+                  className: "min-h-11 w-full text-[15px] max-md:min-h-12",
+                })}
               >
+                <ScanLine className="size-5" aria-hidden />
                 Scan pickup
               </Link>
               <TambahPorsiButton sheet={<TambahSheet />} />
@@ -344,9 +348,13 @@ async function DashboardBody({
                   <Link
                     href={ROUTES.tenantPorsiTambah}
                     data-tour="tambah-porsi"
-                    className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
+                    className={buttonVariants({
+                      size: "sm",
+                      className: "shrink-0 max-md:min-h-11 max-md:min-w-11",
+                    })}
                   >
-                    + Tambah
+                    <Plus className="size-4" aria-hidden />
+                    Tambah
                   </Link>
                 }
               >
@@ -450,6 +458,13 @@ async function DashboardBody({
               entryStep={tourEntry}
               fresh={fresh}
             />
+            <Link
+              href={ROUTES.tenantPorsiTambah}
+              aria-label="Tambah porsi"
+              className="fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 flex size-14 items-center justify-center rounded-full bg-[#2E7D4F] text-white shadow-lg md:hidden"
+            >
+              <Plus className="size-6" aria-hidden />
+            </Link>
           </>
         }
         aside={
