@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { SieraCard } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
@@ -24,7 +24,7 @@ export default async function ProfilEditPage() {
         ]}
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-4 px-4 py-6 md:px-8 max-md:px-0 max-md:mx-0 max-md:pb-0">
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback={<GenericPageSkeleton />}>
           <ProfilCard userId={current.user.id} />
         </Suspense>
       </div>

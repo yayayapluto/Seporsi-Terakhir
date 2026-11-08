@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import {
   SieraList,
   SieraRailPage,
@@ -147,7 +147,7 @@ async function KatalogPageBody(
                   di tempat.
                 </p>
               </div>
-              <Suspense fallback={<LoadingSpinner />}>
+              <Suspense fallback={<GenericPageSkeleton />}>
                 <KatalogList
                   portions={portions}
                   tenants={tenants}

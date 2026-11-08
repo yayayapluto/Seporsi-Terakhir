@@ -7,7 +7,7 @@ import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import {
   attachMissingIngredientColumns,
   isMissingColumnError,
@@ -349,7 +349,7 @@ export default async function PortionDetailPage({
   const tourForced = sp.mode === "onboarding";
   if (!PortionId.safeParse(portionId).success) notFound();
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<GenericPageSkeleton />}>
       <PortionDetailBody portionId={portionId} tourForced={tourForced} />
     </Suspense>
   );

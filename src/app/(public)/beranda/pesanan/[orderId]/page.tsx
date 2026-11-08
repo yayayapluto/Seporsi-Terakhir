@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import {
   SieraField,
@@ -100,7 +100,7 @@ export default async function OrderDetailPage({
   const tourForced = sp.mode === "onboarding";
   if (!z.string().uuid().safeParse(orderId).success) notFound();
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<GenericPageSkeleton />}>
       <OrderBody orderId={orderId} tourForced={tourForced} />
     </Suspense>
   );

@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { SieraCard, SieraRailPage, SieraSection, SieraTile } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
@@ -150,10 +150,10 @@ export default async function BerandaPage({
                 </p>
               </div>
               {showOnboard && <OnboardBanner />}
-              <Suspense fallback={<LoadingSpinner />}>
+              <Suspense fallback={<GenericPageSkeleton />}>
                 <ActiveOrdersBody user={user} />
               </Suspense>
-              <Suspense fallback={<LoadingSpinner />}>
+              <Suspense fallback={<GenericPageSkeleton />}>
                 <SoonBody user={user} />
               </Suspense>
             </div>
