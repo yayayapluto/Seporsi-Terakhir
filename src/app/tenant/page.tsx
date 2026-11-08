@@ -489,13 +489,6 @@ async function DashboardBody({
               entryStep={tourEntry}
               fresh={fresh}
             />
-            <Link
-              href={ROUTES.tenantPorsiTambah}
-              aria-label="Tambah porsi"
-              className="fixed right-4 bottom-[calc(6.75rem+env(safe-area-inset-bottom))] z-40 flex size-14 items-center justify-center rounded-full bg-[#2E7D4F] text-white shadow-lg md:hidden"
-            >
-              <Plus className="size-6" aria-hidden />
-            </Link>
           </>
         }
         aside={
