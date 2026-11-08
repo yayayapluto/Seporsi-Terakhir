@@ -226,6 +226,7 @@ export function ImpactClient({
                         <button
                           key={d.day}
                           type="button"
+                          data-slot="chart-bar"
                           aria-label={`${d.day}: ${d.saved} porsi`}
                           className="flex h-full min-w-0 flex-1 flex-col items-center"
                           onClick={() => setActiveDay(d.day)}
