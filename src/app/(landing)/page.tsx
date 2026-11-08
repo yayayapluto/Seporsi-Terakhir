@@ -208,21 +208,31 @@ export default async function Home() {
         id="faq"
         className="mx-auto w-full max-w-[1080px] scroll-mt-24 px-5 pt-10 pb-16 md:px-8"
       >
-        <h2 className="mb-5 text-[28px] leading-[1.15] font-bold tracking-[-0.02em] min-[821px]:text-[34px]">
+        <SplitHeading className="mb-5 text-[28px] leading-[1.15] font-bold tracking-[-0.02em] min-[821px]:text-[34px]">
           Pertanyaan yang sering ditanyakan.
-        </h2>
-        <Accordion defaultValue={FAQS[0] ? [FAQS[0].q] : []} className="border-t border-[#E3E9E5]">
-          {FAQS.map((item) => (
-            <AccordionItem key={item.q} value={item.q} className="border-b border-[#E3E9E5]">
-              <AccordionTrigger className="min-h-14 items-center gap-4 py-0 text-[15px] font-semibold text-[#17261D] hover:no-underline">
-                {item.q}
-              </AccordionTrigger>
-              <AccordionContent className="pb-5 text-base leading-relaxed text-[#5B6B62]">
-                <p>{item.a}</p>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        </SplitHeading>
+        <RevealScope>
+          <Accordion
+            defaultValue={FAQS[0] ? [FAQS[0].q] : []}
+            className="border-t border-[#E3E9E5]"
+          >
+            {FAQS.map((item) => (
+              <AccordionItem
+                key={item.q}
+                value={item.q}
+                data-reveal
+                className="border-b border-[#E3E9E5]"
+              >
+                <AccordionTrigger className="min-h-14 items-center gap-4 py-0 text-[15px] font-semibold text-[#17261D] hover:no-underline">
+                  {item.q}
+                </AccordionTrigger>
+                <AccordionContent className="pb-5 text-base leading-relaxed text-[#5B6B62]">
+                  <p>{item.a}</p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </RevealScope>
       </section>
 
       {/* CTA penutup. */}
