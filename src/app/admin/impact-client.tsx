@@ -55,6 +55,7 @@ export function ImpactClient({
   const [, startTransition] = useTransition();
   const [csvError, setCsvError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [activeDay, setActiveDay] = useState<string | null>(null);
 
   function applyRange(fd: string, td: string) {
     const next = new URLSearchParams(params);
@@ -195,6 +196,14 @@ export function ImpactClient({
                   data-tour="tren"
                   className="overflow-x-auto max-md:overflow-visible max-md:min-w-0"
                 >
+                  <p
+                    aria-live="polite"
+                    className="mb-2 hidden min-h-5 text-xs text-[#1E5A36] max-md:block"
+                  >
+                    {activeDay != null
+                      ? `${activeDay}: ${series.find((d) => d.day === activeDay)?.saved ?? 0} porsi`
+                      : "Ketuk bar untuk melihat nilai harian."}
+                  </p>
                   <div
                     className="flex h-32 min-w-[480px] items-end gap-1 max-md:relative max-md:h-56 max-md:min-w-0 max-md:px-2"
                     role="img"
@@ -214,9 +223,12 @@ export function ImpactClient({
                       const isFirst = i === 0;
                       const isLast = i === series.length - 1;
                       return (
-                        <div
+                        <button
                           key={d.day}
+                          type="button"
+                          aria-label={`${d.day}: ${d.saved} porsi`}
                           className="flex h-full min-w-0 flex-1 flex-col items-center"
+                          onClick={() => setActiveDay(d.day)}
                         >
                           <div className="flex min-h-0 w-full min-w-0 flex-1 items-end">
                             <div
@@ -238,7 +250,7 @@ export function ImpactClient({
                               {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
                             </span>
                           )}
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
