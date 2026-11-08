@@ -421,15 +421,15 @@ export function SieraStat({
   label: string;
 }) {
   return (
-    <div className="flex min-w-0 items-center gap-3">
-      <SieraTile>
+    <div className="flex min-w-0 items-center gap-3 max-md:flex-col max-md:items-start max-md:gap-2 max-md:rounded-2xl max-md:border max-md:border-[#e3e9e5] max-md:bg-white max-md:p-3">
+      <SieraTile className="max-md:size-9">
         <Icon className="size-5" strokeWidth={1.75} aria-hidden />
       </SieraTile>
       <div className="min-w-0">
-        <p className="truncate text-lg leading-none font-extrabold max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+        <p className="truncate text-lg leading-none font-extrabold max-md:text-xl max-md:font-semibold max-md:tabular-nums max-md:leading-tight max-md:whitespace-normal max-md:break-words">
           {value}
         </p>
-        <p className="mt-1 text-[11px] font-semibold text-[#64746B]">{label}</p>
+        <p className="mt-1 text-[11px] font-semibold text-[#64746B] max-md:text-xs">{label}</p>
       </div>
     </div>
   );
@@ -438,7 +438,7 @@ export function SieraStat({
 /** Strip 3 stat: satu card dibagi divider dashed (bukan 3 card lepas). */
 export function SieraStatStrip({ children }: { children: ReactNode }) {
   return (
-    <SieraCard className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-x divide-dashed divide-line p-4">
+    <SieraCard className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-x divide-dashed divide-line p-4 max-md:grid-cols-[repeat(auto-fit,minmax(0,1fr))] max-md:gap-3 max-md:divide-y-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none max-md:p-0">
       {children}
     </SieraCard>
   );
