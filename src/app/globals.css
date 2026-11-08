@@ -82,10 +82,6 @@
   }
   /* ponytail: ruang bottom-nav mobile ditangani spacer 96px AppShell setelah footer. */
   /* ponytail: safety net — raw button tanpa data-slot shadcn tetap dapat border terlihat. */
-  /* ponytail: landing — sembunyikan [data-reveal] hanya bila JS siap menganimasikan. */
-  html.js-anim [data-reveal] {
-    opacity: 0;
-  }
   button:not([data-slot]):not([role="tab"]):not([role="switch"]):not([role="checkbox"]),
   a[class*="btn"] {
     border: 1px solid var(--border);

@@ -1,13 +1,7 @@
 import { Check, QrCode } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { CtaCircles } from "@/components/landing/cta-circles";
-import { FooterBottom } from "@/components/landing/footer-bottom";
-import { HeroPhoto } from "@/components/landing/hero-photo";
-import { Magnetic } from "@/components/landing/motion/magnetic";
-import { Marquee } from "@/components/landing/motion/marquee";
-import { RevealScope } from "@/components/landing/motion/reveal-scope";
-import { SplitHeading } from "@/components/landing/motion/split-heading";
 import {
   Accordion,
   AccordionContent,
@@ -23,7 +17,7 @@ import {
 } from "@/lib/domain/constants";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-import { LangkahStory } from "./langkah-story";
+import { LangkahStagger } from "./langkah-stagger";
 import { Pressable, Reveal } from "./thread";
 
 export const metadata: Metadata = { title: "Penyelamatan Surplus Pangan" };
@@ -134,59 +128,61 @@ export default async function Home() {
     <div className="flex-1 bg-white text-[#17261D] max-md:-mx-4 max-md:w-[calc(100%+2rem)]">
       {/* HERO — foto etalase + proposisi + aksi primer. */}
       <section className="mx-auto w-full max-w-[1080px] px-5 pt-36 pb-[72px] md:px-8">
-        <RevealScope>
-          <div className="grid items-center gap-10 md:grid-cols-2">
-            <HeroPhoto maxPorsi={MAX_QUANTITY_PER_ORDER} />
-
-            <div className="flex flex-col gap-5">
-              <SplitHeading
-                as="h1"
-                trigger="load"
-                className="text-balance font-bold tracking-[-0.02em] text-[clamp(2.5rem,8vw,3.25rem)] leading-[1.05] min-[821px]:text-[clamp(2.5rem,8vw,5.5rem)]"
-              >
-                Cara kerja penyelamatan porsi kampus.
-              </SplitHeading>
-              <p data-reveal className="text-base leading-relaxed text-[#4A5B51]">
-                Tenant menjual surplus layak makan dengan harga diskon. Mahasiswa pesan, ambil
-                dengan QR, bayar di tempat.
-              </p>
-              <div className="flex flex-wrap items-center gap-3">
-                <Magnetic>
-                  <Pressable>
-                    <Link
-                      href={primaryHref}
-                      className={cn(
-                        buttonVariants(),
-                        "min-h-12 rounded-[10px] bg-[#286F3B] px-[22px] text-[15px] font-semibold text-white hover:bg-[#1E532C]",
-                      )}
-                    >
-                      {primaryLabel}
-                    </Link>
-                  </Pressable>
-                </Magnetic>
-                <Magnetic>
-                  <Pressable>
-                    <Link
-                      href="#langkah"
-                      className={cn(
-                        buttonVariants({ variant: "outline" }),
-                        "min-h-12 rounded-[10px] px-[22px] text-[15px] font-semibold text-[#17261D] hover:bg-[#F4EFE6]",
-                      )}
-                    >
-                      Lihat Cara Hitung
-                    </Link>
-                  </Pressable>
-                </Magnetic>
-              </div>
-              <p className="text-[13px] text-[#5B6B62]">
-                Bayar di tempat · Jam masak tertera · Maks {MAX_QUANTITY_PER_ORDER} porsi/hari
-              </p>
+        <div className="grid items-center gap-10 md:grid-cols-2">
+          <figure className="m-0">
+            <div className="relative aspect-[3/2] overflow-hidden rounded-2xl border border-[#D9E4DC]">
+              <Image
+                src="/images/foto_kantin.webp"
+                alt="Etalase kantin kampus menjelang tutup"
+                fill
+                sizes="(min-width: 821px) 520px, 100vw"
+                className="object-cover"
+                priority
+              />
             </div>
-          </div>
-        </RevealScope>
-      </section>
+            <figcaption className="mt-2 text-xs text-[#5B6B62]">
+              Kantin sore hari: sisa layak simpan didata sebelum tutup.
+            </figcaption>
+          </figure>
 
-      <Marquee />
+          <div className="flex flex-col gap-5">
+            <h1 className="text-balance text-[36px] leading-[1.05] font-bold tracking-[-0.02em] min-[821px]:text-[52px]">
+              Cara kerja penyelamatan porsi kampus.
+            </h1>
+            <p className="text-base leading-relaxed text-[#4A5B51]">
+              Tenant menjual surplus layak makan dengan harga diskon. Mahasiswa pesan, ambil dengan
+              QR, bayar di tempat.
+            </p>
+            <div className="flex flex-wrap items-center gap-3">
+              <Pressable>
+                <Link
+                  href={primaryHref}
+                  className={cn(
+                    buttonVariants(),
+                    "min-h-12 rounded-[10px] bg-[#286F3B] px-[22px] text-[15px] font-semibold text-white hover:bg-[#1E532C]",
+                  )}
+                >
+                  {primaryLabel}
+                </Link>
+              </Pressable>
+              <Pressable>
+                <Link
+                  href="#langkah"
+                  className={cn(
+                    buttonVariants({ variant: "ghost" }),
+                    "min-h-12 rounded-[10px] px-[22px] text-[15px] font-semibold text-[#17261D] hover:bg-[#F4EFE6]",
+                  )}
+                >
+                  Lihat Cara Hitung
+                </Link>
+              </Pressable>
+            </div>
+            <p className="text-[13px] text-[#5B6B62]">
+              Bayar di tempat · Jam masak tertera · Maks {MAX_QUANTITY_PER_ORDER} porsi/hari
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* LANGKAH — tiga langkah dari etalase ke meja makan. */}
       <section
@@ -202,7 +198,7 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-[1080px] px-5 pb-12 md:px-8">
-        <LangkahStory steps={LANGKAH} />
+        <LangkahStagger steps={LANGKAH} />
       </section>
 
       {/* FAQ — garis tipis, tanpa kartu. */}
@@ -210,47 +206,28 @@ export default async function Home() {
         id="faq"
         className="mx-auto w-full max-w-[1080px] scroll-mt-24 px-5 pt-10 pb-16 md:px-8"
       >
-        <SplitHeading className="mb-5 text-[28px] leading-[1.15] font-bold tracking-[-0.02em] min-[821px]:text-[34px]">
+        <h2 className="mb-5 text-[28px] leading-[1.15] font-bold tracking-[-0.02em] min-[821px]:text-[34px]">
           Pertanyaan yang sering ditanyakan.
-        </SplitHeading>
-        <RevealScope>
-          <Accordion
-            defaultValue={FAQS[0] ? [FAQS[0].q] : []}
-            className="border-t border-[#E3E9E5]"
-          >
-            {FAQS.map((item) => (
-              <AccordionItem
-                key={item.q}
-                value={item.q}
-                data-reveal
-                className="border-b border-[#E3E9E5]"
-              >
-                <AccordionTrigger className="min-h-14 items-center gap-4 py-0 text-[15px] font-semibold text-[#17261D] hover:no-underline">
-                  {item.q}
-                </AccordionTrigger>
-                <AccordionContent className="pb-5 text-base leading-relaxed text-[#5B6B62]">
-                  <p>{item.a}</p>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </RevealScope>
+        </h2>
+        <Accordion defaultValue={FAQS[0] ? [FAQS[0].q] : []} className="border-t border-[#E3E9E5]">
+          {FAQS.map((item) => (
+            <AccordionItem key={item.q} value={item.q} className="border-b border-[#E3E9E5]">
+              <AccordionTrigger className="min-h-14 items-center gap-4 py-0 text-[15px] font-semibold text-[#17261D] hover:no-underline">
+                {item.q}
+              </AccordionTrigger>
+              <AccordionContent className="pb-5 text-base leading-relaxed text-[#5B6B62]">
+                <p>{item.a}</p>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </section>
 
       {/* CTA penutup. */}
       <section className="mx-auto w-full max-w-[1080px] px-5 pb-[72px] md:px-8">
         <Reveal>
-          <div className="relative flex flex-col items-center gap-4 overflow-hidden rounded-[28px] bg-[#2D7A4F] max-md:px-4 max-md:py-8 max-md:rounded-[20px] px-6 py-14 text-center text-white md:px-10 md:py-16">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -top-16 -left-16 size-48 rounded-full bg-[#1E5A36] opacity-50 blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-10 -bottom-20 size-56 rounded-full bg-[#3E9A6A] opacity-40 blur-3xl"
-            />
-            <CtaCircles />
-            <h2 className="relative max-w-[14ch] text-balance text-[32px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
+          <div className="flex flex-col items-center gap-4 rounded-[28px] bg-[#2D7A4F] max-md:px-4 max-md:py-8 max-md:rounded-[20px] px-6 py-14 text-center text-white md:px-10 md:py-16">
+            <h2 className="max-w-[14ch] text-balance text-[32px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
               Jangan biarkan porsi terakhir terbuang.
             </h2>
             <p className="max-w-[52ch] text-base leading-relaxed text-white/90">
@@ -286,7 +263,12 @@ export default async function Home() {
         </Reveal>
       </section>
 
-      <FooterBottom />
+      <footer className="bg-[#2D7A4F] py-10 text-white">
+        <div className="mx-auto flex w-full max-w-[1080px] flex-wrap justify-between gap-4 px-5 text-[13px] md:px-8">
+          <span className="font-heading text-base font-extrabold">Seporsi Terakhir</span>
+          <span className="text-white/90">© 2026 · Tahap awal SDG 12 di lingkungan kampus</span>
+        </div>
+      </footer>
     </div>
   );
 }

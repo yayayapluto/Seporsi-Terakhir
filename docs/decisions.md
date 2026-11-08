@@ -3,7 +3,6 @@
 # Decisions
 
 Assumptions, deviations, and interpretations. Updated as work proceeds.
-- Landing motion (8 Nov, permintaan user): tambah `gsap` + `@gsap/react` (ScrollTrigger, SplitText gratis sejak gsap 3.13) khusus halaman publik landing; Lenis + Motion yang sudah ada tetap dipakai (Lenis sync via GSAP ticker). Chart line mobile (mobile-trend-chart) tetap SVG murni tanpa Recharts karena primitif Chart shadcn tidak ada di repo dan tidak ada lib chart baru.
 - Kanvas putih global (30 Okt, pilih user, revisi): `--background` dijadikan `#FFFFFF` â€” seluruh halaman putih, tidak ada krem. Membatalkan override krem 30 Okt; selaras penuh PRODUCT-Siera Â§2/Â§4/Â§8 + hasil sampling screenshot.
 - Katalog (30 Okt): Hero Card + filter Siera, grid `1â†’2â†’3` kolom di desktop (`sm`/`lg`), harga rescue pakai token `accent-strong #9A520A` (kontras 5.86:1) bukan `#F28C28` (2.45:1, gagal AA) â€” craft-floor kontras menang atas catatan Siera Â§3.1; sold-out jadi Disabled Card tanpa link (bukan `aria-disabled` semu); filter disusun bertingkat di mobile (temuan audit terjepit 430px).
 - Detail katalog (30 Okt): Detail Header Card (badge stok + countdown + judul + tenant + divider + harga + batas ambil), foto rounded-20 + panel pesan sticky 360px + Field rows berikon (jam, timer, bahan, alergen, tenant) + Empty Card; copy humanizer ("tanya langsung saat ambil kalau kamu punya alergi"); mobile: ringkasan â†’ foto â†’ pesan â†’ detail.
