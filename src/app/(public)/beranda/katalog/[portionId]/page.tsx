@@ -324,7 +324,7 @@ function DetailBody({
             )}
             <div
               aria-hidden="true"
-              className="hidden h-[calc(112px+env(safe-area-inset-bottom))] shrink-0 max-md:block"
+              className="hidden h-[calc(96px+env(safe-area-inset-bottom))] shrink-0 max-md:block"
             />
           </>
         }
