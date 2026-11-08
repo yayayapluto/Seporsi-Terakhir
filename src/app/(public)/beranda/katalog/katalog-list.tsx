@@ -193,10 +193,12 @@ export function KatalogList({
         >
           Katalog sore ini
         </h2>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 max-md:contents">
           <span className="text-sm font-bold text-[#1C2826]">{filtered.length} porsi</span>
           {dayTotal >= MAX_PORTIONS_PER_DAY && (
-            <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
+            <div className="max-md:order-3">
+              <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
+            </div>
           )}
         </div>
         <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1 md:hidden max-md:order-last max-md:ml-auto">
