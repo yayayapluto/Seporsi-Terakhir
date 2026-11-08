@@ -58,11 +58,9 @@ async function NotifBody({ role }: { role: "student" | "tenant" | "admin" }) {
               ctaLabel="Buka katalog"
             />
           ) : (
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-2.5 max-md:gap-2.5">
               {notifs.map((n) => (
-                <li key={n.id}>
-                  <NotifRow n={n} />
-                </li>
+                <NotifRow key={n.id} n={n} />
               ))}
             </ul>
           )}

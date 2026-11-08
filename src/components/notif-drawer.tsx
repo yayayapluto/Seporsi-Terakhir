@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Check } from "lucide-react";
+import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { NotifItem } from "@/lib/notifs";
 import { NotifRow } from "./notif-row";
@@ -112,39 +112,29 @@ export function NotifDrawer({
               )}
             </div>
           </SheetHeader>
-          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4">
+          <ul className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto px-4 py-4 max-md:gap-2.5 max-md:px-4 list-none m-0 p-0">
             {notifs.length === 0 ? (
-              <div className="flex flex-col items-center gap-2 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center">
+              <li className="flex flex-col items-center gap-2 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 py-10 text-center list-none">
                 <p className="text-sm font-bold text-[#1C2826]">Belum ada kabar</p>
                 <p className="text-sm text-[#64746B]">
                   Perubahan status pesanan dan pendaftaran akan muncul di sini.
                 </p>
-              </div>
+              </li>
             ) : (
               notifs.map((n) => {
                 const read = readIds.has(n.id);
                 return (
-                  <div key={n.id} className={`flex items-start gap-2 ${read ? "opacity-60" : ""}`}>
-                    <div className="min-w-0 flex-1">
-                      <NotifRow n={n} onNavigate={() => setOpen(false)} />
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => markOne(n.id)}
-                      disabled={read}
-                      aria-label={read ? "Sudah dibaca" : `Tandai "${n.title}" sudah dibaca`}
-                      title={read ? "Sudah dibaca" : "Tandai sudah dibaca"}
-                      className="size-11 shrink-0 rounded-full text-[#2E7D4F]"
-                    >
-                      <Check className="size-5" strokeWidth={2} aria-hidden />
-                    </Button>
-                  </div>
+                  <NotifRow
+                    key={n.id}
+                    n={n}
+                    onNavigate={() => setOpen(false)}
+                    read={read}
+                    onMarkRead={() => markOne(n.id)}
+                  />
                 );
               })
             )}
-          </div>
+          </ul>
         </SheetContent>
       </Sheet>
     </>
