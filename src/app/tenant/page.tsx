@@ -290,7 +290,7 @@ async function DashboardBody({
                     reservations.length > 5 ? (
                       <Link
                         href="/tenant/pesanan"
-                        className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
+                        className={buttonVariants({ size: "sm", className: "shrink-0" })}
                       >
                         Lihat Semua
                       </Link>

@@ -7,7 +7,7 @@ import { DateField } from "@/components/date-field";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraAlert, SieraCard, SieraEmpty, SieraRailPage, SieraSection } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { percentSold } from "@/lib/domain/metrics";
 import { formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
@@ -362,7 +362,7 @@ export function ImpactClient({
             action={
               <Link
                 href={ROUTES.adminTenant}
-                className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
+                className={buttonVariants({ size: "sm", className: "shrink-0" })}
               >
                 Kelola
               </Link>

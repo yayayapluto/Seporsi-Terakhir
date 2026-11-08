@@ -306,7 +306,10 @@ function ActiveOrdersSection({ orders }: { orders: ActiveOrder[] }) {
         action={
           <Link
             href={ROUTES.pesanan}
-            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] max-md:px-0 max-md:mx-0"
+            className={buttonVariants({
+              size: "sm",
+              className: "shrink-0 max-md:px-0 max-md:mx-0",
+            })}
           >
             Lihat Semua
           </Link>
@@ -352,7 +355,10 @@ function SoonSection({ portions, failed }: { portions: SoonPortion[]; failed: bo
         action={
           <Link
             href={ROUTES.katalog}
-            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] max-md:px-0 max-md:mx-0"
+            className={buttonVariants({
+              size: "sm",
+              className: "shrink-0 max-md:px-0 max-md:mx-0",
+            })}
           >
             Lihat semua
           </Link>
