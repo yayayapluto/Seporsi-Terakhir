@@ -21,7 +21,7 @@ export function SplitHeading({
   as?: "h1" | "h2";
   trigger?: "load" | "scroll";
 }) {
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLHeadingElement>(null);
 
   useGSAP(
     () => {
@@ -35,16 +35,10 @@ export function SplitHeading({
         duration: 0.9,
         ease: "power4.out",
         stagger: 0.06,
+        scrollTrigger:
+          trigger === "scroll" ? { trigger: el, start: "top 85%", once: true } : undefined,
       });
-      if (trigger === "scroll") {
-        tween.scrollTrigger({
-          trigger: el,
-          start: "top 85%",
-          once: true,
-        });
-      }
       return () => {
-        tween.scrollTrigger?.kill();
         tween.kill();
         split.revert();
       };
