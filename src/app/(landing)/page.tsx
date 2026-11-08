@@ -21,7 +21,7 @@ import {
 } from "@/lib/domain/constants";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-import { LangkahStagger } from "./langkah-stagger";
+import { LangkahStory } from "./langkah-story";
 import { Pressable, Reveal } from "./thread";
 
 export const metadata: Metadata = { title: "Penyelamatan Surplus Pangan" };
@@ -200,7 +200,7 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-[1080px] px-5 pb-12 md:px-8">
-        <LangkahStagger steps={LANGKAH} />
+        <LangkahStory steps={LANGKAH} />
       </section>
 
       {/* FAQ — garis tipis, tanpa kartu. */}
