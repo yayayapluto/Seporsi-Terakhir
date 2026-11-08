@@ -80,12 +80,7 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* ponytail: ruang bottom-nav mobile — hanya rute in-app (nav ter-render), hanya <md. */
-  @media (max-width: 767px) {
-    body:has(nav[aria-label="Navigasi utama"]) main {
-      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
-    }
-  }
+  /* ponytail: ruang bottom-nav mobile ditangani spacer 96px AppShell setelah footer. */
   html {
     @apply font-sans;
   }
