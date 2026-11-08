@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  SkeletonChart,
+  SkeletonField,
+  SkeletonListItem,
+  SkeletonText,
+} from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { percentSold } from "@/lib/domain/metrics";
 import { wibDayRangeUtc } from "@/lib/format";
@@ -92,7 +98,28 @@ export default async function AdminPage({
   return (
     <>
       <AppHeader title="Dampak" trail={[{ label: "Dampak" }]} />
-      <Suspense fallback={<LoadingSpinner />}>
+      <Suspense
+        fallback={
+          <div aria-busy="true" className="flex min-h-0 flex-col gap-4">
+            <output className="sr-only">Memuat</output>
+            <div aria-hidden="true" className="flex flex-col gap-4">
+              <SkeletonText lines={2} />
+              <div className="grid grid-cols-[minmax(0,1fr)] gap-3">
+                <SkeletonField />
+                <SkeletonField />
+              </div>
+              <div className="flex flex-col gap-3 rounded-[20px] border border-line bg-gradient-to-br from-[#2E7D4F] to-[#1E5A36] p-5">
+                <Skeleton className="h-40 w-full rounded-xl bg-white/20" />
+              </div>
+              <SkeletonChart />
+              <SkeletonListItem />
+              <SkeletonListItem />
+              <SkeletonListItem />
+              <SkeletonListItem />
+            </div>
+          </div>
+        }
+      >
         <ReportBody from={from} to={to} email={user.user.email ?? "Admin"} />
       </Suspense>
     </>
