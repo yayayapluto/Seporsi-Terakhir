@@ -186,7 +186,7 @@ export function KatalogList({
           })}
         </fieldset>
       </fieldset>
-      <div className="flex min-h-11 items-center justify-between gap-3">
+      <div className="flex min-h-11 items-center justify-between gap-3 max-md:flex-wrap">
         <h2
           id="katalog-heading"
           className="text-xs font-bold uppercase tracking-[0.08em] text-[#64746B]"
@@ -199,7 +199,7 @@ export function KatalogList({
             <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
           )}
         </div>
-        <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1 md:hidden">
+        <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1 md:hidden max-md:order-last max-md:ml-auto">
           <legend className="sr-only">Tampilan katalog</legend>
           {[
             { value: "grid" as ViewMode, label: "Tampilan grid", Icon: LayoutGrid },
