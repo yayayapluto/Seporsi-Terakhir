@@ -17,7 +17,7 @@ export default async function NotifikasiSettingPage() {
           { label: "Notifikasi" },
         ]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8">
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-6 md:px-8 max-md:px-0 max-md:mx-0 max-md:pb-0">
         <SieraHero eyebrow="Notifikasi" title="Kabar sampai bunyi">
           Nyalakan agar kabar pesanan muncul sebagai notifikasi browser di perangkat ini.
         </SieraHero>

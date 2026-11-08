@@ -1,18 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraCard, sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 
+export const metadata: Metadata = { title: "Operasional" };
+
 /** Operasional tenant: ringkasan angka hari ini + aksi langsung. Tanpa tabel baru. */
 export default function OperasionalPage() {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<GenericPageSkeleton />}>
       <OperasionalBody />
     </Suspense>
   );
@@ -69,10 +72,10 @@ async function OperasionalBody() {
         title="Operasional"
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Operasional" }]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8 max-md:px-0 max-md:mx-0 max-md:py-4 max-md:pb-0">
         <div className="flex flex-col gap-2">
           <p className="text-[13px] font-bold text-[#2E7D4F]">OPERASIONAL</p>
-          <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+          <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
             Ringkasan hari ini
           </h1>
           <p className="text-[15px] leading-normal text-[#64746B]">
@@ -87,7 +90,9 @@ async function OperasionalBody() {
             { label: "Diambil · omzet", value: `${picked} · ${formatIDR(revenue)}` },
           ].map((s) => (
             <div key={s.label} className="flex flex-col gap-1 bg-white p-4">
-              <dt className="text-[11px] font-bold tracking-wide text-[#64746B]">{s.label}</dt>
+              <dt className="text-[11px] font-bold tracking-wide text-[#64746B] max-md:text-xs">
+                {s.label}
+              </dt>
               <dd className="text-xl font-extrabold tabular-nums">{s.value}</dd>
             </div>
           ))}

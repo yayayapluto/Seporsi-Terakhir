@@ -17,7 +17,7 @@ export default function ErrorPage({
   }, [cause]);
 
   return (
-    <main className="mx-auto flex w-full max-w-[430px] flex-1 flex-col items-center justify-center gap-5 px-4 py-10 text-center">
+    <main className="mx-auto flex w-full max-w-[430px] flex-1 flex-col items-center justify-center gap-5 px-5 py-10 text-center">
       <div className="flex flex-col items-center gap-2">
         <div className="flex size-12 items-center justify-center rounded-full border border-line bg-[#EAF5ED] text-[#2E7D4F]">
           <RotateCcw className="size-5" aria-hidden />

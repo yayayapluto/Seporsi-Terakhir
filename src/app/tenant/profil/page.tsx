@@ -1,10 +1,13 @@
 import { Store } from "lucide-react";
+import type { Metadata } from "next";
 import { AppHeader } from "@/components/app-header";
 import { SieraList, SieraRowLink, SieraSection, sieraCardClass } from "@/components/siera";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { requireOwnTenant } from "../guard";
 import { TenantProfileForm } from "./profile-form";
+
+export const metadata: Metadata = { title: "Profil Tenant" };
 
 /** Profil kantin: nama gerai + lokasi, bisa diubah tenant sendiri. */
 export default async function TenantProfilPage() {
@@ -18,7 +21,7 @@ export default async function TenantProfilPage() {
   const name = (data?.name as string | undefined) ?? tenant.name;
   const location = (data?.location_note as string | undefined) ?? "";
   return (
-    <div className="mx-auto flex w-full min-w-0 max-w-[1160px] flex-col gap-6 px-4 pt-6 pb-8 md:px-6">
+    <div className="mx-auto flex w-full min-w-0 max-w-[1160px] flex-col gap-6 px-4 pt-6 pb-8 md:px-6 max-md:px-0 max-md:mx-0 max-md:pt-4 max-md:pb-0 max-md:max-w-full">
       <AppHeader
         title="Profil Kantin"
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Profil Kantin" }]}
@@ -26,7 +29,7 @@ export default async function TenantProfilPage() {
       <section aria-label="Identitas gerai" className={`${sieraCardClass} p-6`}>
         <div className="flex flex-col gap-1">
           <p className="text-[13px] font-bold text-[#2E7D4F]">PROFIL KANTIN</p>
-          <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+          <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
             {name}
           </h1>
           <p className="text-[15px] leading-normal text-[#64746B]">

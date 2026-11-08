@@ -3,6 +3,7 @@ import {
   CircleHelp,
   Hourglass,
   Package,
+  Plus,
   ReceiptText,
   ScanLine,
   Timer,
@@ -10,10 +11,10 @@ import {
   UtensilsCrossed,
   Wallet,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import {
   SieraEmpty,
   SieraList,
@@ -23,7 +24,11 @@ import {
   SieraStat,
   SieraStatStrip,
 } from "@/components/siera";
+import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { Progress, ProgressTrack } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonListItem, SkeletonStat, SkeletonText } from "@/components/ui/skeleton-blocks";
 import { formatDateTimeWIB, formatIDR, formatSisaMenit, wibTodayRange } from "@/lib/format";
 import { ROUTES, tenantPorsiUbah } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -33,6 +38,8 @@ import { TenantPickupCountdown } from "./pesanan/tenant-pickup-countdown";
 import { TambahPorsiButton } from "./porsi/sheet-buttons";
 import TambahSheet from "./porsi/tambah-sheet";
 import { TenantTour } from "./tenant-tour";
+
+export const metadata: Metadata = { title: "Dasbor Tenant" };
 
 /** Dashboard tenant: porsi aktif, reservasi, pickup & omzet hari ini (WIB). */
 
@@ -168,7 +175,25 @@ export default async function TenantDashboardPage({
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense
+      fallback={
+        <div aria-busy="true" className="flex min-h-0 flex-col gap-4">
+          <output className="sr-only">Memuat</output>
+          <div aria-hidden="true" className="flex flex-col gap-4">
+            <SkeletonText lines={2} />
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] gap-3">
+              <SkeletonStat />
+              <SkeletonStat />
+              <SkeletonStat />
+            </div>
+            <Skeleton className="h-12 w-full rounded-xl" />
+            <SkeletonListItem withButton />
+            <SkeletonListItem />
+            <SkeletonListItem />
+          </div>
+        </div>
+      }
+    >
       <DashboardBody
         tourForced={tourForced}
         tourJourney={tourJourney}
@@ -247,7 +272,7 @@ async function DashboardBody({
           <>
             <div id="tour-hero" className="flex flex-col gap-2">
               <p className="text-[13px] font-bold text-[#2E7D4F]">DASBOR TENANT</p>
-              <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+              <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
                 {tenantName}
               </h1>
               <p className="text-[15px] leading-normal text-[#64746B]">
@@ -261,12 +286,15 @@ async function DashboardBody({
               <SieraStat icon={Wallet} value={formatIDR(revenueToday)} label="Omzet" />
             </SieraStatStrip>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1 max-md:gap-2">
               <Link
                 href="/tenant/scan"
                 data-tour="scan"
-                className={buttonVariants({ className: "min-h-11 w-full text-[15px]" })}
+                className={buttonVariants({
+                  className: "min-h-11 w-full text-[15px] max-md:min-h-12",
+                })}
               >
+                <ScanLine className="size-5" aria-hidden />
                 Scan pickup
               </Link>
               <TambahPorsiButton sheet={<TambahSheet />} />
@@ -281,7 +309,7 @@ async function DashboardBody({
                     reservations.length > 5 ? (
                       <Link
                         href="/tenant/pesanan"
-                        className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
+                        className={buttonVariants({ size: "sm", className: "shrink-0" })}
                       >
                         Lihat Semua
                       </Link>
@@ -341,9 +369,13 @@ async function DashboardBody({
                   <Link
                     href={ROUTES.tenantPorsiTambah}
                     data-tour="tambah-porsi"
-                    className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36] hover:underline"
+                    className={buttonVariants({
+                      size: "sm",
+                      className: "shrink-0 max-md:min-h-11 max-md:min-w-11",
+                    })}
                   >
-                    + Tambah
+                    <Plus className="size-4" aria-hidden />
+                    Tambah
                   </Link>
                 }
               >
@@ -361,33 +393,62 @@ async function DashboardBody({
                   />
                 ) : (
                   <div className="flex flex-col gap-2">
-                    <SieraList>
+                    <SieraList className="max-md:divide-y-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none">
                       {activePortions.map((p) => {
                         const minutesLeft = Math.max(
                           0,
                           Math.round((new Date(p.expiresAt).getTime() - Date.now()) / 60000),
                         );
                         const nearExpiry = minutesLeft < 60;
+                        const stockRatio =
+                          p.quantityPosted > 0 ? p.quantityRemaining / p.quantityPosted : 0;
                         return (
                           <li
                             key={p.id}
-                            className="flex min-h-16 flex-col justify-center gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                            className="flex min-h-16 flex-col justify-center gap-2 px-4 py-3.5 max-md:items-start sm:flex-row sm:items-center sm:justify-between sm:gap-4 max-md:mb-3 max-md:rounded-2xl max-md:border max-md:border-[#e3e9e5] max-md:bg-white max-md:px-4 max-md:py-3.5"
                           >
                             <div className="min-w-0">
-                              <h3 className="truncate font-bold leading-snug">
+                              <h3 className="font-bold leading-snug max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                                 {p.menuName}{" "}
-                                <span className="font-normal text-[#64746B]">
+                                <span className="font-normal text-[#64746B] max-md:hidden">
                                   sisa {p.quantityRemaining}/{p.quantityPosted}
                                 </span>
                               </h3>
-                              <p className="mt-0.5 text-xs text-[#64746B]">
+                              <p className="mt-0.5 text-xs text-[#64746B] max-md:hidden">
                                 <strong className="text-sm font-bold text-primary">
                                   {formatIDR(p.discountPrice)}
                                 </strong>{" "}
                                 · Habis {formatDateTimeWIB(new Date(p.expiresAt))} WIB
                               </p>
+                              <p className="mt-1 text-sm font-semibold text-primary max-md:block hidden">
+                                {formatIDR(p.discountPrice)}
+                              </p>
+                              <div className="mt-2 hidden flex-wrap items-center gap-2 max-md:flex">
+                                <Badge
+                                  className={
+                                    p.quantityRemaining === 0
+                                      ? "bg-[#FDECEC] text-[#BA1A1A]"
+                                      : stockRatio < 0.5
+                                        ? "bg-[#FEF3C7] text-[#92400E]"
+                                        : "bg-[#DCEBE0] text-[#1E5A36]"
+                                  }
+                                >
+                                  Sisa {p.quantityRemaining}/{p.quantityPosted}
+                                </Badge>
+                                <span className="inline-flex items-center gap-1 text-xs text-[#64746B]">
+                                  <Timer className="size-3.5" aria-hidden />
+                                  Habis {formatDateTimeWIB(new Date(p.expiresAt))} WIB
+                                </span>
+                              </div>
+                              <Progress
+                                value={Math.round(stockRatio * 100)}
+                                aria-label={`Stok ${p.menuName}`}
+                                className="mt-2 hidden max-md:block"
+                              >
+                                <ProgressTrack />
+                              </Progress>
                             </div>
-                            <div className="flex shrink-0 items-center gap-3">
+                            <div className="flex shrink-0 items-center gap-3 max-md:order-first max-md:self-end">
                               {nearExpiry && (
                                 <span className="inline-flex items-center rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-semibold text-[#B45309]">
                                   Batas ambil {formatSisaMenit(minutesLeft)} lagi

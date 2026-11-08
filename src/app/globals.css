@@ -80,11 +80,12 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* ponytail: ruang bottom-nav mobile — hanya rute in-app (nav ter-render), hanya <md. */
-  @media (max-width: 767px) {
-    body:has(nav[aria-label="Navigasi utama"]) main {
-      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
-    }
+  /* ponytail: ruang bottom-nav mobile ditangani spacer 96px AppShell setelah footer. */
+  /* ponytail: safety net — raw button tanpa data-slot shadcn tetap dapat border terlihat. */
+  button:not([data-slot]):not([role="tab"]):not([role="switch"]):not([role="checkbox"]),
+  a[class*="btn"] {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
   }
   html {
     @apply font-sans;
@@ -520,7 +521,9 @@
   .flow-grow,
   .t-digit,
   [data-in] {
+    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion override */
     animation: none !important;
+    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion override */
     transition: none !important;
   }
 }

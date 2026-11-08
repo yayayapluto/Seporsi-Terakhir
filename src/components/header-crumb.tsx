@@ -35,25 +35,30 @@ export function HeaderCrumb({ trail }: { trail: Crumb[] }) {
       >
         <ArrowLeft className="size-5" aria-hidden />
       </Button>
-      <Breadcrumb>
-        <BreadcrumbList className="sm:gap-2.5">
-          {trail.map((c, i) => {
-            const last = i === trail.length - 1;
-            return (
-              <Fragment key={c.label}>
-                <BreadcrumbItem>
-                  {last || !c.href ? (
-                    <BreadcrumbPage>{c.label}</BreadcrumbPage>
-                  ) : (
-                    <BreadcrumbLink render={<Link href={c.href} />}>{c.label}</BreadcrumbLink>
-                  )}
-                </BreadcrumbItem>
-                {!last && <BreadcrumbSeparator />}
-              </Fragment>
-            );
-          })}
-        </BreadcrumbList>
-      </Breadcrumb>
+      <span className="hidden min-w-0 flex-1 truncate text-base font-bold text-[#1C2826] max-md:block">
+        {current?.label?.startsWith("Detail ") ? "Detail pesanan" : current?.label}
+      </span>
+      <div className="max-md:hidden">
+        <Breadcrumb>
+          <BreadcrumbList className="sm:gap-2.5">
+            {trail.map((c, i) => {
+              const last = i === trail.length - 1;
+              return (
+                <Fragment key={c.label}>
+                  <BreadcrumbItem>
+                    {last || !c.href ? (
+                      <BreadcrumbPage>{c.label}</BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink render={<Link href={c.href} />}>{c.label}</BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                  {!last && <BreadcrumbSeparator />}
+                </Fragment>
+              );
+            })}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
     </nav>
   );
 }

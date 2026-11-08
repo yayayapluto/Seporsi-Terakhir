@@ -13,7 +13,7 @@ export function AppFooter() {
   const pathname = usePathname();
   if (FULL_FOOTER_PATHS[pathname]) return null;
   return (
-    <div className="w-full border-t border-line bg-white">
+    <div className="w-full border-t border-line bg-white max-md:mt-6 max-md:px-4 max-md:pt-4">
       <SiteFooterMini bare />
     </div>
   );

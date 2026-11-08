@@ -7,12 +7,15 @@ import {
   Store,
   UserRound,
 } from "lucide-react";
+import type { Metadata } from "next";
 import { SignOutButton } from "@/app/(public)/profil/sign-out-button";
 import { AppHeader } from "@/components/app-header";
 import { InstallPwa } from "@/components/install-pwa";
 import { SieraList, SieraRowLink, SieraSectionTitle } from "@/components/siera";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
+
+export const metadata: Metadata = { title: "Pengaturan" };
 
 interface Row {
   href: string;
@@ -121,7 +124,7 @@ export default async function PengaturanPage() {
         title="Pengaturan"
         trail={[{ label: "Profil", href: ROUTES.profil }, { label: "Pengaturan" }]}
       />
-      <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-4 px-4 py-6 md:grid-cols-2 md:px-8 lg:grid-cols-3">
+      <div className="grid w-full min-w-0 flex-1 grid-cols-1 content-start gap-4 px-4 py-6 md:grid-cols-2 md:px-8 lg:grid-cols-3 max-md:px-0 max-md:mx-0 max-md:pb-0">
         <div className="flex flex-row flex-wrap items-baseline gap-x-2 md:col-span-2 lg:col-span-3">
           <h1 className="text-[18px] leading-[1.3] font-extrabold">Pengaturan</h1>
           <p className="text-[13px] text-[#64746B]">Kelola akun dan pilihan notifikasimu.</p>

@@ -256,7 +256,7 @@ export function ScannerClient({
     <>
       <div id="tour-hero" className="flex flex-col gap-2">
         <p className="text-[13px] font-bold text-[#2E7D4F]">SCAN PICKUP</p>
-        <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+        <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
           {greet}, {tenantName}
         </h1>
         <p className="text-[15px] leading-normal text-[#64746B]">
@@ -266,6 +266,7 @@ export function ScannerClient({
       </div>
       {phase.kind === "scanning" && (
         <div data-tour="scanner" className="relative mx-auto w-full max-w-[520px]">
+          <style>{`@media (max-width: 819px){ .siera-scanner video { aspect-ratio: 1/1; object-fit: cover; min-height: 280px; } }`}</style>
           {cameraError ? (
             <div className="flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-[20px] border border-dashed border-line bg-white p-6 text-center">
               <span
@@ -437,15 +438,17 @@ export function ScannerClient({
         label="Konfirmasi manual"
         action={
           phase.kind === "scanning" ? (
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               data-tour="manual"
-              className="min-h-11 text-[13px] font-bold text-[#1E5A36] underline underline-offset-4"
+              className="min-h-11"
               onClick={() => setManualOpen((v) => !v)}
               aria-expanded={manualOpen}
             >
               {manualOpen ? "Tutup kode manual" : "Masukkan kode manual"}
-            </button>
+            </Button>
           ) : undefined
         }
       >

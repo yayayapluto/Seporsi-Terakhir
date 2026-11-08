@@ -9,6 +9,7 @@ export function EmptyState({
   ctaLabel,
   id,
   compact = false,
+  className,
 }: {
   title: string;
   hint: string;
@@ -16,10 +17,12 @@ export function EmptyState({
   ctaLabel: string;
   id?: string;
   compact?: boolean;
+  className?: string;
 }) {
   return (
     <SieraEmpty
       id={id}
+      className={className}
       compact={compact}
       title={title}
       hint={hint}

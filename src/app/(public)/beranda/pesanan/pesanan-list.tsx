@@ -132,31 +132,38 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                   className={cn(sieraCardClass, "flex min-w-0 flex-col gap-3 px-5 py-[18px]")}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <SieraTile className="size-12 shrink-0">
+                    <SieraTile className="size-12 shrink-0 max-md:hidden">
                       <Store className="size-[22px]" strokeWidth={1.8} aria-hidden />
                     </SieraTile>
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 max-md:hidden">
                         <h2 className="text-base font-bold text-[#1C2826]">
                           {o.menuName}{" "}
                           <span className="font-semibold opacity-60">× {o.quantity}</span>
                         </h2>
                         <OrderStatusBadge status={o.status} />
                       </div>
-                      <p className="mt-1 truncate text-[13px] text-[#64746B]">
+                      <div className="flex min-w-0 flex-col items-start gap-1 md:hidden">
+                        <h2 className="text-base font-bold text-[#1C2826] break-words">
+                          {o.menuName}{" "}
+                          <span className="font-semibold opacity-60">× {o.quantity}</span>
+                        </h2>
+                        <OrderStatusBadge status={o.status} />
+                      </div>
+                      <p className="mt-1 truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {o.tenantName}
                         {o.tenantLocation ? ` · ${o.tenantLocation}` : ""}
                       </p>
-                      <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
+                      <p className="mt-0.5 truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {formatDateTimeWIB(new Date(o.createdAt))} WIB
                       </p>
                       {o.pickedUpAt && (
-                        <p className="truncate text-[13px] text-[#64746B]">
+                        <p className="truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                           Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
                         </p>
                       )}
                       {o.status === "reserved" && o.pickupDeadlineAt && (
-                        <p className="mt-0.5 flex items-center gap-1 text-xs font-bold text-[#B45309]">
+                        <p className="mt-0.5 flex items-center gap-1 text-xs font-bold text-[#B45309] max-md:rounded-lg max-md:border max-md:border-[#B45309]/20 max-md:bg-[#FEF3C7]/50 max-md:px-3 max-md:py-2 max-md:font-medium max-md:text-[#92400E]">
                           Ambil dalam{" "}
                           <PickupCountdown
                             deadlineIso={o.pickupDeadlineAt}
@@ -168,11 +175,22 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                         </p>
                       )}
                     </div>
-                    <p className="shrink-0 text-base font-extrabold text-[#1E5A36]">
+                    <p className="shrink-0 text-base font-extrabold text-[#1E5A36] max-md:hidden">
                       {formatIDR(o.discountPriceSnapshot * o.quantity)}
                     </p>
                   </div>
-                  <div className="flex flex-wrap items-center justify-end gap-2">
+                  {o.status === "reserved" && (
+                    <Link
+                      href={pesananDetail(o.orderId)}
+                      className={cn(
+                        buttonVariants({ variant: "outline" }),
+                        "flex h-12 w-full items-center justify-center rounded-xl text-[15px] font-bold text-[#1E5A36] md:hidden",
+                      )}
+                    >
+                      Lihat QR pickup
+                    </Link>
+                  )}
+                  <div className="flex flex-wrap items-center justify-end gap-2 max-md:hidden">
                     <Link
                       href={pesananDetail(o.orderId)}
                       className={cn(buttonVariants({ variant: "outline" }), "h-11 rounded-xl px-5")}
@@ -197,6 +215,40 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                         )}
                       </Button>
                     )}
+                  </div>
+                  <div className="flex flex-wrap items-center justify-between gap-2 md:hidden">
+                    <p className="text-base font-extrabold text-[#1E5A36]">
+                      {formatIDR(o.discountPriceSnapshot * o.quantity)}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      {o.status === "reserved" && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="h-11 rounded-xl border-[#F1B6B6] px-4 text-[#BA1A1A] hover:bg-[#FEE2E2] hover:text-[#BA1A1A]"
+                          onClick={() => setConfirmId(o.orderId)}
+                          disabled={cancelling === o.orderId}
+                        >
+                          {cancelling === o.orderId ? (
+                            <>
+                              <Spinner />
+                              Membatalkan…
+                            </>
+                          ) : (
+                            "Batalkan"
+                          )}
+                        </Button>
+                      )}
+                      <Link
+                        href={pesananDetail(o.orderId)}
+                        className={cn(
+                          buttonVariants({ variant: "outline" }),
+                          "h-11 rounded-xl px-5",
+                        )}
+                      >
+                        Detail
+                      </Link>
+                    </div>
                   </div>
                 </article>
               </motion.li>

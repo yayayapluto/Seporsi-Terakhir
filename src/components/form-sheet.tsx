@@ -48,7 +48,7 @@ export function FormSheet({
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent
           side="bottom"
-          className="max-h-[92dvh] overflow-y-auto rounded-t-[20px] px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:max-w-lg"
+          className="max-h-[85dvh] overflow-y-auto rounded-t-[24px] px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:max-w-lg"
         >
           <SheetHeader>
             <SheetTitle>{title}</SheetTitle>

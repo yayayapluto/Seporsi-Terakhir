@@ -9,7 +9,7 @@ import { Input } from "./ui/input";
 
 /** Token class card Siera di atas primitif shadcn `card` — untuk section ber-label yang wajib pertahankan tag + aria. */
 export const sieraCardClass =
-  "overflow-hidden rounded-[20px] border border-line bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)]";
+  "overflow-hidden rounded-[20px] border border-line bg-white shadow-[0_1px_2px_rgba(16,24,40,.04)] w-full max-md:w-full max-md:mx-0 max-md:rounded-2xl";
 
 /** Card Siera standar di atas primitif shadcn `card`: putih, radius 20, border #E8ECE9, shadow 1px. */
 export function SieraCard({ className, children }: { className?: string; children: ReactNode }) {
@@ -57,7 +57,10 @@ export function SieraField({
 /** Judul seksi kecil di atas grup card. */
 export function SieraSectionTitle({ id, children }: { id?: string; children: ReactNode }) {
   return (
-    <h2 id={id} className="px-4 text-xs font-bold uppercase tracking-[0.08em] text-[#64746B]">
+    <h2
+      id={id}
+      className="max-md:px-0 px-4 text-xs font-bold uppercase tracking-[0.08em] text-[#64746B]"
+    >
       {children}
     </h2>
   );
@@ -74,7 +77,7 @@ export function SieraHero({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5">
+    <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5 max-md:rounded-2xl max-md:w-full max-md:mx-0">
       <p className="text-xs font-bold tracking-wide text-[#1E5A36]">{eyebrow}</p>
       <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
         {title}
@@ -95,7 +98,7 @@ export function SieraTenantHeader({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 max-md:px-0 max-md:mx-0 max-md:w-full">
       <p className="text-xs font-bold tracking-widest text-primary">{kicker}</p>
       <h1 className="text-3xl font-bold">{title}</h1>
       <div className="text-muted-foreground">{children}</div>
@@ -104,7 +107,8 @@ export function SieraTenantHeader({
 }
 
 /** Wadah grouped list: radius tetap, overflow hidden, tanpa padding, divider solid. */
-export const sieraListClass = "overflow-hidden rounded-[20px] border border-line bg-white";
+export const sieraListClass =
+  "overflow-hidden rounded-[20px] border border-line bg-white w-full max-md:w-full max-md:mx-0 max-md:rounded-2xl";
 
 /** List homogen: divider dashed 1px antar baris (PRODUCT-Siera §5.3). */
 export function SieraList({
@@ -154,11 +158,13 @@ export function SieraRowLink({
           <Icon className="size-5" strokeWidth={1.75} aria-hidden />
         </SieraTile>
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="truncate text-[15px] leading-[1.3] font-semibold text-[#1C2826]">
+          <span className="text-[15px] leading-[1.3] font-semibold text-[#1C2826] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
             {title}
           </span>
           {subtitle != null && (
-            <span className="truncate text-[12px] leading-[1.4] text-[#64746B]">{subtitle}</span>
+            <span className="text-[12px] leading-[1.4] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+              {subtitle}
+            </span>
           )}
         </span>
         <ChevronRight
@@ -294,8 +300,8 @@ export function SieraAuthShell({
   eyebrow?: string;
 }) {
   return (
-    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col justify-center gap-4 px-4 py-10">
-      <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5">
+    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col justify-center gap-4 px-4 py-10 max-md:px-0 max-md:mx-0 max-md:w-full max-md:max-w-full">
+      <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5 max-md:rounded-2xl max-md:w-full max-md:mx-0">
         {eyebrow && <p className="text-xs font-bold tracking-wide text-[#1E5A36]">{eyebrow}</p>}
         <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
           {title}
@@ -335,15 +341,17 @@ export function SieraSection({
   label,
   action,
   children,
+  className,
 }: {
   id?: string;
   label: string;
   action?: ReactNode;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <section aria-label={label} className="flex min-w-0 flex-col gap-2">
-      <div className="flex min-h-11 items-center justify-between gap-3 px-5 md:px-6">
+    <section aria-label={label} className={cn("flex min-w-0 flex-col gap-2", className)}>
+      <div className="flex min-h-11 items-center justify-between gap-3 px-4 max-md:px-0">
         <SieraSectionTitle id={id}>
           <span className="block truncate whitespace-nowrap">{label}</span>
         </SieraSectionTitle>
@@ -362,6 +370,7 @@ export function SieraEmpty({
   id,
   compact = false,
   icon: Icon,
+  className,
 }: {
   title: string;
   hint?: string;
@@ -369,11 +378,16 @@ export function SieraEmpty({
   id?: string;
   compact?: boolean;
   icon?: LucideIcon;
+  className?: string;
 }) {
   return (
     <div
       id={id}
-      className={`flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 text-center ${compact ? "py-6" : "py-10 md:py-14"}`}
+      className={cn(
+        "flex flex-col items-center gap-3 rounded-[20px] border-[1.5px] border-dashed border-line bg-white px-4 text-center max-md:rounded-2xl max-md:w-full max-md:mx-0 max-md:p-4",
+        compact ? "py-6" : "py-10 md:py-14",
+        className,
+      )}
     >
       {Icon && (
         <span
@@ -407,13 +421,15 @@ export function SieraStat({
   label: string;
 }) {
   return (
-    <div className="flex min-w-0 items-center gap-3">
-      <SieraTile>
+    <div className="flex min-w-0 items-center gap-3 max-md:flex-col max-md:items-start max-md:gap-2 max-md:rounded-2xl max-md:border max-md:border-[#e3e9e5] max-md:bg-white max-md:p-3">
+      <SieraTile className="max-md:size-9">
         <Icon className="size-5" strokeWidth={1.75} aria-hidden />
       </SieraTile>
       <div className="min-w-0">
-        <p className="truncate text-lg leading-none font-extrabold">{value}</p>
-        <p className="mt-1 text-[11px] font-semibold text-[#64746B]">{label}</p>
+        <p className="truncate text-lg leading-none font-extrabold max-md:text-xl max-md:font-semibold max-md:tabular-nums max-md:leading-tight max-md:whitespace-normal max-md:break-words">
+          {value}
+        </p>
+        <p className="mt-1 text-[11px] font-semibold text-[#64746B] max-md:text-xs">{label}</p>
       </div>
     </div>
   );
@@ -422,7 +438,7 @@ export function SieraStat({
 /** Strip 3 stat: satu card dibagi divider dashed (bukan 3 card lepas). */
 export function SieraStatStrip({ children }: { children: ReactNode }) {
   return (
-    <SieraCard className="grid grid-cols-3 divide-x divide-dashed divide-line p-4">
+    <SieraCard className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-x divide-dashed divide-line p-4 max-md:grid-cols-[repeat(auto-fit,minmax(0,1fr))] max-md:gap-3 max-md:divide-y-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none max-md:p-0">
       {children}
     </SieraCard>
   );
@@ -434,13 +450,20 @@ export function SieraRailPage({
   main,
   asideLabel,
   aside,
+  className,
 }: {
   main: ReactNode;
   asideLabel: string;
   aside: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="mx-auto grid w-full min-w-0 max-w-[1160px] flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-stretch xl:gap-6">
+    <div
+      className={cn(
+        "mx-auto grid w-full min-w-0 max-w-[430px] md:max-w-[1160px] flex-1 grid-cols-1 content-start items-start gap-4 px-4 py-6 md:px-8 md:pb-8 lg:gap-5 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-stretch xl:gap-6 max-md:px-0 max-md:mx-0 max-md:w-full max-md:max-w-full",
+        className,
+      )}
+    >
       <div className="flex min-w-0 flex-col gap-4 lg:gap-5">{main}</div>
       <aside aria-label={asideLabel} className="flex min-w-0 flex-col">
         <div className="flex min-w-0 flex-col gap-4 lg:gap-5 xl:sticky xl:top-20">{aside}</div>

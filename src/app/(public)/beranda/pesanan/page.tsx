@@ -1,12 +1,13 @@
 import { cn } from "cn";
 import { QrCode } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraRailPage, sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
@@ -14,6 +15,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { OrdersList } from "./pesanan-list";
 import { QrModal } from "./qr-modal";
+
+export const metadata: Metadata = { title: "Pesanan" };
 
 export interface MyOrder {
   orderId: string;
@@ -76,36 +79,38 @@ export default async function PesananPage({
         title="Pesanan"
         trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Pesanan" }]}
       />
-      <Suspense fallback={<LoadingSpinner />}>
-        <PesananBody />
-      </Suspense>
-      <GuidedTour
-        tourKey="pesanan"
-        forced={tourForced}
-        auto={false}
-        journey={tourJourney}
-        userId={user.id}
-        fresh={sp.fresh === "1"}
-        entryStep={tourEntry}
-        next={tourJourney ? (getJourneyNext(ROUTES.pesanan) ?? undefined) : undefined}
-        journeyLabel="Bagian 3 dari 4 · Pesanan"
-        intro={{
-          title: "Lacak pesananmu?",
-          body: "Semua porsi yang kamu kunci ada di sini. Saring status, buka QR, atau batalkan bila berubah pikiran.",
-        }}
-        steps={[
-          {
-            target: '[data-tour="order-filter"]',
-            title: "Saring status",
-            body: "Pisahkan yang menunggu pickup, sudah selesai, atau dibatalkan.",
-          },
-          {
-            target: '[data-tour="order-list"] li:first-child',
-            title: "Satu pesanan",
-            body: "Buka QR pickup, lihat detail, atau batalkan selagi masih menunggu.",
-          },
-        ]}
-      />
+      <div className="mx-auto w-full max-w-[430px] md:max-w-none max-md:mx-0 max-md:w-full max-md:max-w-full">
+        <Suspense fallback={<GenericPageSkeleton />}>
+          <PesananBody />
+        </Suspense>
+        <GuidedTour
+          tourKey="pesanan"
+          forced={tourForced}
+          auto={false}
+          journey={tourJourney}
+          userId={user.id}
+          fresh={sp.fresh === "1"}
+          entryStep={tourEntry}
+          next={tourJourney ? (getJourneyNext(ROUTES.pesanan) ?? undefined) : undefined}
+          journeyLabel="Bagian 3 dari 4 · Pesanan"
+          intro={{
+            title: "Lacak pesananmu?",
+            body: "Semua porsi yang kamu kunci ada di sini. Saring status, buka QR, atau batalkan bila berubah pikiran.",
+          }}
+          steps={[
+            {
+              target: '[data-tour="order-filter"]',
+              title: "Saring status",
+              body: "Pisahkan yang menunggu pickup, sudah selesai, atau dibatalkan.",
+            },
+            {
+              target: '[data-tour="order-list"] li:first-child',
+              title: "Satu pesanan",
+              body: "Buka QR pickup, lihat detail, atau batalkan selagi masih menunggu.",
+            },
+          ]}
+        />
+      </div>
     </>
   );
 }
@@ -136,10 +141,10 @@ async function PesananBody() {
               QR pickup aktif
             </h2>
             <div className="min-w-0">
-              <p className="truncate text-[15px] font-bold text-[#1C2826]">
+              <p className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[15px] font-bold text-[#1C2826]">
                 {nextActive.menuName} <span className="font-semibold">× {nextActive.quantity}</span>
               </p>
-              <p className="mt-0.5 truncate text-[13px] text-[#64746B]">
+              <p className="mt-0.5 truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                 {nextActive.tenantName}
                 {nextActive.tenantLocation ? ` · ${nextActive.tenantLocation}` : ""}
               </p>

@@ -9,9 +9,12 @@ import {
   Store,
   UserRound,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SignOutButton } from "@/app/(public)/profil/sign-out-button";
 import { requireRole } from "@/lib/auth";
+
+export const metadata: Metadata = { title: "Pengaturan Akun" };
 
 const CARD =
   "rounded-[20px] border border-[#E8ECE9] bg-card p-4 shadow-[0_1px_2px_rgba(16,24,40,.04)]";
@@ -126,7 +129,7 @@ export default async function PengaturanPage() {
           ];
 
   return (
-    <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-4 py-6 md:max-w-3xl md:grid-cols-2 md:px-6">
+    <div className="mx-auto grid w-full max-w-[430px] flex-1 grid-cols-1 content-start gap-6 px-5 py-6 max-md:max-w-full max-md:px-0 md:max-w-3xl md:grid-cols-2 md:px-6">
       <div className="flex flex-col gap-1 md:col-span-2">
         <h1 className="text-[18px] leading-[1.3] font-extrabold">Pengaturan</h1>
         <p className="text-[13px] text-[#64746B]">Kelola akun dan preferensi kamu.</p>

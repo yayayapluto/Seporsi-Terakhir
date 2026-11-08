@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "cn";
-import { ChevronRight, Clock3, ImageOff, LayoutGrid, Rows3 } from "lucide-react";
+import { ChevronRight, CircleAlert, Clock3, ImageOff, LayoutGrid, Rows3 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,13 +9,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraEmpty, SieraWarningBadge, sieraCardClass } from "@/components/siera";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { OptionSelect } from "@/components/ui/option-select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Toggle } from "@/components/ui/toggle";
 import { MAX_PORTIONS_PER_DAY } from "@/lib/domain/constants";
 import { formatDateTimeWIB, formatIDR, formatSisaMenit } from "@/lib/format";
@@ -106,52 +101,40 @@ export function KatalogList({
       <fieldset
         aria-label="Saring katalog"
         data-tour="filter"
-        className="m-0 flex min-w-0 flex-col gap-4 border-0 p-0"
+        className="m-0 flex min-w-0 max-md:flex-col max-md:gap-4 flex-col gap-4 border-0 p-0"
       >
         <label
           htmlFor="tenant-filter"
           className="flex min-w-0 flex-1 flex-col gap-1.5 sm:min-w-[200px]"
         >
-          <span className="text-xs font-bold text-[#64746B]">Tenant</span>
-          <Select value={tenant} onValueChange={(v) => setTenant(String(v))}>
-            <SelectTrigger
-              id="tenant-filter"
-              className="h-12 w-full min-w-0 rounded-xl px-3.5 text-sm [&>span]:min-w-0 [&>span]:truncate"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent align="start" alignItemWithTrigger={false}>
-              <SelectItem value="semua">Semua tenant</SelectItem>
-              {tenants.map((t) => (
-                <SelectItem key={t} value={t}>
-                  {t}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <span className="text-xs font-bold text-[#64746B] max-md:text-sm">Tenant</span>
+          <OptionSelect
+            id="tenant-filter"
+            ariaLabel="Tenant"
+            value={tenant}
+            onValueChange={setTenant}
+            options={[
+              { value: "semua", label: "Semua tenant" },
+              ...tenants.map((t) => ({ value: t, label: t })),
+            ]}
+            className="h-12 w-full min-w-0 rounded-xl px-3.5 text-sm [&>span]:min-w-0 [&>span]:truncate"
+          />
         </label>
         <label
           htmlFor="sort-filter"
           className="flex min-w-0 flex-1 flex-col gap-1.5 sm:min-w-[200px]"
         >
-          <span className="text-xs font-bold text-[#64746B]">Urutkan</span>
-          <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
-            <SelectTrigger
-              id="sort-filter"
-              className="h-12 w-full min-w-0 rounded-xl px-3.5 text-sm [&>span]:min-w-0 [&>span]:truncate"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent align="start" alignItemWithTrigger={false}>
-              {SORTS.map((s) => (
-                <SelectItem key={s.value} value={s.value}>
-                  {s.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <span className="text-xs font-bold text-[#64746B] max-md:text-sm">Urutkan</span>
+          <OptionSelect
+            id="sort-filter"
+            ariaLabel="Urutkan"
+            value={sort}
+            onValueChange={(v) => setSort(v as SortValue)}
+            options={SORTS.map((s) => ({ value: s.value, label: s.label }))}
+            className="h-12 w-full min-w-0 rounded-xl px-3.5 text-sm [&>span]:min-w-0 [&>span]:truncate"
+          />
         </label>
-        <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1">
+        <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1 max-md:hidden">
           <legend className="sr-only">Tampilan katalog</legend>
           {[
             { value: "grid" as ViewMode, label: "Tampilan grid", Icon: LayoutGrid },
@@ -186,19 +169,54 @@ export function KatalogList({
           })}
         </fieldset>
       </fieldset>
-      <div className="flex min-h-11 items-center justify-between gap-3">
+      <div className="flex min-h-11 items-center justify-between gap-3 max-md:flex-wrap">
         <h2
           id="katalog-heading"
-          className="text-xs font-bold uppercase tracking-[0.08em] text-[#64746B]"
+          className="text-xs font-bold uppercase tracking-[0.08em] text-[#64746B] max-md:hidden"
         >
           Katalog sore ini
         </h2>
-        <div className="flex shrink-0 items-center gap-2">
+        <span className="hidden text-sm font-bold text-[#1C2826] max-md:block">
+          {filtered.length} porsi sore ini
+        </span>
+        <div className="hidden shrink-0 items-center gap-2 md:flex">
           <span className="text-sm font-bold text-[#1C2826]">{filtered.length} porsi</span>
           {dayTotal >= MAX_PORTIONS_PER_DAY && (
             <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
           )}
         </div>
+        <fieldset className="flex shrink-0 items-center gap-1 rounded-xl border border-line bg-white p-1 md:hidden max-md:order-last max-md:ml-auto">
+          <legend className="sr-only">Tampilan katalog</legend>
+          {[
+            { value: "grid" as ViewMode, label: "Tampilan grid", Icon: LayoutGrid },
+            { value: "list" as ViewMode, label: "Tampilan daftar", Icon: Rows3 },
+          ].map(({ value, label, Icon }) => {
+            const active = view === value;
+            return (
+              <Toggle
+                key={value}
+                pressed={active}
+                onPressedChange={() => setView(value)}
+                aria-label={label}
+                className="relative min-h-9 min-w-9 rounded-lg data-[state=on]:bg-transparent focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+              >
+                {active && (
+                  <span aria-hidden className="absolute inset-0 rounded-lg bg-[#DCEBE0]" />
+                )}
+                <Icon
+                  className={`relative size-4 ${active ? "text-[#1E5A36]" : "text-[#64746B]"}`}
+                  aria-hidden
+                />
+              </Toggle>
+            );
+          })}
+        </fieldset>
+        {dayTotal >= MAX_PORTIONS_PER_DAY && (
+          <p className="hidden w-full items-center gap-2 rounded-xl bg-[#FEF3C7] px-3.5 py-2.5 text-sm font-bold text-[#92400E] max-md:flex">
+            <CircleAlert className="size-4 shrink-0" aria-hidden />
+            Batas {MAX_PORTIONS_PER_DAY}/hari tercapai
+          </p>
+        )}
       </div>
       {filtered.length === 0 ? (
         <SieraEmpty
@@ -272,10 +290,12 @@ export function KatalogList({
                         )}
                       </span>
                       <span className="flex flex-1 flex-col gap-0.5 p-4">
-                        <span className="line-clamp-2 text-base leading-snug font-bold text-[#1C2826]">
+                        <span className="line-clamp-2 max-md:line-clamp-none max-md:break-words text-base leading-snug font-bold text-[#1C2826]">
                           {p.menuName}
                         </span>
-                        <span className="truncate text-[13px] text-[#64746B]">{p.tenantName}</span>
+                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[13px] text-[#64746B]">
+                          {p.tenantName}
+                        </span>
                         <span className="mt-2 text-[13px] text-[#64746B]">
                           Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
                         </span>
@@ -351,10 +371,10 @@ export function KatalogList({
                         )}
                       </span>
                       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                        <span className="truncate text-[15px] font-bold text-[#1C2826]">
+                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[15px] font-bold text-[#1C2826]">
                           {p.menuName}
                         </span>
-                        <span className="truncate text-[13px] text-[#64746B]">
+                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[13px] text-[#64746B]">
                           {p.tenantName} · Sisa {p.quantityRemaining}
                         </span>
                         <span className="flex flex-wrap items-baseline gap-x-1.5">
@@ -406,10 +426,9 @@ export function KatalogList({
       {visible < filtered.length && (
         <output ref={moreRef} className="flex justify-center py-6" aria-live="polite">
           <span className="sr-only">Memuat porsi berikutnya…</span>
-          <div
-            className="h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-primary motion-reduce:animate-none"
-            aria-hidden="true"
-          />
+          <div aria-hidden="true" className="flex w-full flex-col gap-3">
+            <Skeleton className="h-28 w-full rounded-2xl" />
+          </div>
         </output>
       )}
       <GuidedTour

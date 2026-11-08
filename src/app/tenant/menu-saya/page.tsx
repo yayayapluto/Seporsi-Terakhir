@@ -1,14 +1,17 @@
 import { TrendingUp } from "lucide-react";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { MenuManager } from "./menu-manager";
+
+export const metadata: Metadata = { title: "Menu Saya" };
 
 /** Daftar menu milik tenant + dialog tambah/edit via RPC upsert_menu_item. */
 
@@ -81,7 +84,7 @@ export default async function MenuPage({
         title="Menu Kantin"
         trail={[{ label: "Kantin", href: ROUTES.tenant }, { label: "Menu Kantin" }]}
       />
-      <Suspense fallback={<LoadingSpinner />}>
+      <Suspense fallback={<GenericPageSkeleton />}>
         <MenuBody
           tenantId={tenant.id}
           tenantName={tenant.name}
@@ -129,7 +132,7 @@ async function MenuBody({
         <>
           <div id="tour-hero" className="flex flex-col gap-2">
             <p className="text-[13px] font-bold text-[#2E7D4F]">MENU KANTIN</p>
-            <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+            <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
               {greet}, {tenantName}
             </h1>
             <p className="text-[15px] leading-normal text-[#64746B]">

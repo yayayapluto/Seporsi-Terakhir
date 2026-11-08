@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -48,7 +48,7 @@ export default async function EditPorsiPage({
           },
         ]}
       />
-      <Suspense fallback={<LoadingSpinner />}>
+      <Suspense fallback={<GenericPageSkeleton />}>
         <EditPorsiBody params={params} sp={sp} />
       </Suspense>
     </>
@@ -111,7 +111,7 @@ async function EditPorsiBody({
           <div className="flex min-w-0 flex-col gap-6 lg:gap-7">
             <div id="tour-hero" className="flex flex-col gap-2">
               <p className="text-[13px] font-bold text-[#2E7D4F]">EDIT PORSI</p>
-              <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+              <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
                 {tenant.name}
               </h1>
               <p className="text-[15px] leading-normal text-[#64746B]">

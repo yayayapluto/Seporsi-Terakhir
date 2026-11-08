@@ -1,11 +1,19 @@
 import { cn } from "cn";
-import { ChevronRight, History, PackageCheck, ReceiptText, Timer, Wallet } from "lucide-react";
+import {
+  ChevronRight,
+  History,
+  PackageCheck,
+  ReceiptText,
+  ScanLine,
+  Timer,
+  Wallet,
+} from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { EmptyLine } from "@/components/shared/empty-line";
 import {
@@ -20,12 +28,15 @@ import {
   sieraRowLayoutClass,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { formatDateTimeWIB, formatIDR, wibTodayRange } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { TenantPickupCountdown } from "./tenant-pickup-countdown";
+
+export const metadata: Metadata = { title: "Pesanan Masuk" };
 
 /** Daftar reservasi porsi tenant: menunggu pickup → selesai. Tanpa token. */
 
@@ -99,7 +110,7 @@ export default function TenantPesananPage({
   }>;
 }) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<GenericPageSkeleton />}>
       <TenantPesananBody searchParams={searchParams} />
     </Suspense>
   );
@@ -136,13 +147,15 @@ async function TenantPesananBody({
 
   function Row({ o, showBadge }: { o: TenantOrderRow; showBadge: boolean }) {
     return (
-      <li>
-        <div className={sieraRowLayoutClass}>
+      <li className="max-md:mb-3 max-md:rounded-xl max-md:border max-md:border-[#e3e9e5] max-md:bg-white max-md:p-4">
+        <div
+          className={`${sieraRowLayoutClass} max-md:min-h-0 max-md:grid max-md:grid-cols-[minmax(0,1fr)_auto] max-md:gap-x-3 max-md:gap-y-3 max-md:p-0`}
+        >
           <Link
             href={`/tenant/pesanan/${o.id}`}
-            className="flex min-h-11 min-w-0 flex-1 items-center gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+            className="flex min-h-11 min-w-0 flex-1 items-center gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F] max-md:col-start-1 max-md:row-start-1 max-md:flex-col max-md:items-stretch max-md:gap-2 max-md:min-h-0"
           >
-            <SieraTile>
+            <SieraTile className="max-md:hidden">
               {showBadge ? (
                 <History className="size-5" strokeWidth={1.75} aria-hidden />
               ) : (
@@ -150,18 +163,42 @@ async function TenantPesananBody({
               )}
             </SieraTile>
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[15px] leading-[1.3] font-semibold text-[#1C2826]">
-                {o.menuName} <span className="font-normal text-[#64746B]">×{o.quantity}</span>
+              <span className="block truncate text-[15px] leading-[1.3] font-semibold text-[#1C2826] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                {o.menuName}{" "}
+                <span className="font-normal text-[#64746B] whitespace-nowrap">×{o.quantity}</span>
               </span>
-              <span className="block truncate text-[12px] leading-[1.4] text-[#64746B]">
-                {o.buyerName} · Dipesan {formatDateTimeWIB(new Date(o.createdAt))} WIB · Total{" "}
-                {formatIDR(o.discountPrice * o.quantity)}
-                {o.status === "picked_up" && o.pickedUpAt
-                  ? ` · Diambil ${formatDateTimeWIB(new Date(o.pickedUpAt))} WIB`
-                  : ""}
+              <span className="block truncate text-[12px] leading-[1.4] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                <span className="max-md:block max-md:text-sm max-md:text-[#1C2826]">
+                  {o.buyerName}
+                </span>
+                <span className="max-md:mt-1.5 max-md:grid max-md:grid-cols-[auto_minmax(0,1fr)] max-md:gap-x-3 max-md:gap-y-1">
+                  <span className="max-md:hidden"> · </span>
+                  <span className="max-md:font-semibold">Dipesan</span>
+                  <span className="max-md:tabular-nums">
+                    {" "}
+                    {formatDateTimeWIB(new Date(o.createdAt))} WIB
+                  </span>
+                  <span className="max-md:hidden"> · </span>
+                  <span className="max-md:font-semibold">Total</span>
+                  <span className="max-md:font-medium max-md:tabular-nums max-md:break-words">
+                    {" "}
+                    {formatIDR(o.discountPrice * o.quantity)}
+                  </span>
+                  {o.status === "picked_up" && o.pickedUpAt ? (
+                    <>
+                      <span className="max-md:hidden"> · </span>
+                      <span className="max-md:font-semibold">Diambil</span>
+                      <span className="max-md:tabular-nums">
+                        {" "}
+                        {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB
+                      </span>
+                    </>
+                  ) : null}
+                </span>
               </span>
               {o.status === "reserved" && o.pickupDeadlineAt && (
-                <span className="block truncate text-[12px] leading-[1.4] font-bold text-[#B45309]">
+                <span className="block truncate text-[12px] leading-[1.4] font-bold text-[#B45309] max-md:flex max-md:items-center max-md:gap-2 max-md:rounded-lg max-md:border max-md:border-[#B45309]/20 max-md:bg-[#FEF3C7]/50 max-md:px-3 max-md:py-2 max-md:text-xs max-md:font-medium max-md:text-[#92400E]">
+                  <Timer className="hidden size-4 shrink-0 max-md:block" aria-hidden />
                   Ambil dalam{" "}
                   <TenantPickupCountdown
                     deadlineIso={o.pickupDeadlineAt}
@@ -170,16 +207,27 @@ async function TenantPesananBody({
                 </span>
               )}
             </span>
-            <ChevronRight className="size-5 shrink-0 text-[#64746B]" aria-hidden />
+            <ChevronRight className="size-5 shrink-0 text-[#64746B] max-md:hidden" aria-hidden />
           </Link>
-          <div className="flex shrink-0 items-center gap-3">
-            {showBadge && <OrderStatusBadge status={o.status} />}
-            {o.status === "reserved" && (
-              <Link href="/tenant/scan" className={cn(buttonVariants({ size: "sm" }), "min-h-11")}>
+          {showBadge && (
+            <div className="shrink-0 max-md:col-start-2 max-md:row-start-1 max-md:justify-self-end">
+              <OrderStatusBadge status={o.status} />
+            </div>
+          )}
+          {o.status === "reserved" && (
+            <div className="shrink-0 max-md:col-span-2 max-md:row-start-2">
+              <Link
+                href="/tenant/scan"
+                className={cn(
+                  buttonVariants({ size: "sm" }),
+                  "min-h-11 max-md:w-full max-md:min-h-12",
+                )}
+              >
+                <ScanLine className="size-4" aria-hidden />
                 Scan pickup
               </Link>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </li>
     );
@@ -205,7 +253,7 @@ async function TenantPesananBody({
   const hero = (
     <div id="tour-hero" className="flex flex-col gap-2">
       <p className="text-[13px] font-bold text-[#2E7D4F]">PESANAN</p>
-      <h1 className="text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+      <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
         {greet}, {tenant.name}
       </h1>
       <p className="text-[15px] leading-normal text-[#64746B]">
@@ -239,7 +287,7 @@ async function TenantPesananBody({
               {waiting.length === 0 ? (
                 <EmptyLine>Tidak ada reservasi aktif saat ini.</EmptyLine>
               ) : (
-                <SieraList>
+                <SieraList className="max-md:divide-y-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none">
                   {waiting.map((o) => (
                     <Row key={o.id} o={o} showBadge={false} />
                   ))}
@@ -253,7 +301,7 @@ async function TenantPesananBody({
               {done.length === 0 ? (
                 <EmptyLine>Belum ada riwayat.</EmptyLine>
               ) : (
-                <SieraList>
+                <SieraList className="max-md:divide-y-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none">
                   {done.map((o) => (
                     <Row key={o.id} o={o} showBadge />
                   ))}
@@ -279,10 +327,8 @@ async function TenantPesananBody({
         id="penunggu-heading"
         label="Penunggu terlama"
         action={
-          <Link
-            href="/tenant/scan"
-            className="text-[13px] font-bold text-[#1E5A36] underline underline-offset-4"
-          >
+          <Link href="/tenant/scan" className={cn(buttonVariants({ size: "sm" }), "min-h-11")}>
+            <ScanLine className="size-4" aria-hidden />
             Scan
           </Link>
         }

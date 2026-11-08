@@ -1,13 +1,16 @@
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraAlert, SieraCard, SieraRailPage, SieraSection } from "@/components/siera";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { ApproveList } from "./approve-list";
 import { ListedList, type ListedTenant } from "./listed-list";
+
+export const metadata: Metadata = { title: "Dasbor Admin" };
 
 async function loadListed(): Promise<{ tenants: ListedTenant[] }> {
   const supabase = await createClient();
@@ -62,7 +65,7 @@ export default function AdminTenantPage() {
         title="Persetujuan Tenant"
         trail={[{ label: "Dampak", href: ROUTES.admin }, { label: "Persetujuan Tenant" }]}
       />
-      <Suspense fallback={<LoadingSpinner />}>
+      <Suspense fallback={<GenericPageSkeleton />}>
         <TenantRail />
       </Suspense>
     </>
@@ -80,7 +83,9 @@ async function TenantRail() {
         <>
           <div className="flex flex-col gap-2">
             <p className="text-xs font-bold tracking-widest text-primary">KELOLA MITRA</p>
-            <h1 className="text-3xl font-bold">Mitra kantin</h1>
+            <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl font-bold">
+              Mitra kantin
+            </h1>
             <p className="text-muted-foreground">
               Setujui pendaftar baru dan atur siapa yang tampil di katalog.
             </p>
@@ -126,7 +131,7 @@ async function TenantRail() {
                       key={t.id}
                       className="flex min-h-11 items-center justify-between gap-3 text-sm"
                     >
-                      <span className="min-w-0 flex-1 truncate font-bold text-[#1C2826]">
+                      <span className="min-w-0 flex-1 truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] font-bold text-[#1C2826]">
                         {t.name}
                       </span>
                       <span className="shrink-0 text-xs tabular-nums text-muted-foreground">

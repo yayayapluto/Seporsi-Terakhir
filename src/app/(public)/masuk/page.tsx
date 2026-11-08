@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { SieraAlert, SieraCard } from "@/components/siera";
@@ -7,6 +8,8 @@ import { DevLoginCard } from "./dev-login-card";
 import { EmailSignIn } from "./email-sign-in";
 import { GoogleSignIn } from "./google-sign-in";
 
+export const metadata: Metadata = { title: "Masuk" };
+
 async function MasukContent({
   searchParams,
 }: {
@@ -14,7 +17,7 @@ async function MasukContent({
 }) {
   const { next, error } = await searchParams;
   return (
-    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col justify-center gap-4 px-4 py-10">
+    <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col justify-center gap-4 px-4 py-10 max-md:px-0 max-md:mx-0 max-md:w-full max-md:max-w-full">
       <div className="flex flex-col gap-1 rounded-[20px] border border-line bg-gradient-to-b from-[#EAF5ED] to-white p-5">
         <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826]">
           Selamat datang kembali

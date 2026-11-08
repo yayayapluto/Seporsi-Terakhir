@@ -22,7 +22,7 @@ export default async function KeamananPage() {
           { label: "Keamanan" },
         ]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-4 px-4 py-6 md:px-8">
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-4 px-4 py-6 md:px-8 max-md:px-0 max-md:mx-0 max-md:pb-0">
         <SieraCard className="grid grid-cols-1 gap-4 p-4 lg:grid-cols-[1fr_1.2fr]">
           <dl className="divide-y divide-dashed divide-line">
             <SieraField icon={AtSign} label="Email">

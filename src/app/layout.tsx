@@ -16,11 +16,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: { default: "SIERA", template: "%s · SIERA" },
+  title: { default: "Seporsi Terakhir", template: "%s · Seporsi Terakhir" },
   description:
     "Platform resmi PKKMB UPNVJ untuk mendukung seluruh rangkaian kegiatan secara terstruktur dan terintegrasi.",
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "SIERA" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Seporsi Terakhir" },
   icons: {
     icon: [
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       data-scroll-behavior="smooth"
       className={`${jakarta.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col max-md:min-h-0 max-md:bg-white">
         <SwRegister />
         <AppShell>{children}</AppShell>
       </body>

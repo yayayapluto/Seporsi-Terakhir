@@ -100,6 +100,8 @@ export type Database = {
           id: string
           normal_price_snapshot: number
           picked_up_at: string | null
+          pickup_code: string
+          pickup_deadline_at: string
           pickup_token: string
           portion_id: string
           quantity: number
@@ -115,6 +117,8 @@ export type Database = {
           id?: string
           normal_price_snapshot: number
           picked_up_at?: string | null
+          pickup_code: string
+          pickup_deadline_at: string
           pickup_token?: string
           portion_id: string
           quantity: number
@@ -130,6 +134,8 @@ export type Database = {
           id?: string
           normal_price_snapshot?: number
           picked_up_at?: string | null
+          pickup_code?: string
+          pickup_deadline_at?: string
           pickup_token?: string
           portion_id?: string
           quantity?: number
@@ -379,6 +385,8 @@ export type Database = {
           id: string
           normal_price_snapshot: number
           picked_up_at: string | null
+          pickup_code: string
+          pickup_deadline_at: string
           pickup_token: string
           portion_id: string
           quantity: number
@@ -403,6 +411,8 @@ export type Database = {
           id: string
           normal_price_snapshot: number
           picked_up_at: string | null
+          pickup_code: string
+          pickup_deadline_at: string
           pickup_token: string
           portion_id: string
           quantity: number
@@ -418,6 +428,33 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      confirm_pickup_by_code: {
+        Args: { p_code: string }
+        Returns: {
+          avg_weight_snapshot: number | null
+          created_at: string
+          discount_price_snapshot: number
+          id: string
+          normal_price_snapshot: number
+          picked_up_at: string | null
+          pickup_code: string
+          pickup_deadline_at: string
+          pickup_token: string
+          portion_id: string
+          quantity: number
+          slot_end: string | null
+          slot_start: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          student_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      generate_pickup_code: { Args: never; Returns: string }
       impact_daily: {
         Args: { p_from?: string; p_to?: string }
         Returns: {
@@ -435,6 +472,16 @@ export type Database = {
           waste_grams: number
         }[]
       }
+      lookup_order_by_code: {
+        Args: { p_code: string }
+        Returns: {
+          discount_price_snapshot: number
+          menu_name: string
+          quantity: number
+          status: Database["public"]["Enums"]["order_status"]
+          tenant_id: string
+        }[]
+      }
       my_orders: {
         Args: never
         Returns: {
@@ -446,6 +493,7 @@ export type Database = {
           normal_price_snapshot: number
           order_id: string
           picked_up_at: string
+          pickup_deadline_at: string
           pickup_eligible: boolean
           portion_id: string
           quantity: number
@@ -471,6 +519,8 @@ export type Database = {
           id: string
           normal_price_snapshot: number
           picked_up_at: string | null
+          pickup_code: string
+          pickup_deadline_at: string
           pickup_token: string
           portion_id: string
           quantity: number
@@ -516,6 +566,24 @@ export type Database = {
         }
       }
       reject_tenant: { Args: { p_tenant_id: string }; Returns: undefined }
+      set_my_avatar: {
+        Args: { p_avatar_path?: string }
+        Returns: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       set_tenant_listed: {
         Args: { p_listed: boolean; p_tenant_id: string }
         Returns: {
@@ -536,6 +604,7 @@ export type Database = {
         }
       }
       sweep_expired_orders: { Args: never; Returns: number }
+      sweep_late_pickups: { Args: never; Returns: number }
       tenant_cancel_order: {
         Args: { p_order_id: string }
         Returns: {
@@ -545,6 +614,8 @@ export type Database = {
           id: string
           normal_price_snapshot: number
           picked_up_at: string | null
+          pickup_code: string
+          pickup_deadline_at: string
           pickup_token: string
           portion_id: string
           quantity: number
@@ -574,6 +645,8 @@ export type Database = {
           normal_price_snapshot: number
           order_id: string
           picked_up_at: string
+          pickup_code: string
+          pickup_deadline_at: string
           pickup_token: string
           quantity: number
           slot_end: string

@@ -681,7 +681,7 @@ export function GuidedTour({
                 style={{ left: anchor.arrowX - 7 }}
               />
             )}
-            <div className="max-h-[70dvh] overflow-y-auto rounded-2xl p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] lg:max-h-none lg:pb-5">
+            <div className="max-h-[85dvh] max-md:rounded-t-[24px] overflow-y-auto rounded-2xl max-md:rounded-b-none p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] lg:max-h-none lg:pb-5">
               <p className="text-xs font-semibold text-[#64746B]">
                 {idx + 1} dari {total}
               </p>

@@ -7,7 +7,7 @@ import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import {
   attachMissingIngredientColumns,
   isMissingColumnError,
@@ -158,7 +158,7 @@ function DetailBody({
   );
 
   return (
-    <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
+    <div className="flex min-w-0 flex-col gap-4 lg:gap-5 max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:overflow-x-clip">
       {/* Detail Header Card */}
       <section
         aria-label="Ringkasan porsi"
@@ -176,7 +176,7 @@ function DetailBody({
             </span>
           )}
         </div>
-        <h1 className="text-balance text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] sm:text-2xl">
+        <h1 className="text-balance max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] sm:text-2xl">
           {portion.menuName}
         </h1>
         <p className="text-sm text-[#64746B]">
@@ -205,7 +205,7 @@ function DetailBody({
         main={
           <>
             {/* Foto */}
-            <div>
+            <div className="min-w-0 max-md:w-full max-md:min-w-0 max-md:max-w-full">
               {portion.imageUrl ? (
                 <PortionImage src={portion.imageUrl} alt={`Foto ${portion.menuName}`} />
               ) : (
@@ -223,7 +223,10 @@ function DetailBody({
             </div>
 
             {/* Detail */}
-            <section aria-label="Detail porsi" className="flex min-w-0 flex-col gap-2">
+            <section
+              aria-label="Detail porsi"
+              className="flex min-w-0 flex-col gap-2 max-md:w-full max-md:min-w-0 max-md:max-w-full"
+            >
               <div className="flex min-h-11 items-center">
                 <SieraSectionTitle>Detail porsi</SieraSectionTitle>
               </div>
@@ -262,7 +265,7 @@ function DetailBody({
                 <SieraField icon={Store} label="Tenant">
                   {portion.tenantName}
                   {portion.tenantLocation ? (
-                    <span className="block truncate font-normal text-[#64746B]">
+                    <span className="block truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] font-normal text-[#64746B]">
                       {portion.tenantLocation}
                     </span>
                   ) : null}
@@ -275,7 +278,10 @@ function DetailBody({
           <>
             {/* Panel pesan */}
             <div
-              className={cn(sieraCardClass, "h-fit max-h-[calc(100dvh-220px)] overflow-y-auto p-4")}
+              className={cn(
+                sieraCardClass,
+                "h-fit p-4 max-md:static max-md:max-h-none max-md:w-full max-md:min-w-0 max-md:max-w-full",
+              )}
             >
               <h2 className="text-[15px] font-bold text-[#1C2826]">Atur jumlah</h2>
               <p className="mt-0.5 text-[13px] text-[#64746B]">Stok tersisa: {remaining}</p>
@@ -312,7 +318,7 @@ function DetailBody({
                         href={katalogDetail(r.id)}
                         className="flex min-h-11 items-center justify-between gap-3 px-4 py-2.5"
                       >
-                        <span className="truncate text-sm font-bold text-[#1C2826]">
+                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-sm font-bold text-[#1C2826]">
                           {r.menuName}
                         </span>
                         <span className="shrink-0 text-sm font-extrabold text-accent-strong">
@@ -343,7 +349,7 @@ export default async function PortionDetailPage({
   const tourForced = sp.mode === "onboarding";
   if (!PortionId.safeParse(portionId).success) notFound();
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<GenericPageSkeleton />}>
       <PortionDetailBody portionId={portionId} tourForced={tourForced} />
     </Suspense>
   );

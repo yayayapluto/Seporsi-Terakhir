@@ -7,11 +7,12 @@ import { DateField } from "@/components/date-field";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraAlert, SieraCard, SieraEmpty, SieraRailPage, SieraSection } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { percentSold } from "@/lib/domain/metrics";
 import { formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { exportCsv } from "./actions";
+import { MobileTrendChart } from "./mobile-trend-chart";
 import type { AdminDailyPoint, AdminReportRow } from "./page";
 
 /** Bangun deret harian penuh dari from..to (hari kosong = 0). */
@@ -55,6 +56,7 @@ export function ImpactClient({
   const [, startTransition] = useTransition();
   const [csvError, setCsvError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [activeDay, setActiveDay] = useState<string | null>(null);
 
   function applyRange(fd: string, td: string) {
     const next = new URLSearchParams(params);
@@ -131,13 +133,18 @@ export function ImpactClient({
         <>
           <div className="flex flex-col gap-2">
             <p className="text-xs font-bold tracking-widest text-primary">DAMPAK KAMPUS</p>
-            <h1 className="text-3xl font-bold">Dampak penyelamatan</h1>
-            <p className="text-muted-foreground">
-              Halo {email}. Angka dari pickup yang discan, bukan estimasi. Berat = estimasi sampling
-              per menu.
+            <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl font-bold">
+              Dampak penyelamatan
+            </h1>
+            <p className="text-muted-foreground max-md:text-sm max-md:leading-relaxed">
+              Halo <span className="max-md:break-all">{email}</span>. Angka dari pickup yang discan,
+              bukan estimasi. Berat = estimasi sampling per menu.
             </p>
           </div>
-          <div data-tour="rentang" className="flex flex-wrap items-end gap-3">
+          <div
+            data-tour="rentang"
+            className="flex flex-wrap items-end gap-3 max-md:grid max-md:grid-cols-[minmax(0,1fr)] max-md:gap-3"
+          >
             <DateField
               id="from"
               label="Dari"
@@ -169,9 +176,9 @@ export function ImpactClient({
             </p>
             <dl className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
               {secondary.map((c) => (
-                <div key={c.label} className="rounded-xl bg-white/10 p-3">
+                <div key={c.label} className="min-w-0 rounded-xl bg-white/10 p-3">
                   <dt className="text-xs font-semibold text-white/80">{c.label}</dt>
-                  <dd className="mt-0.5 text-lg font-bold tabular-nums">{c.value}</dd>
+                  <dd className="mt-0.5 text-lg font-bold tabular-nums break-words">{c.value}</dd>
                 </div>
               ))}
             </dl>
@@ -186,30 +193,72 @@ export function ImpactClient({
                   terima.
                 </p>
               ) : (
-                <div data-tour="tren" className="overflow-x-auto">
-                  <div
-                    className="flex h-32 min-w-[480px] items-end gap-1"
-                    role="img"
-                    aria-label={`Tren pickup harian, tertinggi ${maxSaved} porsi dalam sehari`}
-                  >
-                    {series.map((d, i) => (
-                      <div key={d.day} className="flex min-w-0 flex-1 flex-col items-center gap-1">
-                        <div
-                          title={`${d.day}: ${d.saved} porsi`}
-                          className="w-full max-w-6 rounded-t bg-[#2E7D4F]"
-                          style={{
-                            height: `${Math.max(d.saved > 0 ? 6 : 2, Math.round((d.saved / maxSaved) * 100))}%`,
-                          }}
-                        />
-                        {i % labelEvery === 0 && (
-                          <span className="text-[10px] tabular-nums text-muted-foreground">
-                            {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                <>
+                  <div className="md:hidden">
+                    <MobileTrendChart series={series} />
                   </div>
-                </div>
+                  <div data-tour="tren" className="overflow-x-auto max-md:hidden">
+                    <p
+                      aria-live="polite"
+                      className="mb-2 hidden min-h-5 text-xs text-[#1E5A36] max-md:block"
+                    >
+                      {activeDay != null
+                        ? `${activeDay}: ${series.find((d) => d.day === activeDay)?.saved ?? 0} porsi`
+                        : "Ketuk bar untuk melihat nilai harian."}
+                    </p>
+                    <div
+                      className="flex h-32 min-w-[480px] items-end gap-1 max-md:relative max-md:h-56 max-md:min-w-0 max-md:px-2"
+                      role="img"
+                      aria-label={`Tren pickup harian, tertinggi ${maxSaved} porsi dalam sehari`}
+                    >
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-x-0 top-1/3 hidden h-px bg-[#E8ECE9] max-md:block"
+                      />
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-x-0 top-2/3 hidden h-px bg-[#E8ECE9] max-md:block"
+                      />
+                      {series.map((d, i) => {
+                        const isLabel = i % labelEvery === 0 || i === series.length - 1;
+                        const labelIdx = Math.floor(i / labelEvery);
+                        const isFirst = i === 0;
+                        const isLast = i === series.length - 1;
+                        return (
+                          <button
+                            key={d.day}
+                            type="button"
+                            data-slot="chart-bar"
+                            aria-label={`${d.day}: ${d.saved} porsi`}
+                            className="flex h-full min-w-0 flex-1 flex-col items-center"
+                            onClick={() => setActiveDay(d.day)}
+                          >
+                            <div className="flex min-h-0 w-full min-w-0 flex-1 items-end">
+                              <div
+                                title={`${d.day}: ${d.saved} porsi`}
+                                className={`w-full max-w-6 rounded-t ${
+                                  d.saved > 0 ? "bg-[#2E7D4F]" : "bg-[#E8ECE9]"
+                                }`}
+                                style={{
+                                  height: `${Math.max(d.saved > 0 ? 6 : 2, Math.round((d.saved / maxSaved) * 100))}%`,
+                                }}
+                              />
+                            </div>
+                            {isLabel && (
+                              <span
+                                className={`pt-1 text-[10px] tabular-nums text-muted-foreground max-md:text-xs ${
+                                  labelIdx % 2 === 1 && !isLast ? "max-md:hidden" : ""
+                                } ${isFirst ? "max-md:self-start" : ""} ${isLast ? "max-md:self-end" : ""}`}
+                              >
+                                {Number(d.day.slice(8, 10))}/{Number(d.day.slice(5, 7))}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
               )}
             </SieraCard>
           </section>
@@ -222,11 +271,11 @@ export function ImpactClient({
               hint="Coba rentang yang lebih panjang, atau tunggu tenant mengunggah porsi."
             />
           ) : (
-            <SieraCard className="p-4">
-              <div className="overflow-x-auto" data-tour="tabel-dampak">
-                <table className="w-full min-w-[640px] text-sm">
+            <SieraCard className="p-4 max-md:border-0 max-md:bg-transparent max-md:shadow-none max-md:p-0">
+              <div className="overflow-x-auto max-md:overflow-visible" data-tour="tabel-dampak">
+                <table className="w-full min-w-[640px] text-sm max-md:block max-md:min-w-0">
                   <caption className="sr-only">Rekap per gerai pada rentang terpilih</caption>
-                  <thead>
+                  <thead className="max-md:hidden">
                     <tr className="border-b text-left text-xs font-semibold text-muted-foreground">
                       <th scope="col" className="sticky left-0 bg-card py-2 pr-3">
                         Gerai
@@ -251,35 +300,64 @@ export function ImpactClient({
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-dashed divide-line">
+                  <tbody className="divide-y divide-dashed divide-line max-md:block max-md:space-y-3 max-md:divide-y-0">
                     {rows.map((r) => (
-                      <tr key={r.tenantName}>
-                        <td className="sticky left-0 bg-card py-3 pr-3 font-semibold">
+                      <tr
+                        key={r.tenantName}
+                        className="max-md:grid max-md:grid-cols-2 max-md:gap-2 max-md:rounded-xl max-md:border max-md:border-[#e3e9e5] max-md:bg-white max-md:p-4"
+                      >
+                        <td className="sticky left-0 bg-card py-3 pr-3 font-semibold max-md:static max-md:col-span-2 max-md:flex max-md:items-start max-md:gap-2 max-md:py-0 max-md:pr-0">
                           <Link
                             href={ROUTES.adminTenant}
-                            className="rounded underline decoration-[#2E7D4F]/40 underline-offset-2 outline-none hover:text-[#1E5A36] focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+                            className="rounded underline decoration-[#2E7D4F]/40 underline-offset-2 outline-none hover:text-[#1E5A36] focus-visible:ring-2 focus-visible:ring-[#2E7D4F] max-md:min-w-0 max-md:flex-1 max-md:break-words max-md:no-underline max-md:active:bg-muted"
                           >
                             {r.tenantName}
                           </Link>
                           {best > 0 && r.portionsPickedUp === best && (
-                            <span className="ml-2 inline-block rounded-full bg-[#DCEBE0] px-2 py-0.5 align-middle text-[11px] font-bold text-[#1E5A36]">
+                            <span className="ml-2 inline-block shrink-0 rounded-full bg-[#DCEBE0] px-2 py-0.5 align-middle text-[11px] font-bold text-[#1E5A36] max-md:ml-0">
                               Tertinggi
                             </span>
                           )}
                           {r.portionsPosted > 0 && r.portionsPickedUp === 0 && (
-                            <span className="ml-2 inline-block rounded-full bg-[#FEF3C7] px-2 py-0.5 align-middle text-[11px] font-bold text-[#92400E]">
+                            <span className="ml-2 inline-block shrink-0 rounded-full bg-[#FEF3C7] px-2 py-0.5 align-middle text-[11px] font-bold text-[#92400E] max-md:ml-0">
                               Belum diambil
                             </span>
                           )}
                         </td>
-                        <td className="py-3 pr-3">{r.portionsPosted}</td>
-                        <td className="py-3 pr-3">{r.portionsPickedUp}</td>
-                        <td className="py-3 pr-3">
+                        <td
+                          data-label="Diunggah"
+                          className="py-3 pr-3 max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
+                          {r.portionsPosted}
+                        </td>
+                        <td
+                          data-label="Diambil"
+                          className="py-3 pr-3 max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
+                          {r.portionsPickedUp}
+                        </td>
+                        <td
+                          data-label="Sell-through"
+                          className="py-3 pr-3 max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
                           {Math.round(percentSold(r.portionsPickedUp, r.portionsPosted) * 100)}%
                         </td>
-                        <td className="py-3 pr-3 text-right">{formatIDR(r.revenue)}</td>
-                        <td className="py-3 pr-3 text-right">{formatIDR(r.moneySaved)}</td>
-                        <td className="py-3 text-right">
+                        <td
+                          data-label="Revenue"
+                          className="py-3 pr-3 text-right max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-left max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
+                          {formatIDR(r.revenue)}
+                        </td>
+                        <td
+                          data-label="Hemat"
+                          className="py-3 pr-3 text-right max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-left max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
+                          {formatIDR(r.moneySaved)}
+                        </td>
+                        <td
+                          data-label="Estimasi kg"
+                          className="py-3 text-right max-md:flex max-md:flex-col max-md:gap-0.5 max-md:rounded-lg max-md:bg-muted max-md:p-2.5 max-md:py-2.5 max-md:pr-2.5 max-md:text-left max-md:text-base max-md:font-medium max-md:tabular-nums max-md:break-words max-md:before:content-[attr(data-label)] max-md:before:text-xs max-md:before:font-semibold max-md:before:text-muted-foreground"
+                        >
                           {r.wasteKg == null ? "—" : `${r.wasteKg.toFixed(2)} kg`}
                         </td>
                       </tr>
@@ -360,7 +438,7 @@ export function ImpactClient({
             action={
               <Link
                 href={ROUTES.adminTenant}
-                className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
+                className={buttonVariants({ size: "sm", className: "shrink-0" })}
               >
                 Kelola
               </Link>
@@ -378,10 +456,10 @@ export function ImpactClient({
                       {i + 1}
                     </span>
                     <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                      <span className="truncate text-sm font-bold text-[#1C2826]">
+                      <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-sm font-bold text-[#1C2826]">
                         {t.tenantName}
                       </span>
-                      <span className="truncate text-xs text-muted-foreground">
+                      <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-xs text-muted-foreground">
                         {t.portionsPickedUp} diambil · {t.portionsPosted} diunggah
                       </span>
                     </span>

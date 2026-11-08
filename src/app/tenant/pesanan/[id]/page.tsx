@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import {
   SieraList,
@@ -16,6 +15,7 @@ import {
   sieraCardClass,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -84,7 +84,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 
 export default function TenantOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<GenericPageSkeleton />}>
       <TenantOrderDetailBody params={params} />
     </Suspense>
   );
@@ -100,7 +100,7 @@ async function TenantOrderDetailBody({ params }: { params: Promise<{ id: string 
     <>
       <div className={`${sieraCardClass} flex flex-col gap-1 p-4`}>
         <p className="text-xs font-bold tracking-wide text-[#1E5A36]">RESERVASI</p>
-        <h1 className="text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
+        <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] lg:text-2xl">
           {o.menuName} × {o.quantity}
         </h1>
         <p className="text-sm text-[#1E5A36]">

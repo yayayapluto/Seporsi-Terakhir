@@ -1,11 +1,14 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { SieraCard } from "@/components/siera";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import { MyProfileForm } from "../../profile-form";
+
+export const metadata: Metadata = { title: "Profil Akun" };
 
 /** Ubah nama + foto profil pengguna. */
 export default async function ProfilEditPage() {
@@ -20,8 +23,8 @@ export default async function ProfilEditPage() {
           { label: "Profil" },
         ]}
       />
-      <div className="flex w-full min-w-0 flex-1 flex-col gap-4 px-4 py-6 md:px-8">
-        <Suspense fallback={<LoadingSpinner />}>
+      <div className="flex w-full min-w-0 flex-1 flex-col gap-4 px-4 py-6 md:px-8 max-md:px-0 max-md:mx-0 max-md:pb-0">
+        <Suspense fallback={<GenericPageSkeleton />}>
           <ProfilCard userId={current.user.id} />
         </Suspense>
       </div>

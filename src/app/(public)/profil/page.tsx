@@ -9,6 +9,7 @@ import {
   UtensilsCrossed,
   Wallet,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
@@ -20,6 +21,8 @@ import { createClient } from "@/lib/supabase/server";
 import { parseTourParams } from "@/lib/tour-journey";
 import { AvatarImage } from "./avatar-image";
 import { DaftarTenantButton } from "./daftar-tenant-button";
+
+export const metadata: Metadata = { title: "Profil" };
 
 /** Profil student: identitas, aplikasi tenant, dampak dari pesanan picked_up. */
 
@@ -145,10 +148,9 @@ export default async function ProfilPage({
     <>
       <AppHeader title="Profil" trail={[{ label: "Profil" }]} />
       {isStudent ? (
-        <div className="mx-auto flex w-full min-w-0 max-w-[1160px] flex-col gap-6 px-4 pt-6 pb-8 md:px-6">
-          {/* Identitas full-width di atas rail */}
-          <section aria-label="Identitas" className={`${sieraCardClass} p-6`}>
-            <div className="flex items-center gap-5">
+        <div className="mx-auto flex w-full min-w-0 flex-col gap-6 px-5 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:max-w-[1160px] md:px-6 md:pb-8 max-md:px-0 max-md:mx-0 max-md:pt-4 max-md:pb-0 max-md:max-w-full">
+          <section aria-label="Identitas" className={`${sieraCardClass} p-4 md:p-6 max-md:p-4`}>
+            <div className="flex items-center gap-4">
               {p.avatarPath ? (
                 <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
               ) : (
@@ -159,13 +161,20 @@ export default async function ProfilPage({
                   {initials || "•"}
                 </span>
               )}
-              <div className="min-w-0">
-                <h1 className="text-xl leading-tight font-extrabold tracking-[-0.01em] md:text-2xl [overflow-wrap:anywhere]">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl leading-tight font-extrabold tracking-[-0.01em] md:text-2xl max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] [overflow-wrap:anywhere]">
                   {p.fullName}
                 </h1>
                 {p.email && (
-                  <p className="mt-0.5 text-sm text-[#64746B] [overflow-wrap:anywhere]">
-                    {p.email}
+                  <p className="mt-0.5 text-[13px] text-[#64746B] break-words">
+                    {p.email.includes("@") ? (
+                      <>
+                        {p.email.split("@")[0]}@<wbr />
+                        {p.email.split("@").slice(1).join("@")}
+                      </>
+                    ) : (
+                      p.email
+                    )}
                   </p>
                 )}
                 {label && (
@@ -196,7 +205,7 @@ export default async function ProfilPage({
                       </Link>
                     </SieraAlert>
                   )}
-                  <dl className="grid grid-cols-3 gap-3">
+                  <dl className="grid grid-cols-1 gap-3 md:grid-cols-3">
                     <div className={`${sieraCardClass} flex min-w-0 flex-col gap-1 p-4 md:p-5`}>
                       <span
                         aria-hidden
@@ -204,7 +213,7 @@ export default async function ProfilPage({
                       >
                         <PackageCheck className="size-5" strokeWidth={1.8} aria-hidden />
                       </span>
-                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl">
+                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {p.savedPortions}
                       </dd>
                       <dt className="text-[13px] text-[#64746B]">Porsi selamat</dt>
@@ -216,7 +225,7 @@ export default async function ProfilPage({
                       >
                         <Wallet className="size-5" strokeWidth={1.8} aria-hidden />
                       </span>
-                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl">
+                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {formatIDR(p.moneySavedIdr)}
                       </dd>
                       <dt className="text-[13px] text-[#64746B]">Uang hemat</dt>
@@ -231,7 +240,7 @@ export default async function ProfilPage({
                       >
                         <Leaf className="size-5" strokeWidth={1.8} aria-hidden />
                       </span>
-                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl">
+                      <dd className="truncate text-xl leading-tight font-extrabold md:text-2xl max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {p.wasteKg == null ? (
                           <span className="text-base font-bold text-[#64746B] md:text-lg">
                             Belum ada
@@ -334,9 +343,9 @@ export default async function ProfilPage({
           />
         </div>
       ) : (
-        <div className="mx-auto grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-6">
+        <div className="mx-auto grid w-full min-w-0 max-w-[800px] grid-cols-1 content-start gap-6 px-4 pt-6 pb-8 md:px-6 max-md:px-0 max-md:mx-0 max-md:pt-4 max-md:pb-0 max-md:max-w-full">
           {/* Identitas — avatar + nama read-only, edit di Pengaturan > Profil */}
-          <section aria-label="Identitas" className={`${sieraCardClass} p-5 md:p-6`}>
+          <section aria-label="Identitas" className={`${sieraCardClass} p-4 md:p-6 max-md:p-4`}>
             <div className="flex items-center gap-4">
               {p.avatarPath ? (
                 <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
@@ -348,11 +357,22 @@ export default async function ProfilPage({
                   {initials || "•"}
                 </span>
               )}
-              <div className="min-w-0">
-                <h1 className="truncate text-xl leading-tight font-extrabold md:text-2xl">
+              <div className="min-w-0 flex-1">
+                <h1 className="truncate text-xl leading-tight font-extrabold md:text-2xl max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                   {p.fullName}
                 </h1>
-                {p.email && <p className="truncate text-sm text-[#64746B]">{p.email}</p>}
+                {p.email && (
+                  <p className="mt-0.5 text-[13px] text-[#64746B] break-words">
+                    {p.email.includes("@") ? (
+                      <>
+                        {p.email.split("@")[0]}@<wbr />
+                        {p.email.split("@").slice(1).join("@")}
+                      </>
+                    ) : (
+                      p.email
+                    )}
+                  </p>
+                )}
                 {label && (
                   <p className="mt-2 inline-flex rounded-full bg-[#DCEBE0] px-2.5 py-0.5 text-xs font-bold text-[#1E5A36]">
                     {label}
@@ -370,7 +390,9 @@ export default async function ProfilPage({
                   icon={Store}
                   title={
                     <span className="flex items-center gap-2">
-                      <span className="truncate">Persetujuan tenant</span>
+                      <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                        Persetujuan tenant
+                      </span>
                       {pendingTenants > 0 && (
                         <span className="shrink-0 rounded-full bg-[#DCEBE0] px-2 py-0.5 text-[11px] font-bold text-[#1E5A36]">
                           {sieraCountText(pendingTenants)}

@@ -1,14 +1,14 @@
-import { cn } from "cn";
 import { ChevronRight, Store } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
-import { SieraRailPage, SieraSection, SieraTile, sieraCardClass } from "@/components/siera";
+import { SieraCard, SieraRailPage, SieraSection, SieraTile } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatSisaMenit } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
@@ -17,6 +17,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { OnboardBanner } from "./onboard-banner";
 import { SoonGrid } from "./soon-grid";
+
+export const metadata: Metadata = { title: "Beranda" };
 
 export interface SoonPortion {
   id: string;
@@ -129,12 +131,13 @@ export default async function BerandaPage({
   return (
     <>
       <AppHeader title="Beranda" trail={[{ label: "Beranda" }]} />
-      <div className="flex-1 bg-background">
+      <div className="flex-1 bg-background pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8 max-md:pb-0">
         <SieraRailPage
+          className="max-md:px-0 max-md:w-full max-md:max-w-full max-md:mx-0 max-md:pt-5 max-md:pb-1"
           asideLabel="Ringkasan beranda"
           main={
-            <div className="flex min-w-0 flex-col gap-6 lg:gap-7">
-              <div id="tour-hero" className="flex flex-col gap-2">
+            <div className="flex min-w-0 flex-col gap-6 lg:gap-7 max-md:px-0 max-md:mx-0">
+              <div id="tour-hero" className="flex flex-col gap-2 max-md:px-0 max-md:mx-0">
                 <p className="text-[13px] font-bold text-[#2E7D4F]">
                   {firstName ? `${greet}, ${firstName}` : greet}
                 </p>
@@ -147,10 +150,10 @@ export default async function BerandaPage({
                 </p>
               </div>
               {showOnboard && <OnboardBanner />}
-              <Suspense fallback={<LoadingSpinner />}>
+              <Suspense fallback={<GenericPageSkeleton />}>
                 <ActiveOrdersBody user={user} />
               </Suspense>
-              <Suspense fallback={<LoadingSpinner />}>
+              <Suspense fallback={<GenericPageSkeleton />}>
                 <SoonBody user={user} />
               </Suspense>
             </div>
@@ -252,20 +255,26 @@ async function SoonBody(_props: { user: { id: string } }) {
 function ActiveOrderList({ orders }: { orders: ActiveOrder[] }) {
   const now = Date.now();
   return (
-    <ul className={cn(sieraCardClass, "flex flex-col divide-y divide-dashed divide-line px-4")}>
+    <div className="flex flex-col gap-3 max-md:gap-2.5 max-md:px-0 max-md:mx-0">
       {orders.map((o) => {
         const left = o.slotEnd
           ? Math.max(0, Math.floor((+new Date(o.slotEnd) - now) / 60_000))
           : null;
         return (
-          <li key={o.orderId}>
-            <Link href={pesananDetail(o.orderId)} className="flex min-h-11 items-center gap-3 py-3">
+          <Link
+            key={o.orderId}
+            href={pesananDetail(o.orderId)}
+            className="block w-full max-md:w-full max-md:px-0 max-md:mx-0"
+          >
+            <SieraCard className="flex min-h-11 items-center gap-3 px-4 py-3 w-full max-md:w-full max-md:rounded-2xl border max-md:overflow-hidden max-md:mx-0 max-md:p-3.5">
               <SieraTile>
                 <Store className="size-5" strokeWidth={1.75} aria-hidden />
               </SieraTile>
               <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <span className="truncate text-sm font-bold text-[#1C2826]">{o.menuName}</span>
-                <span className="truncate text-xs text-[#64746B]">
+                <span className="text-sm font-bold text-[#1C2826] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                  {o.menuName}
+                </span>
+                <span className="text-xs text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                   {o.tenantName}
                   {o.slotEnd ? ` · Ambil sampai ${formatDateTimeWIB(new Date(o.slotEnd))}` : ""}
                 </span>
@@ -280,24 +289,27 @@ function ActiveOrderList({ orders }: { orders: ActiveOrder[] }) {
                 strokeWidth={1.75}
                 aria-hidden
               />
-            </Link>
-          </li>
+            </SieraCard>
+          </Link>
         );
       })}
-    </ul>
+    </div>
   );
 }
 
 function ActiveOrdersSection({ orders }: { orders: ActiveOrder[] }) {
   if (orders.length === 0) return null;
   return (
-    <div id="tour-orders">
+    <div id="tour-orders" className="-mx-5 md:-mx-6 max-md:mx-0 max-md:px-0 max-md:w-full">
       <SieraSection
         label={`Pesanan aktif (${orders.length})`}
         action={
           <Link
             href={ROUTES.pesanan}
-            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
+            className={buttonVariants({
+              size: "sm",
+              className: "shrink-0 max-md:px-0 max-md:mx-0",
+            })}
           >
             Lihat Semua
           </Link>
@@ -319,6 +331,7 @@ function SoonSection({ portions, failed }: { portions: SoonPortion[]; failed: bo
         hint="Koneksi bermasalah. Muat ulang buat coba lagi."
         ctaHref="/beranda"
         ctaLabel="Muat ulang"
+        className="w-full max-md:w-full max-md:mx-0 max-md:p-4"
       />
     );
   }
@@ -331,29 +344,33 @@ function SoonSection({ portions, failed }: { portions: SoonPortion[]; failed: bo
         hint="Biasanya kantin mulai posting sekitar 15.30 sampai 16.30. Cek lagi nanti sore."
         ctaHref={ROUTES.katalog}
         ctaLabel="Buka katalog"
+        className="w-full max-md:w-full max-md:mx-0 max-md:p-4"
       />
     );
   }
   return (
-    <div id="tour-catalog">
+    <div id="tour-catalog" className="-mx-5 md:-mx-6 max-md:mx-0 max-md:px-0 max-md:w-full">
       <SieraSection
         label={`Katalog sore ini · ${portions.length} porsi`}
         action={
           <Link
             href={ROUTES.katalog}
-            className="inline-flex min-h-11 shrink-0 items-center text-sm font-bold text-[#1E5A36]"
+            className={buttonVariants({
+              size: "sm",
+              className: "shrink-0 max-md:px-0 max-md:mx-0",
+            })}
           >
             Lihat semua
           </Link>
         }
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 max-md:px-0 max-md:mx-0 max-md:w-full">
           <SoonGrid portions={portions} />
           <Link
             href={ROUTES.katalog}
             className={buttonVariants({
               className:
-                "mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold xl:hidden",
+                "mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-[15px] font-bold xl:hidden max-md:w-full max-md:mx-0",
             })}
           >
             Lihat katalog

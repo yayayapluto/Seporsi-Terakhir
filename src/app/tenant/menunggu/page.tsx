@@ -1,4 +1,5 @@
 import { BadgeCheck, ClipboardCheck, Hourglass } from "lucide-react";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import {
   SieraCard,
@@ -16,6 +17,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getOwnTenant } from "@/lib/tenant";
 import { PeriksaStatus } from "./periksa-status";
 import { SignOutButton } from "./sign-out-button";
+
+export const metadata: Metadata = { title: "Menunggu Verifikasi" };
 
 /** Status pendaftaran tenant yang belum disetujui. Approved → dashboard. */
 export default async function MenungguPersetujuanPage() {

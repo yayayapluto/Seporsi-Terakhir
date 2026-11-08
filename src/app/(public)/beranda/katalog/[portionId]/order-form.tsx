@@ -72,7 +72,7 @@ export function OrderForm({
             return (
               <Label
                 key={n}
-                className={`flex h-11 min-w-20 flex-1 cursor-pointer items-center justify-center rounded-lg border px-4 text-sm font-semibold transition-colors has-disabled:cursor-not-allowed has-disabled:opacity-40 ${
+                className={`flex h-11 max-md:h-12 min-w-20 flex-1 cursor-pointer items-center justify-center rounded-lg border px-4 text-sm font-semibold transition-colors has-disabled:cursor-not-allowed has-disabled:opacity-40 ${
                   selected
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border hover:border-primary/60"

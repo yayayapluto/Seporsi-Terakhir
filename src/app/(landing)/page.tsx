@@ -1,4 +1,5 @@
 import { Check, QrCode } from "lucide-react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -18,6 +19,8 @@ import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { LangkahStagger } from "./langkah-stagger";
 import { Pressable, Reveal } from "./thread";
+
+export const metadata: Metadata = { title: "Penyelamatan Surplus Pangan" };
 
 const LANGKAH = [
   {
@@ -122,7 +125,7 @@ export default async function Home() {
   const primaryLabel = staff ? "Buka dasbor" : "Lihat Porsi Hari Ini";
 
   return (
-    <div className="flex-1 bg-white text-[#17261D]">
+    <div className="flex-1 bg-white text-[#17261D] max-md:-mx-4 max-md:w-[calc(100%+2rem)]">
       {/* HERO — foto etalase + proposisi + aksi primer. */}
       <section className="mx-auto w-full max-w-[1080px] px-5 pt-36 pb-[72px] md:px-8">
         <div className="grid items-center gap-10 md:grid-cols-2">
@@ -223,7 +226,7 @@ export default async function Home() {
       {/* CTA penutup. */}
       <section className="mx-auto w-full max-w-[1080px] px-5 pb-[72px] md:px-8">
         <Reveal>
-          <div className="flex flex-col items-center gap-4 rounded-[28px] bg-[#2D7A4F] px-6 py-14 text-center text-white md:px-10 md:py-16">
+          <div className="flex flex-col items-center gap-4 rounded-[28px] bg-[#2D7A4F] max-md:px-4 max-md:py-8 max-md:rounded-[20px] px-6 py-14 text-center text-white md:px-10 md:py-16">
             <h2 className="max-w-[14ch] text-balance text-[32px] leading-[1.1] font-bold tracking-[-0.02em] md:text-[40px]">
               Jangan biarkan porsi terakhir terbuang.
             </h2>
@@ -231,7 +234,7 @@ export default async function Home() {
               Satu porsi terjual berarti satu porsi tidak jadi sampah dan satu mahasiswa makan lebih
               hemat.
             </p>
-            <div className="mt-3 flex flex-wrap justify-center gap-3">
+            <div className="mt-3 flex flex-wrap justify-center gap-3 max-md:flex-col max-md:w-full max-md:items-stretch max-md:gap-2">
               <Pressable>
                 <Link
                   href={ROUTES.katalog}

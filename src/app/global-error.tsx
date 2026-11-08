@@ -84,7 +84,7 @@ export default function GlobalError({
                 minHeight: 48,
                 width: "100%",
                 borderRadius: 14,
-                border: "none",
+                border: "1px solid #2E7D4F",
                 background: "#2E7D4F",
                 color: "#fff",
                 fontSize: 15,

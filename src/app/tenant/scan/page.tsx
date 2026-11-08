@@ -1,11 +1,14 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
 import { ScannerClient } from "./scanner-client";
+
+export const metadata: Metadata = { title: "Scan Pickup" };
 
 export interface LastPickup {
   menuName: string;
@@ -48,7 +51,7 @@ export default function ScanPage({ searchParams }: { searchParams?: Promise<{ mo
         title="Scan pickup"
         trail={[{ label: "Kantin", href: "/tenant" }, { label: "Scan" }]}
       />
-      <Suspense fallback={<LoadingSpinner />}>
+      <Suspense fallback={<GenericPageSkeleton />}>
         <ScanBody searchParams={searchParams} />
       </Suspense>
     </>

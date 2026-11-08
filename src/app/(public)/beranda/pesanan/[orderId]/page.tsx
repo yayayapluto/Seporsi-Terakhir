@@ -6,7 +6,6 @@ import { Suspense } from "react";
 import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { LoadingSpinner } from "@/components/loading-spinner";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import {
   SieraField,
@@ -17,6 +16,7 @@ import {
   sieraCardClass,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
+import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { katalogDetail, ROUTES } from "@/lib/routes";
@@ -100,7 +100,7 @@ export default async function OrderDetailPage({
   const tourForced = sp.mode === "onboarding";
   if (!z.string().uuid().safeParse(orderId).success) notFound();
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<GenericPageSkeleton />}>
       <OrderBody orderId={orderId} tourForced={tourForced} />
     </Suspense>
   );
@@ -156,26 +156,40 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
       <SieraRailPage
         asideLabel="Status dan kantin"
         main={
-          <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-5">
-            <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
+          <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-5 max-md:grid-cols-[minmax(0,1fr)] max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:overflow-x-clip">
+            <div className="flex min-w-0 flex-col gap-4 lg:gap-5 max-md:w-full max-md:min-w-0 max-md:max-w-full">
               {order.status === "reserved" && <OrderLiveStatus orderIds={[order.orderId]} />}
               {order.status === "reserved" && order.pickupDeadlineAt && (
                 <PickupDeadlineBanner deadlineIso={order.pickupDeadlineAt} />
               )}
               <section
                 aria-label="Ringkasan pesanan"
-                className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}
+                className={cn(
+                  sieraCardClass,
+                  "flex flex-col gap-3 p-5 max-md:min-w-0 max-md:w-full max-md:max-w-full",
+                )}
               >
-                <div className="flex flex-wrap items-center gap-2">
-                  <OrderStatusBadge status={order.status} />
+                <div className="flex flex-col items-start gap-2 max-md:gap-2 md:flex-row md:flex-wrap md:items-center">
+                  <div className="md:hidden w-full">
+                    <OrderStatusBadge status={order.status} />
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 max-md:hidden">
+                    <OrderStatusBadge status={order.status} />
+                    {order.pickedUpAt && (
+                      <span className="text-[13px] text-[#64746B]">
+                        Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB ·{" "}
+                        {order.quantity} porsi diselamatkan
+                      </span>
+                    )}
+                  </div>
                   {order.pickedUpAt && (
-                    <span className="text-[13px] text-[#64746B]">
+                    <span className="text-[13px] text-[#64746B] md:hidden">
                       Diambil {formatDateTimeWIB(new Date(order.pickedUpAt))} WIB · {order.quantity}{" "}
                       porsi diselamatkan
                     </span>
                   )}
                 </div>
-                <h1 className="text-balance text-2xl font-extrabold tracking-tight text-[#1C2826]">
+                <h1 className="text-balance max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-2xl font-extrabold tracking-tight text-[#1C2826]">
                   {order.menuName} <span className="text-[#64746B]">× {order.quantity}</span>
                 </h1>
                 <p className="text-sm text-[#64746B]">
@@ -229,13 +243,13 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                 </div>
               )}
             </div>
-            <div className="min-h-0 lg:sticky lg:top-[76px]">
+            <div className="min-h-0 lg:sticky lg:top-[76px] max-md:static max-md:w-full max-md:min-w-0 max-md:max-w-full">
               <section aria-label="Detail pesanan" className="flex min-w-0 flex-col gap-2">
                 <SieraSectionTitle>Detail pesanan</SieraSectionTitle>
                 <dl
                   className={cn(
                     sieraCardClass,
-                    "flex flex-col divide-y divide-dashed divide-line px-4",
+                    "flex flex-col divide-y divide-dashed divide-line px-4 max-md:min-w-0 max-md:w-full max-md:max-w-full",
                   )}
                 >
                   {order.cookedAt && (
@@ -252,6 +266,12 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                   <SieraField icon={CalendarClock} label="Waktu pesan">
                     {formatDateTimeWIB(new Date(order.createdAt))} WIB
                   </SieraField>
+                  <div className="hidden min-h-14 items-center justify-between gap-3 min-w-0 px-1 py-3 max-md:flex">
+                    <span className="min-w-0 text-xs text-[#64746B]">Total bayar tunai</span>
+                    <strong className="min-w-0 text-2xl font-extrabold whitespace-normal text-[#0d5a38]">
+                      {formatIDR(totalPrice)}
+                    </strong>
+                  </div>
                 </dl>
               </section>
             </div>
@@ -301,7 +321,7 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                   <Store className="size-5" strokeWidth={1.75} aria-hidden />
                 </SieraTile>
                 <div className="min-w-0">
-                  <p className="truncate text-[15px] font-bold text-[#1C2826]">
+                  <p className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[15px] font-bold text-[#1C2826]">
                     {order.tenantName}
                   </p>
                   <p className="mt-0.5 text-[13px] text-[#64746B]">
@@ -331,7 +351,7 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                 </div>
               ) : (
                 <div className={cn(sieraCardClass, "flex flex-col gap-3 p-4")}>
-                  <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5">
+                  <p className="mt-1 flex flex-wrap items-baseline gap-x-1.5 max-md:hidden">
                     <del className="text-xs text-[#64746B]">
                       <span className="sr-only">Harga awal: </span>
                       {formatIDR(normalTotal)}

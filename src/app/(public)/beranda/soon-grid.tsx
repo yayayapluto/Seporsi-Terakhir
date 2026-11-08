@@ -24,11 +24,17 @@ export function SoonGrid({ portions }: { portions: SoonPortion[] }) {
   const hasMore = portions.length > shown.length;
 
   return (
-    <ul className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4">
+    <ul className="grid grid-cols-1 gap-3 max-md:max-w-none lg:grid-cols-3 lg:gap-4 max-md:w-full max-md:px-0 max-md:mx-0">
       {shown.map((p) => {
         const pct = p.normalPrice > 0 ? Math.round((1 - p.discountPrice / p.normalPrice) * 100) : 0;
         return (
-          <li key={p.id} className={cn(sieraCardClass, "overflow-hidden")}>
+          <li
+            key={p.id}
+            className={cn(
+              sieraCardClass,
+              "overflow-hidden w-full max-md:w-full max-md:rounded-2xl border max-md:mx-0",
+            )}
+          >
             <Link
               href={katalogDetail(p.id)}
               aria-label={`Lihat ${p.menuName}`}
@@ -59,10 +65,12 @@ export function SoonGrid({ portions }: { portions: SoonPortion[] }) {
                 </span>
               </span>
               <span className="flex flex-1 flex-col gap-0.5 p-4">
-                <span className="line-clamp-2 text-base leading-snug font-bold text-[#1C2826]">
+                <span className="text-base leading-snug font-bold text-[#1C2826]">
                   {p.menuName}
                 </span>
-                <span className="truncate text-[13px] text-[#64746B]">{p.tenantName}</span>
+                <span className="text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                  {p.tenantName}
+                </span>
                 <span className="mt-2 text-[13px] text-[#64746B]">
                   Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
                 </span>
@@ -78,10 +86,10 @@ export function SoonGrid({ portions }: { portions: SoonPortion[] }) {
         );
       })}
       {hasMore && (
-        <li>
+        <li className="w-full max-md:w-full max-md:mx-0">
           <Link
             href={ROUTES.katalog}
-            className="flex min-h-[200px] flex-col items-center justify-center gap-1 rounded-[20px] border border-dashed border-line p-4 text-center text-[15px] font-bold text-[#1E5A36] transition-colors hover:bg-[#F1F5F2] focus-visible:bg-[#F1F5F2]"
+            className="flex min-h-[200px] flex-col items-center justify-center gap-1 rounded-[20px] border border-dashed border-line p-4 text-center text-[15px] font-bold text-[#1E5A36] transition-colors hover:bg-[#F1F5F2] focus-visible:bg-[#F1F5F2] w-full max-md:w-full max-md:rounded-2xl max-md:mx-0"
           >
             <span aria-hidden className="text-[28px] leading-none font-extrabold">
               +{portions.length - shown.length}
