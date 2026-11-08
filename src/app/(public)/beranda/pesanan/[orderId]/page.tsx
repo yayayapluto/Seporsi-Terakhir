@@ -156,15 +156,18 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
       <SieraRailPage
         asideLabel="Status dan kantin"
         main={
-          <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-5">
-            <div className="flex min-w-0 flex-col gap-4 lg:gap-5">
+          <div className="grid min-w-0 grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-5 max-md:grid-cols-[minmax(0,1fr)] max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:overflow-x-clip">
+            <div className="flex min-w-0 flex-col gap-4 lg:gap-5 max-md:w-full max-md:min-w-0 max-md:max-w-full">
               {order.status === "reserved" && <OrderLiveStatus orderIds={[order.orderId]} />}
               {order.status === "reserved" && order.pickupDeadlineAt && (
                 <PickupDeadlineBanner deadlineIso={order.pickupDeadlineAt} />
               )}
               <section
                 aria-label="Ringkasan pesanan"
-                className={cn(sieraCardClass, "flex flex-col gap-3 p-5")}
+                className={cn(
+                  sieraCardClass,
+                  "flex flex-col gap-3 p-5 max-md:min-w-0 max-md:w-full max-md:max-w-full",
+                )}
               >
                 <div className="flex flex-col items-start gap-2 max-md:gap-2 md:flex-row md:flex-wrap md:items-center">
                   <div className="md:hidden w-full">
@@ -240,13 +243,13 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                 </div>
               )}
             </div>
-            <div className="min-h-0 lg:sticky lg:top-[76px] max-md:static">
+            <div className="min-h-0 lg:sticky lg:top-[76px] max-md:static max-md:w-full max-md:min-w-0 max-md:max-w-full">
               <section aria-label="Detail pesanan" className="flex min-w-0 flex-col gap-2">
                 <SieraSectionTitle>Detail pesanan</SieraSectionTitle>
                 <dl
                   className={cn(
                     sieraCardClass,
-                    "flex flex-col divide-y divide-dashed divide-line px-4",
+                    "flex flex-col divide-y divide-dashed divide-line px-4 max-md:min-w-0 max-md:w-full max-md:max-w-full",
                   )}
                 >
                   {order.cookedAt && (
@@ -263,9 +266,9 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                   <SieraField icon={CalendarClock} label="Waktu pesan">
                     {formatDateTimeWIB(new Date(order.createdAt))} WIB
                   </SieraField>
-                  <div className="hidden min-h-14 items-center gap-3 px-1 py-3 max-md:flex">
-                    <span className="min-w-0 flex-1 text-xs text-[#64746B]">Total bayar tunai</span>
-                    <strong className="text-2xl font-extrabold text-[#0d5a38]">
+                  <div className="hidden min-h-14 items-center justify-between gap-3 min-w-0 px-1 py-3 max-md:flex">
+                    <span className="min-w-0 text-xs text-[#64746B]">Total bayar tunai</span>
+                    <strong className="min-w-0 text-2xl font-extrabold whitespace-normal text-[#0d5a38]">
                       {formatIDR(totalPrice)}
                     </strong>
                   </div>
