@@ -25,7 +25,9 @@ import {
   SieraStat,
   SieraStatStrip,
 } from "@/components/siera";
+import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { Progress, ProgressTrack } from "@/components/ui/progress";
 import { formatDateTimeWIB, formatIDR, formatSisaMenit, wibTodayRange } from "@/lib/format";
 import { ROUTES, tenantPorsiUbah } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -372,33 +374,62 @@ async function DashboardBody({
                   />
                 ) : (
                   <div className="flex flex-col gap-2">
-                    <SieraList>
+                    <SieraList className="max-md:divide-y-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none">
                       {activePortions.map((p) => {
                         const minutesLeft = Math.max(
                           0,
                           Math.round((new Date(p.expiresAt).getTime() - Date.now()) / 60000),
                         );
                         const nearExpiry = minutesLeft < 60;
+                        const stockRatio =
+                          p.quantityPosted > 0 ? p.quantityRemaining / p.quantityPosted : 0;
                         return (
                           <li
                             key={p.id}
-                            className="flex min-h-16 flex-col justify-center gap-2 px-4 py-3.5 max-md:items-start sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                            className="flex min-h-16 flex-col justify-center gap-2 px-4 py-3.5 max-md:items-start sm:flex-row sm:items-center sm:justify-between sm:gap-4 max-md:mb-3 max-md:rounded-2xl max-md:border max-md:border-[#e3e9e5] max-md:bg-white max-md:px-4 max-md:py-3.5"
                           >
                             <div className="min-w-0">
                               <h3 className="font-bold leading-snug max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                                 {p.menuName}{" "}
-                                <span className="font-normal text-[#64746B]">
+                                <span className="font-normal text-[#64746B] max-md:hidden">
                                   sisa {p.quantityRemaining}/{p.quantityPosted}
                                 </span>
                               </h3>
-                              <p className="mt-0.5 text-xs text-[#64746B]">
+                              <p className="mt-0.5 text-xs text-[#64746B] max-md:hidden">
                                 <strong className="text-sm font-bold text-primary">
                                   {formatIDR(p.discountPrice)}
                                 </strong>{" "}
                                 · Habis {formatDateTimeWIB(new Date(p.expiresAt))} WIB
                               </p>
+                              <p className="mt-1 text-sm font-semibold text-primary max-md:block hidden">
+                                {formatIDR(p.discountPrice)}
+                              </p>
+                              <div className="mt-2 hidden flex-wrap items-center gap-2 max-md:flex">
+                                <Badge
+                                  className={
+                                    p.quantityRemaining === 0
+                                      ? "bg-[#FDECEC] text-[#BA1A1A]"
+                                      : stockRatio < 0.5
+                                        ? "bg-[#FEF3C7] text-[#92400E]"
+                                        : "bg-[#DCEBE0] text-[#1E5A36]"
+                                  }
+                                >
+                                  Sisa {p.quantityRemaining}/{p.quantityPosted}
+                                </Badge>
+                                <span className="inline-flex items-center gap-1 text-xs text-[#64746B]">
+                                  <Timer className="size-3.5" aria-hidden />
+                                  Habis {formatDateTimeWIB(new Date(p.expiresAt))} WIB
+                                </span>
+                              </div>
+                              <Progress
+                                value={Math.round(stockRatio * 100)}
+                                aria-label={`Stok ${p.menuName}`}
+                                className="mt-2 hidden max-md:block"
+                              >
+                                <ProgressTrack />
+                              </Progress>
                             </div>
-                            <div className="flex shrink-0 items-center gap-3">
+                            <div className="flex shrink-0 items-center gap-3 max-md:order-first max-md:self-end">
                               {nearExpiry && (
                                 <span className="inline-flex items-center rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-xs font-semibold text-[#B45309]">
                                   Batas ambil {formatSisaMenit(minutesLeft)} lagi
