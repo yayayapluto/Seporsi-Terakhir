@@ -17,7 +17,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <AppFooter />
         <div
           aria-hidden="true"
-          className="hidden max-md:block h-[calc(96px+env(safe-area-inset-bottom))] shrink-0"
+          className="hidden max-md:block h-[calc(84px+env(safe-area-inset-bottom))] shrink-0"
         />
       </div>
     </div>
