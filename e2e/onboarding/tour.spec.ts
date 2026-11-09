@@ -1,35 +1,43 @@
 import { expectNoHorizontalOverflow } from "../support/assertions";
 import { expect, test } from "../support/fixtures";
 
-test("tour beranda: buka, lanjut, lewati, tidak muncul lagi", async ({ buyerPage: page }) => {
-  await test.step("buka beranda (tur forced onboarding pertama)", async () => {
-    await page.goto("/beranda?mode=onboarding");
+test("tour beranda: intro dialog, langkah, lewati, tidak muncul lagi", async ({
+  buyerPage: page,
+}) => {
+  await page.goto("/beranda?mode=onboarding");
+  await test.step("intro dialog muncul", async () => {
+    await expect(page.getByRole("dialog")).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Mau lihat panduan singkat beranda?")).toBeVisible();
   });
-  const popover = page.locator('[data-tour-card="beranda"]');
-  await test.step("popover intro muncul", async () => {
-    await expect(popover).toBeVisible({ timeout: 15_000 });
-    await expect(popover.getByText(/dari 4/i)).toBeVisible();
+  await test.step("mulai panduan menampilkan langkah", async () => {
+    await page.getByRole("button", { name: /Mulai panduan|Lanjut/i }).click();
+    await expect(page.locator('[data-tour-card="beranda"]')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('[data-testid="tour-spotlight"]')).toBeVisible();
+    await expect(page.locator('[data-tour-card="beranda"]')).toContainText("Mulai dari sini");
   });
-  await test.step("spotlight + konten dalam viewport", async () => {
-    const spot = page.locator('[data-testid="tour-spotlight"]');
-    await expect(spot).toBeVisible();
-    const target = page.locator('[data-tour="filter"]');
-    if (await target.count()) {
-      const box = await target.first().boundingBox();
-      expect(box).toBeTruthy();
-    }
-    await expectNoHorizontalOverflow(page);
+  await test.step("ke langkah berikut", async () => {
+    await page
+      .locator('[data-tour-card="beranda"]')
+      .getByRole("button", { name: /Lanjut/i })
+      .click();
+    await expect(page.locator('[data-tour-card="beranda"]')).toContainText("Pesananmu yang aktif", {
+      timeout: 10_000,
+    });
   });
-  await test.step("Lewati panduan menutup", async () => {
-    await popover.getByRole("button", { name: /Lewati/i }).click();
+  await test.step("Lewati menutup tur", async () => {
+    await page
+      .locator('[data-tour-card="beranda"]')
+      .getByRole("button", { name: /Lewati/i })
+      .click();
     const confirm = page.getByRole("button", { name: /Lewati panduan/i });
-    if (await confirm.count().catch(() => 0)) {
-      await confirm.first().click();
-    }
-    await expect(popover).toHaveCount(0, { timeout: 10_000 });
+    if (await confirm.count()) await confirm.first().click();
+    await expect(page.locator('[data-tour-card="beranda"]')).toHaveCount(0, { timeout: 10_000 });
   });
   await test.step("tidak muncul lagi setelah selesai", async () => {
     await page.reload();
-    await expect(popover).toHaveCount(0, { timeout: 10_000 });
+    await expect(page.locator('[data-tour-card="beranda"]')).toHaveCount(0, { timeout: 10_000 });
+    await page.locator('[data-testid="tour-spotlight"]').count();
+    await expect(page.getByText("Mau lihat panduan singkat beranda?")).toHaveCount(0);
   });
+  await expectNoHorizontalOverflow(page);
 });
