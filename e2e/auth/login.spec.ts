@@ -25,11 +25,13 @@ test.describe("Login UI (tanpa storageState)", () => {
   test("email invalid divalidasi", async ({ page }) => {
     await page.goto("/masuk");
     await page.getByLabel(/email/i).fill("bukan-email");
-    await page
-      .getByRole("button", { name: /kirim tautan|kirim|lanjut/i })
-      .first()
-      .click();
-    await expect(page.locator("#email-error")).toContainText(/tidak valid/i, { timeout: 10_000 });
+    await page.getByRole("button", { name: /kirim tautan masuk/i }).click();
+    // HTML5 membatasi submit; tidak ada tautan terkirim + tetap di /masuk.
+    const invalid = await page
+      .locator('input[type="email"]')
+      .evaluate((el: HTMLInputElement) => !el.validity.valid);
+    expect(invalid).toBe(true);
     expect(page.url()).toContain("/masuk");
+    await expect(page.locator("body")).not.toContainText(/Tautan masuk terkirim/i);
   });
 });
