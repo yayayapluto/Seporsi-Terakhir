@@ -37,7 +37,14 @@ export async function createTestData(): Promise<E2ESeed> {
       email_confirm: true,
       user_metadata: { full_name: name },
     });
-    if (error || !data.user) throw new Error(`createUser ${role}: ${error?.message}`);
+    if (error || !data.user) {
+      // Ada dari test sebelumnya di run yang sama -> pakai ulang (idempoten).
+      const { data: prof } = await db.from("profiles").select("id").eq("email", em).single();
+      if (!prof) throw new Error(`createUser ${role}: ${error?.message}`);
+      const { error: rErr } = await db.from("profiles").update({ role }).eq("id", prof.id);
+      if (rErr) throw rErr;
+      return { id: prof.id, email: em, password };
+    }
     const id = data.user.id;
     const { error: pErr } = await db
       .from("profiles")
@@ -52,64 +59,96 @@ export async function createTestData(): Promise<E2ESeed> {
   const buyer2 = await makeAccount("student", "Buyer2 E2E");
   const pendingOwner = await makeAccount("tenant", "Pending E2E");
 
-  const { data: tenantRow, error: tErr } = await db
+  const { data: tenantRow } = await db
     .from("tenants")
-    .insert({
-      owner_id: mitra.id,
-      name: `e2e-${RUN_ID}-tenant`,
-      is_approved: true,
-      is_listed: true,
-    })
     .select("id")
-    .single();
-  if (tErr) throw tErr;
-  const tenantId = tenantRow.id as string;
-  const { data: pendingRow, error: pendErr } = await db
+    .eq("owner_id", mitra.id)
+    .maybeSingle();
+  const tenantId =
+    tenantRow?.id ??
+    (
+      await db
+        .from("tenants")
+        .insert({
+          owner_id: mitra.id,
+          name: `e2e-${RUN_ID}-tenant`,
+          is_approved: true,
+          is_listed: true,
+        })
+        .select("id")
+        .single()
+    ).data!.id;
+  const { data: pendingRow } = await db
     .from("tenants")
-    .insert({ owner_id: pendingOwner.id, name: `e2e-${RUN_ID}-pending`, is_approved: false })
     .select("id")
-    .single();
-  if (pendErr) throw pendErr;
+    .eq("owner_id", pendingOwner.id)
+    .maybeSingle();
+  const pendingId =
+    pendingRow?.id ??
+    (
+      await db
+        .from("tenants")
+        .insert({ owner_id: pendingOwner.id, name: `e2e-${RUN_ID}-pending`, is_approved: false })
+        .select("id")
+        .single()
+    ).data!.id;
 
-  const { data: menuRow, error: mErr } = await db
+  const { data: menuRow } = await db
     .from("menu_items")
-    .insert({
-      tenant_id: tenantId,
-      name: `e2e-${RUN_ID}-menu`,
-      normal_price: 15000,
-      is_active: true,
-      safety_tier: "conditional",
-      sale_conditions: `Syarat uji e2e ${RUN_ID}.`,
-    })
     .select("id")
-    .single();
-  if (mErr) throw mErr;
-  const menuId = menuRow.id as string;
+    .eq("tenant_id", tenantId)
+    .eq("name", `e2e-${RUN_ID}-menu`)
+    .maybeSingle();
+  const menuId =
+    menuRow?.id ??
+    (
+      await db
+        .from("menu_items")
+        .insert({
+          tenant_id: tenantId,
+          name: `e2e-${RUN_ID}-menu`,
+          normal_price: 15000,
+          is_active: true,
+          safety_tier: "conditional",
+          sale_conditions: `Syarat uji e2e ${RUN_ID}.`,
+        })
+        .select("id")
+        .single()
+    ).data!.id;
 
   const cooked = new Date(Date.now() - 60 * 60_000).toISOString();
-  const { data: portionRow, error: pErr } = await db
+  const { data: portionRow } = await db
     .from("portions")
-    .insert({
-      tenant_id: tenantId,
-      menu_item_id: menuId,
-      quantity_posted: 5,
-      quantity_remaining: 5,
-      cooked_at: cooked,
-      sell_window_minutes: 180,
-      release_at: cooked,
-      discount_price: 5000,
-    })
     .select("id")
-    .single();
-  if (pErr) throw pErr;
+    .eq("tenant_id", tenantId)
+    .eq("menu_item_id", menuId)
+    .maybeSingle();
+  const portionId =
+    portionRow?.id ??
+    (
+      await db
+        .from("portions")
+        .insert({
+          tenant_id: tenantId,
+          menu_item_id: menuId,
+          quantity_posted: 5,
+          quantity_remaining: 5,
+          cooked_at: cooked,
+          sell_window_minutes: 180,
+          release_at: cooked,
+          discount_price: 5000,
+        })
+        .select("id")
+        .single()
+    ).data!.id;
 
   return {
     runId: RUN_ID,
     admin,
-    mitra: { email: mitra.email, password, tenantId, menuId, portionId: portionRow.id as string },
+    mitra: { email: mitra.email, password, tenantId, menuId, portionId },
     buyer,
     buyer2,
-    pendingTenantId: pendingRow.id as string,
+    pendingTenantId: pendingId as string,
     pendingOwnerId: pendingOwner.id,
   };
 }
