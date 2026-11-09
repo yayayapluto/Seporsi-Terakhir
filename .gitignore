@@ -66,4 +66,5 @@ tests/.auth/
 /research-result/
 # prompt briefs (local-only)
 /prompts/
+docs/artboard/
 NUL
