@@ -22,24 +22,48 @@ function canvasDims(kind: PhotoKind): { w: number; h: number } {
   return kind === "menu_photo" ? { w: 1280, h: 720 } : { w: 512, h: 512 };
 }
 
+async function decodeToCanvas(file: File): Promise<HTMLCanvasElement | null> {
+  // Jalur utama: createImageBitmap. Fallback: <img> untuk browser lama.
+  try {
+    const bitmap = await createImageBitmap(file);
+    const canvas = document.createElement("canvas");
+    canvas.width = bitmap.width;
+    canvas.height = bitmap.height;
+    canvas.getContext("2d")?.drawImage(bitmap, 0, 0);
+    bitmap.close();
+    return canvas;
+  } catch {
+    const url = URL.createObjectURL(file);
+    try {
+      const img = document.createElement("img");
+      img.src = url;
+      await img.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      canvas.getContext("2d")?.drawImage(img, 0, 0);
+      return canvas;
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+}
+
 async function processToWebp(file: File, kind: PhotoKind): Promise<Blob | null> {
-  const bitmap = await createImageBitmap(file);
+  const src = await decodeToCanvas(file);
+  if (!src || src.width === 0 || src.height === 0) return null;
   const { w, h } = canvasDims(kind);
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    bitmap.close();
-    return null;
-  }
-  const scale = Math.max(w / bitmap.width, h / bitmap.height);
-  const dw = bitmap.width * scale;
-  const dh = bitmap.height * scale;
+  if (!ctx) return null;
+  const scale = Math.max(w / src.width, h / src.height);
+  const dw = src.width * scale;
+  const dh = src.height * scale;
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, w, h);
-  ctx.drawImage(bitmap, (w - dw) / 2, (h - dh) / 2, dw, dh);
-  bitmap.close();
+  ctx.drawImage(src, (w - dw) / 2, (h - dh) / 2, dw, dh);
 
   for (const q of QUALITIES) {
     const blob = await new Promise<Blob | null>((resolve) =>

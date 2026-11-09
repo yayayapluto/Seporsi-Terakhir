@@ -144,7 +144,7 @@ async function MenuBody({
               saat posting.
             </p>
           </div>
-          <MenuManager items={items} tenantId={tenantId} />
+          <MenuManager items={items} />
           <GuidedTour
             tourKey="tenant-menu"
             forced={tourForced}
