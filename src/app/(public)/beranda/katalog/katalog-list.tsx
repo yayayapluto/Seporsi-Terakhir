@@ -311,16 +311,18 @@ export function KatalogList({
                         )}
                       </span>
                       <span className="flex flex-1 flex-col gap-0.5 p-4">
-                        <span className="line-clamp-2 max-md:line-clamp-none max-md:break-words text-base leading-snug font-bold text-[#1C2826]">
+                        <span className="block truncate text-base leading-snug font-bold text-[#1C2826]">
                           {p.menuName}
                         </span>
-                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[13px] text-[#64746B]">
+                        <span className="block truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[13px] text-[#64746B]">
                           {p.tenantName}
                         </span>
-                        <span className="mt-2 text-[13px] text-[#64746B]">
+                        <span className="mt-2 block truncate text-[13px] text-[#64746B]">
                           Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
                         </span>
-                        <SaleConditions conditions={p.saleConditions} brief className="mt-1.5" />
+                        <span className="mt-1.5 block min-h-[30px]">
+                          <SaleConditions conditions={p.saleConditions} brief />
+                        </span>
                         <span className="mt-1 flex flex-wrap items-baseline gap-x-2">
                           <del className="text-[13px] text-[#64746B]">
                             {formatIDR(p.normalPrice)}
