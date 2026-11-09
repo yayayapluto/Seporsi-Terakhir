@@ -61,12 +61,15 @@ export function ImageUploader({
   currentPath,
   shape,
   onChanged,
+  avatarName,
 }: {
   kind: PhotoKind;
   targetId: string;
   currentPath: string | null;
   shape: "circle" | "wide";
   onChanged?: (newPath: string | null) => void;
+  /** Bila di-set, komponen tampil sebagai avatar 56px yang bisa di-tap (kartu identitas). */
+  avatarName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -166,6 +169,151 @@ export function ImageUploader({
     reset();
   }
 
+  const sheet = (
+    <FormSheet
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (!o) reset();
+      }}
+      title={confirmingDelete ? "Hapus foto?" : "Ubah foto"}
+    >
+      {confirmingDelete ? (
+        <div className="flex flex-col gap-4">
+          <p className="text-sm text-[#64746B]">Foto saat ini akan dihapus dari tampilan.</p>
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full sm:w-auto"
+              disabled={busy}
+              onClick={() => {
+                setOpen(false);
+                reset();
+              }}
+            >
+              Batal
+            </Button>
+            <Button
+              type="button"
+              className="w-full sm:w-auto"
+              disabled={busy}
+              onClick={() => void hapus()}
+            >
+              {busy ? (
+                <>
+                  <Spinner />
+                  Menghapus…
+                </>
+              ) : (
+                "Hapus"
+              )}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="foto-input">Pilih foto</Label>
+            <Input
+              id="foto-input"
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              disabled={busy}
+              onChange={(e) => void onFile(e.target.files?.[0])}
+            />
+            <p className="text-xs text-[#64746B]">JPG, PNG, atau WebP. Maksimum 10 MB.</p>
+          </div>
+          {preview && (
+            <Image
+              src={preview}
+              alt="Pratinjau foto"
+              width={shape === "circle" ? 128 : 640}
+              height={shape === "circle" ? 128 : 360}
+              unoptimized
+              className={
+                shape === "circle"
+                  ? "size-32 rounded-full object-cover"
+                  : "aspect-video w-full rounded-xl object-cover"
+              }
+            />
+          )}
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full sm:w-auto"
+              disabled={busy}
+              onClick={() => {
+                setOpen(false);
+                reset();
+              }}
+            >
+              Batal
+            </Button>
+            <Button
+              type="button"
+              className="w-full sm:w-auto"
+              disabled={busy || !processed}
+              onClick={() => void save()}
+            >
+              {busy ? (
+                <>
+                  <Spinner />
+                  Mengunggah…
+                </>
+              ) : (
+                "Simpan foto"
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
+    </FormSheet>
+  );
+
+  if (avatarName != null) {
+    const initials = avatarName
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((w) => w[0]?.toUpperCase() ?? "")
+      .join("");
+    return (
+      <div className="flex min-h-11 min-w-11 shrink-0">
+        <button
+          type="button"
+          aria-label="Ubah foto"
+          onClick={() => {
+            reset();
+            setOpen(true);
+          }}
+          className="shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#2E7D4F]"
+        >
+          {currentUrl ? (
+            <Image
+              src={currentUrl}
+              alt={`Foto profil ${avatarName}`}
+              width={56}
+              height={56}
+              className="size-14 rounded-full object-cover"
+            />
+          ) : (
+            <span
+              aria-hidden
+              className="flex size-14 items-center justify-center rounded-full bg-[#DCEBE0] text-xl font-extrabold text-[#1E5A36]"
+            >
+              {initials || "•"}
+            </span>
+          )}
+        </button>
+        {sheet}
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-3">
@@ -226,109 +374,7 @@ export function ImageUploader({
         </div>
       </div>
 
-      <FormSheet
-        open={open}
-        onOpenChange={(o) => {
-          setOpen(o);
-          if (!o) reset();
-        }}
-        title={confirmingDelete ? "Hapus foto?" : "Ubah foto"}
-      >
-        {confirmingDelete ? (
-          <div className="flex flex-col gap-4">
-            <p className="text-sm text-[#64746B]">Foto saat ini akan dihapus dari tampilan.</p>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full sm:w-auto"
-                disabled={busy}
-                onClick={() => {
-                  setOpen(false);
-                  reset();
-                }}
-              >
-                Batal
-              </Button>
-              <Button
-                type="button"
-                className="w-full sm:w-auto"
-                disabled={busy}
-                onClick={() => void hapus()}
-              >
-                {busy ? (
-                  <>
-                    <Spinner />
-                    Menghapus…
-                  </>
-                ) : (
-                  "Hapus"
-                )}
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="foto-input">Pilih foto</Label>
-              <Input
-                id="foto-input"
-                ref={fileRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                disabled={busy}
-                onChange={(e) => void onFile(e.target.files?.[0])}
-              />
-              <p className="text-xs text-[#64746B]">JPG, PNG, atau WebP. Maksimum 10 MB.</p>
-            </div>
-            {preview && (
-              <Image
-                src={preview}
-                alt="Pratinjau foto"
-                width={shape === "circle" ? 128 : 640}
-                height={shape === "circle" ? 128 : 360}
-                unoptimized
-                className={
-                  shape === "circle"
-                    ? "size-32 rounded-full object-cover"
-                    : "aspect-video w-full rounded-xl object-cover"
-                }
-              />
-            )}
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full sm:w-auto"
-                disabled={busy}
-                onClick={() => {
-                  setOpen(false);
-                  reset();
-                }}
-              >
-                Batal
-              </Button>
-              <Button
-                type="button"
-                className="w-full sm:w-auto"
-                disabled={busy || !processed}
-                onClick={() => void save()}
-              >
-                {busy ? (
-                  <>
-                    <Spinner />
-                    Mengunggah…
-                  </>
-                ) : (
-                  "Simpan foto"
-                )}
-              </Button>
-            </div>
-          </div>
-        )}
-      </FormSheet>
+      {sheet}
     </div>
   );
 }
