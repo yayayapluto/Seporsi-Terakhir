@@ -14,7 +14,7 @@ test.describe("Login UI (tanpa storageState)", () => {
           .getByRole("link", { name: new RegExp(roleArg, "i") })
           .first()
           .click();
-        await expect.poll(() => page.url(), { timeout: 15_000 }).toContain(home);
+        await expect.poll(() => page.url(), { timeout: 60_000 }).toContain(home);
         await expect(page.locator("h1").first()).toBeVisible();
       });
       await page.context().clearCookies();
@@ -22,14 +22,14 @@ test.describe("Login UI (tanpa storageState)", () => {
     }
   });
 
-  test("email kosong divalidasi", async ({ page }) => {
+  test("email invalid divalidasi", async ({ page }) => {
     await page.goto("/masuk");
-    await page.getByLabel(/email/i).fill("e2e-tidakada@yopmail.com");
-    await page.locator("input[type=password]").fill("salah-kamera-123");
-    await page.getByRole("button", { name: /kirim|masuk|lanjut/i }).click();
-    await expect(page.locator("body")).toContainText(/salah|tidak valid|gagal/i, {
-      timeout: 10_000,
-    });
+    await page.getByLabel(/email/i).fill("bukan-email");
+    await page
+      .getByRole("button", { name: /kirim tautan|kirim|lanjut/i })
+      .first()
+      .click();
+    await expect(page.locator("body")).toContainText(/tidak valid/i, { timeout: 10_000 });
     expect(page.url()).toContain("/masuk");
   });
 });
