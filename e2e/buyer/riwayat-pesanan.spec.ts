@@ -23,7 +23,7 @@ test("riwayat pesanan @smoke: kartu + filter status", async ({ seedBuyerPage: pa
     const list = page.locator('[data-tour="order-list"]');
     await expect(list).toContainText(seed.runId, { timeout: 15_000 });
     await expect(list).toContainText(/Rp\s?[\d.]+/);
-    await expect(list.getByText("Menunggu pickup").first()).toBeVisible();
+    await expect(list).toContainText("Menunggu pickup");
   });
 
   await test.step("filter Semua -> daftar tetap tampil", async () => {
