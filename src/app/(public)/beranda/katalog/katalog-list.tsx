@@ -35,7 +35,6 @@ type ViewMode = "grid" | "list";
 export function KatalogList({
   portions,
   tenants,
-  dayTotal,
   tourForced,
   tourJourney,
   tourEntry,
@@ -43,13 +42,23 @@ export function KatalogList({
 }: {
   portions: CatalogPortion[];
   tenants: string[];
-  dayTotal: number;
   tourForced: boolean;
   tourJourney: boolean;
   tourEntry: number | null;
   isAdmin: boolean;
 }) {
   const [tenant, setTenant] = useState<string>("semua");
+  const [dayTotalState, setDayTotalState] = useState(0);
+  useEffect(() => {
+    fetch("/api/day-total")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d && typeof d.dayTotal === "number") setDayTotalState(d.dayTotal);
+      })
+      .catch(() => {
+        // batas tak terlihat: badge tidak ditampilkan
+      });
+  }, []);
   const [sort, setSort] = useState<SortValue>("hampir-habis");
   const [view, setView] = useState<ViewMode>("grid");
   const [visible, setVisible] = useState(BATCH);
@@ -185,7 +194,7 @@ export function KatalogList({
         </span>
         <div className="hidden shrink-0 items-center gap-2 md:flex">
           <span className="text-sm font-bold text-[#1C2826]">{filtered.length} porsi</span>
-          {dayTotal >= MAX_PORTIONS_PER_DAY && (
+          {dayTotalState >= MAX_PORTIONS_PER_DAY && (
             <SieraWarningBadge>Batas {MAX_PORTIONS_PER_DAY}/hari tercapai</SieraWarningBadge>
           )}
         </div>
@@ -215,7 +224,7 @@ export function KatalogList({
             );
           })}
         </fieldset>
-        {dayTotal >= MAX_PORTIONS_PER_DAY && (
+        {dayTotalState >= MAX_PORTIONS_PER_DAY && (
           <p className="hidden w-full items-center gap-2 rounded-xl bg-[#FEF3C7] px-3.5 py-2.5 text-sm font-bold text-[#92400E] max-md:flex">
             <CircleAlert className="size-4 shrink-0" aria-hidden />
             Batas {MAX_PORTIONS_PER_DAY}/hari tercapai
