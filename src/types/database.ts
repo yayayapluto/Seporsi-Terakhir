@@ -51,6 +51,8 @@ export type Database = {
           name: string
           normal_price: number
           photo_url: string | null
+          safety_tier: string | null
+          sale_conditions: string | null
           tenant_id: string
           updated_at: string
         }
@@ -65,6 +67,8 @@ export type Database = {
           name: string
           normal_price: number
           photo_url?: string | null
+          safety_tier?: string | null
+          sale_conditions?: string | null
           tenant_id: string
           updated_at?: string
         }
@@ -79,6 +83,8 @@ export type Database = {
           name?: string
           normal_price?: number
           photo_url?: string | null
+          safety_tier?: string | null
+          sale_conditions?: string | null
           tenant_id?: string
           updated_at?: string
         }
@@ -725,6 +731,8 @@ export type Database = {
           name: string
           normal_price: number
           photo_url: string | null
+          safety_tier: string | null
+          sale_conditions: string | null
           tenant_id: string
           updated_at: string
         }
