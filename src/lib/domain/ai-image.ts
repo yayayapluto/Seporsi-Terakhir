@@ -33,6 +33,63 @@ export function buildPollinationsUrl(prompt: string, seed: number): string {
   return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${AI_IMAGE_SIZE.w}&height=${AI_IMAGE_SIZE.h}&seed=${seed}&nologo=true&model=flux`;
 }
 
+/**
+ * Petunjuk visual untuk hidangan Indonesia yang namanya sering tidak dikenali
+ * model gambar. Urutan penting: yang lebih spesifik didahulukan.
+ */
+const DISH_HINTS: ReadonlyArray<{ re: RegExp; en: string }> = [
+  {
+    re: /\bmie ayam\b/i,
+    en: "Indonesian chicken noodle dish: yellow egg noodles, shredded chicken, green mustard greens, fried shallots, in a small bowl",
+  },
+  {
+    re: /\bmie goreng\b/i,
+    en: "Indonesian fried noodles with vegetables, chicken and sweet soy sauce on a plate",
+  },
+  { re: /\bbakso|baso\b/i, en: "Indonesian meatball soup with clear broth, noodles and greens" },
+  { re: /\bnasi goreng\b/i, en: "Indonesian fried rice with egg, chicken and pickles on a plate" },
+  {
+    re: /\bnasi padang|rendang\b/i,
+    en: "Indonesian rendang beef with coconut curry sauce, rice and vegetables",
+  },
+  { re: /\bnasi uduk\b/i, en: "Indonesian coconut rice with fried chicken, omelette and sambal" },
+  {
+    re: /\bsate\b/i,
+    en: "Indonesian chicken satay skewers with peanut sauce and sliced shallots",
+  },
+  {
+    re: /\bsoto\b/i,
+    en: "Indonesian soto soup with chicken, bean sprouts, egg and clear yellow broth",
+  },
+  {
+    re: /\bgado[- ]?gado|pecel\b/i,
+    en: "Indonesian vegetable salad with peanut sauce dressing and rice cake",
+  },
+  { re: /\bsayur\b|\blodeh\b/i, en: "Indonesian vegetable coconut milk stew in a bowl" },
+  {
+    re: /\bayam geprek|ayam goreng|ayam bakar\b/i,
+    en: "Indonesian fried or grilled chicken with sambal and rice",
+  },
+  { re: /\bnasi campur\b/i, en: "Indonesian mixed rice plate with several side dishes" },
+  { re: /\btempe|tahu\b/i, en: "Indonesian fried tempeh and tofu with sambal" },
+  { re: /\bbubur\b/i, en: "Indonesian rice porridge bowl with toppings" },
+  { re: /\bpisang goreng\b/i, en: "Indonesian fried banana fritters on a plate" },
+  { re: /\bes teh|teh\b/i, en: "glass of Indonesian iced sweet tea with ice cubes" },
+  { re: /\bkopi\b/i, en: "glass of Indonesian coffee" },
+];
+
+const PHOTO_STYLE =
+  "single serving on a ceramic plate, warm natural window light, 45-degree angle, shallow depth of field, realistic food texture, no text, no watermark, no people";
+
+/** Prompt gambar menu: nama menu + deskriptor visual, maks 500 karakter. */
+export function buildMenuPrompt(menuName: string): string {
+  const name = menuName.trim().replace(/\s+/g, " ").slice(0, 120);
+  const hint = DISH_HINTS.find((h) => h.re.test(name))?.en;
+  const subject = hint ? `${name} (${hint})` : name;
+  const prompt = `Professional food photograph of ${subject}, ${PHOTO_STYLE}.`;
+  return prompt.length <= 500 ? prompt : `${prompt.slice(0, 497).trimEnd()}...`;
+}
+
 /** Placeholder SVG data URL: gradasi + inisial label. Tidak pernah gagal. */
 export function buildPlaceholderSvg(label: string): string {
   const initials = label

@@ -282,7 +282,7 @@ export function SieraPhotoPicker({
           )}
         </div>
       </div>
-      <p className="text-xs text-muted-foreground">JPG/PNG/WebP, maksimal 2 MB.</p>
+      <p className="text-xs text-muted-foreground">JPG/PNG/WebP, maksimal 10 MB.</p>
     </div>
   );
 }

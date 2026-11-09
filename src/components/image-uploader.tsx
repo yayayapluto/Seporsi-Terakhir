@@ -13,8 +13,8 @@ import { confirmUpload, createUploadUrl, removePhoto } from "@/lib/photo-actions
 import { BUCKET_BY_KIND, getPublicImageUrl, type PhotoKind } from "@/lib/storage";
 import { createClient } from "@/lib/supabase/client";
 
-const ACCEPT = ["image/jpeg", "image/png", "image/webp"];
-const MAX_ORIGINAL_BYTES = 10 * 1024 * 1024;
+export const ACCEPT = ["image/jpeg", "image/png", "image/webp"];
+export const MAX_ORIGINAL_BYTES = 10 * 1024 * 1024;
 const TARGET_BYTES = 400 * 1024;
 const QUALITIES = [0.82, 0.74, 0.66, 0.58, 0.5];
 
@@ -49,7 +49,7 @@ async function decodeToCanvas(file: File): Promise<HTMLCanvasElement | null> {
   }
 }
 
-async function processToWebp(file: File, kind: PhotoKind): Promise<Blob | null> {
+export async function processToWebp(file: File, kind: PhotoKind): Promise<Blob | null> {
   const src = await decodeToCanvas(file);
   if (!src || src.width === 0 || src.height === 0) return null;
   const { w, h } = canvasDims(kind);

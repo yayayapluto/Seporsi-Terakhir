@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Circle, CircleCheck, ImageOff, Minus, Plus } from "lucide-react";
+import { Circle, CircleCheck, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -616,10 +616,13 @@ export function PortionForm({
         <section aria-label="Pratinjau katalog" className="min-w-0">
           <p className="text-xs font-bold tracking-widest text-primary">PRATINJAU</p>
           <div className={`${sieraCardClass} mt-2 flex flex-col overflow-hidden`}>
-            <div className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 bg-muted text-muted-foreground">
-              <ImageOff className="size-8" aria-hidden />
-              <span className="text-xs">tidak ada gambar</span>
-            </div>
+            <Photo
+              bucket="menu-photos"
+              path={selected?.photoPath}
+              alt={selected != null ? `Foto ${selected.name}` : "Pratinjau menu"}
+              sizes="(max-width: 768px) 100vw, 320px"
+              className="aspect-[4/3] w-full"
+            />
             <div className="flex flex-1 flex-col gap-1 p-3">
               <p className="line-clamp-2 min-h-10 break-words text-sm font-bold leading-snug">
                 {selected != null ? selected.name : "Pilih menu dulu"}

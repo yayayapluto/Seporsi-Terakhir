@@ -6,10 +6,15 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ImageUploader } from "@/components/image-uploader";
+import {
+  ACCEPT,
+  ImageUploader,
+  MAX_ORIGINAL_BYTES,
+  processToWebp,
+} from "@/components/image-uploader";
 import { Photo } from "@/components/photo";
 import { SaleConditions } from "@/components/sale-conditions";
-import { SieraAlert, SieraList, SieraSectionTitle } from "@/components/siera";
+import { SieraAlert, SieraList, SieraPhotoPicker, SieraSectionTitle } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,7 +32,9 @@ import { DISCOUNT_PRICE_RATIO_DEFAULT } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
 import { formatIDR } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
-import { confirmUpload } from "@/lib/photo-actions";
+import { confirmUpload, createUploadUrl } from "@/lib/photo-actions";
+import { BUCKET_BY_KIND } from "@/lib/storage";
+import { createClient } from "@/lib/supabase/client";
 import { saveMenuItem } from "./actions";
 import type { MenuItemRow } from "./page";
 
@@ -75,6 +82,8 @@ export function MenuManager({ items }: { items: MenuItemRow[] }) {
   const [formError, setFormError] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [pendingPreview, setPendingPreview] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -94,7 +103,58 @@ export function MenuManager({ items }: { items: MenuItemRow[] }) {
     setFormError(null);
     setGenerating(false);
     setGeneratedUrl(null);
+    setPendingFile(null);
+    setPendingPreview(null);
   }, [editing, reset]);
+
+  // Bersihkan object URL pratinjau saat berganti atau unmount.
+  useEffect(() => {
+    return () => {
+      if (pendingPreview) URL.revokeObjectURL(pendingPreview);
+    };
+  }, [pendingPreview]);
+
+  function choosePending(file: File | null) {
+    setFormError(null);
+    if (!file) {
+      setPendingFile(null);
+      setPendingPreview(null);
+      return;
+    }
+    if (!ACCEPT.includes(file.type)) {
+      setPendingFile(null);
+      setPendingPreview(null);
+      setFormError("Format foto harus JPG, PNG, atau WebP");
+      return;
+    }
+    if (file.size > MAX_ORIGINAL_BYTES) {
+      setPendingFile(null);
+      setPendingPreview(null);
+      setFormError("Foto terlalu besar (maks 10 MB)");
+      return;
+    }
+    setPendingFile(file);
+    setPendingPreview(URL.createObjectURL(file));
+  }
+
+  /** Unggah foto menu setelah baris menu dibuat; mengembalikan pesan galat atau null. */
+  async function uploadPendingPhoto(menuId: string, file: File): Promise<string | null> {
+    const blob = await processToWebp(file, "menu_photo");
+    if (!blob) return "Foto gagal diproses.";
+    const up = await createUploadUrl({
+      kind: "menu_photo",
+      targetId: menuId,
+      originalBytes: file.size,
+    });
+    if (!up.ok) return up.error;
+    const client = createClient();
+    const { error: upErr } = await client.storage
+      .from(BUCKET_BY_KIND.menu_photo)
+      .uploadToSignedUrl(up.path, up.token, blob);
+    if (upErr) return "Gagal mengunggah foto. Coba lagi.";
+    const conf = await confirmUpload({ kind: "menu_photo", targetId: menuId, path: up.path });
+    return conf.ok ? null : conf.error;
+  }
 
   async function generateAi() {
     if (!editing) return;
@@ -107,10 +167,7 @@ export function MenuManager({ items }: { items: MenuItemRow[] }) {
       const res = await fetch("/api/ai-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `Professional food photo of ${name}, appetizing, steam, natural light, Indonesian street food`,
-          menuName: name,
-        }),
+        body: JSON.stringify({ menuName: name }),
       });
       const data = (await res.json().catch(() => null)) as {
         ok?: boolean;
@@ -173,6 +230,18 @@ export function MenuManager({ items }: { items: MenuItemRow[] }) {
     if (!res.ok) {
       setFormError(res.error);
       return;
+    }
+    if (!editing && pendingFile) {
+      const photoError = await uploadPendingPhoto(res.id, pendingFile);
+      if (photoError) {
+        toast.add({
+          type: "error",
+          title: "Menu tersimpan, foto gagal diunggah",
+          description: photoError,
+        });
+      } else {
+        toast.add({ type: "success", title: "Menu dan foto tersimpan" });
+      }
     }
     setOpen(false);
     router.refresh();
@@ -282,9 +351,13 @@ export function MenuManager({ items }: { items: MenuItemRow[] }) {
                 onChanged={() => router.refresh()}
               />
             ) : (
-              <p className="text-xs text-muted-foreground">
-                Simpan menu dulu, lalu tambah foto lewat Edit menu.
-              </p>
+              <SieraPhotoPicker
+                inputId="menu-photo"
+                photoPreview={pendingPreview}
+                previewAlt="Pratinjau foto menu"
+                onFile={choosePending}
+                onRemove={() => choosePending(null)}
+              />
             )}
             {editing && (
               <div className="flex flex-col gap-2">
