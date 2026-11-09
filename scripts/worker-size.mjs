@@ -12,9 +12,13 @@ if (!existsSync(TARGET)) {
 }
 const bytes = readFileSync(TARGET);
 const gz = gzipSync(bytes).length;
-console.log(`handler.mjs: ${(bytes.length / 1048576).toFixed(2)} MB, gzip ${(gz / 1048576).toFixed(2)} MB`);
+console.log(
+  `handler.mjs: ${(bytes.length / 1048576).toFixed(2)} MB, gzip ${(gz / 1048576).toFixed(2)} MB`,
+);
 if (gz > LIMIT) {
-  console.error(`LEBIH DARI 2,5 MB gzip (${(gz / 1048576).toFixed(2)} MB) — langgar budget free plan`);
+  console.error(
+    `LEBIH DARI 2,5 MB gzip (${(gz / 1048576).toFixed(2)} MB) — langgar budget free plan`,
+  );
   process.exit(1);
 }
 console.log("worker size OK");
