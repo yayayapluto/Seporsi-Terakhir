@@ -77,7 +77,7 @@ async function EditPorsiBody({
   const normalPrice = mi.normal_price;
   const menusRes = await supabase
     .from("menu_items")
-    .select("id, name, normal_price, is_active, sale_conditions")
+    .select("id, name, normal_price, is_active, sale_conditions, photo_path")
     .eq("tenant_id", tenant.id)
     .or(`is_active.eq.true,id.eq.${data.menu_item_id}`)
     .order("name", { ascending: true });
@@ -87,6 +87,7 @@ async function EditPorsiBody({
     normalPrice: m.normal_price,
     isActive: m.is_active,
     saleConditions: m.sale_conditions,
+    photoPath: m.photo_path,
   }));
   // datetime-local WIB butuh "YYYY-MM-DDTHH:MM"; sv-SE kasih spasi → ganti T, potong detik.
   const cookedAtLocal = new Date(data.cooked_at)

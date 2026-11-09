@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { DateField } from "@/components/date-field";
+import { Photo } from "@/components/photo";
 import { SaleConditions } from "@/components/sale-conditions";
 import { SieraAlert, sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
@@ -42,6 +43,7 @@ export interface PortionFormMenu {
   normalPrice: number;
   isActive?: boolean;
   saleConditions?: string | null;
+  photoPath?: string | null;
 }
 
 export interface PortionFormValues {
@@ -327,6 +329,15 @@ export function PortionForm({
             <p className="text-sm text-destructive">{errors.menuItemId.message}</p>
           )}
           <SaleConditions conditions={selected?.saleConditions} />
+          {selected && (
+            <Photo
+              bucket="menu-photos"
+              path={selected.photoPath}
+              alt={`Foto ${selected.name}`}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="aspect-[16/9] w-full rounded-xl"
+            />
+          )}
           {menus.length === 0 && (
             <p className="text-xs text-muted-foreground">
               Belum ada menu. Tambahkan menu dulu di halaman Menu.
