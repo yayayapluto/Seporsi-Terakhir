@@ -18,8 +18,11 @@ test.describe("bottom navigation @mobile", () => {
         await expect(page.locator("h1, h2").first()).toBeVisible();
       }
     });
-    test.fixme(true, "bug nyata: item nav 'Katalog' 18.6px < 44px di bottom-nav mobile (bottom-nav.tsx/app-bottomnav)");
-  await test.step("tap target + overflow", async () => {
+    test.fixme(
+      true,
+      "bug nyata: item nav 'Katalog' 18.6px < 44px di bottom-nav mobile (bottom-nav.tsx/app-bottomnav)",
+    );
+    await test.step("tap target + overflow", async () => {
       await expectTapTargets(page, "nav a, nav button");
       await expectNoHorizontalOverflow(page);
     });
