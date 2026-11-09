@@ -20,9 +20,9 @@ type Authed =
   | { ok: true; userId: string; tenantId: string | null }
   | { ok: false; error: string; status: 401 | 403 };
 
-function adminOrNull() {
+async function adminOrNull() {
   try {
-    return createAdminClient();
+    return await createAdminClient();
   } catch {
     return null;
   }
@@ -97,7 +97,7 @@ async function currentPath(
   targetId: string,
   tenantId: string | null,
 ): Promise<string | null> {
-  const admin = adminOrNull();
+  const admin = await adminOrNull();
   if (!admin) return null;
   if (kind === "avatar") {
     const { data } = await admin
@@ -125,7 +125,7 @@ async function currentPath(
 }
 
 async function writePath(kind: PhotoKind, targetId: string, path: string | null): Promise<void> {
-  const admin = adminOrNull();
+  const admin = await adminOrNull();
   if (!admin) return;
   if (kind === "avatar") {
     await admin.from("profiles").update({ avatar_path: path }).eq("id", targetId);
@@ -164,7 +164,7 @@ export async function createUploadUrl(input: {
         ? `${auth.tenantId}/${random}.webp`
         : `${auth.tenantId}/${targetId}/${random}.webp`;
 
-  const admin = adminOrNull();
+  const admin = await adminOrNull();
   if (!admin) return { ok: false, error: "Layanan unggah belum tersedia. Coba lagi.", status: 500 };
   const { data, error } = await admin.storage.from(bucket).createSignedUploadUrl(path);
   if (error || !data) {
@@ -187,7 +187,7 @@ export async function confirmUpload(input: {
   if (!isValidPhotoPath(kind, path)) return { ok: false, error: "Gagal mengunggah. Coba lagi." };
 
   const bucket = BUCKET_BY_KIND[kind];
-  const admin = adminOrNull();
+  const admin = await adminOrNull();
   if (!admin) return { ok: false, error: "Layanan unggah belum tersedia. Coba lagi." };
   const { data: obj, error: dlErr } = await admin.storage.from(bucket).download(path);
   if (dlErr || !obj) return { ok: false, error: "Gagal mengunggah. Coba lagi." };
@@ -214,7 +214,7 @@ export async function removePhoto(input: {
   if (!auth.ok) return { ok: false, error: auth.error };
 
   const bucket = BUCKET_BY_KIND[kind];
-  const admin = adminOrNull();
+  const admin = await adminOrNull();
   if (!admin) return { ok: false, error: "Layanan unggah belum tersedia. Coba lagi." };
   const old = await currentPath(kind, targetId, auth.tenantId);
   await writePath(kind, targetId, null);
