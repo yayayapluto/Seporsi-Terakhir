@@ -28,6 +28,7 @@ export interface PortionDetail {
   ingredients: string | null;
   allergenNote: string | null;
   saleConditions: string | null;
+  photoPath: string | null;
   normalPrice: number;
   tenantName: string;
   tenantLocation: string | null;
@@ -76,7 +77,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   const full = await supabase
     .from("portions")
     .select(
-      `${base}, menu_items!inner(name, normal_price, ingredients, allergen_note, image_path, sale_conditions)`,
+      `${base}, menu_items!inner(name, normal_price, ingredients, allergen_note, image_path, sale_conditions, photo_path)`,
     )
     .eq("id", portionId)
     .maybeSingle();
@@ -88,7 +89,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   if (full.error && isMissingColumnError(full.error.message)) {
     const retry = await supabase
       .from("portions")
-      .select(`${base}, menu_items!inner(name, normal_price, image_path, sale_conditions)`)
+      .select(`${base}, menu_items!inner(name, normal_price, image_path, sale_conditions, photo_path)`)
       .eq("id", portionId)
       .maybeSingle();
     if (retry.error || !retry.data) {
@@ -113,6 +114,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
     allergen_note?: string | null;
     image_path?: string | null;
     sale_conditions?: string | null;
+    photo_path?: string | null;
   };
   const tenant = data.tenants as unknown as {
     name: string;
@@ -125,6 +127,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
     ingredients: menu.ingredients ?? null,
     allergenNote: menu.allergen_note ?? null,
     saleConditions: menu.sale_conditions ?? null,
+    photoPath: menu.photo_path ?? null,
     normalPrice: menu.normal_price,
     tenantName: tenant.name,
     tenantLocation: tenant.location_note,
@@ -233,7 +236,15 @@ function DetailBody({
           <>
             {/* Foto */}
             <div className="min-w-0 max-md:w-full max-md:min-w-0 max-md:max-w-full">
-              {portion.imageUrl ? (
+              {portion.photoPath ? (
+                <Photo
+                  bucket="menu-photos"
+                  path={portion.photoPath}
+                  alt={`Foto ${portion.menuName}`}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="aspect-[4/3] w-full self-start rounded-[20px] border border-line"
+                />
+              ) : portion.imageUrl ? (
                 <PortionImage src={portion.imageUrl} alt={`Foto ${portion.menuName}`} />
               ) : (
                 <div
