@@ -17,8 +17,8 @@ test("reservasi @smoke: dari katalog ke pesanan", async ({ buyerPage: page, seed
   });
   await test.step("QR tampil di detail pesanan", async () => {
     await expect(page.locator("h1")).toContainText(seed.runId);
-    await expect(page.getByText(/Semua pesanan yang menunggu diambil QR/i)).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(
+      page.getByRole("img", { name: new RegExp(`QR pickup pesanan ${seed.runId}`, "i") }),
+    ).toBeVisible({ timeout: 15_000 });
   });
 });
