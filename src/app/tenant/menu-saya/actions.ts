@@ -31,7 +31,7 @@ const MenuSchema = z.object({
 /** Tenant create/update menu sendiri via RPC upsert_menu_item. */
 export async function saveMenuItem(
   input: unknown,
-): Promise<{ ok: true } | { ok: false; error: string }> {
+): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
   const parsed = MenuSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Data menu tidak valid." };
@@ -42,7 +42,7 @@ export async function saveMenuItem(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "Masuk dulu sebagai tenant." };
-  const { error } = await supabase.rpc("upsert_menu_item", {
+  const { data, error } = await supabase.rpc("upsert_menu_item", {
     p_name: d.name,
     p_normal_price: d.normalPrice,
     p_id: d.id,
@@ -64,6 +64,7 @@ export async function saveMenuItem(
       return { ok: false, error: "Kamu tidak punya akses ke menu ini." };
     return { ok: false, error: "Gagal menyimpan menu. Coba lagi." };
   }
+  if (!data) return { ok: false, error: "Gagal menyimpan menu. Coba lagi." };
   revalidatePath("/tenant/menu-saya");
-  return { ok: true };
+  return { ok: true, id: data.id };
 }

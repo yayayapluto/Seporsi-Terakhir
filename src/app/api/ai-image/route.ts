@@ -6,6 +6,7 @@ import {
   AI_IMAGE_DEFAULT_MODEL,
   AI_IMAGE_MODELS,
   AI_IMAGE_SIZE,
+  buildMenuPrompt,
   buildPlaceholderSvg,
   buildPollinationsUrl,
   HF_MODEL_IDS,
@@ -19,7 +20,6 @@ import { createClient } from "@/lib/supabase/server";
 export const maxDuration = 60;
 
 const Body = z.object({
-  prompt: z.string().min(3).max(500),
   menuName: z.string().min(1).max(80),
   model: z.enum(AI_IMAGE_MODELS).default(AI_IMAGE_DEFAULT_MODEL),
 });
@@ -182,7 +182,8 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ ok: false, error: "Prompt tidak valid." }, { status: 400 });
   }
-  const { prompt, menuName, model } = parsed.data;
+  const { menuName, model } = parsed.data;
+  const prompt = buildMenuPrompt(menuName);
   const supabase = await createClient();
   const { data: tenant } = await supabase
     .from("tenants")
