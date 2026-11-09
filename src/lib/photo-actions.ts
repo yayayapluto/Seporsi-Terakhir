@@ -142,7 +142,7 @@ export async function createUploadUrl(input: {
   originalBytes?: number;
 }): Promise<
   | { ok: true; signedUrl: string; token: string; path: string }
-  | { ok: false; error: string; status: 400 | 401 | 403 | 429 }
+  | { ok: false; error: string; status: 400 | 401 | 403 | 429 | 500 }
 > {
   const parsed = InputSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Kamu tidak punya akses", status: 403 };
@@ -165,9 +165,12 @@ export async function createUploadUrl(input: {
         : `${auth.tenantId}/${targetId}/${random}.webp`;
 
   const admin = adminOrNull();
-  if (!admin) return { ok: false, error: "Gagal mengunggah. Coba lagi.", status: 403 };
+  if (!admin) return { ok: false, error: "Layanan unggah belum tersedia. Coba lagi.", status: 500 };
   const { data, error } = await admin.storage.from(bucket).createSignedUploadUrl(path);
-  if (error || !data) return { ok: false, error: "Gagal mengunggah. Coba lagi.", status: 403 };
+  if (error || !data) {
+    console.error("[photo] createSignedUploadUrl gagal:", error?.message);
+    return { ok: false, error: "Gagal mengunggah. Coba lagi.", status: 500 };
+  }
   return { ok: true, signedUrl: data.signedUrl, token: data.token, path };
 }
 
@@ -185,7 +188,7 @@ export async function confirmUpload(input: {
 
   const bucket = BUCKET_BY_KIND[kind];
   const admin = adminOrNull();
-  if (!admin) return { ok: false, error: "Gagal mengunggah. Coba lagi." };
+  if (!admin) return { ok: false, error: "Layanan unggah belum tersedia. Coba lagi." };
   const { data: obj, error: dlErr } = await admin.storage.from(bucket).download(path);
   if (dlErr || !obj) return { ok: false, error: "Gagal mengunggah. Coba lagi." };
   if (obj.size > MAX_OBJECT_BYTES || !["image/webp", "image/jpeg", "image/png"].includes(obj.type))
@@ -212,7 +215,7 @@ export async function removePhoto(input: {
 
   const bucket = BUCKET_BY_KIND[kind];
   const admin = adminOrNull();
-  if (!admin) return { ok: false, error: "Gagal mengunggah. Coba lagi." };
+  if (!admin) return { ok: false, error: "Layanan unggah belum tersedia. Coba lagi." };
   const old = await currentPath(kind, targetId, auth.tenantId);
   await writePath(kind, targetId, null);
   if (old) void admin.storage.from(bucket).remove([old]);
