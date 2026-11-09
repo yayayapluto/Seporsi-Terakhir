@@ -20,7 +20,9 @@ test("tour beranda: intro dialog, langkah, lewati, tidak muncul lagi", async ({
       .locator('[data-tour-card="beranda"]')
       .getByRole("button", { name: /Lanjut/i })
       .click();
-    await expect(page.locator('[data-tour-card="beranda"]')).toContainText("Pesananmu yang aktif", {
+    // Step #tour-orders disembunyikan bila tidak ada pesanan aktif — langkah
+    // berikutnya yang ada adalah katalog.
+    await expect(page.locator('[data-tour-card="beranda"]')).toContainText("Katalog sore ini", {
       timeout: 10_000,
     });
   });
