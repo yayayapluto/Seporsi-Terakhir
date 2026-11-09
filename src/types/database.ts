@@ -568,6 +568,7 @@ export type Database = {
           menu_name: string
           normal_price_snapshot: number
           order_id: string
+          photo_path: string
           picked_up_at: string
           pickup_deadline_at: string
           pickup_eligible: boolean
