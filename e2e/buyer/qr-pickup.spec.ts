@@ -4,7 +4,7 @@ import { expect, test } from "../support/fixtures";
 type OrderResponse = { ok?: boolean; orderId?: string; error?: string };
 
 test("qr pickup @smoke: dari POST /api/orders ke QR di detail pesanan", async ({
-  buyerPage: page,
+  seedBuyerPage: page,
   seed,
 }) => {
   let orderId = "";
@@ -39,7 +39,7 @@ test("qr pickup @smoke: dari POST /api/orders ke QR di detail pesanan", async ({
 
   await test.step("ringkasan: nama menu + status menunggu", async () => {
     await expect(page.locator("h1")).toContainText(seed.runId);
-    await expect(page.getByText("Menunggu pickup")).toBeVisible();
+    await expect(page.getByText("Menunggu pickup").first()).toBeVisible();
   });
 
   await test.step("360px: tidak overflow", async () => {

@@ -3,7 +3,7 @@ import { expect, test } from "../support/fixtures";
 
 type OrderResponse = { ok?: boolean; orderId?: string; error?: string };
 
-test("riwayat pesanan @smoke: kartu + filter status", async ({ buyerPage: page, seed }) => {
+test("riwayat pesanan @smoke: kartu + filter status", async ({ seedBuyerPage: page, seed }) => {
   await test.step("pastikan ada 1 pesanan menunggu (POST /api/orders)", async () => {
     const response = await page.request.post("/api/orders", {
       data: { portionId: seed.mitra.portionId, quantity: 1 },
@@ -22,7 +22,7 @@ test("riwayat pesanan @smoke: kartu + filter status", async ({ buyerPage: page, 
   await test.step("kartu pesanan: nama + total + badge status", async () => {
     const list = page.locator('[data-tour="order-list"]');
     await expect(list).toContainText(seed.runId, { timeout: 15_000 });
-    await expect(list).toContainText(/Rp[\d.]+/);
+    await expect(list).toContainText(/Rp\s?[\d.]+/);
     await expect(list.getByText("Menunggu pickup").first()).toBeVisible();
   });
 

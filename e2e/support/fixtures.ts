@@ -1,7 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import { test as base, expect, type Page } from "@playwright/test";
+import { type Browser, test as base, expect, type Page } from "@playwright/test";
 import { createTestData, type E2ESeed, teardownData } from "./seed";
+import { sessionCookies } from "./session";
 
 const AUTH_DIR = path.join(process.cwd(), "e2e", ".auth");
 
@@ -10,7 +11,18 @@ type Fixtures = {
   buyerPage: Page;
   mitraPage: Page;
   adminPage: Page;
+  seedBuyerPage: Page;
+  seedMitraPage: Page;
 };
+
+async function storageStateOf(browser: Browser, email: string, password: string, baseURL: string) {
+  const cookies = await sessionCookies(email, password, baseURL);
+  const ctx = await browser.newContext();
+  await ctx.addCookies(cookies);
+  const state = await ctx.storageState();
+  await ctx.close();
+  return state;
+}
 
 export const test = base.extend<Fixtures>({
   seed: [
@@ -22,7 +34,7 @@ export const test = base.extend<Fixtures>({
     },
     { auto: true },
   ],
-  buyerPage: async ({ browser, seed }, use) => {
+  buyerPage: async ({ browser }, use) => {
     const ctx = await browser.newContext({
       storageState: path.join(AUTH_DIR, "buyer.json"),
       locale: "id-ID",
@@ -52,10 +64,46 @@ export const test = base.extend<Fixtures>({
     await use(page);
     await ctx.close();
   },
+  // Sesi segar dari akun seed (untuk test yang memesan: akun storageState
+  // bersama menghabiskan limit 2/hari).
+  seedBuyerPage: async ({ browser, seed }, use) => {
+    const state = await storageStateOf(
+      browser,
+      seed.buyer.email,
+      seed.buyer.password,
+      process.env.BASE_URL ?? "http://localhost:3001",
+    );
+    const ctx = await browser.newContext({
+      storageState: state,
+      locale: "id-ID",
+      timezoneId: "Asia/Jakarta",
+    });
+    const page = await ctx.newPage();
+    await use(page);
+    await ctx.close();
+    // tidak perlu logout; teardown menghapus akun+data
+    void seed;
+  },
+  seedMitraPage: async ({ browser, seed }, use) => {
+    const state = await storageStateOf(
+      browser,
+      seed.mitra.email,
+      seed.mitra.password,
+      process.env.BASE_URL ?? "http://localhost:3001",
+    );
+    const ctx = await browser.newContext({
+      storageState: state,
+      locale: "id-ID",
+      timezoneId: "Asia/Jakarta",
+    });
+    const page = await ctx.newPage();
+    await use(page);
+    await ctx.close();
+    void seed.buyer;
+  },
 });
 
 test.afterEach(async ({ page }) => {
-  // Auto-check global (pastikan dipasang via worker fixture di sini).
   expect(page).toBeTruthy();
 });
 
@@ -77,7 +125,6 @@ export async function loginViaDevShortcut(page: Page, role: "admin" | "tenant" |
       .click();
     return;
   }
-  // Fallback: form password manual dengan password dev (diisi oleh caller).
 }
 
 export { expect };
