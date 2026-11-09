@@ -503,6 +503,7 @@ export type Database = {
           pickup_eligible: boolean
           portion_id: string
           quantity: number
+          sale_conditions: string
           slot_end: string
           slot_start: string
           status: Database["public"]["Enums"]["order_status"]
