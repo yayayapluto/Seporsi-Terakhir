@@ -12,6 +12,7 @@ export interface ListedTenant {
   name: string;
   locationNote: string | null;
   isListed: boolean;
+  ownerEmail: string;
 }
 
 /** Mitra disetujui + toggle tampil/sembunyi di katalog. */
@@ -19,6 +20,7 @@ export function ListedList({ tenants }: { tenants: ListedTenant[] }) {
   const router = useRouter();
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [, setEmailTarget] = useState<ListedTenant | null>(null);
 
   async function toggle(t: ListedTenant) {
     setBusyId(t.id);
@@ -44,29 +46,41 @@ export function ListedList({ tenants }: { tenants: ListedTenant[] }) {
               <h2 className="font-bold leading-snug max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                 {t.name}
               </h2>
+              <p className="break-words text-xs text-muted-foreground">{t.ownerEmail}</p>
               <p className="text-xs text-muted-foreground">
-                {t.locationNote ? `${t.locationNote} • ` : ""}
+                {t.locationNote ? `${t.locationNote} · ` : ""}
                 {t.isListed ? "Tampil di katalog" : "Disembunyikan dari katalog"}
               </p>
             </div>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={busyId !== null}
-              onClick={() => toggle(t)}
-              className="min-h-11 shrink-0"
-            >
-              {busyId === t.id ? (
-                <>
-                  <Spinner />
-                  Menyimpan…
-                </>
-              ) : t.isListed ? (
-                "Sembunyikan"
-              ) : (
-                "Tampilkan"
-              )}
-            </Button>
+            <div className="flex shrink-0 flex-col gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busyId !== null}
+                onClick={() => setEmailTarget(t)}
+                className="min-h-11"
+              >
+                Ubah email
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busyId !== null}
+                onClick={() => toggle(t)}
+                className="min-h-11"
+              >
+                {busyId === t.id ? (
+                  <>
+                    <Spinner />
+                    Menyimpan…
+                  </>
+                ) : t.isListed ? (
+                  "Sembunyikan"
+                ) : (
+                  "Tampilkan"
+                )}
+              </Button>
+            </div>
           </li>
         ))}
       </SieraList>
