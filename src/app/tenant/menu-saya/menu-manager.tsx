@@ -22,10 +22,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/toast";
 import { DISCOUNT_PRICE_RATIO_DEFAULT } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
 import { formatIDR } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
+import { confirmUpload } from "@/lib/photo-actions";
 import { saveMenuItem } from "./actions";
 import type { MenuItemRow } from "./page";
 
@@ -71,6 +73,8 @@ export function MenuManager({ items }: { items: MenuItemRow[] }) {
   const [editing, setEditing] = useState<MenuItemRow | null>(null);
   const [open, setOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -88,7 +92,60 @@ export function MenuManager({ items }: { items: MenuItemRow[] }) {
   useEffect(() => {
     reset(toValues(editing));
     setFormError(null);
+    setGenerating(false);
+    setGeneratedUrl(null);
   }, [editing, reset]);
+
+  async function generateAi() {
+    if (!editing) return;
+    const name = watch("name").trim();
+    if (!name) return;
+    setGenerating(true);
+    setFormError(null);
+    setGeneratedUrl(null);
+    try {
+      const res = await fetch("/api/ai-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: `Professional food photo of ${name}, appetizing, steam, natural light, Indonesian street food`,
+          menuName: name,
+        }),
+      });
+      const data = (await res.json().catch(() => null)) as {
+        ok?: boolean;
+        url?: string;
+        path?: string;
+        provider?: string;
+        error?: string;
+      } | null;
+      if (!res.ok || !data?.ok || !data.url) {
+        setFormError(data?.error ?? "Gagal membuat gambar AI. Coba lagi.");
+        return;
+      }
+      setGeneratedUrl(data.url);
+      // Non-placeholder: konfirmasi path ke menu ini (path tersimpan = foto menu).
+      if (data.provider !== "placeholder" && typeof data.path === "string") {
+        const conf = await confirmUpload({
+          kind: "menu_photo",
+          targetId: editing.id,
+          path: data.path,
+        });
+        if (conf.ok) {
+          toast.add({ type: "success", title: "Foto menu diperbarui" });
+          router.refresh();
+        } else {
+          setFormError(conf.error);
+        }
+      } else {
+        toast.add({ type: "success", title: "Ilustrasi placeholder" });
+      }
+    } catch {
+      setFormError("Gagal membuat gambar AI. Coba lagi.");
+    } finally {
+      setGenerating(false);
+    }
+  }
 
   function openNew() {
     setEditing(null);
@@ -228,6 +285,36 @@ export function MenuManager({ items }: { items: MenuItemRow[] }) {
               <p className="text-xs text-muted-foreground">
                 Simpan menu dulu, lalu tambah foto lewat Edit menu.
               </p>
+            )}
+            {editing && (
+              <div className="flex flex-col gap-2">
+                {generatedUrl && (
+                  <Image
+                    src={generatedUrl}
+                    alt={`Ilustrasi AI ${watch("name") || "Menu"}`}
+                    width={640}
+                    height={480}
+                    unoptimized
+                    className="aspect-[4/3] w-full rounded-xl border border-line object-cover"
+                  />
+                )}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="min-h-11"
+                  disabled={busy || generating || watch("name").trim() === ""}
+                  onClick={() => void generateAi()}
+                >
+                  {generating ? (
+                    <>
+                      <Spinner />
+                      Membuat…
+                    </>
+                  ) : (
+                    "Buat gambar AI"
+                  )}
+                </Button>
+              </div>
             )}
             <div className="flex flex-col gap-1">
               <Label htmlFor="menu-name" className="font-semibold">

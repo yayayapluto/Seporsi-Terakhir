@@ -201,6 +201,7 @@ export async function POST(req: Request) {
       ok: true,
       url: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${BUCKET_BY_KIND.menu_photo}/${cached}`,
       provider: "cache",
+      path: cached,
     });
   }
 
@@ -260,6 +261,7 @@ export async function POST(req: Request) {
         ok: true,
         url: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${BUCKET_BY_KIND.menu_photo}/${path}`,
         provider,
+        path,
       });
     } catch {
       // jatuh ke placeholder di bawah
