@@ -139,13 +139,17 @@ async function writePath(kind: PhotoKind, targetId: string, path: string | null)
 export async function createUploadUrl(input: {
   kind: PhotoKind;
   targetId: string;
+  originalBytes?: number;
 }): Promise<
   | { ok: true; signedUrl: string; token: string; path: string }
-  | { ok: false; error: string; status: 401 | 403 | 429 }
+  | { ok: false; error: string; status: 400 | 401 | 403 | 429 }
 > {
   const parsed = InputSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Kamu tidak punya akses", status: 403 };
   const { kind, targetId } = parsed.data;
+  // Batas seragam semua foto: file asli maksimal 10 MB (validasi ulang di server).
+  if (input.originalBytes != null && input.originalBytes > 10 * 1024 * 1024)
+    return { ok: false, error: "Foto terlalu besar (maks 10 MB)", status: 400 };
   const auth = await authorize(kind, targetId);
   if (!auth.ok) return { ok: false, error: auth.error, status: auth.status };
   if (rateLimited(auth.userId))

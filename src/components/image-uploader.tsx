@@ -102,6 +102,7 @@ export function ImageUploader({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const originalBytesRef = useRef(0);
 
   const bucket = BUCKET_BY_KIND[kind];
   const currentUrl = getPublicImageUrl(bucket, currentPath);
@@ -126,6 +127,7 @@ export function ImageUploader({
       setError("Foto terlalu besar (maks 10 MB)");
       return;
     }
+    originalBytesRef.current = file.size;
     setBusy(true);
     try {
       const blob = await processToWebp(file, kind);
@@ -147,7 +149,11 @@ export function ImageUploader({
     setBusy(true);
     setError(null);
     try {
-      const up = await createUploadUrl({ kind, targetId });
+      const up = await createUploadUrl({
+        kind,
+        targetId,
+        originalBytes: originalBytesRef.current,
+      });
       if (!up.ok) {
         setError(
           up.error === "Kamu tidak punya akses"
