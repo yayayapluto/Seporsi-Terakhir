@@ -37,8 +37,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams, shouldAutoChain } from "@/lib/tour-journey";
 import { requireOwnTenant } from "./guard";
 import { TenantPickupCountdown } from "./pesanan/tenant-pickup-countdown";
-import { TambahPorsiButton } from "./porsi/sheet-buttons";
-import TambahSheet from "./porsi/tambah-sheet";
 import { TenantTour } from "./tenant-tour";
 
 export const metadata: Metadata = { title: "Dasbor Tenant" };
@@ -314,7 +312,16 @@ async function DashboardBody({
                 <ScanLine className="size-5" aria-hidden />
                 Scan pickup
               </Link>
-              <TambahPorsiButton sheet={<TambahSheet />} />
+              <Link
+                href={ROUTES.tenantPorsiTambah}
+                data-tour="tambah-porsi"
+                className={buttonVariants({
+                  className: "min-h-11 w-full text-[15px] max-md:min-h-12",
+                })}
+              >
+                <Plus className="size-5" aria-hidden />
+                Tambah porsi
+              </Link>
             </div>
 
             <div className="grid gap-4 lg:grid-cols-2">
