@@ -9,7 +9,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { buttonVariants } from "@/components/ui/button";
-import { getCurrentUser, homeForRole } from "@/lib/auth";
 import {
   MAX_QUANTITY_PER_ORDER,
   SELL_WINDOW_MAX_MINUTES,
@@ -17,6 +16,7 @@ import {
 } from "@/lib/domain/constants";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
+import { LandingCta } from "./landing-cta";
 import { LangkahStagger } from "./langkah-stagger";
 import { Pressable, Reveal } from "./thread";
 
@@ -118,12 +118,9 @@ const FAQS = [
   },
 ];
 
-export default async function Home() {
-  const current = await getCurrentUser();
-  const staff = current?.role === "tenant" || current?.role === "admin";
-  const primaryHref = staff ? homeForRole(current.role) : ROUTES.katalog;
-  const primaryLabel = staff ? "Buka dasbor" : "Lihat Porsi Hari Ini";
+export const dynamic = "force-static";
 
+export default function Home() {
   return (
     <div className="flex-1 bg-white text-[#17261D] max-md:-mx-4 max-md:w-[calc(100%+2rem)]">
       {/* HERO — foto etalase + proposisi + aksi primer. */}
@@ -155,15 +152,7 @@ export default async function Home() {
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <Pressable>
-                <Link
-                  href={primaryHref}
-                  className={cn(
-                    buttonVariants(),
-                    "min-h-12 rounded-[10px] bg-[#286F3B] px-[22px] text-[15px] font-semibold text-white hover:bg-[#1E532C]",
-                  )}
-                >
-                  {primaryLabel}
-                </Link>
+                <LandingCta />
               </Pressable>
               <Pressable>
                 <Link
