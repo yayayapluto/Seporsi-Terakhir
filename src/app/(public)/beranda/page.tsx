@@ -27,6 +27,7 @@ export interface SoonPortion {
   discountPrice: number;
   normalPrice: number;
   saleConditions: string | null;
+  photoPath: string | null;
   quantityRemaining: number;
   cookedAt: string;
   expiresAt: string;
@@ -47,7 +48,7 @@ async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }>
   const { data, error } = await supabase
     .from("portions")
     .select(
-      "id, quantity_remaining, cooked_at, expires_at, discount_price, menu_items!inner(name, normal_price, image_path, sale_conditions), tenants!inner(name)",
+      "id, quantity_remaining, cooked_at, expires_at, discount_price, menu_items!inner(name, normal_price, image_path, sale_conditions, photo_path), tenants!inner(name)",
     )
     .gt("expires_at", now.toISOString())
     .lte("release_at", now.toISOString())
@@ -61,6 +62,7 @@ async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }>
       normal_price: number;
       image_path: string | null;
       sale_conditions: string | null;
+      photo_path: string | null;
     };
     const tenant = row.tenants as unknown as { name: string };
     out.push({
@@ -70,6 +72,7 @@ async function loadSoon(): Promise<{ portions: SoonPortion[]; failed: boolean }>
       discountPrice: Number(row.discount_price),
       normalPrice: Number(menu.normal_price),
       saleConditions: menu.sale_conditions,
+      photoPath: menu.photo_path,
       quantityRemaining: Number(row.quantity_remaining),
       cookedAt: String(row.cooked_at),
       expiresAt: String(row.expires_at),
