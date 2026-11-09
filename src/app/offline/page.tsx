@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 /** Fallback offline SW: statis, tanpa fetch — selalu bisa render dari cache. */
+export const dynamic = "force-static";
+
 export default function OfflinePage() {
   return (
     <div className="mx-auto flex w-full max-w-[430px] flex-1 flex-col gap-4 px-4 py-8 sm:max-w-none md:max-w-3xl md:px-6 lg:max-w-6xl lg:px-8 max-md:px-0 max-md:mx-0 max-md:w-full max-md:max-w-full">
