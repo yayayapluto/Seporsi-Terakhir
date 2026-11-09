@@ -20,6 +20,14 @@ type Authed =
   | { ok: true; userId: string; tenantId: string | null }
   | { ok: false; error: string; status: 401 | 403 };
 
+function adminOrNull() {
+  try {
+    return createAdminClient();
+  } catch {
+    return null;
+  }
+}
+
 /** Otorisasi server per kind; tak pernah percaya id dari client tanpa cek kepemilikan. */
 async function authorize(kind: PhotoKind, targetId: string): Promise<Authed> {
   const current = await getCurrentUser();
@@ -89,7 +97,8 @@ async function currentPath(
   targetId: string,
   tenantId: string | null,
 ): Promise<string | null> {
-  const admin = createAdminClient();
+  const admin = adminOrNull();
+  if (!admin) return null;
   if (kind === "avatar") {
     const { data } = await admin
       .from("profiles")
@@ -116,7 +125,8 @@ async function currentPath(
 }
 
 async function writePath(kind: PhotoKind, targetId: string, path: string | null): Promise<void> {
-  const admin = createAdminClient();
+  const admin = adminOrNull();
+  if (!admin) return;
   if (kind === "avatar") {
     await admin.from("profiles").update({ avatar_path: path }).eq("id", targetId);
   } else if (kind === "tenant_logo") {
@@ -150,7 +160,8 @@ export async function createUploadUrl(input: {
         ? `${auth.tenantId}/${random}.webp`
         : `${auth.tenantId}/${targetId}/${random}.webp`;
 
-  const admin = createAdminClient();
+  const admin = adminOrNull();
+  if (!admin) return { ok: false, error: "Gagal mengunggah. Coba lagi.", status: 403 };
   const { data, error } = await admin.storage.from(bucket).createSignedUploadUrl(path);
   if (error || !data) return { ok: false, error: "Gagal mengunggah. Coba lagi.", status: 403 };
   return { ok: true, signedUrl: data.signedUrl, token: data.token, path };
@@ -169,7 +180,8 @@ export async function confirmUpload(input: {
   if (!isValidPhotoPath(kind, path)) return { ok: false, error: "Gagal mengunggah. Coba lagi." };
 
   const bucket = BUCKET_BY_KIND[kind];
-  const admin = createAdminClient();
+  const admin = adminOrNull();
+  if (!admin) return { ok: false, error: "Gagal mengunggah. Coba lagi." };
   const { data: obj, error: dlErr } = await admin.storage.from(bucket).download(path);
   if (dlErr || !obj) return { ok: false, error: "Gagal mengunggah. Coba lagi." };
   if (obj.size > MAX_OBJECT_BYTES || !["image/webp", "image/jpeg", "image/png"].includes(obj.type))
@@ -195,7 +207,8 @@ export async function removePhoto(input: {
   if (!auth.ok) return { ok: false, error: auth.error };
 
   const bucket = BUCKET_BY_KIND[kind];
-  const admin = createAdminClient();
+  const admin = adminOrNull();
+  if (!admin) return { ok: false, error: "Gagal mengunggah. Coba lagi." };
   const old = await currentPath(kind, targetId, auth.tenantId);
   await writePath(kind, targetId, null);
   if (old) void admin.storage.from(bucket).remove([old]);

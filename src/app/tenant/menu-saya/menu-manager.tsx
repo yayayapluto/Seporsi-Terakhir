@@ -3,13 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ImageUploader } from "@/components/image-uploader";
 import { Photo } from "@/components/photo";
 import { SaleConditions } from "@/components/sale-conditions";
-import { SieraAlert, SieraList, SieraPhotoPicker, SieraSectionTitle } from "@/components/siera";
+import { SieraAlert, SieraList, SieraSectionTitle } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -26,7 +26,6 @@ import { DISCOUNT_PRICE_RATIO_DEFAULT } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
 import { formatIDR } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
-import { createClient } from "@/lib/supabase/client";
 import { saveMenuItem } from "./actions";
 import type { MenuItemRow } from "./page";
 
@@ -67,19 +66,11 @@ function toValues(item: MenuItemRow | null): Values {
   };
 }
 
-const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const MAX_BYTES = 2 * 1024 * 1024;
-
-export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantId: string }) {
+export function MenuManager({ items }: { items: MenuItemRow[] }) {
   const router = useRouter();
   const [editing, setEditing] = useState<MenuItemRow | null>(null);
   const [open, setOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [removePhoto, setRemovePhoto] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const objectUrl = useRef<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -97,13 +88,6 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
   useEffect(() => {
     reset(toValues(editing));
     setFormError(null);
-    setPhotoFile(null);
-    setRemovePhoto(false);
-    if (objectUrl.current) {
-      URL.revokeObjectURL(objectUrl.current);
-      objectUrl.current = null;
-    }
-    setPhotoPreview(editing?.imagePath ? publicMenuImageUrl(editing.imagePath) : null);
   }, [editing, reset]);
 
   function openNew() {
@@ -115,56 +99,10 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
     setOpen(true);
   }
 
-  function onPhotoChange(file: File | null) {
-    setFormError(null);
-    if (!file) {
-      setPhotoFile(null);
-      return;
-    }
-    if (!ACCEPTED_TYPES.includes(file.type)) {
-      setFormError("Foto harus JPG, PNG, atau WebP.");
-      return;
-    }
-    if (file.size > MAX_BYTES) {
-      setFormError("Foto maksimal 2 MB.");
-      return;
-    }
-    if (objectUrl.current) URL.revokeObjectURL(objectUrl.current);
-    objectUrl.current = URL.createObjectURL(file);
-    setPhotoPreview(objectUrl.current);
-    setPhotoFile(file);
-    setRemovePhoto(false);
-  }
-
-  /** Upload ke storage; null = tanpa gambar baru (pertahankan), "" = hapus, undefined = gagal. */
-  async function resolveImagePath(): Promise<string | null | undefined> {
-    if (removePhoto) return "";
-    if (!photoFile) return null;
-    setUploading(true);
-    try {
-      const ext =
-        photoFile.type === "image/png" ? "png" : photoFile.type === "image/webp" ? "webp" : "jpg";
-      const menuId = editing?.id ?? crypto.randomUUID();
-      const path = `${tenantId}/${menuId}.${ext}`;
-      const supabase = createClient();
-      const { error } = await supabase.storage
-        .from("menu-images")
-        .upload(path, photoFile, { contentType: photoFile.type, upsert: true });
-      if (error) {
-        setFormError("Gagal mengunggah foto. Coba lagi.");
-        return undefined;
-      }
-      return path;
-    } finally {
-      setUploading(false);
-    }
-  }
-
   async function onSubmit(values: Values) {
     setFormError(null);
     const weight = values.avgWeightGrams === "" ? null : Number(values.avgWeightGrams);
-    const imagePath = await resolveImagePath();
-    if (imagePath === undefined) return;
+    // imagePath legacy tidak dipakai — foto baru lewat ImageUploader (photo_path).
     const res = await saveMenuItem({
       id: editing?.id ?? null,
       name: values.name,
@@ -173,7 +111,7 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
       isActive: values.isActive,
       ingredients: values.ingredients || undefined,
       allergenNote: values.allergenNote || undefined,
-      imagePath,
+      imagePath: null,
     });
     if (!res.ok) {
       setFormError(res.error);
@@ -183,7 +121,7 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
     router.refresh();
   }
 
-  const busy = isSubmitting || uploading;
+  const busy = isSubmitting;
 
   return (
     <div className="flex flex-col gap-3">
@@ -292,26 +230,6 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
               </p>
             )}
             <div className="flex flex-col gap-1">
-              <Label className="font-semibold">
-                Foto <span className="font-normal text-muted-foreground">(opsional)</span>
-              </Label>
-              <SieraPhotoPicker
-                photoPreview={photoPreview}
-                previewAlt="Pratinjau foto menu"
-                inputId="menu-photo"
-                onFile={onPhotoChange}
-                onRemove={() => {
-                  setPhotoFile(null);
-                  setPhotoPreview(null);
-                  setRemovePhoto(editing?.imagePath != null);
-                  if (objectUrl.current) {
-                    URL.revokeObjectURL(objectUrl.current);
-                    objectUrl.current = null;
-                  }
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-1">
               <Label htmlFor="menu-name" className="font-semibold">
                 Nama menu <span aria-hidden="true">*</span>
               </Label>
@@ -412,7 +330,7 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
                 {busy ? (
                   <>
                     <Spinner />
-                    {uploading ? "Mengunggah…" : "Menyimpan…"}
+                    Menyimpan…
                   </>
                 ) : (
                   "Simpan menu"
