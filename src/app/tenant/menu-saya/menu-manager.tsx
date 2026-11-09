@@ -28,6 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
+import { AI_IMAGE_ENABLED } from "@/lib/domain/ai-image";
 import { DISCOUNT_PRICE_RATIO_DEFAULT } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
 import { formatIDR } from "@/lib/format";
@@ -157,7 +158,7 @@ export function MenuManager({ items }: { items: MenuItemRow[] }) {
   }
 
   async function generateAi() {
-    if (!editing) return;
+    if (!AI_IMAGE_ENABLED || !editing) return;
     const name = watch("name").trim();
     if (!name) return;
     setGenerating(true);
@@ -359,7 +360,7 @@ export function MenuManager({ items }: { items: MenuItemRow[] }) {
                 onRemove={() => choosePending(null)}
               />
             )}
-            {editing && (
+            {AI_IMAGE_ENABLED && editing && (
               <div className="flex flex-col gap-2">
                 {generatedUrl && (
                   <Image

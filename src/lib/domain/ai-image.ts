@@ -2,6 +2,9 @@ import { createHash } from "node:crypto";
 
 /** Domain murni untuk generate gambar AI menu — tanpa I/O. */
 
+/** Sakelar fitur: gambar AI dimatikan sementara (UI + API membaca ini). */
+export const AI_IMAGE_ENABLED = false;
+
 export const AI_IMAGE_MODELS = ["sdxl", "flux"] as const;
 export type AiImageModel = (typeof AI_IMAGE_MODELS)[number];
 

@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/auth";
 import {
   AI_IMAGE_DAILY_QUOTA,
   AI_IMAGE_DEFAULT_MODEL,
+  AI_IMAGE_ENABLED,
   AI_IMAGE_MODELS,
   AI_IMAGE_SIZE,
   buildMenuPrompt,
@@ -176,6 +177,12 @@ async function tryPollinations(prompt: string): Promise<NodeResult> {
 }
 
 export async function POST(req: Request) {
+  if (!AI_IMAGE_ENABLED) {
+    return NextResponse.json(
+      { ok: false, error: "Fitur gambar AI sedang dinonaktifkan." },
+      { status: 403 },
+    );
+  }
   const t0 = Date.now();
   const current = await requireRole("/tenant", "tenant");
   const parsed = Body.safeParse(await req.json().catch(() => null));
