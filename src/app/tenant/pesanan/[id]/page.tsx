@@ -15,7 +15,7 @@ import {
   sieraCardClass,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
-import { OrderDetailSkeleton } from "@/components/ui/skeleton-blocks";
+import { TenantOrderDetailSkeleton } from "@/components/ui/skeleton-blocks";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -103,7 +103,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 
 export default function TenantOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <Suspense fallback={<OrderDetailSkeleton />}>
+    <Suspense fallback={<TenantOrderDetailSkeleton />}>
       <TenantOrderDetailBody params={params} />
     </Suspense>
   );

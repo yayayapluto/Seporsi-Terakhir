@@ -266,7 +266,7 @@ export function OrdersListSkeleton() {
   );
 }
 
-/** Skeleton detail pesanan: kartu ringkasan + kartu detail + panel samping. */
+/** Skeleton detail pesanan: kartu ringkasan + panel QR + kartu detail + panel samping. */
 export function OrderDetailSkeleton() {
   return (
     <div aria-busy="true" className="flex min-h-0 flex-col gap-4">
@@ -276,6 +276,11 @@ export function OrderDetailSkeleton() {
           <Skeleton className="h-6 w-24 rounded-full" />
           <Skeleton className="h-7 w-3/4" />
           <Skeleton className="h-4 w-1/3" />
+        </div>
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-[#e3e9e5] bg-white p-5">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="size-44 rounded-xl" />
+          <Skeleton className="h-4 w-48" />
         </div>
         <div className="flex flex-col gap-2 rounded-2xl border border-[#e3e9e5] bg-white px-4 py-2">
           <Skeleton className="h-11 w-full rounded-none" />
@@ -287,6 +292,62 @@ export function OrderDetailSkeleton() {
           <Skeleton className="h-12 w-full rounded-xl" />
           <Skeleton className="h-12 w-full rounded-xl" />
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** Skeleton detail pesanan tenant: kartu reservasi + kartu pemesan + kartu detail + tombol. */
+export function TenantOrderDetailSkeleton() {
+  return (
+    <div aria-busy="true" className="flex min-h-0 flex-col gap-4">
+      <output className="sr-only">Memuat</output>
+      <div aria-hidden="true" className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1 rounded-2xl border border-[#e3e9e5] bg-white p-4">
+          <Skeleton className="h-3 w-24" />
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-4 w-1/2" />
+          <Skeleton className="h-6 w-20 rounded-full" />
+        </div>
+        <div className="flex flex-col items-center gap-2 rounded-2xl border border-[#e3e9e5] bg-white p-5 text-center">
+          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-4 w-1/2" />
+        </div>
+        <div className="flex flex-col gap-1 rounded-2xl border border-[#e3e9e5] bg-white px-5 py-2">
+          <Skeleton className="h-11 w-full rounded-none" />
+          <Skeleton className="h-11 w-full rounded-none" />
+          <Skeleton className="h-11 w-full rounded-none" />
+        </div>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <Skeleton className="h-12 w-full rounded-xl" />
+          <Skeleton className="h-12 w-full rounded-xl" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Skeleton baris pesanan aktif beranda: tile + teks + pill countdown + chevron. */
+export function ActiveOrderSkeleton() {
+  return (
+    <div aria-busy="true" className="flex min-h-0 flex-col gap-3">
+      <output className="sr-only">Memuat</output>
+      <div aria-hidden="true" className="flex flex-col gap-3">
+        {Array.from({ length: 2 }, (_, i) => (
+          <div
+            // biome-ignore lint/suspicious/noArrayIndexKey: baris skeleton statis, urutan tidak berubah
+            key={i}
+            className="flex items-center gap-3 rounded-2xl border border-[#e3e9e5] bg-white px-4 py-3"
+          >
+            <Skeleton className="size-11 shrink-0 rounded-xl" />
+            <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-6 w-32 rounded-full" />
+            </div>
+            <Skeleton className="h-5 w-5 shrink-0 rounded-none" />
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -429,7 +490,7 @@ export function ProfileFormSkeleton() {
   );
 }
 
-/** Skeleton scan: bingkai kamera + tombol. */
+/** Skeleton scan: bingkai kamera + input kode manual + tombol. */
 export function ScanSkeleton() {
   return (
     <div aria-busy="true" className="flex min-h-0 flex-col gap-4">
@@ -437,6 +498,10 @@ export function ScanSkeleton() {
       <div aria-hidden="true" className="flex flex-col gap-4">
         <SkeletonText lines={1} />
         <Skeleton className="aspect-square w-full rounded-2xl" />
+        <div className="flex flex-col gap-1.5">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-12 w-full rounded-xl" />
+        </div>
         <Skeleton className="h-12 w-full rounded-xl" />
       </div>
     </div>
