@@ -7,6 +7,7 @@ import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
+import { SaleConditions } from "@/components/sale-conditions";
 import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import {
   attachMissingIngredientColumns,
@@ -25,6 +26,7 @@ export interface PortionDetail {
   menuName: string;
   ingredients: string | null;
   allergenNote: string | null;
+  saleConditions: string | null;
   normalPrice: number;
   tenantName: string;
   tenantLocation: string | null;
@@ -44,19 +46,22 @@ async function loadRelated(tenantName: string, excludeId: string) {
   const now = new Date().toISOString();
   const { data } = await supabase
     .from("portions")
-    .select("id, discount_price, tenants!inner(name), menu_items!inner(name)")
+    .select("id, discount_price, tenants!inner(name), menu_items!inner(name, sale_conditions)")
     .eq("tenants.name", tenantName)
     .neq("id", excludeId)
     .gt("expires_at", now)
     .order("expires_at", { ascending: true })
     .limit(3);
   return (data ?? []).map((r) => {
-    const menu = r.menu_items as unknown as { name: string } | { name: string }[];
+    const menu = r.menu_items as unknown as
+      | { name: string; sale_conditions: string | null }
+      | { name: string; sale_conditions: string | null }[];
     const m = Array.isArray(menu) ? menu[0] : menu;
     return {
       id: String(r.id),
       menuName: m?.name ?? "Menu",
       discountPrice: Number(r.discount_price),
+      saleConditions: m?.sale_conditions ?? null,
     };
   });
 }
@@ -68,7 +73,9 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   const t0 = Date.now();
   const full = await supabase
     .from("portions")
-    .select(`${base}, menu_items!inner(name, normal_price, ingredients, allergen_note, image_path)`)
+    .select(
+      `${base}, menu_items!inner(name, normal_price, ingredients, allergen_note, image_path, sale_conditions)`,
+    )
     .eq("id", portionId)
     .maybeSingle();
   // ponytail: log sementara Fase 1 ukur ms query; hapus sebelum Fase 2.
@@ -79,7 +86,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   if (full.error && isMissingColumnError(full.error.message)) {
     const retry = await supabase
       .from("portions")
-      .select(`${base}, menu_items!inner(name, normal_price, image_path)`)
+      .select(`${base}, menu_items!inner(name, normal_price, image_path, sale_conditions)`)
       .eq("id", portionId)
       .maybeSingle();
     if (retry.error || !retry.data) {
@@ -103,6 +110,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
     ingredients?: string | null;
     allergen_note?: string | null;
     image_path?: string | null;
+    sale_conditions?: string | null;
   };
   const tenant = data.tenants as unknown as { name: string; location_note: string | null };
   return {
@@ -110,6 +118,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
     menuName: menu.name,
     ingredients: menu.ingredients ?? null,
     allergenNote: menu.allergen_note ?? null,
+    saleConditions: menu.sale_conditions ?? null,
     normalPrice: menu.normal_price,
     tenantName: tenant.name,
     tenantLocation: tenant.location_note,
@@ -136,7 +145,7 @@ function DetailBody({
   related,
 }: {
   portion: PortionDetail | null;
-  related: { id: string; menuName: string; discountPrice: number }[];
+  related: { id: string; menuName: string; discountPrice: number; saleConditions: string | null }[];
 }) {
   if (!portion) {
     return (
@@ -198,6 +207,7 @@ function DetailBody({
             Ambil sampai {formatDateTimeWIB(new Date(portion.expiresAt))} WIB
           </p>
         </div>
+        <SaleConditions conditions={portion.saleConditions} />
       </section>
 
       <SieraRailPage
@@ -316,14 +326,17 @@ function DetailBody({
                     <li key={r.id}>
                       <Link
                         href={katalogDetail(r.id)}
-                        className="flex min-h-11 items-center justify-between gap-3 px-4 py-2.5"
+                        className="flex min-h-11 flex-col justify-center gap-1 px-4 py-2.5"
                       >
-                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-sm font-bold text-[#1C2826]">
-                          {r.menuName}
+                        <span className="flex items-center justify-between gap-3">
+                          <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-sm font-bold text-[#1C2826]">
+                            {r.menuName}
+                          </span>
+                          <span className="shrink-0 text-sm font-extrabold text-accent-strong">
+                            {formatIDR(r.discountPrice)}
+                          </span>
                         </span>
-                        <span className="shrink-0 text-sm font-extrabold text-accent-strong">
-                          {formatIDR(r.discountPrice)}
-                        </span>
+                        <SaleConditions conditions={r.saleConditions} />
                       </Link>
                     </li>
                   ))}
