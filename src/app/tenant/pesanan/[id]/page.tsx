@@ -43,6 +43,7 @@ interface TenantOrderDetail {
   pickupToken: string | null;
   pickupCode: string | null;
   expiresAt: string | null;
+  saleConditions: string | null;
 }
 
 async function loadDetail(orderId: string): Promise<TenantOrderDetail> {
@@ -53,6 +54,23 @@ async function loadDetail(orderId: string): Promise<TenantOrderDetail> {
   if (error || !data || data.length === 0) notFound();
   const [r] = data;
   if (!r) notFound();
+  // Syarat penjualan dari menu via join (RLS: tenant baca porsi+menu miliknya).
+  let saleConditions: string | null = null;
+  const { data: ord } = await supabase
+    .from("orders")
+    .select("portion_id")
+    .eq("id", orderId)
+    .maybeSingle();
+  const pid = (ord as { portion_id?: string } | null)?.portion_id;
+  if (pid) {
+    const { data: pd } = await supabase
+      .from("portions")
+      .select("menu_items!inner(sale_conditions)")
+      .eq("id", pid)
+      .maybeSingle();
+    const menu = (pd as { menu_items?: { sale_conditions: string | null } } | null)?.menu_items;
+    saleConditions = menu?.sale_conditions ?? null;
+  }
   return {
     orderId: String(r.order_id),
     status: r.status as TenantOrderDetail["status"],
@@ -70,6 +88,7 @@ async function loadDetail(orderId: string): Promise<TenantOrderDetail> {
     pickupToken: r.pickup_token == null ? null : String(r.pickup_token),
     pickupCode: r.pickup_code == null ? null : String(r.pickup_code),
     expiresAt: r.expires_at == null ? null : String(r.expires_at),
+    saleConditions,
   };
 }
 
@@ -188,6 +207,7 @@ async function TenantOrderDetailBody({ params }: { params: Promise<{ id: string 
             {formatIDR(o.discountPriceSnapshot * o.quantity)}
           </span>
         </Row>
+        {o.saleConditions && <Row label="Syarat penjualan">{o.saleConditions}</Row>}
       </dl>
       {o.status === "reserved" && (
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
