@@ -24,6 +24,7 @@ export interface MenuItemRow {
   ingredients: string | null;
   allergenNote: string | null;
   imagePath: string | null;
+  saleConditions: string | null;
 }
 
 async function loadMenu(tenantId: string): Promise<MenuItemRow[]> {
@@ -32,7 +33,7 @@ async function loadMenu(tenantId: string): Promise<MenuItemRow[]> {
   const { data, error } = await supabase
     .from("menu_items")
     .select(
-      "id, name, normal_price, avg_weight_grams, is_active, ingredients, allergen_note, image_path",
+      "id, name, normal_price, avg_weight_grams, is_active, ingredients, allergen_note, image_path, sale_conditions",
     )
     .eq("tenant_id", tenantId)
     .order("name", { ascending: true });
@@ -46,6 +47,7 @@ async function loadMenu(tenantId: string): Promise<MenuItemRow[]> {
     ingredients: (m.ingredients as string | null) ?? null,
     allergenNote: (m.allergen_note as string | null) ?? null,
     imagePath: (m.image_path as string | null) ?? null,
+    saleConditions: (m.sale_conditions as string | null) ?? null,
   }));
 }
 

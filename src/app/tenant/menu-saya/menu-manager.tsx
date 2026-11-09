@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { SaleConditions } from "@/components/sale-conditions";
 import { SieraAlert, SieraList, SieraPhotoPicker, SieraSectionTitle } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
@@ -239,6 +240,7 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
                   {m.ingredients ? ` · Bahan: ${m.ingredients}` : " · Bahan belum dicantumkan"}
                   {m.allergenNote ? ` · Alergen: ${m.allergenNote}` : ""}
                 </p>
+                <SaleConditions conditions={m.saleConditions} className="mt-1.5" />
               </div>
               <Button
                 type="button"
