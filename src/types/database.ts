@@ -333,6 +333,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_change_tenant_email: {
+        Args: { p_new_email: string; p_tenant_id: string }
+        Returns: string
+      }
       admin_report: {
         Args: { p_from?: string; p_to?: string }
         Returns: {
