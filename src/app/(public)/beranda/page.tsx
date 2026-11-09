@@ -306,7 +306,7 @@ function ActiveOrderList({ orders }: { orders: ActiveOrder[] }) {
 function ActiveOrdersSection({ orders }: { orders: ActiveOrder[] }) {
   if (orders.length === 0) return null;
   return (
-    <div id="tour-orders" className="-mx-5 md:-mx-6 max-md:mx-0 max-md:px-0 max-md:w-full">
+    <div id="tour-orders" className="max-md:w-full max-md:mx-0 max-md:px-0">
       <SieraSection
         label={`Pesanan aktif (${orders.length})`}
         action={
@@ -355,7 +355,7 @@ function SoonSection({ portions, failed }: { portions: SoonPortion[]; failed: bo
     );
   }
   return (
-    <div id="tour-catalog" className="-mx-5 md:-mx-6 max-md:mx-0 max-md:px-0 max-md:w-full">
+    <div id="tour-catalog" className="max-md:w-full max-md:mx-0 max-md:px-0">
       <SieraSection
         label={`Katalog sore ini · ${portions.length} porsi`}
         action={

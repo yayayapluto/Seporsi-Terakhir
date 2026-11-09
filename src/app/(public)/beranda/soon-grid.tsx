@@ -40,7 +40,7 @@ export function SoonGrid({ portions }: { portions: SoonPortion[] }) {
             <Link
               href={katalogDetail(p.id)}
               aria-label={`Lihat ${p.menuName}`}
-              className="flex min-h-11 flex-col"
+              className="flex min-h-11 flex-col h-full"
             >
               <span className="relative block h-[120px] w-full shrink-0 overflow-hidden bg-[#F4EFE6]">
                 {p.photoPath ? (
@@ -75,17 +75,19 @@ export function SoonGrid({ portions }: { portions: SoonPortion[] }) {
                 </span>
               </span>
               <span className="flex flex-1 flex-col gap-0.5 p-4">
-                <span className="text-base leading-snug font-bold text-[#1C2826]">
+                <span className="block truncate text-base leading-snug font-bold text-[#1C2826]">
                   {p.menuName}
                 </span>
-                <span className="text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
+                <span className="block truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                   {p.tenantName}
                 </span>
-                <span className="mt-2 text-[13px] text-[#64746B]">
+                <span className="mt-2 block truncate text-[13px] text-[#64746B]">
                   Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
                 </span>
-                <SaleConditions conditions={p.saleConditions} brief className="mt-1.5" />
-                <span className="mt-1 flex flex-wrap items-baseline gap-x-2">
+                <span className="mt-1.5 block min-h-[30px]">
+                  <SaleConditions conditions={p.saleConditions} brief />
+                </span>
+                <span className="mt-auto flex flex-wrap items-baseline gap-x-2 pt-2">
                   <strong className="text-lg font-extrabold text-[#1E5A36]">
                     {formatIDR(p.discountPrice)}
                   </strong>
