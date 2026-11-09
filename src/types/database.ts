@@ -39,6 +39,61 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_logs: {
+        Row: {
+          action: string
+          admin_id: string | null
+          created_at: string
+          id: string
+          new_email: string
+          old_email: string
+          target_user_id: string | null
+          tenant_id: string | null
+        }
+        Insert: {
+          action?: string
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          new_email: string
+          old_email: string
+          target_user_id?: string | null
+          tenant_id?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          new_email?: string
+          old_email?: string
+          target_user_id?: string | null
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_audit_logs_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_audit_logs_target_user_id_fkey"
+            columns: ["target_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       menu_items: {
         Row: {
           allergen_note: string | null
