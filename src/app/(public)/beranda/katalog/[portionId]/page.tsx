@@ -10,6 +10,7 @@ import { GuidedTour } from "@/components/guided-tour";
 import { Photo } from "@/components/photo";
 import { SaleConditions } from "@/components/sale-conditions";
 import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { getCurrentUser } from "@/lib/auth";
 import {
   attachMissingIngredientColumns,
   isMissingColumnError,
@@ -155,9 +156,11 @@ import {
 function DetailBody({
   portion,
   related,
+  isAdmin,
 }: {
   portion: PortionDetail | null;
   related: { id: string; menuName: string; discountPrice: number; saleConditions: string | null }[];
+  isAdmin: boolean;
 }) {
   if (!portion) {
     return (
@@ -327,12 +330,18 @@ function DetailBody({
               <p className="mt-0.5 text-[13px] text-[#64746B]">Stok tersisa: {remaining}</p>
               <span aria-hidden className="my-3 block border-t border-dashed border-line" />
               <div className="mt-4">
-                <OrderForm
-                  portionId={portion.id}
-                  discountPrice={portion.discountPrice}
-                  quantityRemaining={remaining}
-                  expiresAt={portion.expiresAt}
-                />
+                {isAdmin ? (
+                  <p className="text-sm text-[#64746B]">
+                    Admin hanya bisa melihat katalog ini. Pemesanan khusus mahasiswa.
+                  </p>
+                ) : (
+                  <OrderForm
+                    portionId={portion.id}
+                    discountPrice={portion.discountPrice}
+                    quantityRemaining={remaining}
+                    expiresAt={portion.expiresAt}
+                  />
+                )}
               </div>
             </div>
 
@@ -407,6 +416,7 @@ async function PortionDetailBody({
 }) {
   const portion = await loadPortion(portionId);
   const related = portion ? await loadRelated(portion.tenantName, portionId) : [];
+  const isAdmin = (await getCurrentUser())?.role === "admin";
   return (
     <>
       <AppHeader
@@ -418,7 +428,7 @@ async function PortionDetailBody({
         ]}
       />
       <div className="flex w-full min-w-0 flex-1 flex-col gap-6 px-4 py-8 md:px-8">
-        <DetailBody portion={portion} related={related} />
+        <DetailBody portion={portion} related={related} isAdmin={isAdmin} />
         <GuidedTour
           tourKey="katalog-detail"
           forced={tourForced}

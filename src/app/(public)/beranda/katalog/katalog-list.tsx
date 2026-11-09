@@ -39,6 +39,7 @@ export function KatalogList({
   tourForced,
   tourJourney,
   tourEntry,
+  isAdmin,
 }: {
   portions: CatalogPortion[];
   tenants: string[];
@@ -46,6 +47,7 @@ export function KatalogList({
   tourForced: boolean;
   tourJourney: boolean;
   tourEntry: number | null;
+  isAdmin: boolean;
 }) {
   const [tenant, setTenant] = useState<string>("semua");
   const [sort, setSort] = useState<SortValue>("hampir-habis");
@@ -323,7 +325,7 @@ export function KatalogList({
                         <>
                           <span aria-hidden className="mx-4 border-t border-dashed border-line" />
                           <span className="mt-auto flex min-h-11 items-center justify-between px-4 pt-1 pb-4 text-sm font-bold text-[#1E5A36]">
-                            Lihat dan pesan
+                            {isAdmin ? "Lihat detail" : "Lihat dan pesan"}
                             <ChevronRight className="size-5 shrink-0" aria-hidden />
                           </span>
                         </>
@@ -341,7 +343,7 @@ export function KatalogList({
                   ) : (
                     <Link
                       href={katalogDetail(p.id)}
-                      aria-label={`Lihat dan pesan ${p.menuName}`}
+                      aria-label={isAdmin ? `Lihat ${p.menuName}` : `Lihat dan pesan ${p.menuName}`}
                       className="flex min-h-11 flex-1 flex-col"
                     >
                       {body}
