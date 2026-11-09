@@ -29,7 +29,7 @@ test.describe("Login UI (tanpa storageState)", () => {
       .getByRole("button", { name: /kirim tautan|kirim|lanjut/i })
       .first()
       .click();
-    await expect(page.locator("body")).toContainText(/tidak valid/i, { timeout: 10_000 });
+    await expect(page.locator("#email-error")).toContainText(/tidak valid/i, { timeout: 10_000 });
     expect(page.url()).toContain("/masuk");
   });
 });
