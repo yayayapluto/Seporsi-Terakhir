@@ -7,6 +7,7 @@ import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
+import { Photo } from "@/components/photo";
 import { SaleConditions } from "@/components/sale-conditions";
 import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import {
@@ -30,6 +31,7 @@ export interface PortionDetail {
   normalPrice: number;
   tenantName: string;
   tenantLocation: string | null;
+  tenantLogoPath: string | null;
   quantityPosted: number;
   quantityRemaining: number;
   cookedAt: string;
@@ -69,7 +71,7 @@ async function loadRelated(tenantName: string, excludeId: string) {
 async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   const supabase = await createClient();
   const base =
-    "id, quantity_posted, quantity_remaining, cooked_at, expires_at, release_at, discount_price, tenants!inner(name, location_note)";
+    "id, quantity_posted, quantity_remaining, cooked_at, expires_at, release_at, discount_price, tenants!inner(name, location_note, logo_path)";
   const t0 = Date.now();
   const full = await supabase
     .from("portions")
@@ -112,7 +114,11 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
     image_path?: string | null;
     sale_conditions?: string | null;
   };
-  const tenant = data.tenants as unknown as { name: string; location_note: string | null };
+  const tenant = data.tenants as unknown as {
+    name: string;
+    location_note: string | null;
+    logo_path?: string | null;
+  };
   return {
     id: data.id,
     menuName: menu.name,
@@ -122,6 +128,7 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
     normalPrice: menu.normal_price,
     tenantName: tenant.name,
     tenantLocation: tenant.location_note,
+    tenantLogoPath: tenant.logo_path ?? null,
     quantityPosted: data.quantity_posted,
     quantityRemaining: data.quantity_remaining,
     cookedAt: data.cooked_at,
@@ -188,9 +195,19 @@ function DetailBody({
         <h1 className="text-balance max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] sm:text-2xl">
           {portion.menuName}
         </h1>
-        <p className="text-sm text-[#64746B]">
-          dari {portion.tenantName}
-          {portion.tenantLocation ? ` · ${portion.tenantLocation}` : ""}
+        <p className="flex items-center gap-2 text-sm text-[#64746B]">
+          <Photo
+            bucket="tenant-logos"
+            path={portion.tenantLogoPath}
+            alt={`Logo ${portion.tenantName}`}
+            placeholder="store"
+            sizes="28px"
+            className="size-7 shrink-0 rounded-md"
+          />
+          <span className="min-w-0">
+            dari {portion.tenantName}
+            {portion.tenantLocation ? ` · ${portion.tenantLocation}` : ""}
+          </span>
         </p>
         <span aria-hidden className="border-t border-dashed border-line" />
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">

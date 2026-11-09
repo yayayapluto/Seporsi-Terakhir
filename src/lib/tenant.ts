@@ -6,6 +6,7 @@ export interface OwnTenant {
   name: string;
   location_note: string | null;
   is_approved: boolean;
+  logo_path: string | null;
 }
 
 /** Tenant row owned by the signed-in user, or null when none. */
@@ -15,7 +16,7 @@ export async function getOwnTenant(): Promise<OwnTenant | null> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("tenants")
-    .select("id, name, location_note, is_approved")
+    .select("id, name, location_note, is_approved, logo_path")
     .eq("owner_id", current.user.id)
     .maybeSingle();
   return (data as OwnTenant | null) ?? null;

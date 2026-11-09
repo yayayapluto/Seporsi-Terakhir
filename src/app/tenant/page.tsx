@@ -15,6 +15,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
+import { Photo } from "@/components/photo";
 import { SaleConditions } from "@/components/sale-conditions";
 import {
   SieraEmpty,
@@ -162,6 +163,7 @@ async function loadData() {
     justExpired,
     tenantId: tenant.id,
     tenantName: tenant.name,
+    tenantLogoPath: tenant.logo_path,
     menuTotal: menuRows.length,
     menuInactive: menuRows.filter((m) => !m.is_active).length,
   };
@@ -229,6 +231,7 @@ async function DashboardBody({
     justExpired,
     tenantName,
     tenantId,
+    tenantLogoPath,
     menuTotal,
     menuInactive,
   } = await loadData();
@@ -278,8 +281,16 @@ async function DashboardBody({
           <>
             <div id="tour-hero" className="flex flex-col gap-2">
               <p className="text-[13px] font-bold text-[#2E7D4F]">DASBOR TENANT</p>
-              <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
-                {tenantName}
+              <h1 className="flex items-center gap-2.5 max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+                <Photo
+                  bucket="tenant-logos"
+                  path={tenantLogoPath}
+                  alt={`Logo ${tenantName}`}
+                  placeholder="store"
+                  sizes="28px"
+                  className="size-7 shrink-0 rounded-md"
+                />
+                <span className="min-w-0">{tenantName}</span>
               </h1>
               <p className="text-[15px] leading-normal text-[#64746B]">
                 Pantau reservasi, scan pickup, dan posting sisa masakan hari ini.
