@@ -51,6 +51,18 @@ export function SiteFooter() {
           >
             Tanya Jawab (FAQ)
           </Link>
+          <Link
+            href={ROUTES.privasi}
+            className="inline-flex min-h-11 w-fit items-center text-muted-foreground hover:text-foreground"
+          >
+            Kebijakan Privasi
+          </Link>
+          <Link
+            href={ROUTES.ketentuan}
+            className="inline-flex min-h-11 w-fit items-center text-muted-foreground hover:text-foreground"
+          >
+            Ketentuan Layanan
+          </Link>
         </nav>
         <div className="flex flex-col gap-2 text-sm">
           <p className="font-bold">Ekosistem Kampus</p>
@@ -93,6 +105,18 @@ export function SiteFooterMini({ bare = false }: { bare?: boolean }) {
           className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1 max-md:min-h-0 max-md:py-0.5 max-md:text-[11px]"
         >
           Akun
+        </Link>
+        <Link
+          href={ROUTES.privasi}
+          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1 max-md:min-h-0 max-md:py-0.5 max-md:text-[11px]"
+        >
+          Privasi
+        </Link>
+        <Link
+          href={ROUTES.ketentuan}
+          className="inline-flex min-h-11 items-center text-xs font-semibold text-[#64746B] hover:text-[#1E5A36] sm:min-h-0 sm:py-1 max-md:min-h-0 max-md:py-0.5 max-md:text-[11px]"
+        >
+          Ketentuan
         </Link>
       </nav>
     </div>

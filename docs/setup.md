@@ -13,6 +13,29 @@ Do these yourself; the agent must not attempt them.
 
  1. Authorized redirect URI (hosted):
     `https://<project-ref>.supabase.co/auth/v1/callback`
+ 2. **Branding + brand verification** (syarat agar "Choose an account to
+    continue to …" menampilkan nama app, bukan `<project-ref>.supabase.co`):
+    - Google Auth Platform → Branding → App name = `Seporsi Terakhir`,
+      User support email, Authorized domain = `seporsi-terakhir.my.id`, lalu
+      isi tiga tautan publik:
+      - Application home page: `https://seporsi-terakhir.my.id`
+      - Privacy policy: `https://seporsi-terakhir.my.id/privasi`
+      - Terms of service: `https://seporsi-terakhir.my.id/ketentuan`
+      Keduanya halaman statis publik di `src/app/(public)/privasi|ketentuan`
+      (tanpa login, tidak diblokir proxy).
+    - Verifikasi `seporsi-terakhir.my.id` di **Google Search Console** dulu
+      (milik akun Google yang sama), lalu klik **Verify Branding** di halaman
+      Branding (bisa beberapa menit–beberapa hari; kadang masuk review manual).
+    - **Publish** app (Publishing status → In production). Selama masih
+      **Testing**, branding tidak tampil ke user non-test dan hanya test user
+      yang bisa login.
+    - Scope cukup `email` + `profile`/`openid` (non-sensitive) — verifikasi
+      penuh tidak perlu, tapi brand verification tetap perlu untuk nama/logo.
+    - Authorized domain `czvrxkzxgvjfmmbbfdrv.supabase.co` boleh dihapus
+      (redirect URI tidak perlu terdaftar sebagai authorized domain); domain
+      itu bukan milik kita sehingga tak bisa diverifikasi.
+    - Ini setelan Google, bukan kode aplikasi. Uji di incognito setelah
+      publish/verify; cache Google bisa telat beberapa menit.
 
  ## 3. Supabase
 
