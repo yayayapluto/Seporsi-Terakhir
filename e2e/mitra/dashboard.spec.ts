@@ -5,7 +5,7 @@ import {
 } from "../support/assertions";
 import { expect, test } from "../support/fixtures";
 
-test("dasbor mitra @smoke: statistik konsisten", async ({ mitraPage: page, seed }) => {
+test("dasbor mitra @smoke: statistik konsisten", async ({ seedMitraPage: page, seed }) => {
   await test.step("buka dasbor", async () => {
     await page.goto("/tenant");
   });

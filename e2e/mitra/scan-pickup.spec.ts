@@ -1,8 +1,15 @@
 import { expect, test } from "../support/fixtures";
 
-test("scan pickup @smoke: halaman scanner dan kode manual", async ({ mitraPage: page }) => {
+test("scan pickup @smoke: halaman scanner dan kode manual", async ({ seedMitraPage: page }) => {
   await test.step("buka scanner", async () => {
     await page.goto("/tenant/scan");
+    // Lewatkan panduan onboarding yang mungkin menutup layar.
+    const skip = page.getByRole("button", { name: /^Lewati$/i });
+    if (await skip.count()) {
+      await skip.first().click();
+      const confirm = page.getByRole("button", { name: /Lewati panduan/i });
+      if (await confirm.count()) await confirm.first().click();
+    }
   });
   await test.step("scanner dan sapaan tampil", async () => {
     await expect(page.locator("[data-tour=scanner]")).toBeVisible({ timeout: 15_000 });
@@ -28,7 +35,7 @@ test("scan pickup @smoke: halaman scanner dan kode manual", async ({ mitraPage: 
   });
 });
 
-test("scan pickup @smoke: dekode QR dan konfirmasi", async ({ mitraPage: page }) => {
+test("scan pickup @smoke: dekode QR dan konfirmasi", async ({ seedMitraPage: page }) => {
   test.fixme(true, "dekode QR kamera butuh perangkat fisik, tidak bisa diuji headless");
   await page.goto("/tenant/scan");
   await expect(page.locator("[data-tour=scanner]")).toBeVisible({ timeout: 15_000 });

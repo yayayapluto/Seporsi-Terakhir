@@ -10,7 +10,7 @@ async function countBadge(page: Page): Promise<number> {
   return match?.[1] ? Number(match[1]) : 0;
 }
 
-test("pesanan @smoke: daftar kosong sebelum reservasi", async ({ mitraPage: page }) => {
+test("pesanan @smoke: daftar kosong sebelum reservasi", async ({ seedMitraPage: page }) => {
   await test.step("buka daftar pesanan", async () => {
     await page.goto("/tenant/pesanan");
   });
@@ -20,17 +20,17 @@ test("pesanan @smoke: daftar kosong sebelum reservasi", async ({ mitraPage: page
 });
 
 test("pesanan @smoke: badge konsisten dan detail bisa dibuka", async ({
-  buyerPage,
-  mitraPage: page,
+  seedBuyerPage: orderPage,
+  seedMitraPage: page,
   seed,
 }) => {
   await test.step("buyer memesan porsi seed", async () => {
-    await buyerPage.goto("/beranda/katalog");
-    await buyerPage.locator(`a[aria-label*="${seed.runId}"]`).first().click();
-    await buyerPage.waitForURL(/\/beranda\/katalog\/[0-9a-f-]{36}/);
-    await buyerPage.locator("text=1 porsi").first().click();
-    await buyerPage.getByRole("button", { name: /Pesan/i }).first().click();
-    await buyerPage.waitForURL(/\/beranda\/pesanan\/[0-9a-f-]{36}/, { timeout: 20_000 });
+    await orderPage.goto("/beranda/katalog");
+    await orderPage.locator(`a[aria-label*="${seed.runId}"]`).first().click();
+    await orderPage.waitForURL(/\/beranda\/katalog\/[0-9a-f-]{36}/, { timeout: 20_000 });
+    await orderPage.locator("text=1 porsi").first().click();
+    await orderPage.getByRole("button", { name: /Pesan/i }).first().click();
+    await orderPage.waitForURL(/\/beranda\/pesanan\/[0-9a-f-]{36}/, { timeout: 20_000 });
   });
   await test.step("daftar pesanan mitra tampil", async () => {
     await page.goto("/tenant/pesanan");
@@ -49,8 +49,6 @@ test("pesanan @smoke: badge konsisten dan detail bisa dibuka", async ({
   await test.step("detail pesanan terbuka dengan tombol batal", async () => {
     await page.locator('[aria-labelledby="menunggu-heading"] li a').first().click();
     await page.waitForURL(/\/tenant\/pesanan\/[0-9a-f-]{36}/);
-    await expect(page.getByRole("button", { name: /Batalkan pesanan/i })).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(page.getByRole("button", { name: /Batalkan pesanan/i })).toBeVisible();
   });
 });
