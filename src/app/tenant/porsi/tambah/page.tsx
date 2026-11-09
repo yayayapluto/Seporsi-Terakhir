@@ -60,7 +60,7 @@ async function PorsiBaruBody({
   const supabase = await createClient();
   const { data } = await supabase
     .from("menu_items")
-    .select("id, name, normal_price")
+    .select("id, name, normal_price, sale_conditions")
     .eq("tenant_id", tenant.id)
     .eq("is_active", true)
     .order("name", { ascending: true });
@@ -68,6 +68,7 @@ async function PorsiBaruBody({
     id: m.id,
     name: m.name,
     normalPrice: m.normal_price,
+    saleConditions: m.sale_conditions,
   }));
   const cookedAtLocal = defaultCookedLocal();
   const firstPrice = menus[0]?.normalPrice ?? 0;
