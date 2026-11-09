@@ -142,7 +142,7 @@ export async function createUploadUrl(input: {
   originalBytes?: number;
 }): Promise<
   | { ok: true; signedUrl: string; token: string; path: string }
-  | { ok: false; error: string; status: 400 | 401 | 403 | 429 }
+  | { ok: false; error: string; status: 400 | 401 | 403 | 429 | 500 }
 > {
   const parsed = InputSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Kamu tidak punya akses", status: 403 };
