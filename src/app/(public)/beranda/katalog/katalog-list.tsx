@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GuidedTour } from "@/components/guided-tour";
+import { Photo } from "@/components/photo";
 import { SaleConditions } from "@/components/sale-conditions";
 import { SieraEmpty, SieraWarningBadge, sieraCardClass } from "@/components/siera";
 import { Button } from "@/components/ui/button";
@@ -257,7 +258,15 @@ export function KatalogList({
                   const body = (
                     <>
                       <span className="relative block h-[120px] w-full shrink-0 overflow-hidden bg-[#F4EFE6]">
-                        {p.imageUrl && !broken.has(p.id) ? (
+                        {p.photoPath ? (
+                          <Photo
+                            bucket="menu-photos"
+                            path={p.photoPath}
+                            alt={p.menuName}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="size-full"
+                          />
+                        ) : p.imageUrl && !broken.has(p.id) ? (
                           <Image
                             src={p.imageUrl}
                             alt={p.menuName}
@@ -357,7 +366,15 @@ export function KatalogList({
                   const inner = (
                     <>
                       <span className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-[#F4EFE6]">
-                        {p.imageUrl && !broken.has(p.id) ? (
+                        {p.photoPath ? (
+                          <Photo
+                            bucket="menu-photos"
+                            path={p.photoPath}
+                            alt={p.menuName}
+                            sizes="56px"
+                            className="size-full"
+                          />
+                        ) : p.imageUrl && !broken.has(p.id) ? (
                           <Image
                             src={p.imageUrl}
                             alt=""
