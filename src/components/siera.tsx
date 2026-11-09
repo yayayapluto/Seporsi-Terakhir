@@ -438,7 +438,7 @@ export function SieraStat({
 /** Strip 3 stat: satu card dibagi divider dashed (bukan 3 card lepas). */
 export function SieraStatStrip({ children }: { children: ReactNode }) {
   return (
-    <SieraCard className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-x divide-dashed divide-line p-4 max-md:grid-cols-[repeat(auto-fit,minmax(0,1fr))] max-md:gap-3 max-md:divide-y-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none max-md:p-0">
+    <SieraCard className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-x md:divide-y-0 divide-dashed divide-line p-4 max-md:grid-cols-[repeat(auto-fit,minmax(0,1fr))] max-md:gap-3 max-md:divide-y-0 max-md:border-0 max-md:bg-transparent max-md:shadow-none max-md:p-0">
       {children}
     </SieraCard>
   );
