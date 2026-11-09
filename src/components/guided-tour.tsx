@@ -474,6 +474,7 @@ export function GuidedTour({
         {phase === "step" && (
           <motion.div
             key={`tour-scrim-${tourKey}`}
+            data-testid="tour-spotlight"
             className="fixed inset-0 z-50"
             onClick={() => setPhase("confirm")}
             {...fade}
