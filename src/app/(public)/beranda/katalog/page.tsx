@@ -1,7 +1,6 @@
 import { cn } from "cn";
 import { Check, Clock3 } from "lucide-react";
 import type { Metadata } from "next";
-import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import {
@@ -14,7 +13,7 @@ import {
 import { KatalogSkeleton } from "@/components/ui/skeleton-blocks";
 import { getCurrentUser } from "@/lib/auth";
 import { MAX_PORTIONS_PER_DAY } from "@/lib/domain/constants";
-import { formatSisaMenit, wibTodayRange } from "@/lib/format";
+import { formatSisaMenit } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
 import { katalogDetail, ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -22,6 +21,12 @@ import { parseTourParams } from "@/lib/tour-journey";
 import { KatalogList } from "./katalog-list";
 
 export const metadata: Metadata = { title: "Katalog" };
+
+/**
+ * Daftar porsi non-personal di-cache 60 dtk (ISR). Batas harian per-user
+ * diambil client via /api/day-total, jadi tidak bocor ke cache bersama.
+ */
+export const revalidate = 60;
 
 export interface CatalogPortion {
   id: string;
@@ -45,9 +50,7 @@ async function loadCatalog(): Promise<{
   dayTotal: number;
 }> {
   const supabase = await createClient();
-  await connection();
   const now = new Date();
-  const t0 = Date.now();
   const { data, error } = await supabase
     .from("portions")
     .select(
@@ -58,27 +61,8 @@ async function loadCatalog(): Promise<{
     .lte("release_at", now.toISOString())
     .order("expires_at", { ascending: true })
     .limit(60);
-  // ponytail: log sementara Fase 1 ukur ms query; hapus sebelum Fase 2.
-  console.log(`[ukur] katalog.portions ${Date.now() - t0}ms`);
-  // Batas hari ini Asia/Jakarta → UTC (pola sama kayak dasbor tenant).
-  const { dayStartUtc, dayEndIso } = wibTodayRange();
-  let dayTotal = 0;
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user) {
-    const t1 = Date.now();
-    const { data: orders } = await supabase
-      .from("orders")
-      .select("quantity")
-      .eq("student_id", user.id)
-      .neq("status", "cancelled")
-      .gte("created_at", dayStartUtc)
-      .lt("created_at", dayEndIso);
-    // ponytail: log sementara Fase 1 ukur ms query; hapus sebelum Fase 2.
-    console.log(`[ukur] katalog.dayTotal ${Date.now() - t1}ms`);
-    dayTotal = ((orders ?? []) as { quantity: number }[]).reduce((s, o) => s + o.quantity, 0);
-  }
+  // dayTotal per-user diambil client (/api/day-total) agar halaman bisa ISR.
+  const dayTotal = 0;
   if (error || !data) return { portions: [], tenants: [], dayTotal };
   const portions: CatalogPortion[] = [];
   const tenantSet = new Set<string>();
@@ -124,7 +108,7 @@ async function KatalogPageBody(
 ) {
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
-  const { portions, tenants, dayTotal } = await loadCatalog();
+  const { portions, tenants } = await loadCatalog();
   const isAdmin = (await getCurrentUser())?.role === "admin";
   const nowMs = Date.now();
   const urgent = portions
@@ -159,7 +143,6 @@ async function KatalogPageBody(
                 <KatalogList
                   portions={portions}
                   tenants={tenants}
-                  dayTotal={dayTotal}
                   tourForced={tourForced}
                   tourJourney={tourJourney}
                   tourEntry={tourEntry}
