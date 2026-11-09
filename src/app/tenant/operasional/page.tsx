@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { SieraCard, sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { TenantDashboardSkeleton } from "@/components/ui/skeleton-blocks";
 import { formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: "Operasional" };
 /** Operasional tenant: ringkasan angka hari ini + aksi langsung. Tanpa tabel baru. */
 export default function OperasionalPage() {
   return (
-    <Suspense fallback={<GenericPageSkeleton />}>
+    <Suspense fallback={<TenantDashboardSkeleton />}>
       <OperasionalBody />
     </Suspense>
   );

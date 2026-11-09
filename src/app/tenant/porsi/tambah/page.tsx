@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { PortionFormSkeleton } from "@/components/ui/skeleton-blocks";
 
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { suggestDiscountPrice } from "@/lib/domain/pricing";
@@ -37,7 +37,7 @@ export default function PorsiBaruPage({
   }>;
 }) {
   return (
-    <Suspense fallback={<GenericPageSkeleton />}>
+    <Suspense fallback={<PortionFormSkeleton />}>
       <PorsiBaruBody searchParams={searchParams} />
     </Suspense>
   );

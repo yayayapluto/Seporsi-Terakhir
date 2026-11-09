@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraCard, SieraRailPage, SieraSection, SieraTile } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { BerandaSkeleton, SkeletonListItem } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatSisaMenit } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
@@ -156,10 +156,19 @@ export default async function BerandaPage({
                 </p>
               </div>
               {showOnboard && <OnboardBanner />}
-              <Suspense fallback={<GenericPageSkeleton />}>
+              <Suspense
+                fallback={
+                  <div aria-busy="true" className="flex flex-col gap-3">
+                    <output className="sr-only">Memuat</output>
+                    <div aria-hidden="true" className="flex flex-col gap-3">
+                      <SkeletonListItem />
+                    </div>
+                  </div>
+                }
+              >
                 <ActiveOrdersBody user={user} />
               </Suspense>
-              <Suspense fallback={<GenericPageSkeleton />}>
+              <Suspense fallback={<BerandaSkeleton />}>
                 <SoonBody user={user} />
               </Suspense>
             </div>

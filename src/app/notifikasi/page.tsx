@@ -5,7 +5,7 @@ import { EmptyState } from "@/components/empty-state";
 import { NotifLive } from "@/components/notif-live";
 import { NotifRow } from "@/components/notif-row";
 import { SieraRailPage, SieraSection } from "@/components/siera";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { NotifSkeleton } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { loadNotifs } from "@/lib/notifs";
 import { ROUTES } from "@/lib/routes";
@@ -20,7 +20,7 @@ export default async function NotifikasiPage() {
   return (
     <>
       <AppHeader title="Notifikasi" trail={[{ label: "Notifikasi" }]} />
-      <Suspense fallback={<GenericPageSkeleton />}>
+      <Suspense fallback={<NotifSkeleton />}>
         <NotifBody role={current.role} />
       </Suspense>
     </>

@@ -11,7 +11,7 @@ import {
   SieraSection,
   sieraCardClass,
 } from "@/components/siera";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { KatalogSkeleton } from "@/components/ui/skeleton-blocks";
 import { getCurrentUser } from "@/lib/auth";
 import { MAX_PORTIONS_PER_DAY } from "@/lib/domain/constants";
 import { formatSisaMenit, wibTodayRange } from "@/lib/format";
@@ -155,7 +155,7 @@ async function KatalogPageBody(
                   di tempat.
                 </p>
               </div>
-              <Suspense fallback={<GenericPageSkeleton />}>
+              <Suspense fallback={<KatalogSkeleton />}>
                 <KatalogList
                   portions={portions}
                   tenants={tenants}

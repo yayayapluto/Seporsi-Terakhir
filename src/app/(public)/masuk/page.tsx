@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { SieraAlert, SieraCard } from "@/components/siera";
+import { MasukSkeleton } from "@/components/ui/skeleton-blocks";
 
 import { ROUTES } from "@/lib/routes";
 import { DevLoginCard } from "./dev-login-card";
@@ -63,7 +64,7 @@ export default function MasukPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   return (
-    <Suspense>
+    <Suspense fallback={<MasukSkeleton />}>
       <MasukContent searchParams={searchParams} />
     </Suspense>
   );

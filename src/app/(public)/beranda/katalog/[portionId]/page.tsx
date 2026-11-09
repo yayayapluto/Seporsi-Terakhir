@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { Photo } from "@/components/photo";
 import { SaleConditions } from "@/components/sale-conditions";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { PortionDetailSkeleton } from "@/components/ui/skeleton-blocks";
 import { getCurrentUser } from "@/lib/auth";
 import {
   attachMissingIngredientColumns,
@@ -401,7 +401,7 @@ export default async function PortionDetailPage({
   const tourForced = sp.mode === "onboarding";
   if (!PortionId.safeParse(portionId).success) notFound();
   return (
-    <Suspense fallback={<GenericPageSkeleton />}>
+    <Suspense fallback={<PortionDetailSkeleton />}>
       <PortionDetailBody portionId={portionId} tourForced={tourForced} />
     </Suspense>
   );

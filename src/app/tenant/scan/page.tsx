@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { ScanSkeleton } from "@/components/ui/skeleton-blocks";
 import { createClient } from "@/lib/supabase/server";
 import { getJourneyNext, parseTourParams } from "@/lib/tour-journey";
 import { requireOwnTenant } from "../guard";
@@ -51,7 +51,7 @@ export default function ScanPage({ searchParams }: { searchParams?: Promise<{ mo
         title="Scan pickup"
         trail={[{ label: "Kantin", href: "/tenant" }, { label: "Scan" }]}
       />
-      <Suspense fallback={<GenericPageSkeleton />}>
+      <Suspense fallback={<ScanSkeleton />}>
         <ScanBody searchParams={searchParams} />
       </Suspense>
     </>
