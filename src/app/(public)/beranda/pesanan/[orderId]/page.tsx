@@ -7,6 +7,7 @@ import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { Photo } from "@/components/photo";
 import {
   SieraField,
   SieraRailPage,
@@ -48,6 +49,7 @@ export interface OrderDetail {
   tenantLocation: string | null;
   portionId: string;
   saleConditions: string | null;
+  photoPath: string | null;
 }
 
 async function loadOrder(orderId: string) {
@@ -75,6 +77,7 @@ async function loadOrder(orderId: string) {
     tenantLocation: (row.tenant_location as string | null) ?? null,
     portionId: String(row.portion_id),
     saleConditions: (row.sale_conditions as string | null) ?? null,
+    photoPath: (row.photo_path as string | null) ?? null,
   };
   // Token hanya untuk pesanan aktif; select dibatasi row sendiri (RLS orders_read).
   let pickupToken: string | null = null;
@@ -171,6 +174,15 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                   "flex flex-col gap-3 p-5 max-md:min-w-0 max-md:w-full max-md:max-w-full",
                 )}
               >
+                {order.photoPath && (
+                  <Photo
+                    bucket="menu-photos"
+                    path={order.photoPath}
+                    alt={`Foto ${order.menuName}`}
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="aspect-video w-full rounded-xl"
+                  />
+                )}
                 <div className="flex flex-col items-start gap-2 max-md:gap-2 md:flex-row md:flex-wrap md:items-center">
                   <div className="md:hidden w-full">
                     <OrderStatusBadge status={order.status} />
