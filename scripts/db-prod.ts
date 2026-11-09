@@ -208,7 +208,7 @@ console.log(
 );
 console.log("will NOT touch: student/buyer/admin accounts, tour_progress (non-tenant-side)");
 console.log(
-  `will insert: ${TENANTS.length} tenants, ${MENUS.length} menus, ${TENANTS.length} tenant accounts`,
+  `will insert: ${TENANTS.length} tenants, ${MENUS.length} menus, ${MENUS.length} portions (1 per menu), ${TENANTS.length} tenant accounts`,
 );
 console.log(
   "placeholder values: none (location_note NULL; is_approved=true, is_active=true app defaults)",
@@ -301,7 +301,21 @@ const menuRows = MENUS.map((m) => {
 }).join(",\n");
 const fakeIds = [...fakeOwners];
 
-const sql = `-- db:prod: wipe fake tenant-side data, seed real tenants + menus.
+// Seeding porsi: 1 porsi per menu agar katalog langsung hidup. Cooked
+// bervariasi (hub jendela demo "hampir habis" sampai segar); stok hidup.
+const MINUTES_AGO = [25, 40, 80, 140, 30, 100, 170];
+const portionRows = MENUS.map((m, i) => {
+  const acc = accounts.find((a) => a.tenant.name === m.tenant);
+  if (!acc) throw new Error(`tenant tak ada: ${m.tenant}`);
+  const mins = MINUTES_AGO[i % MINUTES_AGO.length] ?? 25;
+  const qty = 3 + (i % 4);
+  const discount = Math.round((m.normalPrice * 0.45) / 500) * 500;
+  return `  ((select id from tenants where owner_id = ${q(acc.id)}),
+    (select id from menu_items where tenant_id = (select id from tenants where owner_id = ${q(acc.id)}) and name = ${q(m.name)}),
+    ${qty}, ${qty}, now() - interval '${mins} minutes', 180, now() - interval '${mins} minutes', ${discount})`;
+}).join(",\n");
+
+const sql = `-- db:prod: wipe fake tenant-side data, seed real tenants + menus + portions.
 begin;
 truncate table public.orders, public.portions, public.menu_items, public.tenants cascade;
 delete from auth.users where id in (${fakeIds.map(q).join(", ") || "null::uuid"});
@@ -311,6 +325,10 @@ ${tenantRows};
 insert into public.menu_items (tenant_id, name, normal_price, safety_tier, sale_conditions, is_active)
 values
 ${menuRows};
+insert into public.portions (tenant_id, menu_item_id, quantity_posted, quantity_remaining,
+  cooked_at, sell_window_minutes, release_at, discount_price)
+values
+${portionRows};
 commit;
 `;
 
@@ -329,6 +347,7 @@ console.log(`tables truncated: ${TRUNCATE_TABLES.join(", ")}`);
 console.log(`fake tenant-owner accounts removed: ${fakeIds.length}`);
 console.log(`tenants inserted: ${TENANTS.length}`);
 console.log(`menus inserted: ${MENUS.length}`);
+console.log(`portions inserted: ${MENUS.length}`);
 console.log("placeholder values used: none (location_note NULL)");
 console.log("tenant -> email:");
 for (const a of accounts) console.log(`  ${a.tenant.name} -> ${a.email}`);
