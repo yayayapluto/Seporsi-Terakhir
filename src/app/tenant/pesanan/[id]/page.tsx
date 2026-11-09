@@ -103,9 +103,9 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 
 export default function TenantOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-      <Suspense fallback={<TenantOrderDetailSkeleton />}>
-        <TenantOrderDetailBody params={params} />
-      </Suspense>
+    <Suspense fallback={<TenantOrderDetailSkeleton />}>
+      <TenantOrderDetailBody params={params} />
+    </Suspense>
   );
 }
 
