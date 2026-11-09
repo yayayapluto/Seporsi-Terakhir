@@ -3,13 +3,23 @@ import { expect, test } from "../support/fixtures";
 test("scan pickup @smoke: halaman scanner dan kode manual", async ({ seedMitraPage: page }) => {
   await test.step("buka scanner", async () => {
     await page.goto("/tenant/scan");
-    // Lewatkan panduan onboarding yang mungkin menutup layar.
-    const skip = page.getByRole("button", { name: /^Lewati$/i });
-    if (await skip.count()) {
-      await skip.first().click();
+    // Lewatkan panduan onboarding yang mungkin menutup layar (loop sampai hilang).
+    for (let i = 0; i < 4; i++) {
+      const dialog = page.getByRole("dialog");
+      if ((await dialog.count()) === 0) break;
+      const skip = page.getByRole("button", { name: /^Lewati$/i });
+      if (await skip.count()) {
+        await skip.first().click();
+        continue;
+      }
       const confirm = page.getByRole("button", { name: /Lewati panduan/i });
-      if (await confirm.count()) await confirm.first().click();
+      if (await confirm.count()) {
+        await confirm.first().click();
+        continue;
+      }
+      await page.keyboard.press("Escape");
     }
+    await expect(page.getByRole("dialog")).toHaveCount(0, { timeout: 10_000 });
   });
   await test.step("scanner dan sapaan tampil", async () => {
     await expect(page.locator("[data-tour=scanner]")).toBeVisible({ timeout: 15_000 });
