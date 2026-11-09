@@ -12,6 +12,8 @@ const NAV = [
   { href: "#langkah", label: "Cara Kerja" },
   { href: "#faq", label: "Keamanan Pangan" },
   { href: "#faq", label: "FAQ" },
+  { href: ROUTES.privasi, label: "Privasi" },
+  { href: ROUTES.ketentuan, label: "Ketentuan" },
 ];
 
 /** Header landing "/": bilah putih mengambang di atas kanvas. */
@@ -54,7 +56,7 @@ export function SiteHeader() {
           </Link>
 
           <nav
-            className="hidden items-center gap-7 text-[15px] font-medium text-[#17261D] min-[821px]:flex"
+            className="hidden items-center gap-5 text-[14px] font-medium text-[#17261D] min-[821px]:flex"
             aria-label="Navigasi utama"
           >
             {NAV.map((item) => (
