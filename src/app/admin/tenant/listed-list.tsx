@@ -58,7 +58,6 @@ export function ListedList({ tenants }: { tenants: ListedTenant[] }) {
             <div className="flex shrink-0 flex-col gap-2">
               <Button
                 type="button"
-                variant="outline"
                 disabled={busyId !== null}
                 onClick={() => setEmailTarget(t)}
                 className="min-h-11"
