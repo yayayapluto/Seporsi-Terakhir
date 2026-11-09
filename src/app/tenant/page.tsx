@@ -15,6 +15,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
+import { SaleConditions } from "@/components/sale-conditions";
 import {
   SieraEmpty,
   SieraList,
@@ -50,6 +51,7 @@ interface ActivePortion {
   quantityRemaining: number;
   discountPrice: number;
   expiresAt: string;
+  saleConditions: string | null;
 }
 
 interface Reservation {
@@ -73,7 +75,7 @@ async function loadData() {
     supabase
       .from("portions")
       .select(
-        "id, quantity_posted, quantity_remaining, discount_price, expires_at, menu_items!inner(name), tenant_id",
+        "id, quantity_posted, quantity_remaining, discount_price, expires_at, menu_items!inner(name, sale_conditions), tenant_id",
       )
       .eq("tenant_id", tenant.id)
       .gt("expires_at", nowIso)
@@ -102,15 +104,19 @@ async function loadData() {
   const activePortions: ActivePortion[] = (
     (portionsRes.data ?? []) as unknown as Array<Record<string, unknown>>
   ).map((p) => {
-    const mi = p.menu_items as { name: string } | { name: string }[] | null;
-    const menu = Array.isArray(mi) ? mi[0] : mi;
+    const mi = p.menu_items as
+      | { name: string; sale_conditions: string | null }
+      | { name: string; sale_conditions: string | null }[]
+      | null;
+    const m = Array.isArray(mi) ? mi[0] : mi;
     return {
       id: String(p.id),
-      menuName: menu?.name ?? "Menu",
+      menuName: m?.name ?? "Menu",
       quantityPosted: Number(p.quantity_posted),
       quantityRemaining: Number(p.quantity_remaining),
       discountPrice: Number(p.discount_price),
       expiresAt: String(p.expires_at),
+      saleConditions: m?.sale_conditions ?? null,
     };
   });
 
@@ -447,6 +453,7 @@ async function DashboardBody({
                               >
                                 <ProgressTrack />
                               </Progress>
+                              <SaleConditions conditions={p.saleConditions} className="mt-2" />
                             </div>
                             <div className="flex shrink-0 items-center gap-3 max-md:order-first max-md:self-end">
                               {nearExpiry && (
