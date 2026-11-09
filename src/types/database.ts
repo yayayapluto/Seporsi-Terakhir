@@ -105,6 +105,7 @@ export type Database = {
           is_active: boolean
           name: string
           normal_price: number
+          photo_path: string | null
           photo_url: string | null
           safety_tier: string | null
           sale_conditions: string | null
@@ -121,6 +122,7 @@ export type Database = {
           is_active?: boolean
           name: string
           normal_price: number
+          photo_path?: string | null
           photo_url?: string | null
           safety_tier?: string | null
           sale_conditions?: string | null
@@ -137,6 +139,7 @@ export type Database = {
           is_active?: boolean
           name?: string
           normal_price?: number
+          photo_path?: string | null
           photo_url?: string | null
           safety_tier?: string | null
           sale_conditions?: string | null
@@ -281,6 +284,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_path: string | null
           avatar_url: string | null
           created_at: string
           email: string | null
@@ -290,6 +294,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          avatar_path?: string | null
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -299,6 +304,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          avatar_path?: string | null
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -316,6 +322,7 @@ export type Database = {
           is_approved: boolean
           is_listed: boolean
           location_note: string | null
+          logo_path: string | null
           name: string
           owner_id: string
           updated_at: string
@@ -326,6 +333,7 @@ export type Database = {
           is_approved?: boolean
           is_listed?: boolean
           location_note?: string | null
+          logo_path?: string | null
           name: string
           owner_id: string
           updated_at?: string
@@ -336,6 +344,7 @@ export type Database = {
           is_approved?: boolean
           is_listed?: boolean
           location_note?: string | null
+          logo_path?: string | null
           name?: string
           owner_id?: string
           updated_at?: string
@@ -411,6 +420,7 @@ export type Database = {
           is_approved: boolean
           is_listed: boolean
           location_note: string | null
+          logo_path: string | null
           name: string
           owner_id: string
           updated_at: string
@@ -430,6 +440,7 @@ export type Database = {
           is_approved: boolean
           is_listed: boolean
           location_note: string | null
+          logo_path: string | null
           name: string
           owner_id: string
           updated_at: string
@@ -635,6 +646,7 @@ export type Database = {
       set_my_avatar: {
         Args: { p_avatar_path?: string }
         Returns: {
+          avatar_path: string | null
           avatar_url: string | null
           created_at: string
           email: string | null
@@ -658,6 +670,7 @@ export type Database = {
           is_approved: boolean
           is_listed: boolean
           location_note: string | null
+          logo_path: string | null
           name: string
           owner_id: string
           updated_at: string
@@ -758,6 +771,7 @@ export type Database = {
           is_approved: boolean
           is_listed: boolean
           location_note: string | null
+          logo_path: string | null
           name: string
           owner_id: string
           updated_at: string
@@ -790,6 +804,7 @@ export type Database = {
           is_active: boolean
           name: string
           normal_price: number
+          photo_path: string | null
           photo_url: string | null
           safety_tier: string | null
           sale_conditions: string | null
