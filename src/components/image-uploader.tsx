@@ -374,7 +374,6 @@ export function ImageUploader({
         <div className="flex flex-col gap-2">
           <Button
             type="button"
-            variant="outline"
             className="min-h-11"
             disabled={busy}
             onClick={() => {
@@ -392,7 +391,7 @@ export function ImageUploader({
           {currentPath && (
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               className="min-h-11"
               disabled={busy}
               onClick={() => {
