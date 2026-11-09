@@ -17,7 +17,7 @@ import {
   sieraCardClass,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { OrderDetailSkeleton } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { formatDateTimeWIB, formatIDR } from "@/lib/format";
 import { katalogDetail, ROUTES } from "@/lib/routes";
@@ -105,7 +105,7 @@ export default async function OrderDetailPage({
   const tourForced = sp.mode === "onboarding";
   if (!z.string().uuid().safeParse(orderId).success) notFound();
   return (
-    <Suspense fallback={<GenericPageSkeleton />}>
+    <Suspense fallback={<OrderDetailSkeleton />}>
       <OrderBody orderId={orderId} tourForced={tourForced} />
     </Suspense>
   );

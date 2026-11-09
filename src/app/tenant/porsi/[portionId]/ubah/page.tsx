@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraList, SieraRailPage, SieraRowLink, SieraSection } from "@/components/siera";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { PortionFormSkeleton } from "@/components/ui/skeleton-blocks";
 import { SELL_WINDOW_DEFAULT_MINUTES } from "@/lib/domain/constants";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -48,7 +48,7 @@ export default async function EditPorsiPage({
           },
         ]}
       />
-      <Suspense fallback={<GenericPageSkeleton />}>
+      <Suspense fallback={<PortionFormSkeleton />}>
         <EditPorsiBody params={params} sp={sp} />
       </Suspense>
     </>

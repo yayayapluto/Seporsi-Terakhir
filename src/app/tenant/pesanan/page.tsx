@@ -29,7 +29,7 @@ import {
   sieraRowLayoutClass,
 } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { OrdersListSkeleton } from "@/components/ui/skeleton-blocks";
 import { formatDateTimeWIB, formatIDR, wibTodayRange } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -118,7 +118,7 @@ export default function TenantPesananPage({
   }>;
 }) {
   return (
-    <Suspense fallback={<GenericPageSkeleton />}>
+    <Suspense fallback={<OrdersListSkeleton />}>
       <TenantPesananBody searchParams={searchParams} />
     </Suspense>
   );

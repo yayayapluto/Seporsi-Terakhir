@@ -7,7 +7,7 @@ import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraRailPage, sieraCardClass } from "@/components/siera";
 import { buttonVariants } from "@/components/ui/button";
-import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { OrdersListSkeleton } from "@/components/ui/skeleton-blocks";
 import { requireRole } from "@/lib/auth";
 import { formatIDR } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
@@ -82,7 +82,7 @@ export default async function PesananPage({
         trail={[{ label: "Beranda", href: ROUTES.beranda }, { label: "Pesanan" }]}
       />
       <div className="mx-auto w-full max-w-[430px] md:max-w-none max-md:mx-0 max-md:w-full max-md:max-w-full">
-        <Suspense fallback={<GenericPageSkeleton />}>
+        <Suspense fallback={<OrdersListSkeleton />}>
           <PesananBody />
         </Suspense>
         <GuidedTour
