@@ -13,7 +13,30 @@ type Fixtures = {
   adminPage: Page;
   seedBuyerPage: Page;
   seedMitraPage: Page;
+  autoDismissTour: void;
 };
+
+/** Tutup tour onboarding yang auto-muncul (auto=true) di setiap navigasi. */
+export async function skipTour(page: Page): Promise<void> {
+  for (let i = 0; i < 8; i++) {
+    await page.waitForTimeout(250);
+    const skip = page.getByRole("button", { name: /^Lewati$/i });
+    if (await skip.count()) {
+      await skip.first().click();
+      continue;
+    }
+    if ((await page.getByRole("dialog").count()) === 0) return;
+  }
+}
+
+function patchGotoToSkipTour(page: Page) {
+  const orig = page.goto.bind(page);
+  page.goto = async (...args) => {
+    const r = await orig(...args);
+    await skipTour(page);
+    return r;
+  };
+}
 
 async function storageStateOf(browser: Browser, email: string, password: string, baseURL: string) {
   const cookies = await sessionCookies(email, password, baseURL);
@@ -34,6 +57,16 @@ export const test = base.extend<Fixtures>({
     },
     { auto: true },
   ],
+  // Setiap test yang memakai fixture page (buyer/mitra/admin/seed*): navigasi
+  // apa pun otomatis melewatkan tour yang muncul. Spec onboarding TOUR
+  // menonaktifkan ini sendiri bila butuh membuktikan adanya tur.
+  autoDismissTour: [
+    async ({ page }, use) => {
+      patchGotoToSkipTour(page);
+      await use();
+    },
+    { auto: true },
+  ],
   buyerPage: async ({ browser }, use) => {
     const ctx = await browser.newContext({
       storageState: path.join(AUTH_DIR, "buyer.json"),
@@ -41,6 +74,7 @@ export const test = base.extend<Fixtures>({
       timezoneId: "Asia/Jakarta",
     });
     const page = await ctx.newPage();
+    patchGotoToSkipTour(page);
     await use(page);
     await ctx.close();
   },
@@ -51,6 +85,7 @@ export const test = base.extend<Fixtures>({
       timezoneId: "Asia/Jakarta",
     });
     const page = await ctx.newPage();
+    patchGotoToSkipTour(page);
     await use(page);
     await ctx.close();
   },
@@ -61,6 +96,7 @@ export const test = base.extend<Fixtures>({
       timezoneId: "Asia/Jakarta",
     });
     const page = await ctx.newPage();
+    patchGotoToSkipTour(page);
     await use(page);
     await ctx.close();
   },
@@ -79,10 +115,12 @@ export const test = base.extend<Fixtures>({
       timezoneId: "Asia/Jakarta",
     });
     const page = await ctx.newPage();
+    patchGotoToSkipTour(page);
     await use(page);
     await ctx.close();
     // tidak perlu logout; teardown menghapus akun+data
-    void seed;
+    void seed.buyer;
+    void seed.mitra;
   },
   seedMitraPage: async ({ browser, seed }, use) => {
     const state = await storageStateOf(
@@ -97,6 +135,7 @@ export const test = base.extend<Fixtures>({
       timezoneId: "Asia/Jakarta",
     });
     const page = await ctx.newPage();
+    patchGotoToSkipTour(page);
     await use(page);
     await ctx.close();
     void seed.buyer;

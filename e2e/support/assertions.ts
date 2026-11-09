@@ -56,7 +56,11 @@ export async function expectTapTargets(page: Page, selector?: string) {
     if (!(await el.isVisible())) continue;
     const box = await el.boundingBox();
     if (!box) continue;
-    expect.soft(Math.min(box.width, box.height), "tap target terkecil").toBeGreaterThanOrEqual(44);
+    const name = ((await el.textContent()) ?? "").trim().slice(0, 40) || el.evaluate?.toString();
+    expect.soft(
+      Math.min(box.width, box.height),
+      `tap target terkecil: ${name || await el.getAttribute("aria-label") || el.evaluate?.toString()}`,
+    ).toBeGreaterThanOrEqual(44);
   }
 }
 
