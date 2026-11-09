@@ -25,6 +25,7 @@
     "db:seed": "bun scripts/seed-demo.ts",
     "db:prod": "bun scripts/db-prod.ts",
     "storage:setup": "bun scripts/setup-storage.ts",
+    "worker:size": "bun scripts/worker-size.mjs",
     "db:types": "supabase gen types typescript --linked > src/types/database.ts",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
