@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GuidedTour } from "@/components/guided-tour";
+import { Photo } from "@/components/photo";
+import { SaleConditions } from "@/components/sale-conditions";
 import { SieraEmpty, SieraWarningBadge, sieraCardClass } from "@/components/siera";
 import { Button } from "@/components/ui/button";
 import { OptionSelect } from "@/components/ui/option-select";
@@ -256,7 +258,15 @@ export function KatalogList({
                   const body = (
                     <>
                       <span className="relative block h-[120px] w-full shrink-0 overflow-hidden bg-[#F4EFE6]">
-                        {p.imageUrl && !broken.has(p.id) ? (
+                        {p.photoPath ? (
+                          <Photo
+                            bucket="menu-photos"
+                            path={p.photoPath}
+                            alt={p.menuName}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="size-full"
+                          />
+                        ) : p.imageUrl && !broken.has(p.id) ? (
                           <Image
                             src={p.imageUrl}
                             alt={p.menuName}
@@ -299,6 +309,7 @@ export function KatalogList({
                         <span className="mt-2 text-[13px] text-[#64746B]">
                           Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
                         </span>
+                        <SaleConditions conditions={p.saleConditions} className="mt-1.5" />
                         <span className="mt-1 flex flex-wrap items-baseline gap-x-2">
                           <del className="text-[13px] text-[#64746B]">
                             {formatIDR(p.normalPrice)}
@@ -355,7 +366,15 @@ export function KatalogList({
                   const inner = (
                     <>
                       <span className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-[#F4EFE6]">
-                        {p.imageUrl && !broken.has(p.id) ? (
+                        {p.photoPath ? (
+                          <Photo
+                            bucket="menu-photos"
+                            path={p.photoPath}
+                            alt={p.menuName}
+                            sizes="56px"
+                            className="size-full"
+                          />
+                        ) : p.imageUrl && !broken.has(p.id) ? (
                           <Image
                             src={p.imageUrl}
                             alt=""
@@ -377,6 +396,7 @@ export function KatalogList({
                         <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[13px] text-[#64746B]">
                           {p.tenantName} · Sisa {p.quantityRemaining}
                         </span>
+                        <SaleConditions conditions={p.saleConditions} />
                         <span className="flex flex-wrap items-baseline gap-x-1.5">
                           <del className="text-xs text-[#64746B]">{formatIDR(p.normalPrice)}</del>
                           <strong className="text-base font-extrabold text-[#1E5A36]">

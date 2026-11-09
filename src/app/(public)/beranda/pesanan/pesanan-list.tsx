@@ -9,6 +9,7 @@ import { useMemo, useState, useTransition } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 import { PickupCountdown } from "@/components/pickup-countdown";
+import { SaleConditions } from "@/components/sale-conditions";
 import { SieraAlert, SieraTile, sieraCardClass } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -157,6 +158,7 @@ export function OrdersList({ orders, loadError }: { orders: MyOrder[]; loadError
                       <p className="mt-0.5 truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                         {formatDateTimeWIB(new Date(o.createdAt))} WIB
                       </p>
+                      <SaleConditions conditions={o.saleConditions} className="mt-1.5" />
                       {o.pickedUpAt && (
                         <p className="truncate text-[13px] text-[#64746B] max-md:whitespace-normal max-md:[overflow-wrap:anywhere]">
                           Diambil {formatDateTimeWIB(new Date(o.pickedUpAt))} WIB

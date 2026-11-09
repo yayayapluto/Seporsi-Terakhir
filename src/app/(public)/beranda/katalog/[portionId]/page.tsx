@@ -7,6 +7,8 @@ import { z } from "zod";
 import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
+import { Photo } from "@/components/photo";
+import { SaleConditions } from "@/components/sale-conditions";
 import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
 import {
   attachMissingIngredientColumns,
@@ -25,9 +27,12 @@ export interface PortionDetail {
   menuName: string;
   ingredients: string | null;
   allergenNote: string | null;
+  saleConditions: string | null;
+  photoPath: string | null;
   normalPrice: number;
   tenantName: string;
   tenantLocation: string | null;
+  tenantLogoPath: string | null;
   quantityPosted: number;
   quantityRemaining: number;
   cookedAt: string;
@@ -44,19 +49,22 @@ async function loadRelated(tenantName: string, excludeId: string) {
   const now = new Date().toISOString();
   const { data } = await supabase
     .from("portions")
-    .select("id, discount_price, tenants!inner(name), menu_items!inner(name)")
+    .select("id, discount_price, tenants!inner(name), menu_items!inner(name, sale_conditions)")
     .eq("tenants.name", tenantName)
     .neq("id", excludeId)
     .gt("expires_at", now)
     .order("expires_at", { ascending: true })
     .limit(3);
   return (data ?? []).map((r) => {
-    const menu = r.menu_items as unknown as { name: string } | { name: string }[];
+    const menu = r.menu_items as unknown as
+      | { name: string; sale_conditions: string | null }
+      | { name: string; sale_conditions: string | null }[];
     const m = Array.isArray(menu) ? menu[0] : menu;
     return {
       id: String(r.id),
       menuName: m?.name ?? "Menu",
       discountPrice: Number(r.discount_price),
+      saleConditions: m?.sale_conditions ?? null,
     };
   });
 }
@@ -64,11 +72,13 @@ async function loadRelated(tenantName: string, excludeId: string) {
 async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   const supabase = await createClient();
   const base =
-    "id, quantity_posted, quantity_remaining, cooked_at, expires_at, release_at, discount_price, tenants!inner(name, location_note)";
+    "id, quantity_posted, quantity_remaining, cooked_at, expires_at, release_at, discount_price, tenants!inner(name, location_note, logo_path)";
   const t0 = Date.now();
   const full = await supabase
     .from("portions")
-    .select(`${base}, menu_items!inner(name, normal_price, ingredients, allergen_note, image_path)`)
+    .select(
+      `${base}, menu_items!inner(name, normal_price, ingredients, allergen_note, image_path, sale_conditions, photo_path)`,
+    )
     .eq("id", portionId)
     .maybeSingle();
   // ponytail: log sementara Fase 1 ukur ms query; hapus sebelum Fase 2.
@@ -79,7 +89,9 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   if (full.error && isMissingColumnError(full.error.message)) {
     const retry = await supabase
       .from("portions")
-      .select(`${base}, menu_items!inner(name, normal_price, image_path)`)
+      .select(
+        `${base}, menu_items!inner(name, normal_price, image_path, sale_conditions, photo_path)`,
+      )
       .eq("id", portionId)
       .maybeSingle();
     if (retry.error || !retry.data) {
@@ -103,16 +115,25 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
     ingredients?: string | null;
     allergen_note?: string | null;
     image_path?: string | null;
+    sale_conditions?: string | null;
+    photo_path?: string | null;
   };
-  const tenant = data.tenants as unknown as { name: string; location_note: string | null };
+  const tenant = data.tenants as unknown as {
+    name: string;
+    location_note: string | null;
+    logo_path?: string | null;
+  };
   return {
     id: data.id,
     menuName: menu.name,
     ingredients: menu.ingredients ?? null,
     allergenNote: menu.allergen_note ?? null,
+    saleConditions: menu.sale_conditions ?? null,
+    photoPath: menu.photo_path ?? null,
     normalPrice: menu.normal_price,
     tenantName: tenant.name,
     tenantLocation: tenant.location_note,
+    tenantLogoPath: tenant.logo_path ?? null,
     quantityPosted: data.quantity_posted,
     quantityRemaining: data.quantity_remaining,
     cookedAt: data.cooked_at,
@@ -136,7 +157,7 @@ function DetailBody({
   related,
 }: {
   portion: PortionDetail | null;
-  related: { id: string; menuName: string; discountPrice: number }[];
+  related: { id: string; menuName: string; discountPrice: number; saleConditions: string | null }[];
 }) {
   if (!portion) {
     return (
@@ -179,9 +200,19 @@ function DetailBody({
         <h1 className="text-balance max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-xl leading-snug font-extrabold tracking-tight text-[#1C2826] sm:text-2xl">
           {portion.menuName}
         </h1>
-        <p className="text-sm text-[#64746B]">
-          dari {portion.tenantName}
-          {portion.tenantLocation ? ` · ${portion.tenantLocation}` : ""}
+        <p className="flex items-center gap-2 text-sm text-[#64746B]">
+          <Photo
+            bucket="tenant-logos"
+            path={portion.tenantLogoPath}
+            alt={`Logo ${portion.tenantName}`}
+            placeholder="store"
+            sizes="28px"
+            className="size-7 shrink-0 rounded-md"
+          />
+          <span className="min-w-0">
+            dari {portion.tenantName}
+            {portion.tenantLocation ? ` · ${portion.tenantLocation}` : ""}
+          </span>
         </p>
         <span aria-hidden className="border-t border-dashed border-line" />
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -198,6 +229,7 @@ function DetailBody({
             Ambil sampai {formatDateTimeWIB(new Date(portion.expiresAt))} WIB
           </p>
         </div>
+        <SaleConditions conditions={portion.saleConditions} />
       </section>
 
       <SieraRailPage
@@ -206,7 +238,15 @@ function DetailBody({
           <>
             {/* Foto */}
             <div className="min-w-0 max-md:w-full max-md:min-w-0 max-md:max-w-full">
-              {portion.imageUrl ? (
+              {portion.photoPath ? (
+                <Photo
+                  bucket="menu-photos"
+                  path={portion.photoPath}
+                  alt={`Foto ${portion.menuName}`}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="aspect-[4/3] w-full self-start rounded-[20px] border border-line"
+                />
+              ) : portion.imageUrl ? (
                 <PortionImage src={portion.imageUrl} alt={`Foto ${portion.menuName}`} />
               ) : (
                 <div
@@ -316,14 +356,17 @@ function DetailBody({
                     <li key={r.id}>
                       <Link
                         href={katalogDetail(r.id)}
-                        className="flex min-h-11 items-center justify-between gap-3 px-4 py-2.5"
+                        className="flex min-h-11 flex-col justify-center gap-1 px-4 py-2.5"
                       >
-                        <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-sm font-bold text-[#1C2826]">
-                          {r.menuName}
+                        <span className="flex items-center justify-between gap-3">
+                          <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-sm font-bold text-[#1C2826]">
+                            {r.menuName}
+                          </span>
+                          <span className="shrink-0 text-sm font-extrabold text-accent-strong">
+                            {formatIDR(r.discountPrice)}
+                          </span>
                         </span>
-                        <span className="shrink-0 text-sm font-extrabold text-accent-strong">
-                          {formatIDR(r.discountPrice)}
-                        </span>
+                        <SaleConditions conditions={r.saleConditions} />
                       </Link>
                     </li>
                   ))}

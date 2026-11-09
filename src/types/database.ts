@@ -39,6 +39,61 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_logs: {
+        Row: {
+          action: string
+          admin_id: string | null
+          created_at: string
+          id: string
+          new_email: string
+          old_email: string
+          target_user_id: string | null
+          tenant_id: string | null
+        }
+        Insert: {
+          action?: string
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          new_email: string
+          old_email: string
+          target_user_id?: string | null
+          tenant_id?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          new_email?: string
+          old_email?: string
+          target_user_id?: string | null
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_audit_logs_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_audit_logs_target_user_id_fkey"
+            columns: ["target_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       menu_items: {
         Row: {
           allergen_note: string | null
@@ -50,7 +105,10 @@ export type Database = {
           is_active: boolean
           name: string
           normal_price: number
+          photo_path: string | null
           photo_url: string | null
+          safety_tier: string | null
+          sale_conditions: string | null
           tenant_id: string
           updated_at: string
         }
@@ -64,7 +122,10 @@ export type Database = {
           is_active?: boolean
           name: string
           normal_price: number
+          photo_path?: string | null
           photo_url?: string | null
+          safety_tier?: string | null
+          sale_conditions?: string | null
           tenant_id: string
           updated_at?: string
         }
@@ -78,7 +139,10 @@ export type Database = {
           is_active?: boolean
           name?: string
           normal_price?: number
+          photo_path?: string | null
           photo_url?: string | null
+          safety_tier?: string | null
+          sale_conditions?: string | null
           tenant_id?: string
           updated_at?: string
         }
@@ -220,6 +284,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_path: string | null
           avatar_url: string | null
           created_at: string
           email: string | null
@@ -229,6 +294,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          avatar_path?: string | null
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -238,6 +304,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          avatar_path?: string | null
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -255,6 +322,7 @@ export type Database = {
           is_approved: boolean
           is_listed: boolean
           location_note: string | null
+          logo_path: string | null
           name: string
           owner_id: string
           updated_at: string
@@ -265,6 +333,7 @@ export type Database = {
           is_approved?: boolean
           is_listed?: boolean
           location_note?: string | null
+          logo_path?: string | null
           name: string
           owner_id: string
           updated_at?: string
@@ -275,6 +344,7 @@ export type Database = {
           is_approved?: boolean
           is_listed?: boolean
           location_note?: string | null
+          logo_path?: string | null
           name?: string
           owner_id?: string
           updated_at?: string
@@ -327,6 +397,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_change_tenant_email: {
+        Args: { p_new_email: string; p_tenant_id: string }
+        Returns: string
+      }
       admin_report: {
         Args: { p_from?: string; p_to?: string }
         Returns: {
@@ -346,6 +420,7 @@ export type Database = {
           is_approved: boolean
           is_listed: boolean
           location_note: string | null
+          logo_path: string | null
           name: string
           owner_id: string
           updated_at: string
@@ -365,6 +440,7 @@ export type Database = {
           is_approved: boolean
           is_listed: boolean
           location_note: string | null
+          logo_path: string | null
           name: string
           owner_id: string
           updated_at: string
@@ -492,11 +568,13 @@ export type Database = {
           menu_name: string
           normal_price_snapshot: number
           order_id: string
+          photo_path: string
           picked_up_at: string
           pickup_deadline_at: string
           pickup_eligible: boolean
           portion_id: string
           quantity: number
+          sale_conditions: string
           slot_end: string
           slot_start: string
           status: Database["public"]["Enums"]["order_status"]
@@ -569,6 +647,7 @@ export type Database = {
       set_my_avatar: {
         Args: { p_avatar_path?: string }
         Returns: {
+          avatar_path: string | null
           avatar_url: string | null
           created_at: string
           email: string | null
@@ -592,6 +671,7 @@ export type Database = {
           is_approved: boolean
           is_listed: boolean
           location_note: string | null
+          logo_path: string | null
           name: string
           owner_id: string
           updated_at: string
@@ -692,6 +772,7 @@ export type Database = {
           is_approved: boolean
           is_listed: boolean
           location_note: string | null
+          logo_path: string | null
           name: string
           owner_id: string
           updated_at: string
@@ -724,7 +805,10 @@ export type Database = {
           is_active: boolean
           name: string
           normal_price: number
+          photo_path: string | null
           photo_url: string | null
+          safety_tier: string | null
+          sale_conditions: string | null
           tenant_id: string
           updated_at: string
         }

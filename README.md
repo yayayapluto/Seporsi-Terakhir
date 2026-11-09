@@ -10,50 +10,54 @@
 
 - **Katalog porsi selamat** — hanya porsi dalam jendela jual (120–240 menit pasca-matang, default 180) yang tampil; yang kedaluwarsa otomatis tidak bisa dipesan.
 - **Pemesanan 3 langkah** — pilih porsi → buat pesanan → tunjukkan QR saat ambil, bayar di tempat.
+- **Keamanan menu** — tiap menu punya `safety_tier` (`safe`/`conditional`) dan syarat penjualan yang wajib terlihat di posting, katalog, detail, dan pesanan bila ada.
+- **Foto** — avatar profil, logo tenant, dan foto menu via Supabase Storage (upload server-authorised, WebP, maks 512 KB).
 - **Dashboard tenant** — kelola menu, posting porsi, kelola pesanan, pindai QR pengambilan.
-- **Dashboard admin** — metrik dampak (porsi terselamatkan, tingkat penjualan) + persetujuan tenant + ekspor CSV.
+- **Dashboard admin** — metrik dampak (porsi terselamatkan, tingkat penjualan) + persetujuan tenant + ubah email tenant + ekspor CSV.
 - **Keamanan berlapis** — proteksi route per peran di server + Row Level Security (RLS) di Postgres.
 
 ## Daftar halaman
 
-### Publik (tanpa login)
+### Publik (tanpa login sebagian)
 
 | Rute | Deskripsi |
 | --- | --- |
 | `/` | Landing page |
-| `/katalog` | Daftar porsi tersedia |
-| `/katalog/[portionId]` | Detail porsi (waktu masak, alergen, harga) |
-| `/cara-kerja` | Alur cara kerja aplikasi |
-| `/masuk` | Login (magic link / Google) |
+| `/beranda/katalog` | Daftar porsi tersedia |
+| `/beranda/katalog/[portionId]` | Detail porsi (waktu masak, alergen, syarat, harga) |
+| `/masuk` | Login (email / Google) |
 
 ### Mahasiswa (`student`)
 
 | Rute | Deskripsi |
 | --- | --- |
-| `/pesanan` | Riwayat pesanan saya |
-| `/pesanan/[orderId]` | Detail pesanan + QR pengambilan + status live |
-| `/profil` | Profil + statistik kontribusi |
+| `/beranda` | Beranda + porsi segera habis |
+| `/beranda/pesanan` | Riwayat pesanan saya |
+| `/beranda/pesanan/[orderId]` | Detail pesanan + QR pengambilan + status live |
+| `/profil` | Profil + statistik kontribusi (+ foto profil) |
 
 ### Tenant (`tenant`)
 
 | Rute | Deskripsi |
 | --- | --- |
 | `/tenant` | Dashboard tenant |
-| `/tenant/menu` | Kelola menu (harga normal diset sekali per item) |
-| `/tenant/porsi/baru` | Posting porsi baru (waktu masak wajib) |
-| `/tenant/porsi/[portionId]/edit` | Ubah porsi |
+| `/tenant/menu-saya` | Kelola menu (+ foto menu) |
+| `/tenant/porsi/tambah` | Posting porsi baru (waktu masak wajib) |
+| `/tenant/porsi/[portionId]/ubah` | Ubah porsi |
 | `/tenant/pesanan` | Daftar pesanan masuk |
 | `/tenant/pesanan/[id]` | Detail pesanan |
+| `/tenant/operasional` | Ringkasan operasional hari ini |
 | `/tenant/scan` | Pindai QR pengambilan |
 | `/tenant/pendaftaran` | Formulir pendaftaran tenant |
-| `/tenant/menunggu-persetujuan` | Status menunggu persetujuan admin |
+| `/tenant/menunggu` | Status menunggu persetujuan admin |
+| `/tenant/profil` | Profil kantin (+ logo) |
 
 ### Admin (`admin`)
 
 | Rute | Deskripsi |
 | --- | --- |
 | `/admin` | Dashboard dampak + ekspor CSV |
-| `/admin/tenant` | Persetujuan tenant baru |
+| `/admin/tenant` | Persetujuan tenant baru + ubah email owner tenant |
 
 ## RBAC (Role-Based Access Control)
 
@@ -93,7 +97,7 @@ Aturan domain inti: hanya makanan matang yang bisa disimpan (BR-1), jendela jual
 
 ```bash
 bun install
-cp .env.example .env.local   # isi Supabase URL + anon key
+cp .env.example .env.local   # isi Supabase URL + anon key (+ service role untuk seed/storage)
 ```
 
 ### 3. Database + seed demo
@@ -122,9 +126,11 @@ bun run dev   # http://localhost:3000
  | `bun run db:push` | Migrasi ke Supabase hosted (linked) |
  | `bun run db:migrations` | Cek migrasi Local==Remote (linked) |
  | `bun run seed:auth "pw-min-6"` | auth.users + role (password hanya syarat Admin API) |
- | `bun run db:seed` | Tenants, 16 menu, 16 porsi segar, 3 order contoh |
- | `bun run db:types` | Regenerasi `src/types/database.ts` (jangan edit manual) |
- | `bun run deploy` | Build + deploy ke Cloudflare (wajib lewat adapter OpenNext) |
+  | `bun run db:seed` | 6 tenant, 16 menu, 16 porsi segar, 3 order contoh (data palsu dev) |
+  | `bun run db:prod [-- --yes]` | Hapus data tenant palsu + seed 8 tenant asli & 20 menu + akun email tenant (dry run tanpa `--yes`; butuh `TENANT_DEFAULT_PASSWORD`) |
+  | `bun run storage:setup` | Buat/update bucket Storage (avatars, tenant-logos, menu-photos) |
+  | `bun run db:types` | Regenerasi `src/types/database.ts` (jangan edit manual) |
+  | `bun run deploy` | Build + deploy ke Cloudflare (wajib lewat adapter OpenNext) |
 
 ## Akun demo (seed, dev saja)
 
@@ -133,8 +139,21 @@ Login via **magic link**: ketik email di `/masuk`, klik tautan di inbox. Akun `@
 | Role | Email |
 | --- | --- |
 | admin | `admin1793198479@yopmail.com` |
-| tenant | `warteg/kopi/padang/soto/pecel/geprek1793198479@yopmail.com` |
+| tenant (palsu) | `warteg/kopi/padang/soto/pecel/geprek1793198479@yopmail.com` |
 | student | `rafi/sinta1793198479@yopmail.com` |
+
+Akun tenant nyata dari `bun run db:prod` (password dari `TENANT_DEFAULT_PASSWORD`, email format `NamaTenant@yopmail.com`, disimpan lowercase oleh GoTrue):
+
+| Tenant | Email |
+| --- | --- |
+| Ayam Penyet Bang Dower | `ayampenyetbangdower@yopmail.com` |
+| Kantin Bu Ghin | `kantinbughin@yopmail.com` |
+| Kantin Bucin Cindy | `kantinbucincindy@yopmail.com` |
+| Kantin Ibu 'Is | `kantinibuis@yopmail.com` |
+| Kantin Royani | `kantinroyani@yopmail.com` |
+| Kantin Zoya | `kantinzoya@yopmail.com` |
+| Prayata Resto | `prayataresto@yopmail.com` |
+| Warung Samping Prayata | `warungsampingprayata@yopmail.com` |
 
 ## Deploy (Cloudflare)
 

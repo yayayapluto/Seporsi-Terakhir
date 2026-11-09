@@ -17,16 +17,20 @@ async function loadListed(): Promise<{ tenants: ListedTenant[] }> {
   await connection();
   const { data } = await supabase
     .from("tenants")
-    .select("id, name, location_note, is_listed")
+    .select("id, name, location_note, is_listed, owner:profiles!tenants_owner_id_fkey(email)")
     .eq("is_approved", true)
     .order("name", { ascending: true });
   return {
-    tenants: (data ?? []).map((t) => ({
-      id: t.id,
-      name: t.name,
-      locationNote: t.location_note,
-      isListed: t.is_listed,
-    })),
+    tenants: (data ?? []).map((t) => {
+      const owner = t.owner as unknown as { email: string | null } | null;
+      return {
+        id: t.id,
+        name: t.name,
+        locationNote: t.location_note,
+        isListed: t.is_listed,
+        ownerEmail: owner?.email ?? "",
+      };
+    }),
   };
 }
 

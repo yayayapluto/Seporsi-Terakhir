@@ -85,6 +85,54 @@ export async function setTenantListed(
   return { ok: true };
 }
 
+const EmailChangeSchema = z.object({
+  tenantId: z.string().uuid(),
+  newEmail: z.string().trim().toLowerCase().email(),
+});
+
+/**
+ * Admin ubah email akun owner satu tenant (by tenant id). Server me-cek ulang
+ * role admin; RPC yang sama mengecek ulang. Password tidak disentuh, sesi lama
+ * dihapus RPC, email langsung terverifikasi (admin-attested), tanpa kirim email.
+ */
+export async function changeTenantEmail(
+  tenantId: string,
+  newEmail: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const normalized = typeof newEmail === "string" ? newEmail.trim().toLowerCase() : "";
+  const parsed = EmailChangeSchema.safeParse({ tenantId, newEmail: normalized });
+  if (!parsed.success) return { ok: false, error: "Format email tidak valid" };
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Masuk dulu sebagai admin." };
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+  if (profile?.role !== "admin") return { ok: false, error: "Khusus admin." };
+
+  const { error } = await supabase.rpc("admin_change_tenant_email", {
+    p_tenant_id: parsed.data.tenantId,
+    p_new_email: parsed.data.newEmail,
+  });
+  if (error) {
+    const msg = error.message.toLowerCase();
+    if (msg.includes("admin only")) return { ok: false, error: "Khusus admin." };
+    if (msg.includes("invalid email")) return { ok: false, error: "Format email tidak valid" };
+    if (msg.includes("same email"))
+      return { ok: false, error: "Email baru sama dengan email saat ini" };
+    if (msg.includes("email taken") || msg.includes("duplicate key") || msg.includes("unique"))
+      return { ok: false, error: "Email sudah dipakai akun lain" };
+    if (msg.includes("tenant not found")) return { ok: false, error: "Tenant tidak ditemukan." };
+    return { ok: false, error: "Gagal menyimpan. Coba lagi." };
+  }
+  revalidatePath("/admin/tenant");
+  return { ok: true };
+}
+
 export interface ExportRow {
   tenantName: string;
   portionsPosted: number;

@@ -15,6 +15,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppHeader } from "@/components/app-header";
+import { Photo } from "@/components/photo";
+import { SaleConditions } from "@/components/sale-conditions";
 import {
   SieraEmpty,
   SieraList,
@@ -50,6 +52,7 @@ interface ActivePortion {
   quantityRemaining: number;
   discountPrice: number;
   expiresAt: string;
+  saleConditions: string | null;
 }
 
 interface Reservation {
@@ -73,7 +76,7 @@ async function loadData() {
     supabase
       .from("portions")
       .select(
-        "id, quantity_posted, quantity_remaining, discount_price, expires_at, menu_items!inner(name), tenant_id",
+        "id, quantity_posted, quantity_remaining, discount_price, expires_at, menu_items!inner(name, sale_conditions), tenant_id",
       )
       .eq("tenant_id", tenant.id)
       .gt("expires_at", nowIso)
@@ -102,15 +105,19 @@ async function loadData() {
   const activePortions: ActivePortion[] = (
     (portionsRes.data ?? []) as unknown as Array<Record<string, unknown>>
   ).map((p) => {
-    const mi = p.menu_items as { name: string } | { name: string }[] | null;
-    const menu = Array.isArray(mi) ? mi[0] : mi;
+    const mi = p.menu_items as
+      | { name: string; sale_conditions: string | null }
+      | { name: string; sale_conditions: string | null }[]
+      | null;
+    const m = Array.isArray(mi) ? mi[0] : mi;
     return {
       id: String(p.id),
-      menuName: menu?.name ?? "Menu",
+      menuName: m?.name ?? "Menu",
       quantityPosted: Number(p.quantity_posted),
       quantityRemaining: Number(p.quantity_remaining),
       discountPrice: Number(p.discount_price),
       expiresAt: String(p.expires_at),
+      saleConditions: m?.sale_conditions ?? null,
     };
   });
 
@@ -156,6 +163,7 @@ async function loadData() {
     justExpired,
     tenantId: tenant.id,
     tenantName: tenant.name,
+    tenantLogoPath: tenant.logo_path,
     menuTotal: menuRows.length,
     menuInactive: menuRows.filter((m) => !m.is_active).length,
   };
@@ -223,6 +231,7 @@ async function DashboardBody({
     justExpired,
     tenantName,
     tenantId,
+    tenantLogoPath,
     menuTotal,
     menuInactive,
   } = await loadData();
@@ -272,8 +281,16 @@ async function DashboardBody({
           <>
             <div id="tour-hero" className="flex flex-col gap-2">
               <p className="text-[13px] font-bold text-[#2E7D4F]">DASBOR TENANT</p>
-              <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
-                {tenantName}
+              <h1 className="flex items-center gap-2.5 max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
+                <Photo
+                  bucket="tenant-logos"
+                  path={tenantLogoPath}
+                  alt={`Logo ${tenantName}`}
+                  placeholder="store"
+                  sizes="28px"
+                  className="size-7 shrink-0 rounded-md"
+                />
+                <span className="min-w-0">{tenantName}</span>
               </h1>
               <p className="text-[15px] leading-normal text-[#64746B]">
                 Pantau reservasi, scan pickup, dan posting sisa masakan hari ini.
@@ -447,6 +464,7 @@ async function DashboardBody({
                               >
                                 <ProgressTrack />
                               </Progress>
+                              <SaleConditions conditions={p.saleConditions} className="mt-2" />
                             </div>
                             <div className="flex shrink-0 items-center gap-3 max-md:order-first max-md:self-end">
                               {nearExpiry && (

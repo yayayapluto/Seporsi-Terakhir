@@ -1,6 +1,7 @@
 import { Store } from "lucide-react";
 import type { Metadata } from "next";
 import { AppHeader } from "@/components/app-header";
+import { ImageUploader } from "@/components/image-uploader";
 import { SieraList, SieraRowLink, SieraSection, sieraCardClass } from "@/components/siera";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
@@ -32,6 +33,14 @@ export default async function TenantProfilPage() {
           <h1 className="max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] text-3xl leading-[1.2] font-extrabold tracking-[-0.02em] text-[#1C2826]">
             {name}
           </h1>
+          <div className="mt-2">
+            <ImageUploader
+              kind="tenant_logo"
+              targetId={tenant.id}
+              currentPath={tenant.logo_path}
+              shape="circle"
+            />
+          </div>
           <p className="text-[15px] leading-normal text-[#64746B]">
             Nama dan lokasi ini tampil ke mahasiswa di katalog dan pesanan.
           </p>

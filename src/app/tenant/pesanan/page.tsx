@@ -15,6 +15,7 @@ import { AppHeader } from "@/components/app-header";
 import { EmptyState } from "@/components/empty-state";
 import { GuidedTour } from "@/components/guided-tour";
 import { OrderStatusBadge } from "@/components/order-status-badge";
+import { SaleConditions } from "@/components/sale-conditions";
 import { EmptyLine } from "@/components/shared/empty-line";
 import {
   SieraAlert,
@@ -50,6 +51,7 @@ interface TenantOrderRow {
   discountPrice: number;
   menuName: string;
   buyerName: string;
+  saleConditions: string | null;
 }
 
 /** Bentuk mentah join supabase (buyer + portion nested). */
@@ -62,7 +64,12 @@ interface RawTenantOrder {
   pickup_deadline_at: string | null;
   discount_price_snapshot: number;
   buyer?: { full_name?: string | null; email?: string | null } | null;
-  portions?: { menu_items?: { name: string } | { name: string }[] | null } | null;
+  portions?: {
+    menu_items?:
+      | { name: string; sale_conditions: string | null }
+      | { name: string; sale_conditions: string | null }[]
+      | null;
+  } | null;
 }
 
 async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean }> {
@@ -71,7 +78,7 @@ async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, status, quantity, created_at, picked_up_at, pickup_deadline_at, discount_price_snapshot, buyer:profiles!orders_student_id_fkey(full_name, email), portions!inner(menu_item_id, menu_items!inner(name), tenant_id)",
+      "id, status, quantity, created_at, picked_up_at, pickup_deadline_at, discount_price_snapshot, buyer:profiles!orders_student_id_fkey(full_name, email), portions!inner(menu_item_id, menu_items!inner(name, sale_conditions), tenant_id)",
     )
     .eq("portions.tenant_id", tenant.id)
     .order("created_at", { ascending: false })
@@ -90,6 +97,7 @@ async function loadOrders(): Promise<{ orders: TenantOrderRow[]; failed: boolean
         pickedUpAt: o.picked_up_at ?? null,
         pickupDeadlineAt: o.pickup_deadline_at ?? null,
         discountPrice: o.discount_price_snapshot,
+        saleConditions: menu?.sale_conditions ?? null,
         menuName: menu?.name ?? "Menu",
         buyerName: o.buyer?.full_name?.trim() || o.buyer?.email?.split("@")[0] || "Mahasiswa",
       };
@@ -196,6 +204,7 @@ async function TenantPesananBody({
                   ) : null}
                 </span>
               </span>
+              <SaleConditions conditions={o.saleConditions} className="mt-1.5" />
               {o.status === "reserved" && o.pickupDeadlineAt && (
                 <span className="block truncate text-[12px] leading-[1.4] font-bold text-[#B45309] max-md:flex max-md:items-center max-md:gap-2 max-md:rounded-lg max-md:border max-md:border-[#B45309]/20 max-md:bg-[#FEF3C7]/50 max-md:px-3 max-md:py-2 max-md:text-xs max-md:font-medium max-md:text-[#92400E]">
                   <Timer className="hidden size-4 shrink-0 max-md:block" aria-hidden />

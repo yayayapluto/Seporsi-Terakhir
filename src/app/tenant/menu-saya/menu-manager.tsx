@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ImageUploader } from "@/components/image-uploader";
+import { Photo } from "@/components/photo";
+import { SaleConditions } from "@/components/sale-conditions";
 import { SieraAlert, SieraList, SieraPhotoPicker, SieraSectionTitle } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
@@ -210,7 +213,15 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
               key={m.id}
               className="flex min-h-16 flex-col justify-center gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-4"
             >
-              {m.imagePath ? (
+              {m.photoPath ? (
+                <Photo
+                  bucket="menu-photos"
+                  path={m.photoPath}
+                  alt={`Foto ${m.name}`}
+                  sizes="64px"
+                  className="size-16 shrink-0 rounded-lg"
+                />
+              ) : m.imagePath ? (
                 <Image
                   src={publicMenuImageUrl(m.imagePath)}
                   alt=""
@@ -239,6 +250,7 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
                   {m.ingredients ? ` · Bahan: ${m.ingredients}` : " · Bahan belum dicantumkan"}
                   {m.allergenNote ? ` · Alergen: ${m.allergenNote}` : ""}
                 </p>
+                <SaleConditions conditions={m.saleConditions} className="mt-1.5" />
               </div>
               <Button
                 type="button"
@@ -266,6 +278,19 @@ export function MenuManager({ items, tenantId }: { items: MenuItemRow[]; tenantI
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
             {formError && <SieraAlert variant="error">{formError}</SieraAlert>}
+            {editing ? (
+              <ImageUploader
+                kind="menu_photo"
+                targetId={editing.id}
+                currentPath={editing.photoPath}
+                shape="wide"
+                onChanged={() => router.refresh()}
+              />
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Simpan menu dulu, lalu tambah foto lewat Edit menu.
+              </p>
+            )}
             <div className="flex flex-col gap-1">
               <Label className="font-semibold">
                 Foto <span className="font-normal text-muted-foreground">(opsional)</span>

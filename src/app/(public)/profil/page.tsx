@@ -13,6 +13,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import { GuidedTour } from "@/components/guided-tour";
+import { ImageUploader } from "@/components/image-uploader";
 import { requireRole } from "@/lib/auth";
 import { portionsSaved } from "@/lib/domain/metrics";
 import { formatDateTimeWIB, formatIDR, namaToInitials } from "@/lib/format";
@@ -45,7 +46,7 @@ async function loadProfile(userId: string, includeOrders: boolean): Promise<Prof
   const [{ data: profile }, { data: tenant }, { data: orders, error }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("full_name, email, role, avatar_url")
+      .select("full_name, email, role, avatar_url, avatar_path")
       .eq("id", userId)
       .single(),
     supabase.from("tenants").select("name, is_approved").eq("owner_id", userId).maybeSingle(),
@@ -80,7 +81,9 @@ async function loadProfile(userId: string, includeOrders: boolean): Promise<Prof
       (profile?.email as string | null)?.split("@")[0] ??
       "Pengguna",
     email: (profile?.email as string | null) ?? null,
-    avatarPath: (profile?.avatar_url as string | null) ?? null,
+    avatarPath: ((profile?.avatar_path as string | null) ?? profile?.avatar_url ?? null) as
+      | string
+      | null,
     role: (profile?.role as string | null) ?? null,
     tenantName: (tenant?.name as string | undefined) ?? null,
     tenantApproved: (tenant?.is_approved as boolean | undefined) ?? null,
@@ -151,16 +154,13 @@ export default async function ProfilPage({
         <div className="mx-auto flex w-full min-w-0 flex-col gap-6 px-5 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:max-w-[1160px] md:px-6 md:pb-8 max-md:px-0 max-md:mx-0 max-md:pt-4 max-md:pb-0 max-md:max-w-full">
           <section aria-label="Identitas" className={`${sieraCardClass} p-4 md:p-6 max-md:p-4`}>
             <div className="flex items-center gap-4">
-              {p.avatarPath ? (
-                <AvatarImage avatarPath={p.avatarPath} fullName={p.fullName} />
-              ) : (
-                <span
-                  aria-hidden
-                  className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[#DCEBE0] text-xl font-extrabold text-[#1E5A36] md:size-18 md:text-[28px]"
-                >
-                  {initials || "•"}
-                </span>
-              )}
+              <ImageUploader
+                kind="avatar"
+                targetId={user.id}
+                currentPath={p.avatarPath}
+                shape="circle"
+                avatarName={p.fullName}
+              />
               <div className="min-w-0 flex-1">
                 <h1 className="text-xl leading-tight font-extrabold tracking-[-0.01em] md:text-2xl max-md:text-[28px] max-md:leading-[1.15] max-md:tracking-[-0.02em] [overflow-wrap:anywhere]">
                   {p.fullName}
