@@ -12,6 +12,7 @@ import {
   sieraCardClass,
 } from "@/components/siera";
 import { GenericPageSkeleton } from "@/components/ui/skeleton-blocks";
+import { getCurrentUser } from "@/lib/auth";
 import { MAX_PORTIONS_PER_DAY } from "@/lib/domain/constants";
 import { formatSisaMenit, wibTodayRange } from "@/lib/format";
 import { publicMenuImageUrl } from "@/lib/menu-image";
@@ -124,6 +125,7 @@ async function KatalogPageBody(
   const sp = (await searchParams) ?? {};
   const { forced: tourForced, journey: tourJourney, entryStep: tourEntry } = parseTourParams(sp);
   const { portions, tenants, dayTotal } = await loadCatalog();
+  const isAdmin = (await getCurrentUser())?.role === "admin";
   const nowMs = Date.now();
   const urgent = portions
     .filter((p) => p.quantityRemaining > 0 && +new Date(p.expiresAt) - nowMs <= 60 * 60_000)
@@ -161,6 +163,7 @@ async function KatalogPageBody(
                   tourForced={tourForced}
                   tourJourney={tourJourney}
                   tourEntry={tourEntry}
+                  isAdmin={isAdmin}
                 />
               </Suspense>
             </>

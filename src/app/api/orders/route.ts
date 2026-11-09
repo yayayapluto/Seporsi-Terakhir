@@ -31,6 +31,9 @@ export async function POST(req: Request) {
   });
   if (error) {
     const msg = error.message.toLowerCase();
+    if (msg.includes("admin cannot order")) {
+      return NextResponse.json({ error: "Admin hanya bisa melihat katalog." }, { status: 403 });
+    }
     if (msg.includes("sold_out")) {
       return NextResponse.json({ error: "Porsi habis terjual." }, { status: 409 });
     }

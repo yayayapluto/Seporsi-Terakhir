@@ -47,6 +47,7 @@ function tabsFor(role: string | null, unread: number): NavTab[] {
     return [
       { href: ROUTES.tenant, label: "Dasbor", icon: "dashboard" },
       { href: ROUTES.tenantScan, label: "Pindai", icon: "scan" },
+      { href: ROUTES.tenantMenu, label: "Menu", icon: "store" },
       { href: ROUTES.tenantPesanan, label: "Pesanan", icon: "orders", badge },
       { href: ROUTES.profil, label: "Profil", icon: "account" },
     ];
