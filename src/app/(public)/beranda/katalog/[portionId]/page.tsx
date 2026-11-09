@@ -89,7 +89,9 @@ async function loadPortion(portionId: string): Promise<PortionDetail | null> {
   if (full.error && isMissingColumnError(full.error.message)) {
     const retry = await supabase
       .from("portions")
-      .select(`${base}, menu_items!inner(name, normal_price, image_path, sale_conditions, photo_path)`)
+      .select(
+        `${base}, menu_items!inner(name, normal_price, image_path, sale_conditions, photo_path)`,
+      )
       .eq("id", portionId)
       .maybeSingle();
     if (retry.error || !retry.data) {
