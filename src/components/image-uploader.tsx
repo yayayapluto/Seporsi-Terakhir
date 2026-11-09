@@ -353,7 +353,11 @@ export function ImageUploader({
             }}
           >
             <Camera className="size-4" aria-hidden />
-            Ubah foto
+            {kind === "menu_photo"
+              ? currentPath
+                ? "Ubah foto menu"
+                : "Upload foto menu"
+              : "Ubah foto"}
           </Button>
           {currentPath && (
             <Button
