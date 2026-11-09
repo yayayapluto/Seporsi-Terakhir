@@ -14,7 +14,8 @@ type Fixtures = {
 
 export const test = base.extend<Fixtures>({
   seed: [
-    async (_fixtures, use) => {
+    // biome-ignore lint/correctness/noEmptyPattern: Playwright fixture wajib destructure objek
+    async ({}, use) => {
       const seed = await createTestData();
       await use(seed);
       await teardownData();
