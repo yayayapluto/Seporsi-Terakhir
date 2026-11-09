@@ -3,10 +3,10 @@ import { expect, test } from "../support/fixtures";
 test("scan pickup @smoke: halaman scanner dan kode manual", async ({ seedMitraPage: page }) => {
   await test.step("buka scanner", async () => {
     await page.goto("/tenant/scan");
-    // Lewatkan panduan onboarding yang mungkin menutup layar (loop sampai hilang).
-    for (let i = 0; i < 4; i++) {
-      const dialog = page.getByRole("dialog");
-      if ((await dialog.count()) === 0) break;
+    // Lewatkan panduan onboarding yang mungkin menutup layar (loop sampai hilang,
+    // beri jeda antar fase agar transisi intro->konfirmasi selesai dulu).
+    for (let i = 0; i < 6; i++) {
+      await page.waitForTimeout(400);
       const skip = page.getByRole("button", { name: /^Lewati$/i });
       if (await skip.count()) {
         await skip.first().click();
@@ -17,7 +17,7 @@ test("scan pickup @smoke: halaman scanner dan kode manual", async ({ seedMitraPa
         await confirm.first().click();
         continue;
       }
-      await page.keyboard.press("Escape");
+      if ((await page.getByRole("dialog").count()) === 0) break;
     }
     await expect(page.getByRole("dialog")).toHaveCount(0, { timeout: 10_000 });
   });
@@ -36,6 +36,17 @@ test("scan pickup @smoke: halaman scanner dan kode manual", async ({ seedMitraPa
     const formBox = await page.locator("form").last().boundingBox();
     expect(box?.width ?? 0).toBeGreaterThan((formBox?.width ?? 0) * 0.9);
   });
+  for (let i = 0; i < 6 && (await page.getByRole("dialog").count()) > 0; i++) {
+    const skip = page.getByRole("button", { name: /^Lewati$/i });
+    if (await skip.count()) {
+      await skip.first().click();
+    } else {
+      const confirm = page.getByRole("button", { name: /Lewati panduan/i });
+      if (await confirm.count()) await confirm.first().click();
+      else await page.keyboard.press("Escape");
+    }
+    await page.waitForTimeout(400);
+  }
   await test.step("kode tidak dikenal menampilkan error", async () => {
     const otp = page.getByLabel(/Kode pickup 4 digit/);
     await otp.click();
