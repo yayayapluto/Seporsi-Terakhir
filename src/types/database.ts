@@ -94,6 +94,53 @@ export type Database = {
           },
         ]
       }
+      ai_image_cache: {
+        Row: {
+          created_at: string
+          image_path: string
+          model: string
+          prompt_hash: string
+        }
+        Insert: {
+          created_at?: string
+          image_path: string
+          model: string
+          prompt_hash: string
+        }
+        Update: {
+          created_at?: string
+          image_path?: string
+          model?: string
+          prompt_hash?: string
+        }
+        Relationships: []
+      }
+      ai_image_quota: {
+        Row: {
+          count: number
+          day: string
+          tenant_id: string
+        }
+        Insert: {
+          count?: number
+          day: string
+          tenant_id: string
+        }
+        Update: {
+          count?: number
+          day?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_image_quota_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       menu_items: {
         Row: {
           allergen_note: string | null
@@ -530,7 +577,9 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      consume_ai_quota: { Args: never; Returns: boolean }
       generate_pickup_code: { Args: never; Returns: string }
+      get_cached_image: { Args: { p_hash: string }; Returns: string }
       impact_daily: {
         Args: { p_from?: string; p_to?: string }
         Returns: {
@@ -643,7 +692,12 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      refund_ai_quota: { Args: never; Returns: undefined }
       reject_tenant: { Args: { p_tenant_id: string }; Returns: undefined }
+      save_cached_image: {
+        Args: { p_hash: string; p_model: string; p_path: string }
+        Returns: undefined
+      }
       set_my_avatar: {
         Args: { p_avatar_path?: string }
         Returns: {

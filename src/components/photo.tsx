@@ -34,6 +34,7 @@ export function Photo({
 }) {
   const [broken, setBroken] = useState(false);
   const url = getPublicImageUrl(bucket, path);
+  const isAi = typeof path === "string" && (path.split("/").pop() ?? "").startsWith("ai-");
 
   if (url && !broken) {
     return (
@@ -48,6 +49,11 @@ export function Photo({
           className="object-cover"
           onError={() => setBroken(true)}
         />
+        {isAi && (
+          <span className="absolute bottom-2 left-2 rounded-md bg-black/60 px-2 py-1 text-[11px] font-semibold text-white">
+            Ilustrasi AI
+          </span>
+        )}
       </div>
     );
   }
