@@ -1,5 +1,5 @@
 import { cn } from "cn";
-import { CalendarClock, Check, Clock3, Store, Tag } from "lucide-react";
+import { CalendarClock, Check, Clock3, Info, Store, Tag } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -47,6 +47,7 @@ export interface OrderDetail {
   tenantName: string;
   tenantLocation: string | null;
   portionId: string;
+  saleConditions: string | null;
 }
 
 async function loadOrder(orderId: string) {
@@ -73,6 +74,7 @@ async function loadOrder(orderId: string) {
     tenantName: String(row.tenant_name),
     tenantLocation: (row.tenant_location as string | null) ?? null,
     portionId: String(row.portion_id),
+    saleConditions: (row.sale_conditions as string | null) ?? null,
   };
   // Token hanya untuk pesanan aktif; select dibatasi row sendiri (RLS orders_read).
   let pickupToken: string | null = null;
@@ -266,6 +268,11 @@ async function OrderBody({ orderId, tourForced }: { orderId: string; tourForced:
                   <SieraField icon={CalendarClock} label="Waktu pesan">
                     {formatDateTimeWIB(new Date(order.createdAt))} WIB
                   </SieraField>
+                  {order.saleConditions && (
+                    <SieraField icon={Info} label="Syarat penjualan">
+                      {order.saleConditions}
+                    </SieraField>
+                  )}
                   <div className="hidden min-h-14 items-center justify-between gap-3 min-w-0 px-1 py-3 max-md:flex">
                     <span className="min-w-0 text-xs text-[#64746B]">Total bayar tunai</span>
                     <strong className="min-w-0 text-2xl font-extrabold whitespace-normal text-[#0d5a38]">

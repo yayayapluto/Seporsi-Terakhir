@@ -30,6 +30,7 @@ export interface MyOrder {
   menuName: string;
   tenantName: string;
   tenantLocation: string | null;
+  saleConditions: string | null;
 }
 
 async function loadOrders(): Promise<{ orders: MyOrder[]; error: string | null }> {
@@ -54,6 +55,7 @@ async function loadOrders(): Promise<{ orders: MyOrder[]; error: string | null }
       menuName: String(o.menu_name),
       tenantName: String(o.tenant_name),
       tenantLocation: (o.tenant_location as string | null) ?? null,
+      saleConditions: (o.sale_conditions as string | null) ?? null,
     })),
     error: null,
   };
