@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { homeForRole } from "@/lib/auth";
 import { ROUTES } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/client";
 
@@ -27,7 +26,7 @@ export function LandingCta() {
           .single();
         const role = profile?.role;
         if (role === "tenant" || role === "admin") {
-          setHref(homeForRole(role));
+          setHref(role === "admin" ? ROUTES.admin : ROUTES.tenant);
           setLabel("Buka dasbor");
         }
       })
