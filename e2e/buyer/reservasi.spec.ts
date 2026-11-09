@@ -7,7 +7,7 @@ test("reservasi @smoke: dari katalog ke pesanan", async ({ buyerPage: page, seed
     await page.waitForURL(/\/beranda\/katalog\/[0-9a-f-]{36}/);
   });
   await test.step("syarat penjualan tampil di detail", async () => {
-    await expect(page.getByText("Syarat penjualan")).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Syarat:")).toBeVisible({ timeout: 15_000 });
     await expect(page.locator("h1")).toContainText(seed.runId);
   });
   await test.step("pesan 1 porsi", async () => {
@@ -16,7 +16,9 @@ test("reservasi @smoke: dari katalog ke pesanan", async ({ buyerPage: page, seed
     await page.waitForURL(/\/beranda\/pesanan\/[0-9a-f-]{36}/, { timeout: 20_000 });
   });
   await test.step("QR tampil di detail pesanan", async () => {
-    await expect(page.locator("svg").first()).toBeVisible({ timeout: 15_000 });
-    await expect(page.getByText(seed.runId)).toBeVisible();
+    await expect(page.locator("h1")).toContainText(seed.runId);
+    await expect(page.getByText(/Semua pesanan yang menunggu diambil QR/i)).toBeVisible({
+      timeout: 15_000,
+    });
   });
 });
