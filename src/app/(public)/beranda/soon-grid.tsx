@@ -84,7 +84,7 @@ export function SoonGrid({ portions }: { portions: SoonPortion[] }) {
                 <span className="mt-2 text-[13px] text-[#64746B]">
                   Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
                 </span>
-                <SaleConditions conditions={p.saleConditions} className="mt-1.5" />
+                <SaleConditions conditions={p.saleConditions} brief className="mt-1.5" />
                 <span className="mt-1 flex flex-wrap items-baseline gap-x-2">
                   <strong className="text-lg font-extrabold text-[#1E5A36]">
                     {formatIDR(p.discountPrice)}

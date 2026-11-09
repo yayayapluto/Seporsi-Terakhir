@@ -320,7 +320,7 @@ export function KatalogList({
                         <span className="mt-2 text-[13px] text-[#64746B]">
                           Dimasak {formatDateTimeWIB(new Date(p.cookedAt))}
                         </span>
-                        <SaleConditions conditions={p.saleConditions} className="mt-1.5" />
+                        <SaleConditions conditions={p.saleConditions} brief className="mt-1.5" />
                         <span className="mt-1 flex flex-wrap items-baseline gap-x-2">
                           <del className="text-[13px] text-[#64746B]">
                             {formatIDR(p.normalPrice)}
@@ -407,7 +407,7 @@ export function KatalogList({
                         <span className="truncate max-md:whitespace-normal max-md:[overflow-wrap:anywhere] text-[13px] text-[#64746B]">
                           {p.tenantName} · Sisa {p.quantityRemaining}
                         </span>
-                        <SaleConditions conditions={p.saleConditions} />
+                        <SaleConditions conditions={p.saleConditions} brief />
                         <span className="flex flex-wrap items-baseline gap-x-1.5">
                           <del className="text-xs text-[#64746B]">{formatIDR(p.normalPrice)}</del>
                           <strong className="text-base font-extrabold text-[#1E5A36]">
