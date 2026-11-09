@@ -46,12 +46,12 @@ export default defineConfig({
     },
     {
       name: "mobile-chromium",
-      use: { ...devices["Pixel 7"], timezoneId: "Asia/Jakarta" },
-      launchOptions: {
-        args: [
-          "--use-fake-device-for-media-stream",
-          "--use-fake-ui-for-media-stream",
-        ],
+      use: {
+        ...devices["Pixel 7"],
+        timezoneId: "Asia/Jakarta",
+        launchOptions: {
+          args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"],
+        },
       },
     },
     {
