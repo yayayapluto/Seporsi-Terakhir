@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { DateField } from "@/components/date-field";
 import { GuidedTour } from "@/components/guided-tour";
 import { SieraAlert, SieraCard, SieraEmpty, SieraRailPage, SieraSection } from "@/components/siera";
 import { Spinner } from "@/components/spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { percentSold } from "@/lib/domain/metrics";
-import { formatIDR } from "@/lib/format";
+import { formatIDR, wibDayRangeUtc } from "@/lib/format";
 import { ROUTES } from "@/lib/routes";
+import { createClient } from "@/lib/supabase/client";
 import { exportCsv } from "./actions";
 import type { AdminDailyPoint, AdminReportRow } from "./page";
 import { TrendChart } from "./trend-chart";
@@ -32,7 +32,7 @@ function fillDaily(from: string, to: string, points: AdminDailyPoint[]) {
 /** Rentang tanggal + sorotan angka + tren + tabulasi per-tenant + export CSV. */
 export function ImpactClient({
   summary,
-  rows,
+  initialRows,
   daily,
   from,
   to,
@@ -45,29 +45,54 @@ export function ImpactClient({
     revenue: number;
     percent: number;
   };
-  rows: AdminReportRow[];
+  initialRows: AdminReportRow[];
   daily: AdminDailyPoint[];
   from: string;
   to: string;
   email: string;
 }) {
-  const router = useRouter();
-  const params = useSearchParams();
-  const [, startTransition] = useTransition();
+  const [tableFrom, setTableFrom] = useState(from);
+  const [tableTo, setTableTo] = useState(to);
+  const [rows, setRows] = useState<AdminReportRow[]>(initialRows);
+  const [rowsLoading, setRowsLoading] = useState(false);
   const [csvError, setCsvError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
 
-  function applyRange(fd: string, td: string) {
-    const next = new URLSearchParams(params);
-    next.set("from", fd);
-    next.set("to", td);
-    startTransition(() => router.push(`/admin?${next.toString()}`));
-  }
+  // Filter hanya tabel: RPC admin_report dipanggil ulang di client; tren & angka tetap.
+  useEffect(() => {
+    const supabase = createClient();
+    const { fromUtc, toExclusive } = wibDayRangeUtc(tableFrom, tableTo);
+    let stale = false;
+    setRowsLoading(true);
+    supabase.rpc("admin_report", { p_from: fromUtc, p_to: toExclusive }).then(({ data }) => {
+      if (stale) return;
+      const mapped: AdminReportRow[] = ((data as Array<Record<string, unknown>> | null) ?? [])
+        .map((r) => ({
+          tenantName: String(r.tenant_name ?? ""),
+          portionsPosted: Number(r.portions_posted ?? 0),
+          portionsPickedUp: Number(r.portions_picked_up ?? 0),
+          revenue: Number(r.revenue ?? 0),
+          moneySaved: Number(r.money_saved ?? 0),
+          wasteKg: Number(r.waste_grams) > 0 ? Number(r.waste_grams) / 1000 : null,
+        }))
+        .sort(
+          (a, b) =>
+            b.portionsPickedUp - a.portionsPickedUp ||
+            b.portionsPosted - a.portionsPosted ||
+            a.tenantName.localeCompare(b.tenantName),
+        );
+      setRows(mapped);
+      setRowsLoading(false);
+    });
+    return () => {
+      stale = true;
+    };
+  }, [tableFrom, tableTo]);
 
   async function downloadCsv() {
     setExporting(true);
     setCsvError(null);
-    const result = await exportCsv(from, to);
+    const result = await exportCsv(tableFrom, tableTo);
     setExporting(false);
     if (!result.ok) {
       setCsvError(result.error);
@@ -106,7 +131,6 @@ export function ImpactClient({
 
   const series = fillDaily(from, to, daily);
   const best = rows.length > 0 ? Math.max(...rows.map((r) => r.portionsPickedUp)) : 0;
-
   const secondary = [
     { label: "Uang hemat mahasiswa", value: formatIDR(summary.moneySaved) },
     { label: "Pendapatan tambahan tenant", value: formatIDR(summary.revenue) },
@@ -125,7 +149,7 @@ export function ImpactClient({
 
   return (
     <SieraRailPage
-      asideLabel="Siap borang"
+      asideLabel="Siap laporan"
       main={
         <>
           <div className="flex flex-col gap-2">
@@ -134,29 +158,26 @@ export function ImpactClient({
               Dampak penyelamatan
             </h1>
             <p className="text-muted-foreground max-md:text-sm max-md:leading-relaxed">
-              Halo <span className="max-md:break-all">{email}</span>. Angka dari pickup yang discan,
-              bukan estimasi. Berat = estimasi sampling per menu.
+              Halo <span className="max-md:break-all">{email}</span>. Angka porsi dihitung dari
+              pickup yang discan, sedangkan beratnya estimasi sampling per menu.
             </p>
           </div>
-          <div
-            data-tour="rentang"
-            className="flex flex-wrap items-end gap-3 max-md:grid max-md:grid-cols-[minmax(0,1fr)] max-md:gap-3"
-          >
-            <DateField
-              id="from"
-              label="Dari"
-              value={from}
-              onChange={(v) => applyRange(v, to)}
-              max={to}
-            />
-            <DateField
-              id="to"
-              label="Sampai"
-              value={to}
-              onChange={(v) => applyRange(from, v)}
-              min={from}
-            />
-          </div>
+
+          <section aria-label="Tren harian" className="flex flex-col gap-3">
+            <h2 className="text-lg font-bold">Tren harian</h2>
+            <SieraCard className="p-4">
+              {series.every((d) => d.saved === 0) ? (
+                <p className="text-sm text-muted-foreground">
+                  Belum ada pickup pada rentang ini. Tren akan muncul setelah tenant memindai serah
+                  terima.
+                </p>
+              ) : (
+                <div data-tour="tren">
+                  <TrendChart series={series} />
+                </div>
+              )}
+            </SieraCard>
+          </section>
 
           <section
             aria-label="Sorotan dampak"
@@ -167,9 +188,9 @@ export function ImpactClient({
               {summary.portionsSaved}
             </p>
             <p className="mt-2 text-sm text-white/90">
-              Sell-through{" "}
-              <strong className="tabular-nums">{Math.round(summary.percent * 100)}%</strong> porsi
-              yang diunggah berhasil diambil.
+              Dari seluruh porsi yang diunggah,{" "}
+              <strong className="tabular-nums">{Math.round(summary.percent * 100)}%</strong>{" "}
+              berhasil diambil (sell-through).
             </p>
             <dl className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
               {secondary.map((c) => (
@@ -181,25 +202,36 @@ export function ImpactClient({
             </dl>
           </section>
 
-          <section aria-label="Tren harian" className="flex flex-col gap-3">
-            <h2 className="text-lg font-bold">Tren harian</h2>
-            <SieraCard className="p-4">
-              {series.every((d) => d.saved === 0) ? (
-                <p className="text-sm text-muted-foreground">
-                  Belum ada pickup pada rentang ini. Tren muncul setelah tenant memindai serah
-                  terima.
-                </p>
-              ) : (
-                <div data-tour="tren">
-                  <TrendChart series={series} />
-                </div>
-              )}
-            </SieraCard>
-          </section>
+          <div
+            data-tour="rentang"
+            className="flex flex-wrap items-end gap-3 max-md:grid max-md:grid-cols-[minmax(0,1fr)] max-md:gap-3"
+          >
+            <DateField
+              id="from"
+              label="Dari"
+              value={tableFrom}
+              onChange={setTableFrom}
+              max={tableTo}
+            />
+            <DateField
+              id="to"
+              label="Sampai"
+              value={tableTo}
+              onChange={setTableTo}
+              min={tableFrom}
+            />
+          </div>
 
           {csvError && <SieraAlert variant="error">{csvError}</SieraAlert>}
 
-          {rows.length === 0 ? (
+          {rowsLoading ? (
+            <output
+              aria-busy="true"
+              className="flex items-center gap-2 px-1 text-sm text-muted-foreground"
+            >
+              <Spinner /> Memuat tabel…
+            </output>
+          ) : rows.length === 0 ? (
             <SieraEmpty
               title="Belum ada aktivitas pada rentang ini"
               hint="Coba rentang yang lebih panjang, atau tunggu tenant mengunggah porsi."
@@ -308,23 +340,23 @@ export function ImpactClient({
             steps={[
               {
                 target: '[data-tour="rentang"]',
-                title: "Atur rentang",
-                body: "Default 30 hari. Terapkan untuk muat ulang laporan.",
+                title: "Atur rentang tabel",
+                body: "Rentang ini hanya mengubah tabel, default 30 hari. Tren dan angka di atas tetap.",
               },
               {
                 target: '[data-tour="tren"]',
                 title: "Lihat tren",
-                body: "Pickup per hari. Hari kosong = belum ada serah terima.",
+                body: "Jumlah pickup per hari. Hari kosong berarti belum ada serah terima.",
               },
               {
                 target: '[data-tour="tabel-dampak"]',
                 title: "Baca per gerai",
-                body: "Sell-through dan kg per gerai. Nama gerai bisa diklik ke Kelola mitra.",
+                body: "Sell-through dan kg per gerai. Nama gerai bisa diklik untuk membuka Kelola mitra.",
               },
               {
                 target: '[data-tour="unduh"]',
                 title: "Unduh bukti",
-                body: "CSV per gerai untuk laporan BEM/unit kampus.",
+                body: "CSV per gerai untuk laporan BEM atau unit kampus.",
               },
             ]}
           />
@@ -355,14 +387,14 @@ export function ImpactClient({
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                {from} sampai {to}. Borang butuh 12 bulan bukti jalan.
+                {from} sampai {to}. Laporan kampus butuh bukti program berjalan selama 12 bulan.
               </p>
             </SieraCard>
           </SieraSection>
           <SieraSection label="Unduh laporan">
             <SieraCard className="flex flex-col gap-2 p-4">
               <p className="text-sm text-muted-foreground">
-                CSV per gerai siap lampir borang periode ini.
+                CSV per gerai untuk dilampirkan ke laporan periode ini.
               </p>
               <DownloadButton tour={false} />
             </SieraCard>
