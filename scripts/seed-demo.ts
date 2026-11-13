@@ -158,6 +158,7 @@ for (const o of SEED_ORDERS) {
     discount_price_snapshot: disc(menu.normalPrice),
     avg_weight_snapshot: menu.weightGrams,
     picked_up_at: o.status === "picked_up" ? new Date().toISOString() : null,
+    pickup_deadline_at: new Date(Date.now() + 15 * 60000).toISOString(),
   });
   if (error) throw error;
   const { data: stok } = await db
@@ -174,4 +175,86 @@ for (const o of SEED_ORDERS) {
     .eq("id", pid);
   if (sErr) throw sErr;
 }
-console.log(`db:seed OK (porsi baru: ${porsiBaru}, sisanya sudah ada)`);
+// Riwayat 30 hari (WIB) untuk grafik dasbor admin: porsi lampau sold-out
+// + pesanan picked_up tersebar per hari. Deterministik per (hari, urutan):
+// LCG seed tetap, jadi idempoten & bentuk grafik stabil antar re-run.
+const STUDENT_EMAILS = ["rafi1793198479@yopmail.com", "sinta1793198479@yopmail.com"];
+const DAYS_BACK = 30;
+const todayIso = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" }))
+  .toISOString()
+  .slice(0, 10);
+let riwayatBaru = 0;
+for (let d = DAYS_BACK; d >= 1; d--) {
+  const dayIso = new Date(
+    new Date(`${todayIso}T00:00:00+07:00`).getTime() - d * 24 * 60 * 60 * 1000,
+  )
+    .toISOString()
+    .slice(0, 10);
+  // 3–8 pesanan per hari, sedikit tren naik menjelang hari ini.
+  const pairs = 3 + Math.floor(((DAYS_BACK - d) * 5) / DAYS_BACK) + (d % 2);
+  for (let i = 0; i < pairs; i++) {
+    let s = (d * 104729 + i * 7919 + 42) % 2147483647;
+    const rnd = () => {
+      s = (s * 48271) % 2147483647;
+      return s / 2147483647;
+    };
+    const menu = SEED_MENUS[Math.floor(rnd() * SEED_MENUS.length)];
+    const studentEmail = STUDENT_EMAILS[Math.floor(rnd() * STUDENT_EMAILS.length)];
+    if (!menu || !studentEmail) throw new Error("seed riwayat rusak");
+    const qty = 1 + Math.floor(rnd() * 2);
+    const hour = 9 + Math.floor(rnd() * 10);
+    const minute = Math.floor(rnd() * 12) * 5;
+    const cooked = new Date(
+      `${dayIso}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00+07:00`,
+    );
+    const key = `${menu.tenantEmail}|${menu.name}`;
+    const mid = menuId[key];
+    if (!mid) throw new Error(`menu tak ketemu: ${key}`);
+    const { data: ada } = await db
+      .from("portions")
+      .select("id")
+      .eq("menu_item_id", mid)
+      .eq("cooked_at", cooked.toISOString())
+      .limit(1);
+    if (ada && ada.length > 0) continue;
+    const sisa = Math.floor(rnd() * 3); // 0–2 porsi tak laku (hangus, stok mati)
+    const { data: ins } = await db
+      .from("portions")
+      .insert({
+        tenant_id: tenantId[menu.tenantEmail],
+        menu_item_id: mid,
+        quantity_posted: qty + sisa,
+        quantity_remaining: sisa,
+        cooked_at: cooked.toISOString(),
+        sell_window_minutes: 180,
+        release_at: cooked.toISOString(),
+        discount_price: disc(menu.normalPrice),
+        created_at: cooked.toISOString(),
+      })
+      .select("id")
+      .single()
+      .throwOnError();
+    if (!ins || typeof ins.id !== "string") throw new Error(`porsi riwayat gagal: ${key}`);
+    const created = new Date(cooked.getTime() + (2 + Math.floor(rnd() * 50)) * 60000);
+    const pickedUp = new Date(created.getTime() + (2 + Math.floor(rnd() * 10)) * 60000);
+    const { error: oErr } = await db.from("orders").insert({
+      portion_id: ins.id,
+      student_id: profId[studentEmail],
+      quantity: qty,
+      status: "picked_up",
+      slot_start: cooked.toISOString(),
+      slot_end: new Date(cooked.getTime() + 30 * 60000).toISOString(),
+      normal_price_snapshot: menu.normalPrice,
+      discount_price_snapshot: disc(menu.normalPrice),
+      avg_weight_snapshot: menu.weightGrams,
+      created_at: created.toISOString(),
+      picked_up_at: pickedUp.toISOString(),
+      pickup_deadline_at: new Date(created.getTime() + 15 * 60000).toISOString(),
+    });
+    if (oErr) throw oErr;
+    riwayatBaru++;
+  }
+}
+console.log(
+  `db:seed OK (porsi baru: ${porsiBaru}, riwayat grafik baru: ${riwayatBaru}, sisanya sudah ada)`,
+);
