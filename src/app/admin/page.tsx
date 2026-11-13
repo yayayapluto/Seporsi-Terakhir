@@ -71,16 +71,21 @@ async function loadReport(from: string, to: string) {
     revenue: Number(s?.revenue ?? 0),
     percent: percentSold(Number(s?.portions_saved ?? 0), Number(s?.posted ?? 0)),
   };
-  const rows: AdminReportRow[] = (
-    (reportRes.data as Array<Record<string, unknown>> | null) ?? []
-  ).map((r) => ({
-    tenantName: String(r.tenant_name ?? ""),
-    portionsPosted: Number(r.portions_posted ?? 0),
-    portionsPickedUp: Number(r.portions_picked_up ?? 0),
-    revenue: Number(r.revenue ?? 0),
-    moneySaved: Number(r.money_saved ?? 0),
-    wasteKg: Number(r.waste_grams) > 0 ? Number(r.waste_grams) / 1000 : null,
-  }));
+  const rows: AdminReportRow[] = ((reportRes.data as Array<Record<string, unknown>> | null) ?? [])
+    .map((r) => ({
+      tenantName: String(r.tenant_name ?? ""),
+      portionsPosted: Number(r.portions_posted ?? 0),
+      portionsPickedUp: Number(r.portions_picked_up ?? 0),
+      revenue: Number(r.revenue ?? 0),
+      moneySaved: Number(r.money_saved ?? 0),
+      wasteKg: Number(r.waste_grams) > 0 ? Number(r.waste_grams) / 1000 : null,
+    }))
+    .sort(
+      (a, b) =>
+        b.portionsPickedUp - a.portionsPickedUp ||
+        b.portionsPosted - a.portionsPosted ||
+        a.tenantName.localeCompare(b.tenantName),
+    );
   const daily: AdminDailyPoint[] = (
     (dailyRes.data as Array<Record<string, unknown>> | null) ?? []
   ).map((d) => ({ day: String(d.day ?? ""), saved: Number(d.saved ?? 0) }));
