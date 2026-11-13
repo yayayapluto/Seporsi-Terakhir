@@ -39,17 +39,14 @@ interface ImpactSummary {
   percent: number;
 }
 
-/** Rentang dari query params, default 30 hari, WIB day boundaries. */
-function resolveRange(from: string | undefined, to: string | undefined) {
+/** Rentang default 30 hari, WIB day boundaries. Filter tanggal hanya mengubah tabel (client). */
+function resolveRange() {
   const nowWib = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
   const today = nowWib.toISOString().slice(0, 10);
   const fallbackFrom = new Date(nowWib.getTime() - 30 * 24 * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 10);
-  const iso = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
-  const f = from && iso.test(from) ? from : fallbackFrom;
-  const t = to && iso.test(to) ? to : today;
-  return { from: f, to: t, today };
+  return { from: fallbackFrom, to: today };
 }
 
 async function loadReport(from: string, to: string) {
@@ -92,14 +89,9 @@ async function loadReport(from: string, to: string) {
   return { summary, rows, daily };
 }
 
-export default async function AdminPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ from?: string; to?: string }>;
-}) {
+export default async function AdminPage() {
   const user = await requireRole("/admin", "admin");
-  const sp = await searchParams;
-  const { from, to } = resolveRange(sp.from, sp.to);
+  const { from, to } = resolveRange();
   return (
     <>
       <AppHeader title="Dampak" trail={[{ label: "Dampak" }]} />
@@ -133,6 +125,13 @@ export default async function AdminPage({
 async function ReportBody({ from, to, email }: { from: string; to: string; email: string }) {
   const { summary, rows, daily } = await loadReport(from, to);
   return (
-    <ImpactClient summary={summary} rows={rows} daily={daily} from={from} to={to} email={email} />
+    <ImpactClient
+      summary={summary}
+      initialRows={rows}
+      daily={daily}
+      from={from}
+      to={to}
+      email={email}
+    />
   );
 }

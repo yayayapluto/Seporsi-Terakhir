@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getJourneyResume } from "@/components/guided-tour";
 import { Button } from "@/components/ui/button";
 
@@ -10,9 +10,12 @@ const KEY = "onboard-beranda-v1";
 
 /** Banner Info Card onboarding: tampil sekali sampai dismiss. */
 export function OnboardBanner() {
-  const [gone, setGone] = useState(() =>
-    typeof window === "undefined" ? true : localStorage.getItem(KEY) === "1",
-  );
+  // Server dan hydration render selalu tampil; localStorage dibaca setelah mount
+  // supaya SSR HTML sama dengan client (tanpa hydration mismatch).
+  const [gone, setGone] = useState(true);
+  useEffect(() => {
+    setGone(localStorage.getItem(KEY) === "1");
+  }, []);
   if (gone) return null;
   const resume = getJourneyResume();
   const dismiss = () => {
